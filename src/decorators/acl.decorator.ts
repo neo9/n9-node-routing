@@ -6,7 +6,7 @@ interface Perm {
 }
 
 export function Acl(perms: Perm[], loadPath?: string): Function {
-	return function (object: Object, methodName: string) {
+	return function (object: object, methodName: string) {
 		const act = getMetadataArgsStorage().actions.filter((action) => {
 			return action.target === object.constructor && action.method === methodName;
 		})[0];

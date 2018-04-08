@@ -7,11 +7,12 @@ npm-debug.log*
 node_modules
 
 # Build directory
-build
+dist
 
 # Editor's config directories
 .vscode
 .idea
+*.iml
 
 # MacOS related files
 *.DS_Store
@@ -27,3 +28,7 @@ $RECYCLE.BIN/
 
 # Optional npm cache directory
 .npm
+
+# Sonar
+.scannerwork
+sonar-project.properties

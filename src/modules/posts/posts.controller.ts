@@ -1,6 +1,7 @@
+import { N9Error } from '@neo9/n9-node-utils';
 import { Body, Delete, Get, JsonController, Param, Post as HttpPost } from "routing-controllers";
 import { Service } from "typedi";
-import { Acl } from '../../acl.decorator';
+import { Acl } from '../../decorators/acl.decorator';
 import { Post } from "./post.models";
 import { PostsService } from "./posts.service";
 
@@ -24,7 +25,8 @@ export class PostsController {
 
     @HttpPost("/posts")
     post(@Body() post: Post): Post {
-        return this.postService.save(post);
+	    //throw new N9Error('can\'t connect', 503);
+	    return this.postService.save(post);
     }
 
     @Delete("/posts/:id")

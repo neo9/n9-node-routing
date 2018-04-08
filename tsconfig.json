@@ -1,17 +1,18 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "outDir": "build",
     "module": "commonjs",
     "target": "es6",
+    "outDir": "dist",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
+		"declaration": true,
     "experimentalDecorators": true,
     "noImplicitAny": true,
     "sourceMap": true
   },
   "exclude": [
     "node_modules",
-    "build"
+    "dist"
   ]
 }
