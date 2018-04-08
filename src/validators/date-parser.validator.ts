@@ -1,19 +1,19 @@
-import {registerDecorator, ValidationOptions, ValidationArguments} from "class-validator";
+import { registerDecorator, ValidationArguments, ValidationOptions } from "class-validator";
 import * as moment from 'moment';
 
-export function DateParser(dateFormat?: string, validationOptions?: ValidationOptions) {
-	return function (object: Object, propertyName: string) {
+export function DateParser(dateFormat?: string, validationOptions?: ValidationOptions): PropertyDecorator {
+	return (object: object, propertyName: string) => {
 		registerDecorator({
 			name: "DateParser",
 			target: object.constructor,
-			propertyName: propertyName,
+			propertyName,
 			constraints: [dateFormat],
 			options: validationOptions,
 			validator: {
-				validate(value: any, args: ValidationArguments) {
-					const [dateFormat] = args.constraints;
-					(args.object as any)[propertyName] = moment(value, dateFormat).toDate();
-					return  true;
+				validate(value: any, args: ValidationArguments): boolean {
+					const [dateFormat2] = args.constraints;
+					(args.object as any)[propertyName] = moment(value, dateFormat2).toDate();
+					return true;
 				}
 			}
 		});

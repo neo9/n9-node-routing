@@ -1,24 +1,24 @@
-import { Express } from 'express';
 import * as express from 'express';
+import { Express } from 'express';
 import * as helmet from 'helmet';
 import { createServer } from 'http';
 import * as morgan from 'morgan';
 import { RoutingControllersOptions, useContainer, useExpressServer } from 'routing-controllers';
 import { Container } from 'typedi';
-import { CustomErrorHandler } from './error-handler.interceptor';
-import { RoutingControllerWrapper } from './options.models';
+import { ErrorHandler } from './error-handler.interceptor';
+import { RoutingControllerWrapper } from './models/options.models';
 import ErrnoException = NodeJS.ErrnoException;
 
-export default async function (options: RoutingControllerWrapper.Options): Promise<Express> {
+export default async function(options: RoutingControllerWrapper.Options): Promise<Express> {
 	// Setup routing-controllers to use typedi container.
 	useContainer(Container);
 
 	// Defaults options for routing-controller
 	const defaultRoutingControllerOptions: RoutingControllersOptions = {
 		defaults: {
-			//with this option, null will return 404 by default
+			// with this option, null will return 404 by default
 			nullResultCode: 404,
-			//with this option, void or Promise<void> will return 204 by default
+			// with this option, void or Promise<void> will return 204 by default
 			undefinedResultCode: 204,
 		},
 		defaultErrorHandler: false,
@@ -31,8 +31,7 @@ export default async function (options: RoutingControllerWrapper.Options): Promi
 	options.http.logLevel = (typeof options.http.logLevel !== 'undefined' ? options.http.logLevel : 'dev');
 	options.http.routingController = options.http.routingController || defaultRoutingControllerOptions;
 
-	options.http.routingController.interceptors = [CustomErrorHandler];
-
+	options.http.routingController.interceptors = [ErrorHandler];
 
 	// Listeners
 	const analyzeError = (error: ErrnoException) => {
@@ -55,9 +54,6 @@ export default async function (options: RoutingControllerWrapper.Options): Promi
 		options.log.info('Listening on port ' + options.http.port);
 	};
 
-
-	global.routes = [];
-
 	// Create HTTP server
 	let expressApp = express();
 
@@ -73,7 +69,7 @@ export default async function (options: RoutingControllerWrapper.Options): Promi
 	expressApp = useExpressServer(expressApp, options.http.routingController);
 
 	// Listen method
-	const listen = () => {
+	const listen = async () => {
 		return new Promise((resolve, reject) => {
 			server.listen(options.http.port);
 			server.on('error', (error: ErrnoException) => {
@@ -88,5 +84,6 @@ export default async function (options: RoutingControllerWrapper.Options): Promi
 
 	// Make the server listen
 	if (!options.http.preventListen) await listen();
+
 	return expressApp;
-};
+}

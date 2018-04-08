@@ -1,6 +1,7 @@
 import { N9Log } from '@neo9/n9-node-log';
 import { RoutingControllersOptions } from 'routing-controllers';
 
+// tslint:disable-next-line:no-namespace
 export namespace RoutingControllerWrapper {
 
 	export interface HttpOptions {

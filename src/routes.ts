@@ -1,10 +1,11 @@
 import { N9Error } from '@neo9/n9-node-utils';
+import * as appRootDir from 'app-root-dir';
 import { Express, NextFunction, Request, Response } from 'express';
 import { join } from 'path';
-import { RoutingControllerWrapper } from './options.models';
-import * as appRootDir from 'app-root-dir';
+import { RoutingControllerWrapper } from './models/options.models';
+import * as RoutesService from './routes.service';
 
-export default async function (expressApp: Express, options: RoutingControllerWrapper.Options) {
+export default async function(expressApp: Express, options: RoutingControllerWrapper.Options): Promise<void> {
 	// Fetch application name
 	const name = require(join(appRootDir.get(), 'package.json')).name;
 
@@ -18,7 +19,7 @@ export default async function (expressApp: Express, options: RoutingControllerWr
 	});
 
 	expressApp.get('/routes', (req: Request, res: Response) => {
-		res.status(200).send(global.routes);
+		res.status(200).send(RoutesService.getRoutes());
 	});
 	// Handle 404 errors
 	expressApp.use((req: Request, res: Response, next: NextFunction) => {

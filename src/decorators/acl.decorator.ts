@@ -1,17 +1,14 @@
 import { getMetadataArgsStorage } from 'routing-controllers';
+import { AclPerm } from '../models/routes.models';
+import * as RoutesService from '../routes.service';
 
-interface Perm {
-	action: string,
-	user?: string
-}
-
-export function Acl(perms: Perm[], loadPath?: string): Function {
-	return function (object: object, methodName: string) {
+export function Acl(perms: AclPerm[], loadPath?: string): MethodDecorator {
+	return (object: object, methodName: string) => {
 		const act = getMetadataArgsStorage().actions.filter((action) => {
 			return action.target === object.constructor && action.method === methodName;
 		})[0];
 
-		global.routes.push({
+		RoutesService.addRoute({
 			method: act.type,
 			path: act.route,
 			acl: {
