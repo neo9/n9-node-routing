@@ -1,4 +1,7 @@
-# routing-controllers with express demo
+[![codecoverage](https://codecov.io/gh/BenjD90/routing-controllers-wrapper/branch/master/graph/badge.svg)](https://codecov.io/gh/BenjD90/routing-controllers-wrapper)
+
+# routing-controllers-wrapper
+## Easily create epress app in TypeScript with Decorators 
 
 1. Install all dependencies:
 

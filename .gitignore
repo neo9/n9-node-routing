@@ -36,3 +36,4 @@ $RECYCLE.BIN/
 # Sonar
 .scannerwork
 sonar-project.properties
+coverage.lcov

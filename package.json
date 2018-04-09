@@ -8,7 +8,8 @@
     "build": "rimraf dist/ && tsc",
     "lint": "tslint --project tsconfig.json",
     "test": "npm run lint  && npm run build && nyc ava --verbose --serial dist/test/ && nyc report --reporter=html",
-    "test:dev": "tslint --project tsconfig.json --force && npm run build && nyc ava --verbose --serial dist/test/ && nyc report --reporter=html"
+    "test:dev": "tslint --project tsconfig.json --force && npm run build && nyc ava --verbose --serial dist/test/ && nyc report --reporter=html",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov -t b2eaf76a-9a9e-4190-aa8f-398a8ff33939"
   },
   "author": {
     "name": "Benjamin DANIEL",
@@ -32,6 +33,7 @@
     "app-root-dir": "^1.0.2",
     "body-parser": "^1.17.2",
     "class-validator": "^0.8.5",
+    "codecov": "^3.0.0",
     "express": "^4.15.3",
     "glob-promise": "^3.4.0",
     "helmet": "^3.12.0",
@@ -53,6 +55,7 @@
     "@types/std-mocks": "^1.0.0",
     "ava": "^1.0.0-beta.3",
     "nodemon": "^1.17.3",
+    "nyc": "^11.6.0",
     "request-promise-native": "^1.0.5",
     "std-mocks": "^1.0.1",
     "typescript": "^2.3.3"
