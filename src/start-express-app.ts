@@ -1,15 +1,16 @@
+import { N9Error } from '@neo9/n9-node-utils';
 import * as express from 'express';
-import { Express } from 'express';
 import * as helmet from 'helmet';
 import { createServer } from 'http';
 import * as morgan from 'morgan';
-import { RoutingControllersOptions, useContainer, useExpressServer } from 'routing-controllers';
+import { Action, RoutingControllersOptions, useContainer, useExpressServer } from 'routing-controllers';
 import { Container } from 'typedi';
-import { ErrorHandler } from './error-handler.interceptor';
-import { RoutingControllerWrapper } from './models/options.models';
+import { ErrorHandler } from './middleware/error-handler.interceptor';
+import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
+import { RoutingControllerWrapper } from './models/wrapper.models';
 import ErrnoException = NodeJS.ErrnoException;
 
-export default async function(options: RoutingControllerWrapper.Options): Promise<Express> {
+export default async function(options: RoutingControllerWrapper.Options): Promise<RoutingControllerWrapper.ReturnObject> {
 	// Setup routing-controllers to use typedi container.
 	useContainer(Container);
 
@@ -31,7 +32,25 @@ export default async function(options: RoutingControllerWrapper.Options): Promis
 	options.http.logLevel = (typeof options.http.logLevel !== 'undefined' ? options.http.logLevel : 'dev');
 	options.http.routingController = options.http.routingController || defaultRoutingControllerOptions;
 
-	options.http.routingController.interceptors = [ErrorHandler];
+	options.http.routingController.interceptors = [SessionLoaderInterceptor, ErrorHandler];
+	options.http.routingController.authorizationChecker = async (action: Action, roles: string[]) => {
+		if (!action.request.headers.session) {
+			throw new N9Error('session-required', 401);
+		}
+		try {
+			action.request.session = JSON.parse(action.request.headers.session);
+		} catch (err) {
+			throw new N9Error('session-header-is-invalid', 401);
+		}
+		if (!action.request.session.userId) {
+			throw new N9Error('session-header-has-no-userId', 401);
+		}
+		return true;
+	};
+	options.http.routingController.validation = {
+		whitelist: true,
+		forbidNonWhitelisted: true
+	};
 
 	// Listeners
 	const analyzeError = (error: ErrnoException) => {
@@ -85,5 +104,8 @@ export default async function(options: RoutingControllerWrapper.Options): Promis
 	// Make the server listen
 	if (!options.http.preventListen) await listen();
 
-	return expressApp;
+	return {
+		app: expressApp,
+		server
+	};
 }

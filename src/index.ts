@@ -5,7 +5,7 @@ import { join } from 'path';
 // tslint:disable-next-line:no-import-side-effect
 import "reflect-metadata";
 import initModules from './initialise-modules';
-import { RoutingControllerWrapper } from './models/options.models';
+import { RoutingControllerWrapper } from './models/wrapper.models';
 import bindSpecificRoutes from './routes';
 import expressAppStarter from './start-express-app';
 
@@ -14,7 +14,7 @@ function handleThrow(err: Error): void {
 	throw err;
 }
 
-export default async function(options?: RoutingControllerWrapper.Options): Promise<Express> {
+export default async function(options?: RoutingControllerWrapper.Options): Promise<RoutingControllerWrapper.ReturnObject> {
 	// Provides a stack trace for unhandled rejections instead of the default message string.
 	process.on('unhandledRejection', handleThrow);
 
@@ -30,8 +30,8 @@ export default async function(options?: RoutingControllerWrapper.Options): Promi
 
 	// Init every modules
 	await initModules(options.path, options.log);
-	const expressApp = await expressAppStarter(options);
-	await bindSpecificRoutes(expressApp, options);
+	const returnObject = await expressAppStarter(options);
+	await bindSpecificRoutes(returnObject.app, options);
 
-	return expressApp;
+	return returnObject;
 }

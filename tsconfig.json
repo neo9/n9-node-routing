@@ -5,6 +5,7 @@
     "target": "es6",
     "outDir": "dist",
     "moduleResolution": "node",
+    "skipLibCheck": true,
     "emitDecoratorMetadata": true,
 		"declaration": true,
     "experimentalDecorators": true,

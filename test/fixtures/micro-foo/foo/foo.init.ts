@@ -1,7 +1,5 @@
-export default async function({ log, app, server }) {
-	log.info('Hello foo.init')
-	app.get('/foo', (req, res) => {
-		res.status(200)
-		res.json({ foo: 'bar' })
-	})
+import { N9Log } from '@neo9/n9-node-log';
+
+export default async function(log: N9Log): Promise<void> {
+	log.info('Hello foo.init');
 }

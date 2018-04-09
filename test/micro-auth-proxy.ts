@@ -1,11 +1,12 @@
-import test from 'ava';
+import test, { Assertions } from 'ava';
+import { Server } from 'http';
 import { join } from 'path';
 import * as rp from 'request-promise-native';
 import * as stdMock from 'std-mocks';
 
-import n9Micro from '../src';
+import routingControllerWrapper from '../src';
 
-const closeServer = (server) => {
+const closeServer = async (server: Server) => {
 	return new Promise((resolve) => {
 		server.close(resolve);
 	});
@@ -13,10 +14,10 @@ const closeServer = (server) => {
 
 const MICRO_AUTH = join(__dirname, 'fixtures/micro-auth-proxy/');
 
-test('Call session route (req.headers.session)', async (t) => {
+test('Call session route (req.headers.session)', async (t: Assertions) => {
 	stdMock.use();
-	const { app, server } = await n9Micro({
-		hasProxy: true, // tell n9Micro to parse `session` header
+	const { app, server } = await routingControllerWrapper({
+		hasProxy: true, // tell routingControllerWrapper to parse `session` header
 		path: MICRO_AUTH,
 		http: { port: 6001 }
 	});

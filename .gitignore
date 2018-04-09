@@ -20,6 +20,10 @@ dist
 .LSOverride
 ._*
 
+# Coverage
+coverage
+.nyc_output
+
 # Windows related files
 Thumbs.db
 ehthumbs.db

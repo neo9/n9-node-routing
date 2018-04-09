@@ -56,6 +56,10 @@
       true,
       200
     ],
+    "max-classes-per-file": [
+      true,
+      5
+    ],
     "no-string-literal": false,
     "no-use-before-declare": true,
     "no-conditional-assignment": true,

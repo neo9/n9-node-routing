@@ -1,25 +1,26 @@
-import test from 'ava'
-import n9Log from '@neo9/n9-node-log'
-import * as stdMock from 'std-mocks'
-import * as rp from 'request-promise-native'
-import { join } from 'path'
+import test, { Assertions } from 'ava';
+import { Server } from 'http';
+import { join } from 'path';
+import * as rp from 'request-promise-native';
+import * as stdMock from 'std-mocks';
 
-import n9Micro from '../src'
+import routingControllerWrapper from '../src';
 
-const closeServer = (server) => {
+const closeServer = async (server: Server) => {
 	return new Promise((resolve) => {
-		server.close(resolve)
-	})
-}
+		server.close(resolve);
+	});
+};
 
-const MICRO_VALIDATE = join(__dirname, 'fixtures/micro-validate/')
+const MICRO_VALIDATE = join(__dirname, 'fixtures/micro-validate/');
 
-test('Check allowUnkown', async (t) => {
-	stdMock.use()
-	const { app, server } = await n9Micro({
+test('Check allowUnkown', async (t: Assertions) => {
+	stdMock.use();
+
+	const { app, server } = await routingControllerWrapper({
 		path: MICRO_VALIDATE,
 		http: { port: 5585 }
-	})
+	});
 	// Should not allow others keys
 	const err = await t.throws(rp({
 		method: 'POST',
@@ -30,10 +31,11 @@ test('Check allowUnkown', async (t) => {
 			username: 'ok'
 		},
 		json: true
-	}))
-	t.is(err.statusCode, 400)
-	t.true(err.response.body.error.errors[0].messages.join(' ').includes('is not allowed'))
-	// Should allow others keys
+	}));
+	t.is(err.statusCode, 400);
+	t.true(err.response.body.context[0].constraints.whitelistValidation === 'property bad should not exist');
+
+	// Should not allow others keys
 	let res = await rp({
 		method: 'POST',
 		uri: 'http://localhost:5585/validate',
@@ -42,25 +44,26 @@ test('Check allowUnkown', async (t) => {
 			username: 'ok'
 		},
 		json: true
-	})
-	t.is(res.statusCode, 200)
-	t.true(res.body.ok)
+	});
+	t.is(res.statusCode, 200);
+	t.true(res.body.ok);
+
 	// Should allow others keys
 	res = await rp({
 		method: 'POST',
-		uri: 'http://localhost:5585/validate-ok',
+		uri: 'http://localhost:5585/validate-allow-all',
 		resolveWithFullResponse: true,
 		body: {
 			bad: true,
 			username: 'ok'
 		},
 		json: true
-	})
-	t.is(res.statusCode, 200)
-	t.true(res.body.ok)
+	});
+	t.is(res.statusCode, 200);
+	t.true(res.body.ok);
 	// Check logs
-	stdMock.restore()
-	const output = stdMock.flush()
+	stdMock.restore();
+	const output = stdMock.flush();
 	// Close server
-	await closeServer(server)
-})
+	await closeServer(server);
+});
