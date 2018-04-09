@@ -1,0 +1,95 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended"
+  ],
+  "rules": {
+    "no-var-requires": true,
+    "no-import-side-effect": true,
+    "curly": [
+      true,
+      "ignore-same-line"
+    ],
+    "forin": true,
+    "ordered-imports": false,
+    "object-literal-sort-keys": false,
+    "no-any": false,
+    "no-null-keyword": false,
+    "no-irregular-whitespace": true,
+    "no-trailing-whitespace": true,
+    "cyclomatic-complexity": [
+      true,
+      20
+    ],
+    "trailing-comma": [
+      false,
+      {
+        "multiline": "always",
+        "singleline": "never"
+      }
+    ],
+    "interface-name": [
+      true,
+      "never-prefix"
+    ],
+    // General
+    "no-console": [
+      true,
+      "log",
+      "debug",
+      "info",
+      "time",
+      "timeEnd",
+      "trace"
+    ],
+    "array-type": [
+      true,
+      "array"
+    ],
+    "class-name": true,
+    "prefer-const": true,
+    "semicolon": [
+      true,
+      "always"
+    ],
+    "max-line-length": [
+      true,
+      200
+    ],
+    "max-classes-per-file": [
+      true,
+      5
+    ],
+    "no-string-literal": false,
+    "no-use-before-declare": true,
+    "no-conditional-assignment": true,
+    "label-position": true,
+    "no-shadowed-variable": true,
+    "no-reference": true,
+    "triple-equals": [
+      true,
+      "allow-undefined-check",
+      "allow-null-check"
+    ],
+    "quotemark": false,
+    "variable-name": [
+      true,
+      "allow-leading-underscore",
+      "allow-pascal-case",
+      "ban-keywords",
+      "check-format"
+    ],
+    "indent": [
+      true,
+      "tabs"
+    ],
+    "promise-function-async": true,
+    "no-floating-promises": true,
+    "typedef": [
+      true,
+      "call-signature",
+      "parameter",
+      "member-variable-declaration"
+    ]
+  }
+}
