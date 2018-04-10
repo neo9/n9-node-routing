@@ -1,6 +1,5 @@
 import n9Log from '@neo9/n9-node-log';
 import * as appRootDir from 'app-root-dir';
-import { Express } from 'express';
 import { join } from 'path';
 // tslint:disable-next-line:no-import-side-effect
 import "reflect-metadata";
@@ -13,6 +12,9 @@ import expressAppStarter from './start-express-app';
 function handleThrow(err: Error): void {
 	throw err;
 }
+
+export * from './decorators/acl.decorator';
+export * from './validators/date-parser.validator';
 
 export default async function(options?: RoutingControllerWrapper.Options): Promise<RoutingControllerWrapper.ReturnObject> {
 	// Provides a stack trace for unhandled rejections instead of the default message string.
