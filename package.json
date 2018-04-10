@@ -1,7 +1,12 @@
 {
   "name": "routing-controllers-wrapper",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Express app skeleton based on routing-controllers",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist/src"
+  ],
   "license": "MIT",
   "scripts": {
     "build": "rimraf dist/ && tsc",
@@ -18,13 +23,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/BenjD90/routing-controllers-skeleton.git"
+    "url": "https://github.com/BenjD90/routing-controllers-wrapper.git"
   },
+  "homepage": "https://github.com/BenjD90/routing-controllers-wrapper#readme",
   "tags": [
     "express",
     "typescript-express",
     "routing-controllers"
   ],
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "dependencies": {
     "@neo9/n9-node-log": "^2.4.0",
     "@neo9/n9-node-utils": "^1.5.0",
