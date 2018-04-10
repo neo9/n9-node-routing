@@ -1,3 +1,4 @@
+[![npm version](https://img.shields.io/npm/v/routing-controllers-wrapper.svg)](https://www.npmjs.com/package/routing-controllers-wrapper)
 [![codecoverage](https://codecov.io/gh/BenjD90/routing-controllers-wrapper/branch/master/graph/badge.svg)](https://codecov.io/gh/BenjD90/routing-controllers-wrapper)
 
 # routing-controllers-wrapper
