@@ -30,7 +30,7 @@ export default async function(options: RoutingControllerWrapper.Options): Promis
 	options.http = options.http || {};
 	options.http.port = options.http.port || process.env.PORT || 5000;
 	options.http.logLevel = (typeof options.http.logLevel !== 'undefined' ? options.http.logLevel : 'dev');
-	options.http.routingController = options.http.routingController || defaultRoutingControllerOptions;
+	options.http.routingController = Object.assign({}, defaultRoutingControllerOptions, options.http.routingController);
 
 	options.http.routingController.interceptors = [SessionLoaderInterceptor, ErrorHandler];
 	options.http.routingController.authorizationChecker = async (action: Action, roles: string[]) => {
@@ -51,6 +51,8 @@ export default async function(options: RoutingControllerWrapper.Options): Promis
 		whitelist: true,
 		forbidNonWhitelisted: true
 	};
+
+	// options.log.info(`-- start-express-app.ts options.http --`, JSON.stringify(options.http, null, 2));
 
 	// Listeners
 	const analyzeError = (error: ErrnoException) => {
