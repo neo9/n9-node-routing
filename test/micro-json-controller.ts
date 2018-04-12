@@ -38,7 +38,7 @@ test('Acl usage with JSON Controller, check /routes', async (t) => {
 	const route2 = res.body[1];
 	t.is(route2.description, undefined);
 	t.is(route2.method, 'post');
-	t.is(route2.path, '/tata/bar');
+	t.is(route2.path, '/tata');
 	t.is(route2.acl.perms[0].action, 'createBar');
 	routesToCall.push(route2.path);
 

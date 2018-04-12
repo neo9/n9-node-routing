@@ -7,7 +7,7 @@ import { Acl } from '../../../../src';
 export class ValidateController {
 
 	@Acl([{ action: 'createBar', user: '@' }])
-	@Post("/bar")
+	@Post()
 	public async createBar(): Promise<void> {
 		return;
 	}

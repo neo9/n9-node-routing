@@ -27,9 +27,14 @@ function getRoutes(): Route[] {
 			controllerRoutePrefix = controller[0].route;
 		}
 
+		let actRoute = '';
+		if (act.route) {
+			actRoute = act.route.toString();
+		}
+
 		return {
 			method: act.type,
-			path: controllerRoutePrefix + act.route,
+			path: controllerRoutePrefix + actRoute,
 			acl: {
 				perms: d.perms,
 				loadPath: d.loadPath
