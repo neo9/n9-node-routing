@@ -1,4 +1,17 @@
-## Version 0.0.7 (2018-04-13)
+## Version [0.0.8](https://github.com/BenjD90/routing-controllers-wrapper/compare/0.0.7...0.0.8) (2018-04-13)
+
+
+### install
+
+* Fix install fail ([08279cd](https://github.com/BenjD90/routing-controllers-wrapper/commit/08279cd)) (Benjamin Daniel)
+
+### versions
+
+* Add push after release ([c2048f9](https://github.com/BenjD90/routing-controllers-wrapper/commit/c2048f9)) (Benjamin Daniel)
+
+
+
+## Version [0.0.7](https://github.com/BenjD90/routing-controllers-wrapper/compare/1c1b621...0.0.7) (2018-04-13)
 
 
 ### acl
@@ -9,6 +22,10 @@
 ### options
 
 * Fix options routing-controller merging ([aee7bdf](https://github.com/BenjD90/routing-controllers-wrapper/commit/aee7bdf)) (Benjamin Daniel)
+
+### release
+
+* V 0.0.7 ([30c534c](https://github.com/BenjD90/routing-controllers-wrapper/commit/30c534c)) (Benjamin Daniel)
 
 ### version
 
