@@ -20,7 +20,7 @@
     "release:dry": "export BABEL_DISABLE_CACHE=1 && release-it --dry-run=true",
     "build:changelog": "conventional-changelog -i CHANGELOG.md -s -p jscs -r 0",
     "post:release": "echo $npm_package_version > tmp-$BUILD_TAG.txt && echo Successfully released $npm_package_version",
-    "postinstall": "./bin/setup-git-hooks && npm run build"
+    "init": "./bin/setup-git-hooks"
   },
   "author": {
     "name": "Benjamin DANIEL",

@@ -8,15 +8,10 @@
 
     `yarn`
     
-2. Run the project:
+2. Setup git hooks
 
-    `npm run dev`
+	 `npm run init`
 
-3. Open in browser:
- 
-    `http://localhost:3000/`
+3. Run the project tests:
 
-### Using with older versions of node
-
-This project targets ES6. 
-You can target ES5, but you'll need to use es6-shim and install its typings.
+    `npm run test`
