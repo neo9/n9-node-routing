@@ -87,7 +87,15 @@ export default async function(options: RoutingControllerWrapper.Options): Promis
 
 	const server = createServer(expressApp);
 
+	if (options.http.beforeRoutingControllerLaunchHook) {
+		await options.http.beforeRoutingControllerLaunchHook(expressApp, options.log, options);
+	}
+
 	expressApp = useExpressServer(expressApp, options.http.routingController);
+
+	if (options.http.afterRoutingControllerLaunchHook) {
+		await options.http.afterRoutingControllerLaunchHook(expressApp, options.log, options);
+	}
 
 	// Listen method
 	const listen = async () => {

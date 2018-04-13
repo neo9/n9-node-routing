@@ -1,0 +1,8 @@
+#!/bin/sh
+
+npm run lint
+status=$?
+
+[ $status = 1 ] && echo "COMMIT CONTENT REJECTED" || echo "COMMIT CONTENT ACCEPTED"
+
+exit $status

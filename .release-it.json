@@ -1,0 +1,53 @@
+{
+	"non-interactive": true,
+	"dry-run": false,
+	"verbose": true,
+	"force": false,
+	"pkgFiles": [
+		"package.json"
+	],
+	"preReleaseId": null,
+	"increment": "patch",
+	"buildCommand": "npm run build",
+	"changelogCommand": "npm run build:changelog",
+  "safeBump": false,
+	"requireCleanWorkingDir": false,
+	"src": {
+		"commit": true,
+		"commitMessage": "release: V %s",
+		"tag": true,
+		"tagName": "%s",
+		"tagAnnotation": "release: V %s",
+		"push": false,
+		"pushRepo": null,
+		"beforeStartCommand": false,
+		"afterReleaseCommand": "npm run post:release"
+	},
+	"npm": {
+		"publish": true
+	},
+	"github": {
+		"release": false
+	},
+	"dist": {
+		"repo": false
+	},
+	"prompt": {
+		"src": {
+			"status": true,
+			"commit": true,
+			"tag": true,
+			"push": true,
+			"release": true,
+			"publish": true
+		},
+		"dist": {
+			"status": true,
+			"commit": true,
+			"tag": true,
+			"push": true,
+			"release": true,
+			"publish": true
+		}
+	}
+}

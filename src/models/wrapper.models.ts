@@ -11,6 +11,8 @@ export namespace RoutingControllerWrapper {
 		port?: number | string;
 		preventListen?: boolean;
 		routingController?: RoutingControllersOptions;
+		beforeRoutingControllerLaunchHook?: (app: Express, log: N9Log, options: Options) => Promise<void>;
+		afterRoutingControllerLaunchHook?: (app: Express, log: N9Log, options: Options) => Promise<void>;
 	}
 
 	export interface JWTOptions {
