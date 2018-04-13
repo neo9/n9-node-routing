@@ -18,7 +18,7 @@
 		"tag": true,
 		"tagName": "%s",
 		"tagAnnotation": "release: V %s",
-		"push": false,
+		"push": true,
 		"pushRepo": null,
 		"beforeStartCommand": false,
 		"afterReleaseCommand": "npm run post:release"
