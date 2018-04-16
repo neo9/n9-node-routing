@@ -3,6 +3,7 @@
 
 # routing-controllers-wrapper
 ## Easily create epress app in TypeScript with Decorators 
+## Wrapper of project [routing-controllers](https://github.com/typestack/routing-controllers)
 
 1. Install all dependencies:
 
@@ -10,7 +11,7 @@
     
 2. Setup git hooks
 
-	 `npm run init`
+   `npm run init`
 
 3. Run the project tests:
 
