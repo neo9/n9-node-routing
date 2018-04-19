@@ -5,6 +5,7 @@ import { join } from 'path';
 import "reflect-metadata";
 import initModules from './initialise-modules';
 import { RoutingControllerWrapper } from './models/wrapper.models';
+import { requestIdFilter } from './requestid';
 import bindSpecificRoutes from './routes';
 import expressAppStarter from './start-express-app';
 
@@ -25,10 +26,17 @@ export default async function(options?: RoutingControllerWrapper.Options): Promi
 	options.path = options.path || join(appRootDir.get(), 'src', 'modules');
 	options.log = options.log || global.log;
 	options.hasProxy = (typeof options.hasProxy === 'boolean' ? options.hasProxy : true);
+	options.enableRequestId = (typeof options.enableRequestId === 'boolean' ? options.enableRequestId : true);
 
 	// If log if given, add a namespace
-	if (options.log) options.log = options.log.module('routing-controller-wrapper');
-	else options.log = n9Log('routing-controller-wrapper');
+	if (options.log) {
+		options.log = options.log.module('routing-controller-wrapper');
+	} else {
+		options.log = n9Log('routing-controller-wrapper');
+	}
+	if (options.enableRequestId) {
+		options.log.addFilter(requestIdFilter);
+	}
 
 	// Init every modules
 	await initModules(options.path, options.log);

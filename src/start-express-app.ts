@@ -1,13 +1,16 @@
 import { N9Error } from '@neo9/n9-node-utils';
 import * as express from 'express';
+import { Request, Response } from 'express';
 import * as helmet from 'helmet';
 import { createServer } from 'http';
 import * as morgan from 'morgan';
+import { FormatFn, TokenIndexer } from 'morgan';
 import { Action, RoutingControllersOptions, useContainer, useExpressServer } from 'routing-controllers';
 import { Container } from 'typedi';
 import { ErrorHandler } from './middleware/error-handler.interceptor';
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
 import { RoutingControllerWrapper } from './models/wrapper.models';
+import { setRequestContext } from './requestid';
 import ErrnoException = NodeJS.ErrnoException;
 
 export default async function(options: RoutingControllerWrapper.Options): Promise<RoutingControllerWrapper.ReturnObject> {
@@ -79,10 +82,11 @@ export default async function(options: RoutingControllerWrapper.Options): Promis
 	let expressApp = express();
 
 	// Middleware
+	expressApp.use(setRequestContext);
 	expressApp.use(helmet());
 	// Logger middleware
-	if (typeof options.http.logLevel === 'string') {
-		expressApp.use(morgan(options.http.logLevel, { stream: options.log.stream }));
+	if (options.http.logLevel) {
+		expressApp.use(morgan(options.http.logLevel as FormatFn, { stream: options.log.stream }));
 	}
 
 	const server = createServer(expressApp);
