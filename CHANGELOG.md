@@ -1,9 +1,30 @@
+# Version [0.1.0](https://github.com/BenjD90/routing-controllers-wrapper/compare/0.0.8...0.1.0) (2018-04-19)
+
+
+### conf
+
+* Add log and conf injectors ([4efe481](https://github.com/BenjD90/routing-controllers-wrapper/commit/4efe481)) (Benjamin Daniel)
+
+### doc
+
+* Update README ([67581d9](https://github.com/BenjD90/routing-controllers-wrapper/commit/67581d9)) (Benjamin DANIEL)
+
+### logs
+
+* Add requestId in logs ([58d5df8](https://github.com/BenjD90/routing-controllers-wrapper/commit/58d5df8)) (Benjamin Daniel)
+
+
+
 ## Version [0.0.8](https://github.com/BenjD90/routing-controllers-wrapper/compare/0.0.7...0.0.8) (2018-04-13)
 
 
 ### install
 
 * Fix install fail ([08279cd](https://github.com/BenjD90/routing-controllers-wrapper/commit/08279cd)) (Benjamin Daniel)
+
+### release
+
+* V 0.0.8 ([98b62dc](https://github.com/BenjD90/routing-controllers-wrapper/commit/98b62dc)) (Benjamin Daniel)
 
 ### versions
 
