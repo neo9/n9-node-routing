@@ -32,7 +32,16 @@ export default async function(options: RoutingControllerWrapper.Options): Promis
 	// Default options
 	options.http = options.http || {};
 	options.http.port = options.http.port || process.env.PORT || 5000;
-	options.http.logLevel = (typeof options.http.logLevel !== 'undefined' ? options.http.logLevel : 'dev');
+	options.http.logLevel = (typeof options.http.logLevel !== 'undefined' ? options.http.logLevel : (tokens: TokenIndexer, req: Request, res: Response) => {
+		return [
+			options.enableRequestId && res.statusMessage !== 'No Content' ? `(${req.headers.requestId})` : '',
+			tokens.method(req, res),
+			tokens.url(req, res),
+			tokens.status(req, res),
+			tokens['response-time'](req, res), 'ms - ',
+			tokens.res(req, res, 'content-length')
+		].join(' ');
+	});
 	options.http.routingController = Object.assign({}, defaultRoutingControllerOptions, options.http.routingController);
 
 	options.http.routingController.interceptors = [SessionLoaderInterceptor, ErrorHandler];

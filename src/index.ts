@@ -3,6 +3,7 @@ import * as appRootDir from 'app-root-dir';
 import { join } from 'path';
 // tslint:disable-next-line:no-import-side-effect
 import "reflect-metadata";
+import { Container } from 'typedi';
 import initModules from './initialise-modules';
 import { RoutingControllerWrapper } from './models/wrapper.models';
 import { requestIdFilter } from './requestid';
@@ -36,6 +37,11 @@ export default async function(options?: RoutingControllerWrapper.Options): Promi
 	}
 	if (options.enableRequestId) {
 		options.log.addFilter(requestIdFilter);
+	}
+
+	Container.set("logger", options.log);
+	if (global.conf) {
+		Container.set("conf", global.conf);
 	}
 
 	// Init every modules
