@@ -17,6 +17,7 @@ function handleThrow(err: Error): void {
 
 export * from './decorators/acl.decorator';
 export * from './validators/date-parser.validator';
+export * from './models/wrapper.models';
 
 export default async function(options?: RoutingControllerWrapper.Options): Promise<RoutingControllerWrapper.ReturnObject> {
 	// Provides a stack trace for unhandled rejections instead of the default message string.
