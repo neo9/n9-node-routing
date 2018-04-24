@@ -9,11 +9,11 @@ import { Action, RoutingControllersOptions, useContainer, useExpressServer } fro
 import { Container } from 'typedi';
 import { ErrorHandler } from './middleware/error-handler.interceptor';
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
-import { RoutingControllerWrapper } from './models/wrapper.models';
+import { N9NodeRouting } from './models/routing.models';
 import { setRequestContext } from './requestid';
 import ErrnoException = NodeJS.ErrnoException;
 
-export default async function(options: RoutingControllerWrapper.Options): Promise<RoutingControllerWrapper.ReturnObject> {
+export default async function(options: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> {
 	// Setup routing-controllers to use typedi container.
 	useContainer(Container);
 

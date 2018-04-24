@@ -27,7 +27,7 @@ test('Basic usage, create http server', async (t: Assertions) => {
 	// Check / route
 	res = await rp({ uri: 'http://localhost:5000/', resolveWithFullResponse: true });
 	t.is(res.statusCode, 200);
-	t.is(res.body, 'routing-controllers-wrapper');
+	t.is(res.body, 'n9-node-routing');
 
 	// Check /ping route
 	res = await rp({ uri: 'http://localhost:5000/ping', resolveWithFullResponse: true });

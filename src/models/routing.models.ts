@@ -5,7 +5,7 @@ import * as morgan from 'morgan';
 import { RoutingControllersOptions } from 'routing-controllers';
 
 // tslint:disable-next-line:no-namespace
-export namespace RoutingControllerWrapper {
+export namespace N9NodeRouting {
 
 	export interface HttpOptions {
 		logLevel?: string | false | morgan.FormatFn;

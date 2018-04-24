@@ -1,7 +1,7 @@
 {
-  "name": "routing-controllers-wrapper",
-  "version": "0.1.0",
-  "description": "Express app skeleton based on routing-controllers",
+  "name": "n9-node-routing",
+  "version": "1.0.0",
+  "description": "Library to easily start app with routing-controllers",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "files": [
@@ -24,13 +24,13 @@
   },
   "author": {
     "name": "Benjamin DANIEL",
-    "email": "benjamin.b.daniel@gmail.com"
+    "email": "benjamin.daniel@neo9.fr"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/BenjD90/routing-controllers-wrapper.git"
+    "url": "https://github.com/neo9/n9-node-routing.git"
   },
-  "homepage": "https://github.com/BenjD90/routing-controllers-wrapper#readme",
+  "homepage": "https://github.com/neo9/n9-node-routing#n9-node-routing",
   "tags": [
     "express",
     "typescript-express",

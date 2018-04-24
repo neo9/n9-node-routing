@@ -5,7 +5,7 @@ import { join } from 'path';
 import "reflect-metadata";
 import { Container } from 'typedi';
 import initModules from './initialise-modules';
-import { RoutingControllerWrapper } from './models/wrapper.models';
+import { N9NodeRouting } from './models/routing.models';
 import { requestIdFilter } from './requestid';
 import bindSpecificRoutes from './routes';
 import expressAppStarter from './start-express-app';
@@ -17,9 +17,9 @@ function handleThrow(err: Error): void {
 
 export * from './decorators/acl.decorator';
 export * from './validators/date-parser.validator';
-export * from './models/wrapper.models';
+export * from './models/routing.models';
 
-export default async function(options?: RoutingControllerWrapper.Options): Promise<RoutingControllerWrapper.ReturnObject> {
+export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> {
 	// Provides a stack trace for unhandled rejections instead of the default message string.
 	process.on('unhandledRejection', handleThrow);
 
@@ -32,9 +32,9 @@ export default async function(options?: RoutingControllerWrapper.Options): Promi
 
 	// If log if given, add a namespace
 	if (options.log) {
-		options.log = options.log.module('routing-controller-wrapper');
+		options.log = options.log.module('n9-node-routing');
 	} else {
-		options.log = n9Log('routing-controller-wrapper');
+		options.log = n9Log('n9-node-routing');
 	}
 	if (options.enableRequestId) {
 		options.log.addFilter(requestIdFilter);

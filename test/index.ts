@@ -41,7 +41,7 @@ test('Works with custom log and should add a namespace', async (t: Assertions) =
 	const { app, server } = await routingControllerWrapper({ log });
 	stdMock.restore();
 	const output = stdMock.flush();
-	t.true(output.stdout[0].includes('[custom:routing-controller-wrapper] Listening on port 5000'));
+	t.true(output.stdout[0].includes('[custom:n9-node-routing] Listening on port 5000'));
 	// Close server
 	await closeServer(server);
 });
@@ -51,7 +51,7 @@ test('Works without params', async (t: Assertions) => {
 	const { app, server } = await routingControllerWrapper();
 	stdMock.restore();
 	const output = stdMock.flush();
-	t.true(output.stdout[0].includes('[routing-controller-wrapper] Listening on port 5000'));
+	t.true(output.stdout[0].includes('[n9-node-routing] Listening on port 5000'));
 	// Close server
 	await closeServer(server);
 });
