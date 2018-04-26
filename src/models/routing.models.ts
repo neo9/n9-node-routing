@@ -29,10 +29,17 @@ export namespace N9NodeRouting {
 		log?: N9Log;
 		http?: HttpOptions;
 		jwt?: JWTOptions;
+		swaggerui?: SwaggerUi;
 	}
 
 	export interface ReturnObject {
 		app: Express;
 		server: Server;
+	}
+
+	export interface SwaggerUi {
+		customCss?: string;
+		customJs?: string;
+		swaggerUrl?: string;
 	}
 }
