@@ -15,6 +15,10 @@ function handleThrow(err: Error): void {
 	throw err;
 }
 
+export * from 'class-validator';
+export { getMetadataArgsStorage } from 'routing-controllers';
+export * from 'routing-controllers-openapi';
+
 export * from './decorators/acl.decorator';
 export * from './validators/date-parser.validator';
 export * from './models/routing.models';

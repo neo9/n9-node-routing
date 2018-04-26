@@ -15,3 +15,7 @@
 3. Run the project tests:
 
     `yarn test`
+
+## API Documentation
+
+Documentation available as openapi 3.0 format : /documentation.json
