@@ -1,3 +1,8 @@
+## Version [1.1.1](https://github.com/neo9/n9-node-routing/compare/0.1.1...1.1.1) (2018-04-26)
+
+
+
+
 ## Version [0.1.1](https://github.com/neo9/n9-node-routing/compare/0.1.0...0.1.1) (2018-04-26)
 
 
@@ -17,6 +22,10 @@
 ### name
 
 * Change name to n9-node-routing ([ff787b6](https://github.com/neo9/n9-node-routing/commit/ff787b6)) (Benjamin Daniel)
+
+### release
+
+* V 0.1.1 ([0d5c23f](https://github.com/neo9/n9-node-routing/commit/0d5c23f)) (Benjamin Daniel)
 
 
 
