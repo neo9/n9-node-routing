@@ -1,5 +1,18 @@
+## Version [1.1.2](https://github.com/neo9/n9-node-routing/compare/1.1.1...1.1.2) (2018-04-27)
+
+
+### documentation
+
+* Add option to disable openapi ([0d98ac4](https://github.com/neo9/n9-node-routing/commit/0d98ac4)) (Benjamin Daniel)
+
+
+
 ## Version [1.1.1](https://github.com/neo9/n9-node-routing/compare/0.1.1...1.1.1) (2018-04-26)
 
+
+### release
+
+* V 1.1.1 ([33f8289](https://github.com/neo9/n9-node-routing/commit/33f8289)) (Benjamin Daniel)
 
 
 
