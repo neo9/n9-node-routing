@@ -29,6 +29,11 @@ export namespace N9NodeRouting {
 		log?: N9Log;
 		http?: HttpOptions;
 		jwt?: JWTOptions;
+		openapi?: SwaggerOptions;
+	}
+
+	export interface SwaggerOptions {
+		isEnable?: boolean;
 		swaggerui?: SwaggerUi;
 	}
 
