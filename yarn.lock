@@ -292,15 +292,15 @@
     glob-to-regexp "^0.3.0"
 
 "@neo9/n9-node-log@^2.4.0":
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/@neo9/n9-node-log/-/n9-node-log-2.5.1.tgz#59eaf4ec270b95ca94b68220cd93a0b8365b68ae"
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/@neo9/n9-node-log/-/n9-node-log-2.5.2.tgz#362ab1dadd02ab2ce845985175cdfd9625306864"
   dependencies:
     "@types/winston" "^2.3.6"
     winston "^2.4.0"
 
 "@neo9/n9-node-utils@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@neo9/n9-node-utils/-/n9-node-utils-1.5.0.tgz#604b8dcd64acfe085d86e16e7138f7d0209fe246"
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@neo9/n9-node-utils/-/n9-node-utils-1.6.0.tgz#e9557cfdc52e7d56bef7eaec49a7970c2d0afb6b"
 
 "@octokit/rest@15.2.6":
   version "15.2.6"
@@ -400,8 +400,8 @@
     "@types/express" "*"
 
 "@types/node@*":
-  version "8.10.9"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.9.tgz#b507a74a7d3eddc74a17dc35fd40d8f45dde0d6c"
+  version "10.0.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.2.tgz#180046ebbc37de8b64777765c2486ebecb59448e"
 
 "@types/node@^7.0.22":
   version "7.0.59"
@@ -6076,8 +6076,8 @@ window-size@1.1.0:
     is-number "^3.0.0"
 
 winston@^2.4.0:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/winston/-/winston-2.4.1.tgz#a3a9265105564263c6785b4583b8c8aca26fded6"
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/winston/-/winston-2.4.2.tgz#3ca01f763116fc48db61053b7544e750431f8db0"
   dependencies:
     async "~1.0.0"
     colors "1.0.x"
