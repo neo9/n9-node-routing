@@ -71,7 +71,7 @@ test('Basic usage, check logs with empty response', async (t: Assertions) => {
 	t.true(output.stdout[1].includes('Hello bar.init'));
 	t.true(output.stdout[2].includes('Listening on port 5002'));
 	t.true(output.stdout[3].includes('] ('));
-	t.is(output.stdout[3].match(/\([a-zA-Z0-9_\-]{7,14}\)/g).length, 1);
+	t.true(output.stdout[3].match(/\([a-zA-Z0-9_\-]{7,14}\)/g).length > 0);
 	t.true(output.stdout[3].includes('GET /empty'));
 
 	// Close server

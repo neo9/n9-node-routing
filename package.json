@@ -67,6 +67,7 @@
     "routing-controllers": "^0.7.0",
     "routing-controllers-openapi": "^1.2.1",
     "shortid": "^2.2.8",
+    "stream-array": "^1.1.2",
     "swagger-ui-express": "^3.0.8",
     "ts-node": "^5.0.1",
     "tslint": "^5.9.1",
