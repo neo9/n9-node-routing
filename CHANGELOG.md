@@ -1,5 +1,27 @@
+# Version [1.4.0](https://github.com/neo9/n9-node-routing/compare/1.3.0...1.4.0) (2018-05-22)
+
+
+### documentation
+
+* Add jsonUrl config in openapi ([9a262d8](https://github.com/neo9/n9-node-routing/commit/9a262d8)) (Benjamin Daniel)
+
+
+
+# Version [1.3.0](https://github.com/neo9/n9-node-routing/compare/1.2.0...1.3.0) (2018-05-21)
+
+
+### versions
+
+* Update to v 1.3.0 ([55fdea2](https://github.com/neo9/n9-node-routing/commit/55fdea2)) (Benjamin Daniel)
+
+
+
 # Version [1.2.0](https://github.com/neo9/n9-node-routing/compare/1.1.2...1.2.0) (2018-05-02)
 
+
+### release
+
+* V 1.2.0 ([a0728df](https://github.com/neo9/n9-node-routing/commit/a0728df)) (Benjamin Daniel)
 
 ### yarn
 
