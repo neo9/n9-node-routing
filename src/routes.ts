@@ -19,7 +19,8 @@ export default async function(expressApp: Express, options: N9NodeRouting.Option
 			isEnable: true,
 		};
 	}
-	options.openapi.swaggerui = options.openapi.swaggerui || Object.assign({}, options.openapi.swaggerui, { swaggerUrl: '/documentation.json' });
+	options.openapi.jsonUrl = options.openapi.jsonUrl || '/documentation.json';
+	options.openapi.swaggerui = options.openapi.swaggerui || Object.assign({}, options.openapi.swaggerui, { swaggerUrl: '../documentation.json' });
 
 	expressApp.get('/', (req: Request, res: Response) => {
 		res.status(200).send(packageJson.name);
@@ -35,7 +36,7 @@ export default async function(expressApp: Express, options: N9NodeRouting.Option
 	});
 
 	if (options.openapi.isEnable) {
-		expressApp.get(options.openapi.swaggerui.swaggerUrl || '/documentation.json', (req: Request, res: Response) => {
+		expressApp.get(options.openapi.jsonUrl, (req: Request, res: Response) => {
 			const baseOpenApiSpec: Partial<oa.OpenAPIObject> = {
 				info: {
 					description: packageJson.description,
