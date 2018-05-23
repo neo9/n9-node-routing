@@ -25,6 +25,7 @@ export namespace N9NodeRouting {
 	export interface Options {
 		hasProxy?: boolean;
 		enableRequestId?: boolean;
+		enableLogFormatJSON?: boolean;
 		path?: string;
 		log?: N9Log;
 		http?: HttpOptions;

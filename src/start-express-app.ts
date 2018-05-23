@@ -26,21 +26,35 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 			undefinedResultCode: 204,
 		},
 		defaultErrorHandler: false,
-		controllers: [options.path + "/**/*.controller.*s"],
+		controllers: [options.path + '/**/*.controller.*s'],
 	};
 
 	// Default options
 	options.http = options.http || {};
 	options.http.port = options.http.port || process.env.PORT || 5000;
 	options.http.logLevel = (typeof options.http.logLevel !== 'undefined' ? options.http.logLevel : (tokens: TokenIndexer, req: Request, res: Response) => {
-		return [
-			options.enableRequestId && res.statusMessage !== 'No Content' ? `(${req.headers.requestId})` : '',
-			tokens.method(req, res),
-			tokens.url(req, res),
-			tokens.status(req, res),
-			tokens['response-time'](req, res), 'ms - ',
-			tokens.res(req, res, 'content-length')
-		].join(' ');
+		const formatLogInJSON: boolean = global.n9NodeRoutingData.formatLogInJSON;
+
+		if (formatLogInJSON) {
+			return JSON.stringify({
+				'method': tokens.method(req, res),
+				'requestId': options.enableRequestId ? `(${req.headers.requestId})` : '',
+				'path': tokens.url(req, res),
+				'status': tokens.status(req, res),
+				'duration': (Number.parseFloat(tokens['response-time'](req, res)) / 1000).toFixed(6),
+				'response-time': tokens['response-time'](req, res),
+				'content-length': tokens.res(req, res, 'content-length'),
+			});
+		} else {
+			return [
+				options.enableRequestId && res.statusMessage !== 'No Content' ? `(${req.headers.requestId})` : '',
+				tokens.method(req, res),
+				tokens.url(req, res),
+				tokens.status(req, res),
+				tokens['response-time'](req, res), 'ms - ',
+				tokens.res(req, res, 'content-length'),
+			].join(' ');
+		}
 	});
 	options.http.routingController = Object.assign({}, defaultRoutingControllerOptions, options.http.routingController);
 
@@ -61,7 +75,7 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 	};
 	options.http.routingController.validation = {
 		whitelist: true,
-		forbidNonWhitelisted: true
+		forbidNonWhitelisted: true,
 	};
 
 	// options.log.info(`-- start-express-app.ts options.http --`, JSON.stringify(options.http, null, 2));
@@ -95,7 +109,18 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 	expressApp.use(helmet());
 	// Logger middleware
 	if (options.http.logLevel) {
-		expressApp.use(morgan(options.http.logLevel as FormatFn, { stream: options.log.stream }));
+		expressApp.use(morgan(options.http.logLevel as FormatFn, {
+			stream: {
+				write: (message) => {
+					if (global.n9NodeRoutingData.formatLogInJSON) {
+						const morganDetails = JSON.parse(message);
+						options.log.info('api call ' + morganDetails.path, morganDetails);
+					} else {
+						options.log.info(message);
+					}
+				},
+			},
+		}));
 	}
 
 	const server = createServer(expressApp);
@@ -129,6 +154,6 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 
 	return {
 		app: expressApp,
-		server
+		server,
 	};
 }

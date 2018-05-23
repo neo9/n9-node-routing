@@ -10,6 +10,7 @@ import * as RCOpenApi from 'routing-controllers-openapi';
 import * as SwaggerUi from 'swagger-ui-express';
 import { N9NodeRouting } from './models/routing.models';
 import * as RoutesService from './routes.service';
+import * as _ from 'lodash';
 
 export default async function(expressApp: Express, options: N9NodeRouting.Options): Promise<void> {
 	// Fetch application name

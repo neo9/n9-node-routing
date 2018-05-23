@@ -17,7 +17,7 @@ const MICRO_FOO = join(__dirname, 'fixtures/micro-foo/');
 test('Basic usage, create http server', async (t: Assertions) => {
 	stdMock.use();
 	const { app, server } = await routingControllerWrapper({
-		path: MICRO_FOO
+		path: MICRO_FOO,
 	});
 	// Check /foo route added on foo/foo.init.ts
 	let res = await rp({ uri: 'http://localhost:5000/foo', resolveWithFullResponse: true, json: true });
@@ -60,11 +60,58 @@ test('Basic usage, create http server', async (t: Assertions) => {
 	await closeServer(server);
 });
 
+test('Basic usage, create http server on production', async (t: Assertions) => {
+	stdMock.use();
+	process.env.NODE_ENV = 'production';
+	const { app, server } = await routingControllerWrapper({
+		path: MICRO_FOO,
+	});
+	// Check /foo route added on foo/foo.init.ts
+	let res = await rp({ uri: 'http://localhost:5000/foo', resolveWithFullResponse: true, json: true });
+	t.is(res.statusCode, 200);
+	t.is(res.body.foo, 'bar');
+
+	// Check / route
+	res = await rp({ uri: 'http://localhost:5000/', resolveWithFullResponse: true });
+	t.is(res.statusCode, 200);
+	t.is(res.body, 'n9-node-routing');
+
+	// Check /ping route
+	res = await rp({ uri: 'http://localhost:5000/ping', resolveWithFullResponse: true });
+	t.is(res.statusCode, 200);
+	t.is(res.body, 'pong');
+
+	// Check /404 route
+	res = await t.throws(rp({ uri: 'http://localhost:5000/404', resolveWithFullResponse: true, json: true }));
+	t.is(res.statusCode, 404);
+	t.is(res.response.body.code, 'not-found');
+	t.is(res.response.body.context.url, '/404');
+
+	// Check logs
+	stdMock.restore();
+	const output = stdMock.flush();
+	// Logs on stdout
+	t.true(output.stdout[0].includes(`{"level":"info","message":"Init module bar","label":"n9-node-routing","timestamp":`));
+	t.true(output.stdout[1].includes(`{"level":"info","message":"Init module foo","label":"n9-node-routing","timestamp":`));
+	t.true(output.stdout[2].includes(`{"level":"info","message":"Hello foo.init","label":"n9-node-routing","timestamp":`));
+	t.true(output.stdout[3].includes('{"level":"info","message":"Listening on port 5000","label":"n9-node-routing","timestamp":'));
+	t.true(output.stdout[4].includes('{"method":"GET","path":"/foo","status":"200","duration":"'));
+	t.true(output.stdout[5].includes('{"method":"GET","path":"/","status":"200","duration":"'));
+	t.true(output.stdout[6].includes('{"method":"GET","path":"/ping","status":"200","duration":"'));
+	t.true(output.stdout[7].includes('"status":404,"context":{"url":"/404"},"requestId":'));
+	t.true(output.stdout[7].includes('"stack":"Error: not-found'));
+	t.true(output.stdout[8].includes('"method":"GET","path":"/404","status":"404","duration":'));
+
+	// Close server
+	await closeServer(server);
+	delete  process.env.NODE_ENV;
+});
+
 test('Check /routes', async (t) => {
 	stdMock.use();
 	const { app, server } = await routingControllerWrapper({
 		path: MICRO_FOO,
-		http: { port: 5575 }
+		http: { port: 5575 },
 	});
 
 	// Check acl on routes
@@ -90,14 +137,14 @@ test('Call routes (versionning)', async (t: Assertions) => {
 	stdMock.use();
 	const { app, server } = await routingControllerWrapper({
 		path: MICRO_FOO,
-		http: { port: 5559 }
+		http: { port: 5559 },
 	});
 	let res = await rp({
 		method: 'POST',
 		uri: 'http://localhost:5559/v1/bar',
 		body: {},
 		resolveWithFullResponse: true,
-		json: true
+		json: true,
 	});
 	t.is(res.statusCode, 200);
 	t.is(res.body.bar, 'foo');
@@ -108,7 +155,7 @@ test('Call routes (versionning)', async (t: Assertions) => {
 		uri: 'http://localhost:5559/v1/fou',
 		body: { hi: 'hello' },
 		resolveWithFullResponse: true,
-		json: true
+		json: true,
 	});
 	t.is(res.statusCode, 200);
 	t.deepEqual(res.body, { hi: 'hello' });
@@ -120,7 +167,7 @@ test('Call routes (versionning)', async (t: Assertions) => {
 		qs: { error: true },
 		body: {},
 		resolveWithFullResponse: true,
-		json: true
+		json: true,
 	}));
 	t.is(err.statusCode, 500);
 	t.is(err.response.body.code, 'bar-error');
@@ -132,7 +179,7 @@ test('Call routes (versionning)', async (t: Assertions) => {
 		qs: { error: true },
 		body: {},
 		resolveWithFullResponse: true,
-		json: true
+		json: true,
 	}));
 	t.is(err.statusCode, 505);
 	t.is(err.response.body.code, 'bar-extendable-error');
@@ -149,14 +196,14 @@ test('Call routes with error in development (error key)', async (t: Assertions) 
 	stdMock.use();
 	const { app, server } = await routingControllerWrapper({
 		path: MICRO_FOO,
-		http: { port: 5587 }
+		http: { port: 5587 },
 	});
 	// Call error with no message
 	const err = await t.throws(rp({
 		method: 'GET',
 		uri: 'http://localhost:5587/bar-fail',
 		resolveWithFullResponse: true,
-		json: true
+		json: true,
 	}));
 	t.is(err.statusCode, 500);
 	t.deepEqual(err.response.body, {
@@ -175,7 +222,7 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 	stdMock.use();
 	const { app, server } = await routingControllerWrapper({
 		path: MICRO_FOO,
-		http: { port: 5587 }
+		http: { port: 5587 },
 	});
 
 	// Call special route which fails
@@ -185,7 +232,7 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 		qs: { error: true },
 		body: {},
 		resolveWithFullResponse: true,
-		json: true
+		json: true,
 	}));
 	t.is(err.statusCode, 500);
 	t.deepEqual(err.response.body, {
@@ -202,14 +249,14 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 		qs: { error: true },
 		body: {},
 		resolveWithFullResponse: true,
-		json: true
+		json: true,
 	}));
 	t.is(err.statusCode, 505);
 	t.deepEqual(err.response.body, {
 		code: 'bar-extendable-error',
 		status: 505,
 		context: {
-			test: true
+			test: true,
 		},
 		// no error key
 	});
@@ -219,14 +266,14 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 		method: 'GET',
 		uri: 'http://localhost:5587/404',
 		resolveWithFullResponse: true,
-		json: true
+		json: true,
 	}));
 	t.is(err.statusCode, 404);
 	t.deepEqual(err.response.body, {
 		code: 'not-found',
 		status: 404,
 		context: {
-			url: '/404'
+			url: '/404',
 		},
 		// no error key
 	});
@@ -236,7 +283,7 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 		method: 'GET',
 		uri: 'http://localhost:5587/bar-fail',
 		resolveWithFullResponse: true,
-		json: true
+		json: true,
 	}));
 	t.is(err.statusCode, 500);
 	t.deepEqual(err.response.body, {
