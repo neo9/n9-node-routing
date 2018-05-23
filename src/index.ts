@@ -44,9 +44,17 @@ export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRo
 		options
 	};
 
+	if (global.log) {
+		global.log = n9Log(global.log.name, Object.assign({}, global.log.options, {
+			formatJSON: formatLogInJSON
+		}));
+	}
+
 	// If log if given, add a namespace
 	if (options.log) {
-		options.log = options.log.module('n9-node-routing');
+		options.log = options.log.module('n9-node-routing', {
+			formatJSON: formatLogInJSON
+		});
 	} else {
 		options.log = n9Log('n9-node-routing', {
 			formatJSON: formatLogInJSON,

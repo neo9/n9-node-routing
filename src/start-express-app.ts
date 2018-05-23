@@ -113,8 +113,12 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 			stream: {
 				write: (message) => {
 					if (global.n9NodeRoutingData.formatLogInJSON) {
-						const morganDetails = JSON.parse(message);
-						options.log.info('api call ' + morganDetails.path, morganDetails);
+						try {
+							const morganDetails = JSON.parse(message);
+							options.log.info('api call ' + morganDetails.path, morganDetails);
+						} catch (e) {
+							options.log.info(message);
+						}
 					} else {
 						options.log.info(message);
 					}
