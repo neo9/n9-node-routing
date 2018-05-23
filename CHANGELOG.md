@@ -1,9 +1,22 @@
+## Version [1.5.1](https://github.com/neo9/n9-node-routing/compare/1.5.0...1.5.1) (2018-05-23)
+
+
+### logs
+
+* Fix logs in JSON and update global.log ([22080e2](https://github.com/neo9/n9-node-routing/commit/22080e2)) (Benjamin Daniel)
+
+
+
 # Version [1.5.0](https://github.com/neo9/n9-node-routing/compare/1.4.0...1.5.0) (2018-05-23)
 
 
 ### logs
 
 * Add logs in JSON in no dev environment ([83544f0](https://github.com/neo9/n9-node-routing/commit/83544f0)) (Benjamin Daniel)
+
+### release
+
+* V 1.5.0 ([4feb5bc](https://github.com/neo9/n9-node-routing/commit/4feb5bc)) (Benjamin Daniel)
 
 
 
