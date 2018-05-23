@@ -1,9 +1,22 @@
+# Version [1.5.0](https://github.com/neo9/n9-node-routing/compare/1.4.0...1.5.0) (2018-05-23)
+
+
+### logs
+
+* Add logs in JSON in no dev environment ([83544f0](https://github.com/neo9/n9-node-routing/commit/83544f0)) (Benjamin Daniel)
+
+
+
 # Version [1.4.0](https://github.com/neo9/n9-node-routing/compare/1.3.0...1.4.0) (2018-05-22)
 
 
 ### documentation
 
 * Add jsonUrl config in openapi ([9a262d8](https://github.com/neo9/n9-node-routing/commit/9a262d8)) (Benjamin Daniel)
+
+### release
+
+* V 1.4.0 ([4731604](https://github.com/neo9/n9-node-routing/commit/4731604)) (Benjamin Daniel)
 
 
 
