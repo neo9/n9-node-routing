@@ -1,4 +1,4 @@
-import n9Log from '@neo9/n9-node-log';
+import n9Log, { N9Log } from '@neo9/n9-node-log';
 import * as appRootDir from 'app-root-dir';
 import { createNamespace } from 'continuation-local-storage';
 import { join } from 'path';
@@ -11,6 +11,7 @@ import { requestIdFilter } from './requestid';
 import bindSpecificRoutes from './routes';
 import expressAppStarter from './start-express-app';
 import { waitFor } from '@neo9/n9-node-utils';
+import { N9HttpClient } from './utils/http-client-base';
 
 /* istanbul ignore next */
 function handleThrow(err: Error): void {
@@ -25,6 +26,7 @@ export * from './decorators/acl.decorator';
 export * from './validators/date-parser.validator';
 export * from './models/routing.models';
 export * from './models/routes.models';
+export * from './utils/http-client-base';
 
 export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> {
 	// Provides a stack trace for unhandled rejections instead of the default message string.
@@ -68,6 +70,7 @@ export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRo
 	if (global.conf) {
 		Container.set('conf', global.conf);
 	}
+	Container.set('N9HttpClient', new N9HttpClient());
 
 	// Init every modules
 	await initModules(options.path, options.log);

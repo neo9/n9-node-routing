@@ -1,10 +1,10 @@
 import { createNamespace, getNamespace } from 'continuation-local-storage';
 import { NextFunction, Request, Response } from 'express';
 import * as shortid from 'shortid';
-import { N9NodeRouting } from './models/routing.models';
 
-const requestIdNamespaceName = 'requestIdNamespace';
-const requestIdNamespace = createNamespace(requestIdNamespaceName);
+const RequestIdNamespaceName = 'requestIdNamespace';
+export { RequestIdNamespaceName };
+const requestIdNamespace = createNamespace(RequestIdNamespaceName);
 
 function flattenWithInheritProperties(obj: object): object {
 	const result = Object.create(obj);
@@ -17,7 +17,7 @@ function flattenWithInheritProperties(obj: object): object {
 export function requestIdFilter(level: string, msg: string, meta: any): string | { msg: any; meta: any; } {
 	const formatLogInJSON: boolean = global.n9NodeRoutingData.formatLogInJSON;
 
-	const namespaceRequestId = getNamespace(requestIdNamespaceName);
+	const namespaceRequestId = getNamespace(RequestIdNamespaceName);
 	const requestId = namespaceRequestId && namespaceRequestId.get('requestId');
 	if (formatLogInJSON) {
 		const metaFull = flattenWithInheritProperties(meta);
