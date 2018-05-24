@@ -62,7 +62,7 @@ export class N9HttpClient {
 
 			return res.body as any;
 		} catch (e) {
-			this.logger.error(`Error on [${method} ${uri} ${queryParams || ''}]`, e);
+			this.logger.error(`Error on [${method} ${uri}]`, e);
 			// istanbul ignore else
 			if (e.error) {
 				throw new N9Error(e.error.code, e.statusCode);
