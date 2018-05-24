@@ -34,7 +34,9 @@ test('Call a route with HttpClient', async (t: Assertions) => {
 	/*
 	** Test ping route
 	*/
-	let rep = await httpClient.get<string>('http://localhost:6001/ping');
+	let rep = await httpClient.get<string>('http://localhost:6001/ping', {}, {
+		'x-request-id': 'test-request-id'
+	});
 	t.is(rep, 'pong');
 	rep = await httpClient.raw<string>('http://localhost:6001/ping', { method: 'get' });
 	t.is(rep, 'pong');

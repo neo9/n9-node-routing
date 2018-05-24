@@ -38,7 +38,7 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 		if (formatLogInJSON) {
 			return JSON.stringify({
 				'method': tokens.method(req, res),
-				'requestId': options.enableRequestId ? `(${req.headers.requestId})` : '',
+				'request-id': options.enableRequestId ? `(${req.headers['x-request-id']})` : '',
 				'path': tokens.url(req, res),
 				'status': tokens.status(req, res),
 				'duration': (Number.parseFloat(tokens['response-time'](req, res)) / 1000).toFixed(6),
@@ -47,7 +47,7 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 			});
 		} else {
 			return [
-				options.enableRequestId && res.statusMessage !== 'No Content' ? `(${req.headers.requestId})` : '',
+				options.enableRequestId && res.statusMessage !== 'No Content' ? `(${req.headers['x-request-id']})` : '',
 				tokens.method(req, res),
 				tokens.url(req, res),
 				tokens.status(req, res),

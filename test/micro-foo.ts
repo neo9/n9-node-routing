@@ -95,12 +95,12 @@ test('Basic usage, create http server on production', async (t: Assertions) => {
 	t.true(output.stdout[1].includes(`{"level":"info","message":"Init module foo","label":"n9-node-routing","timestamp":`));
 	t.true(output.stdout[2].includes(`{"level":"info","message":"Hello foo.init","label":"n9-node-routing","timestamp":`));
 	t.true(output.stdout[3].includes('{"level":"info","message":"Listening on port 5000","label":"n9-node-routing","timestamp":'));
-	t.true(output.stdout[4].includes('{"method":"GET","path":"/foo","status":"200","duration":"'));
-	t.true(output.stdout[5].includes('{"method":"GET","path":"/","status":"200","duration":"'));
-	t.true(output.stdout[6].includes('{"method":"GET","path":"/ping","status":"200","duration":"'));
+	t.true(output.stdout[4].includes(',"path":"/foo","status":"200","duration":"'));
+	t.true(output.stdout[5].includes(',"path":"/","status":"200","duration":"'));
+	t.true(output.stdout[6].includes(',"path":"/ping","status":"200","duration":"'));
 	t.true(output.stdout[7].includes('"status":404,"context":{"url":"/404"},"requestId":'));
 	t.true(output.stdout[7].includes('"stack":"Error: not-found'));
-	t.true(output.stdout[8].includes('"method":"GET","path":"/404","status":"404","duration":'));
+	t.true(output.stdout[8].includes(',"path":"/404","status":"404","duration":'));
 
 	// Close server
 	await closeServer(server);

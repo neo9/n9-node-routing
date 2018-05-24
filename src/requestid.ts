@@ -18,7 +18,7 @@ export function requestIdFilter(level: string, msg: string, meta: any): string |
 	const formatLogInJSON: boolean = global.n9NodeRoutingData.formatLogInJSON;
 
 	const namespaceRequestId = getNamespace(RequestIdNamespaceName);
-	const requestId = namespaceRequestId && namespaceRequestId.get('requestId');
+	const requestId = namespaceRequestId && namespaceRequestId.get('request-id');
 	if (formatLogInJSON) {
 		const metaFull = flattenWithInheritProperties(meta);
 		return {
@@ -36,10 +36,10 @@ export function requestIdFilter(level: string, msg: string, meta: any): string |
 
 export function setRequestContext(req: Request, res: Response, next: NextFunction): void {
 	requestIdNamespace.run(() => {
-		if (!req.headers.requestId) {
-			req.headers.requestId = shortid.generate();
+		if (!req.headers['x-request-id']) {
+			req.headers['x-request-id'] = shortid.generate();
 		}
-		requestIdNamespace.set('requestId', req.headers.requestId);
+		requestIdNamespace.set('request-id', req.headers['x-request-id']);
 		next();
 	});
 }

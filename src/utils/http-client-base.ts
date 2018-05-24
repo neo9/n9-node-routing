@@ -6,10 +6,6 @@ import * as rpn from 'request-promise-native';
 import * as UrlJoin from 'url-join';
 import { RequestIdNamespaceName } from '../requestid';
 
-export interface N9HttpClientQueryParams {
-	[id: string]: string | string[] | number | number[];
-}
-
 export class N9HttpClient {
 	private readonly requestDefault: RequestAPI<Request, CoreOptions, RequiredUriUrl>;
 
@@ -22,36 +18,39 @@ export class N9HttpClient {
 		}));
 	}
 
-	public async get<T>(url: string | string[], queryParams?: N9HttpClientQueryParams, headers: { [id: string]: string } = {}): Promise<T> {
+	/**
+	 * QueryParams samples : https://github.com/request/request/blob/master/tests/test-qs.js
+	 */
+	public async get<T>(url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
 		return this.request<T>('get', url, queryParams, headers);
 	}
 
-	public async post<T>(url: string | string[], queryParams?: N9HttpClientQueryParams, headers: { [id: string]: string } = {}): Promise<T> {
+	public async post<T>(url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
 		return this.request<T>('post', url, queryParams, headers);
 	}
 
-	public async put<T>(url: string | string[], queryParams?: N9HttpClientQueryParams, headers: { [id: string]: string } = {}): Promise<T> {
+	public async put<T>(url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
 		return this.request<T>('put', url, queryParams, headers);
 	}
 
-	public async delete<T>(url: string | string[], queryParams?: N9HttpClientQueryParams, headers: { [id: string]: string } = {}): Promise<T> {
+	public async delete<T>(url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
 		return this.request<T>('delete', url, queryParams, headers);
 	}
 
-	public async options<T>(url: string | string[], queryParams?: N9HttpClientQueryParams, headers: { [id: string]: string } = {}): Promise<T> {
+	public async options<T>(url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
 		return this.request<T>('options', url, queryParams, headers);
 	}
 
-	public async patch<T>(url: string | string[], queryParams?: N9HttpClientQueryParams, headers: { [id: string]: string } = {}): Promise<T> {
+	public async patch<T>(url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
 		return this.request<T>('patch', url, queryParams, headers);
 	}
 
-	public async request<T>(method: string, url: string | string[], queryParams?: N9HttpClientQueryParams, headers: { [id: string]: string } = {}): Promise<T> {
+	public async request<T>(method: string, url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
 		const uri = this.getUriFromUrlParts(url);
 
 		const namespaceRequestId = getNamespace(RequestIdNamespaceName);
-		const requestId = namespaceRequestId && namespaceRequestId.get('requestId');
-		const sentHeaders = Object.assign({}, headers, { requestId });
+		const requestId = namespaceRequestId && namespaceRequestId.get('request-id');
+		const sentHeaders = Object.assign({}, headers, { 'x-request-id': requestId });
 
 		try {
 			const res = await this.requestDefault({
