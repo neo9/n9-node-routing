@@ -25,15 +25,15 @@ export class N9HttpClient {
 		return this.request<T>('get', url, queryParams, headers);
 	}
 
-	public async post<T>(url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
+	public async post<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
 		return this.request<T>('post', url, queryParams, headers);
 	}
 
-	public async put<T>(url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
+	public async put<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
 		return this.request<T>('put', url, queryParams, headers);
 	}
 
-	public async delete<T>(url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
+	public async delete<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
 		return this.request<T>('delete', url, queryParams, headers);
 	}
 
@@ -41,11 +41,11 @@ export class N9HttpClient {
 		return this.request<T>('options', url, queryParams, headers);
 	}
 
-	public async patch<T>(url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
+	public async patch<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
 		return this.request<T>('patch', url, queryParams, headers);
 	}
 
-	public async request<T>(method: string, url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
+	public async request<T>(method: string, url: string | string[], queryParams?: object, headers: object = {}, body?: any): Promise<T> {
 		const uri = this.getUriFromUrlParts(url);
 
 		const namespaceRequestId = getNamespace(RequestIdNamespaceName);
@@ -58,6 +58,7 @@ export class N9HttpClient {
 				uri,
 				qs: queryParams,
 				headers,
+				body
 			});
 
 			return res.body as any;
