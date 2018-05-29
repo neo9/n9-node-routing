@@ -1,5 +1,18 @@
+## Version [1.6.3](https://github.com/neo9/n9-node-routing/compare/1.6.2...1.6.3) (2018-05-29)
+
+
+### utils
+
+* Upgrade n9-node-utils ([bf0131f](https://github.com/neo9/n9-node-routing/commit/bf0131f)) (Benjamin Daniel)
+
+
+
 ## Version [1.6.2](https://github.com/neo9/n9-node-routing/compare/1.6.1...1.6.2) (2018-05-28)
 
+
+### release
+
+* V 1.6.2 ([128da7f](https://github.com/neo9/n9-node-routing/commit/128da7f)) (Benjamin Daniel)
 
 
 
