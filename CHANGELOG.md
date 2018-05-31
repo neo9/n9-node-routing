@@ -1,5 +1,18 @@
+## Version [1.6.4](https://github.com/neo9/n9-node-routing/compare/1.6.3...1.6.4) (2018-05-31)
+
+
+### release
+
+* Remove useless tmp file ([f7e1556](https://github.com/neo9/n9-node-routing/commit/f7e1556)) (Benjamin Daniel)
+
+
+
 ## Version [1.6.3](https://github.com/neo9/n9-node-routing/compare/1.6.2...1.6.3) (2018-05-29)
 
+
+### release
+
+* V 1.6.3 ([33ceed6](https://github.com/neo9/n9-node-routing/commit/33ceed6)) (Benjamin Daniel)
 
 ### utils
 
