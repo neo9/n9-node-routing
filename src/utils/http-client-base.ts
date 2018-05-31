@@ -26,15 +26,15 @@ export class N9HttpClient {
 	}
 
 	public async post<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
-		return this.request<T>('post', url, queryParams, headers);
+		return this.request<T>('post', url, queryParams, headers, body);
 	}
 
 	public async put<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
-		return this.request<T>('put', url, queryParams, headers);
+		return this.request<T>('put', url, queryParams, headers, body);
 	}
 
 	public async delete<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
-		return this.request<T>('delete', url, queryParams, headers);
+		return this.request<T>('delete', url, queryParams, headers, body);
 	}
 
 	public async options<T>(url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
@@ -42,7 +42,7 @@ export class N9HttpClient {
 	}
 
 	public async patch<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
-		return this.request<T>('patch', url, queryParams, headers);
+		return this.request<T>('patch', url, queryParams, headers, body);
 	}
 
 	public async request<T>(method: string, url: string | string[], queryParams?: object, headers: object = {}, body?: any): Promise<T> {
