@@ -299,8 +299,8 @@
     winston "^2.4.0"
 
 "@neo9/n9-node-utils@^1.5.0":
-  version "1.7.1"
-  resolved "https://registry.npmjs.org/@neo9/n9-node-utils/-/n9-node-utils-1.7.1.tgz#8d59179fe38132498e93612d496bd37c58b3d9d2"
+  version "1.7.2"
+  resolved "https://registry.npmjs.org/@neo9/n9-node-utils/-/n9-node-utils-1.7.2.tgz#27d94836ea6f5a5ffc31e2498364fc53b4822ca8"
 
 "@nodelib/fs.stat@^1.0.1":
   version "1.0.2"
