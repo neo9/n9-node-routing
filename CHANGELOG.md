@@ -1,5 +1,14 @@
+## Version [1.6.6](https://github.com/neo9/n9-node-routing/compare/1.6.5...1.6.6) (2018-09-21)
+
+
+
+
 ## Version [1.6.5](https://github.com/neo9/n9-node-routing/compare/1.6.4...1.6.5) (2018-07-13)
 
+
+### release
+
+* V 1.6.5 ([e96b6d0](https://github.com/neo9/n9-node-routing/commit/e96b6d0)) (Benjamin Daniel)
 
 
 
