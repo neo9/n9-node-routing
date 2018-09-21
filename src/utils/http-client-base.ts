@@ -63,7 +63,7 @@ export class N9HttpClient {
 
 			return res.body as any;
 		} catch (e) {
-			this.logger.error(`Error on [${method} ${uri}]`);
+			this.logger.error(`Error on [${method} ${uri}]`, e.statusCode);
 			// istanbul ignore else
 			if (e.error) {
 				throw new N9Error(e.error.code, e.statusCode, e.error.context);
@@ -81,7 +81,7 @@ export class N9HttpClient {
 
 			return res.body as any;
 		} catch (e) {
-			this.logger.error(`Error on raw call [${options.method} ${uri}]`);
+			this.logger.error(`Error on raw call [${options.method} ${uri}]`, e.statusCode);
 			// istanbul ignore else
 			if (e.error) {
 				throw new N9Error(e.error.code, e.statusCode, e.error.context);
