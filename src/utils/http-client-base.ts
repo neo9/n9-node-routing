@@ -58,15 +58,15 @@ export class N9HttpClient {
 				uri,
 				qs: queryParams,
 				headers,
-				body
+				body,
 			});
 
 			return res.body as any;
 		} catch (e) {
-			this.logger.error(`Error on [${method} ${uri}]`, e);
+			this.logger.error(`Error on [${method} ${uri}]`);
 			// istanbul ignore else
 			if (e.error) {
-				throw new N9Error(e.error.code, e.statusCode);
+				throw new N9Error(e.error.code, e.statusCode, e.error.context);
 			} else {
 				throw e;
 			}
@@ -81,10 +81,10 @@ export class N9HttpClient {
 
 			return res.body as any;
 		} catch (e) {
-			this.logger.error(`Error on raw call [${options.method} ${uri}]`, e);
+			this.logger.error(`Error on raw call [${options.method} ${uri}]`);
 			// istanbul ignore else
 			if (e.error) {
-				throw new N9Error(e.error.code, e.statusCode);
+				throw new N9Error(e.error.code, e.statusCode, e.error.context);
 			} else {
 				throw e;
 			}
