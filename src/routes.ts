@@ -10,7 +10,6 @@ import * as RCOpenApi from 'routing-controllers-openapi';
 import * as SwaggerUi from 'swagger-ui-express';
 import { N9NodeRouting } from './models/routing.models';
 import * as RoutesService from './routes.service';
-import * as _ from 'lodash';
 
 export default async function(expressApp: Express, options: N9NodeRouting.Options): Promise<void> {
 	// Fetch application name
@@ -28,8 +27,16 @@ export default async function(expressApp: Express, options: N9NodeRouting.Option
 	});
 
 	// Monitoring route
-	expressApp.get('/ping', (req: Request, res: Response) => {
-		res.status(200).send('pong');
+	expressApp.get('/ping', (req: Request, res: Response, next: NextFunction) => {
+		if (global.db && global.dbClient) {
+			if (!global.dbClient.isConnected()) {
+				res.status(500).send();
+			} else {
+				res.status(200).send('pong-db');
+			}
+		} else {
+			res.status(200).send('pong');
+		}
 	});
 
 	expressApp.get('/routes', (req: Request, res: Response) => {
@@ -55,8 +62,8 @@ export default async function(expressApp: Express, options: N9NodeRouting.Option
 
 			const spec = RCOpenApi.routingControllersToSpec(routesStorage, options.http.routingController, additionalProperties);
 
-			res.header("Access-Control-Allow-Origin", "*");
-			res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+			res.header('Access-Control-Allow-Origin', '*');
+			res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 			res.json(spec);
 		});
 

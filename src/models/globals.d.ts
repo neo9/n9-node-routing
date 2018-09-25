@@ -4,5 +4,6 @@ declare namespace NodeJS {
 		conf: any;
 		log: any;
 		db: any;
+		dbClient: any;
 	}
 }
