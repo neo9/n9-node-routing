@@ -1,9 +1,22 @@
+## Version [1.7.1](https://github.com/neo9/n9-node-routing/compare/1.7.0...1.7.1) (2018-10-24)
+
+
+### logs
+
+* Fix logs with undefined obj ([59b0c89](https://github.com/neo9/n9-node-routing/commit/59b0c89)) (Benjamin Daniel)
+
+
+
 # Version [1.7.0](https://github.com/neo9/n9-node-routing/compare/1.6.6...1.7.0) (2018-09-25)
 
 
 ### ping
 
 * Add check mongodb status on ping ([155af33](https://github.com/neo9/n9-node-routing/commit/155af33)) (Benjamin Daniel)
+
+### release
+
+* V 1.7.0 ([1c8b183](https://github.com/neo9/n9-node-routing/commit/1c8b183)) (Benjamin Daniel)
 
 
 
