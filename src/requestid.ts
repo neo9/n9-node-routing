@@ -7,6 +7,8 @@ export { RequestIdNamespaceName };
 const requestIdNamespace = createNamespace(RequestIdNamespaceName);
 
 function flattenWithInheritProperties(obj: object): object {
+	if (!obj) return obj;
+
 	const result = Object.create(obj);
 	Object.getOwnPropertyNames(obj).forEach((key) => {
 		result[key] = result[key];
