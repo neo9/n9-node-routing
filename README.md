@@ -1,7 +1,7 @@
 [![npm version](https://img.shields.io/npm/v/n9-node-routing.svg)](https://www.npmjs.com/package/n9-node-routing)
 
 # n9-node-routing
-## Easily create epress app in TypeScript with Decorators 
+## Easily create express app in TypeScript with Decorators 
 ## Wrapper of project [routing-controllers](https://github.com/typestack/routing-controllers)
 
 1. Install all dependencies:
