@@ -1,9 +1,22 @@
+# Version [1.8.0](https://github.com/neo9/n9-node-routing/compare/1.7.1...1.8.0) (2018-10-26)
+
+
+### yarn
+
+* Upgrade class-validator ([b482f52](https://github.com/neo9/n9-node-routing/commit/b482f52)) (Benjamin Daniel)
+
+
+
 ## Version [1.7.1](https://github.com/neo9/n9-node-routing/compare/1.7.0...1.7.1) (2018-10-24)
 
 
 ### logs
 
 * Fix logs with undefined obj ([59b0c89](https://github.com/neo9/n9-node-routing/commit/59b0c89)) (Benjamin Daniel)
+
+### release
+
+* V 1.7.1 ([9d2e720](https://github.com/neo9/n9-node-routing/commit/9d2e720)) (Benjamin Daniel)
 
 
 
