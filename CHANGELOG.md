@@ -1,5 +1,14 @@
+# Version [1.9.0](https://github.com/neo9/n9-node-routing/compare/1.8.0...1.9.0) (2018-10-26)
+
+
+
+
 # Version [1.8.0](https://github.com/neo9/n9-node-routing/compare/1.7.1...1.8.0) (2018-10-26)
 
+
+### release
+
+* V 1.8.0 ([89e8931](https://github.com/neo9/n9-node-routing/commit/89e8931)) (Benjamin Daniel)
 
 ### yarn
 
