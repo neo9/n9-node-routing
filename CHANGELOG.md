@@ -1,5 +1,18 @@
+## Version [1.8.1](https://github.com/neo9/n9-node-routing/compare/1.8.0...1.8.1) (2018-11-12)
+
+
+### yarn
+
+* Fix dependencies class-validator and upgrade for node v10 ([95179fe](https://github.com/neo9/n9-node-routing/commit/95179fe)) (Benjamin Daniel)
+
+
+
 # Version [1.8.0](https://github.com/neo9/n9-node-routing/compare/1.7.1...1.8.0) (2018-10-26)
 
+
+### release
+
+* V 1.8.0 ([a34696c](https://github.com/neo9/n9-node-routing/commit/a34696c)) (Benjamin Daniel)
 
 ### yarn
 
