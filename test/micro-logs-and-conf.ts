@@ -17,11 +17,11 @@ const MICRO_LOGS = join(__dirname, 'fixtures/micro-logs/');
 test('Basic usage, check logs', async (t: Assertions) => {
 	stdMock.use();
 	global.conf = {
-		someConfAttr: 'value'
+		someConfAttr: 'value',
 	};
 
 	const { app, server } = await routingControllerWrapper({
-		path: MICRO_LOGS
+		path: MICRO_LOGS,
 	});
 	// Check /foo route added on foo/foo.init.ts
 	const res = await rp({ uri: 'http://localhost:5000/bar', resolveWithFullResponse: true, json: true });
@@ -39,7 +39,8 @@ test('Basic usage, check logs', async (t: Assertions) => {
 	t.true(output.stdout[3].includes('] ('));
 	t.true(output.stdout[3].includes(')'));
 	t.true(output.stdout[4].includes('] ('));
-	t.is(output.stdout[4].match(/\([a-zA-Z0-9_\-]{7,14}\)/g).length, 1);
+	const matchLength = output.stdout[4].match(/\([a-zA-Z0-9_\-]{7,14}\)/g).length;
+	t.true(matchLength === 1);
 	t.true(output.stdout[4].includes('GET /bar'));
 	t.deepEqual(res.body, global.conf);
 	// Close server

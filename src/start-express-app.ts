@@ -1,4 +1,5 @@
 import { N9Error } from '@neo9/n9-node-utils';
+import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
 import { Request, Response } from 'express';
 import * as helmet from 'helmet';
@@ -47,7 +48,6 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 			});
 		} else {
 			return [
-				options.enableRequestId && res.statusMessage !== 'No Content' ? `(${req.headers['x-request-id']})` : '',
 				tokens.method(req, res),
 				tokens.url(req, res),
 				tokens.status(req, res),
@@ -76,7 +76,7 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 	options.http.routingController.validation = {
 		whitelist: true,
 		forbidNonWhitelisted: true,
-	};
+	} as ValidatorOptions;
 
 	// options.log.info(`-- start-express-app.ts options.http --`, JSON.stringify(options.http, null, 2));
 
