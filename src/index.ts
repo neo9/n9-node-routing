@@ -1,16 +1,15 @@
-import n9Log, { N9Log } from '@neo9/n9-node-log';
+import n9Log from '@neo9/n9-node-log';
 import * as appRootDir from 'app-root-dir';
-import { createNamespace } from 'continuation-local-storage';
 import { join } from 'path';
 // tslint:disable-next-line:no-import-side-effect
 import 'reflect-metadata';
 import { Container } from 'typedi';
 import initModules from './initialise-modules';
 import { N9NodeRouting } from './models/routing.models';
+import { registerSuhtdown } from './register-system-signals';
 import { requestIdFilter } from './requestid';
 import bindSpecificRoutes from './routes';
 import expressAppStarter from './start-express-app';
-import { waitFor } from '@neo9/n9-node-utils';
 import { N9HttpClient } from './utils/http-client-base';
 
 /* istanbul ignore next */
@@ -36,26 +35,29 @@ export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRo
 	options = options || {};
 	options.path = options.path || join(appRootDir.get(), 'src', 'modules');
 	options.log = options.log || global.log;
-	options.hasProxy = (typeof options.hasProxy === 'boolean' ? options.hasProxy : true);
-	options.enableRequestId = (typeof options.enableRequestId === 'boolean' ? options.enableRequestId : true);
-	options.enableLogFormatJSON = (typeof options.enableLogFormatJSON === 'boolean' ? options.enableLogFormatJSON : true);
+	options.hasProxy = typeof options.hasProxy === 'boolean' ? options.hasProxy : true;
+	options.enableRequestId = typeof options.enableRequestId === 'boolean' ? options.enableRequestId : true;
+	options.enableLogFormatJSON = typeof options.enableLogFormatJSON === 'boolean' ? options.enableLogFormatJSON : true;
+	options.shutdown = options.shutdown || {};
+	options.shutdown.enableGracefulShudown = typeof options.shutdown.enableGracefulShudown === 'boolean' ? options.shutdown.enableGracefulShudown : true;
+	options.shutdown.timeout = typeof options.shutdown.timeout === 'number' ? options.shutdown.timeout : 10 * 1000;
 
 	const formatLogInJSON = options.enableLogFormatJSON && process.env.NODE_ENV && process.env.NODE_ENV !== 'development';
 	global.n9NodeRoutingData = {
 		formatLogInJSON,
-		options
+		options,
 	};
 
 	if (global.log) {
 		global.log = n9Log(global.log.name, Object.assign({}, global.log.options, {
-			formatJSON: formatLogInJSON
+			formatJSON: formatLogInJSON,
 		}));
 	}
 
 	// If log if given, add a namespace
 	if (options.log) {
 		options.log = options.log.module('n9-node-routing', {
-			formatJSON: formatLogInJSON
+			formatJSON: formatLogInJSON,
 		});
 	} else {
 		options.log = n9Log('n9-node-routing', {
@@ -76,6 +78,11 @@ export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRo
 	await initModules(options.path, options.log);
 	const returnObject = await expressAppStarter(options);
 	await bindSpecificRoutes(returnObject.app, options);
+
+	// Manage SIGTERM & SIGINT
+	if (options.shutdown.enableGracefulShudown) {
+		registerSuhtdown(options.log, options.shutdown, returnObject.server);
+	}
 
 	return returnObject;
 }

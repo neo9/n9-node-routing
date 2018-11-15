@@ -16,6 +16,11 @@ export namespace N9NodeRouting {
 		afterRoutingControllerLaunchHook?: (app: Express, log: N9Log, options: Options) => Promise<void>;
 	}
 
+	export interface ShutdownOptions {
+		enableGracefulShudown?: boolean;
+		timeout?: number;
+	}
+
 	export interface JWTOptions {
 		headerKey?: string;
 		secret?: string;
@@ -31,6 +36,7 @@ export namespace N9NodeRouting {
 		http?: HttpOptions;
 		jwt?: JWTOptions;
 		openapi?: SwaggerOptions;
+		shutdown?: ShutdownOptions;
 	}
 
 	export interface SwaggerOptions {

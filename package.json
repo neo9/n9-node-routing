@@ -63,7 +63,7 @@
     "morgan": "1.8.1",
     "multer": "^1.3.0",
     "reflect-metadata": "^0.1.10",
-    "release-it": "^7.4.0",
+    "release-it": "7.4.8",
     "request": "^2.85.0",
     "routing-controllers": "^0.7.0",
     "routing-controllers-openapi": "^1.2.1",

@@ -345,10 +345,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.0.2.tgz#d056b68999769728a1cff8d643bc59eb6f0be436"
   integrity sha512-vCpf75JDcdomXvUd7Rn6DfYAVqPAFI66FVjxiWGwh85OLdvfo3paBoPJaam5keIYRyUolnS7SleS/ZPCidCvzw==
 
-"@octokit/rest@15.5.0":
-  version "15.5.0"
-  resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-15.5.0.tgz#91573c1bc8549d9a105c9c4931695d49e3b3c8d9"
-  integrity sha512-7+UQVYO3t2JRTo9UAIEwO4Gw7Zr+ClTzJnopICe0zsn5zWUGb6vMcVTA057j656gJdN3zPG1N0l4NpsZsZGPDw==
+"@octokit/rest@15.9.4":
+  version "15.9.4"
+  resolved "https://repo.neo9.pro/repository/npm-global/@octokit/rest/-/rest-15.9.4.tgz#c6cf0f483275d9c798b18419b7c9d417493bb70f"
+  integrity sha512-v3CS1qW4IjriMvGgm4lDnYFBJlkwvzIbTxiipOcwVP8xeK8ih2pJofRhk7enmLngTtNEa+sIApJNkXxyyDKqLg==
   dependencies:
     before-after-hook "^1.1.0"
     btoa-lite "^1.0.0"
@@ -1765,10 +1765,10 @@ chalk@^1.1.3:
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
 
-chardet@^0.4.0:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.4.2.tgz#b5473b33dc97c424e5d98dc87d55d4d8a29c8bf2"
-  integrity sha1-tUc7M9yXxCTl2Y3IfVXU2KKci/I=
+chardet@^0.7.0:
+  version "0.7.0"
+  resolved "https://repo.neo9.pro/repository/npm-global/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
+  integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
 
 chokidar@^2.0.1:
   version "2.0.3"
@@ -2113,6 +2113,13 @@ conventional-changelog-atom@^0.2.8:
   dependencies:
     q "^1.5.1"
 
+conventional-changelog-atom@^2.0.0:
+  version "2.0.1"
+  resolved "https://repo.neo9.pro/repository/npm-global/conventional-changelog-atom/-/conventional-changelog-atom-2.0.1.tgz#dc88ce650ffa9ceace805cbe70f88bfd0cb2c13a"
+  integrity sha512-9BniJa4gLwL20Sm7HWSNXd0gd9c5qo49gCi8nylLFpqAHhkFTj7NQfROq3f1VpffRtzfTQp4VKU5nxbe2v+eZQ==
+  dependencies:
+    q "^1.5.1"
+
 conventional-changelog-cli@^1.3.21:
   version "1.3.22"
   resolved "https://registry.yarnpkg.com/conventional-changelog-cli/-/conventional-changelog-cli-1.3.22.tgz#13570fe1728f56f013ff7a88878ff49d5162a405"
@@ -2128,6 +2135,13 @@ conventional-changelog-codemirror@^0.3.8:
   version "0.3.8"
   resolved "https://registry.yarnpkg.com/conventional-changelog-codemirror/-/conventional-changelog-codemirror-0.3.8.tgz#a1982c8291f4ee4d6f2f62817c6b2ecd2c4b7b47"
   integrity sha512-3HFZKtBXTaUCHvz7ai6nk2+psRIkldDoNzCsom0egDtVmPsvvHZkzjynhdQyULfacRSsBTaiQ0ol6nBOL4dDiQ==
+  dependencies:
+    q "^1.5.1"
+
+conventional-changelog-codemirror@^2.0.0:
+  version "2.0.1"
+  resolved "https://repo.neo9.pro/repository/npm-global/conventional-changelog-codemirror/-/conventional-changelog-codemirror-2.0.1.tgz#acc046bc0971460939a0cc2d390e5eafc5eb30da"
+  integrity sha512-23kT5IZWa+oNoUaDUzVXMYn60MCdOygTA2I+UjnOMiYVhZgmVwNd6ri/yDlmQGXHqbKhNR5NoXdBzSOSGxsgIQ==
   dependencies:
     q "^1.5.1"
 
@@ -2150,10 +2164,36 @@ conventional-changelog-core@^2.0.11:
     read-pkg-up "^1.0.1"
     through2 "^2.0.0"
 
+conventional-changelog-core@^3.0.0:
+  version "3.1.5"
+  resolved "https://repo.neo9.pro/repository/npm-global/conventional-changelog-core/-/conventional-changelog-core-3.1.5.tgz#c2edf928539308b54fe1b90a2fc731abc021852c"
+  integrity sha512-iwqAotS4zk0wA4S84YY1JCUG7X3LxaRjJxuUo6GI4dZuIy243j5nOg/Ora35ExT4DOiw5dQbMMQvw2SUjh6moQ==
+  dependencies:
+    conventional-changelog-writer "^4.0.2"
+    conventional-commits-parser "^3.0.1"
+    dateformat "^3.0.0"
+    get-pkg-repo "^1.0.0"
+    git-raw-commits "2.0.0"
+    git-remote-origin-url "^2.0.0"
+    git-semver-tags "^2.0.2"
+    lodash "^4.2.1"
+    normalize-package-data "^2.3.5"
+    q "^1.5.1"
+    read-pkg "^3.0.0"
+    read-pkg-up "^3.0.0"
+    through2 "^2.0.0"
+
 conventional-changelog-ember@^0.3.12:
   version "0.3.12"
   resolved "https://registry.yarnpkg.com/conventional-changelog-ember/-/conventional-changelog-ember-0.3.12.tgz#b7d31851756d0fcb49b031dffeb6afa93b202400"
   integrity sha512-mmJzA7uzbrOqeF89dMMi6z17O07ORTXlTMArnLG9ZTX4oLaKNolUlxFUFlFm9JUoVWajVpaHQWjxH1EOQ+ARoQ==
+  dependencies:
+    q "^1.5.1"
+
+conventional-changelog-ember@^2.0.0:
+  version "2.0.2"
+  resolved "https://repo.neo9.pro/repository/npm-global/conventional-changelog-ember/-/conventional-changelog-ember-2.0.2.tgz#284ffdea8c83ea8c210b65c5b4eb3e5cc0f4f51a"
+  integrity sha512-qtZbA3XefO/n6DDmkYywDYi6wDKNNc98MMl2F9PKSaheJ25Trpi3336W8fDlBhq0X+EJRuseceAdKLEMmuX2tg==
   dependencies:
     q "^1.5.1"
 
@@ -2164,10 +2204,24 @@ conventional-changelog-eslint@^1.0.9:
   dependencies:
     q "^1.5.1"
 
+conventional-changelog-eslint@^3.0.0:
+  version "3.0.1"
+  resolved "https://repo.neo9.pro/repository/npm-global/conventional-changelog-eslint/-/conventional-changelog-eslint-3.0.1.tgz#f65e0e7f63dc09c044244b8785313a602e628002"
+  integrity sha512-yH3+bYrtvgKxSFChUBQnKNh9/U9kN2JElYBm253VpYs5wXhPHVc9ENcuVGWijh24nnOkei7wEJmnmUzgZ4ok+A==
+  dependencies:
+    q "^1.5.1"
+
 conventional-changelog-express@^0.3.6:
   version "0.3.6"
   resolved "https://registry.yarnpkg.com/conventional-changelog-express/-/conventional-changelog-express-0.3.6.tgz#4a6295cb11785059fb09202180d0e59c358b9c2c"
   integrity sha512-3iWVtBJZ9RnRnZveNDzOD8QRn6g6vUif0qVTWWyi5nUIAbuN1FfPVyKdAlJJfp5Im+dE8Kiy/d2SpaX/0X678Q==
+  dependencies:
+    q "^1.5.1"
+
+conventional-changelog-express@^2.0.0:
+  version "2.0.1"
+  resolved "https://repo.neo9.pro/repository/npm-global/conventional-changelog-express/-/conventional-changelog-express-2.0.1.tgz#fea2231d99a5381b4e6badb0c1c40a41fcacb755"
+  integrity sha512-G6uCuCaQhLxdb4eEfAIHpcfcJ2+ao3hJkbLrw/jSK/eROeNfnxCJasaWdDAfFkxsbpzvQT4W01iSynU3OoPLIw==
   dependencies:
     q "^1.5.1"
 
@@ -2193,10 +2247,23 @@ conventional-changelog-jshint@^0.3.8:
     compare-func "^1.3.1"
     q "^1.5.1"
 
+conventional-changelog-jshint@^2.0.0:
+  version "2.0.1"
+  resolved "https://repo.neo9.pro/repository/npm-global/conventional-changelog-jshint/-/conventional-changelog-jshint-2.0.1.tgz#11c0e8283abf156a4ff78e89be6fdedf9bd72202"
+  integrity sha512-kRFJsCOZzPFm2tzRHULWP4tauGMvccOlXYf3zGeuSW4U0mZhk5NsjnRZ7xFWrTFPlCLV+PNmHMuXp5atdoZmEg==
+  dependencies:
+    compare-func "^1.3.1"
+    q "^1.5.1"
+
 conventional-changelog-preset-loader@^1.1.8:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/conventional-changelog-preset-loader/-/conventional-changelog-preset-loader-1.1.8.tgz#40bb0f142cd27d16839ec6c74ee8db418099b373"
   integrity sha512-MkksM4G4YdrMlT2MbTsV2F6LXu/hZR0Tc/yenRrDIKRwBl/SP7ER4ZDlglqJsCzLJi4UonBc52Bkm5hzrOVCcw==
+
+conventional-changelog-preset-loader@^2.0.0:
+  version "2.0.2"
+  resolved "https://repo.neo9.pro/repository/npm-global/conventional-changelog-preset-loader/-/conventional-changelog-preset-loader-2.0.2.tgz#81d1a07523913f3d17da3a49f0091f967ad345b0"
+  integrity sha512-pBY+qnUoJPXAXXqVGwQaVmcye05xi6z231QM98wHWamGAmu/ghkBprQAwmF5bdmyobdVxiLhPY3PrCfSeUNzRQ==
 
 conventional-changelog-writer@^3.0.9:
   version "3.0.9"
@@ -2214,7 +2281,40 @@ conventional-changelog-writer@^3.0.9:
     split "^1.0.0"
     through2 "^2.0.0"
 
-conventional-changelog@1.1.24, conventional-changelog@^1.1.24:
+conventional-changelog-writer@^4.0.2:
+  version "4.0.2"
+  resolved "https://repo.neo9.pro/repository/npm-global/conventional-changelog-writer/-/conventional-changelog-writer-4.0.2.tgz#eb493ed84269e7a663da36e49af51c54639c9a67"
+  integrity sha512-d8/FQY/fix2xXEBUhOo8u3DCbyEw3UOQgYHxLsPDw+wHUDma/GQGAGsGtoH876WyNs32fViHmTOUrgRKVLvBug==
+  dependencies:
+    compare-func "^1.3.1"
+    conventional-commits-filter "^2.0.1"
+    dateformat "^3.0.0"
+    handlebars "^4.0.2"
+    json-stringify-safe "^5.0.1"
+    lodash "^4.2.1"
+    meow "^4.0.0"
+    semver "^5.5.0"
+    split "^1.0.0"
+    through2 "^2.0.0"
+
+conventional-changelog@2.0.1:
+  version "2.0.1"
+  resolved "https://repo.neo9.pro/repository/npm-global/conventional-changelog/-/conventional-changelog-2.0.1.tgz#0d8f0f9668eaeaa5edd612896e7f3cc4385b31c9"
+  integrity sha512-WeWcEcR7uBtRZ/uG6DRIlVqsm7UTnxrixaAPoPvfQP7FRPf1qIXL76nGKy4wXq+wO3zOpqYubWUqrYLIL3+xww==
+  dependencies:
+    conventional-changelog-angular "^1.6.6"
+    conventional-changelog-atom "^2.0.0"
+    conventional-changelog-codemirror "^2.0.0"
+    conventional-changelog-core "^3.0.0"
+    conventional-changelog-ember "^2.0.0"
+    conventional-changelog-eslint "^3.0.0"
+    conventional-changelog-express "^2.0.0"
+    conventional-changelog-jquery "^0.1.0"
+    conventional-changelog-jscs "^0.1.0"
+    conventional-changelog-jshint "^2.0.0"
+    conventional-changelog-preset-loader "^2.0.0"
+
+conventional-changelog@^1.1.24:
   version "1.1.24"
   resolved "https://registry.yarnpkg.com/conventional-changelog/-/conventional-changelog-1.1.24.tgz#3d94c29c960f5261c002678315b756cdd3d7d1f0"
   integrity sha512-2WcSUst4Y3Z4hHvoMTWXMJr/DmgVdLiMOVY1Kak2LfFz+GIz2KDp5naqbFesYbfXPmaZ5p491dO0FWZIJoJw1Q==
@@ -2239,6 +2339,14 @@ conventional-commits-filter@^1.1.6:
     is-subset "^0.1.1"
     modify-values "^1.0.0"
 
+conventional-commits-filter@^2.0.0, conventional-commits-filter@^2.0.1:
+  version "2.0.1"
+  resolved "https://repo.neo9.pro/repository/npm-global/conventional-commits-filter/-/conventional-commits-filter-2.0.1.tgz#55a135de1802f6510b6758e0a6aa9e0b28618db3"
+  integrity sha512-92OU8pz/977udhBjgPEbg3sbYzIxMDFTlQT97w7KdhR9igNqdJvy8smmedAAgn4tPiqseFloKkrVfbXCVd+E7A==
+  dependencies:
+    is-subset "^0.1.1"
+    modify-values "^1.0.0"
+
 conventional-commits-parser@^2.1.7:
   version "2.1.7"
   resolved "https://registry.yarnpkg.com/conventional-commits-parser/-/conventional-commits-parser-2.1.7.tgz#eca45ed6140d72ba9722ee4132674d639e644e8e"
@@ -2252,17 +2360,30 @@ conventional-commits-parser@^2.1.7:
     through2 "^2.0.0"
     trim-off-newlines "^1.0.0"
 
-conventional-recommended-bump@2.0.9:
-  version "2.0.9"
-  resolved "https://registry.yarnpkg.com/conventional-recommended-bump/-/conventional-recommended-bump-2.0.9.tgz#7392421e7d0e3515f3df2040572a23cc73a68a93"
-  integrity sha512-YE6/o+648qkX3fTNvfBsvPW3tSnbZ6ec3gF0aBahCPgyoVHU2Mw0nUAZ1h1UN65GazpORngrgRC8QCltNYHPpQ==
+conventional-commits-parser@^3.0.0, conventional-commits-parser@^3.0.1:
+  version "3.0.1"
+  resolved "https://repo.neo9.pro/repository/npm-global/conventional-commits-parser/-/conventional-commits-parser-3.0.1.tgz#fe1c49753df3f98edb2285a5e485e11ffa7f2e4c"
+  integrity sha512-P6U5UOvDeidUJ8ebHVDIoXzI7gMlQ1OF/id6oUvp8cnZvOXMt1n8nYl74Ey9YMn0uVQtxmCtjPQawpsssBWtGg==
+  dependencies:
+    JSONStream "^1.0.4"
+    is-text-path "^1.0.0"
+    lodash "^4.2.1"
+    meow "^4.0.0"
+    split2 "^2.0.0"
+    through2 "^2.0.0"
+    trim-off-newlines "^1.0.0"
+
+conventional-recommended-bump@4.0.0:
+  version "4.0.0"
+  resolved "https://repo.neo9.pro/repository/npm-global/conventional-recommended-bump/-/conventional-recommended-bump-4.0.0.tgz#017dd469a0dcbd9c23d26da59157977d625d3120"
+  integrity sha512-M86ppH/4pZFemudSeFRF0JNGrNuSJ9hHvwTIV0M51VXrzIBqFKt8IeuMhd3YdWqHQC6NrbNdLkOh8XVHUH0NVA==
   dependencies:
     concat-stream "^1.6.0"
-    conventional-changelog-preset-loader "^1.1.8"
-    conventional-commits-filter "^1.1.6"
-    conventional-commits-parser "^2.1.7"
-    git-raw-commits "^1.3.6"
-    git-semver-tags "^1.3.6"
+    conventional-changelog-preset-loader "^2.0.0"
+    conventional-commits-filter "^2.0.0"
+    conventional-commits-parser "^3.0.0"
+    git-raw-commits "^2.0.0"
+    git-semver-tags "^2.0.0"
     meow "^4.0.0"
     q "^1.5.1"
 
@@ -2329,10 +2450,10 @@ cp-file@^6.0.0:
     pify "^3.0.0"
     safe-buffer "^5.0.1"
 
-cpy@7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/cpy/-/cpy-7.0.0.tgz#00d0265efa29b2b0f5f8b7aec95590692fe624e0"
-  integrity sha512-TrCxDbSjKZyz/jgmelcIh3meeSiiwzb561m3pYEDnzkAN4J6OijAt8cL1j3vvHG4ER/HgM4YMHKb5kyR5y5Hqw==
+cpy@7.0.1:
+  version "7.0.1"
+  resolved "https://repo.neo9.pro/repository/npm-global/cpy/-/cpy-7.0.1.tgz#d817e4d81bd7f0f25ff812796c5f1392dc0fb485"
+  integrity sha512-Zo52tXKLJcgy/baacn6KaNoRAakkl2wb+R4u6qJ4wlD0uchncwRQcIk66PlGlkzuToCJO6A6PWX27Tdwc8LU2g==
   dependencies:
     arrify "^1.0.1"
     cp-file "^6.0.0"
@@ -2848,13 +2969,13 @@ extend@~3.0.2:
   resolved "https://repo.neo9.pro/repository/npm-global/extend/-/extend-3.0.2.tgz#f8b1136b4071fbd8eb140aff858b1019ec2915fa"
   integrity sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==
 
-external-editor@^2.1.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/external-editor/-/external-editor-2.2.0.tgz#045511cfd8d133f3846673d1047c154e214ad3d5"
-  integrity sha512-bSn6gvGxKt+b7+6TKEv1ZycHleA7aHhRHyAqJyp5pbUFuYYNIzpZnQDk7AsYckyWdEnTeAnay0aCy2aV6iTk9A==
+external-editor@^3.0.0:
+  version "3.0.3"
+  resolved "https://repo.neo9.pro/repository/npm-global/external-editor/-/external-editor-3.0.3.tgz#5866db29a97826dbe4bf3afd24070ead9ea43a27"
+  integrity sha512-bn71H9+qWoOQKyZDo25mOMVpSmXROAsTJVVVYzrrtol3d4y+AsKjf4Iwl2Q+IuT0kFSQ1qo166UuIwqYq7mGnA==
   dependencies:
-    chardet "^0.4.0"
-    iconv-lite "^0.4.17"
+    chardet "^0.7.0"
+    iconv-lite "^0.4.24"
     tmp "^0.0.33"
 
 extglob@^0.3.1:
@@ -3151,6 +3272,17 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
+git-raw-commits@2.0.0, git-raw-commits@^2.0.0:
+  version "2.0.0"
+  resolved "https://repo.neo9.pro/repository/npm-global/git-raw-commits/-/git-raw-commits-2.0.0.tgz#d92addf74440c14bcc5c83ecce3fb7f8a79118b5"
+  integrity sha512-w4jFEJFgKXMQJ0H0ikBk2S+4KP2VEjhCvLCNqbNRQC8BgGWgLKNCO7a9K9LI+TVT7Gfoloje502sEnctibffgg==
+  dependencies:
+    dargs "^4.0.1"
+    lodash.template "^4.0.2"
+    meow "^4.0.0"
+    split2 "^2.0.0"
+    through2 "^2.0.0"
+
 git-raw-commits@^1.3.6:
   version "1.3.6"
   resolved "https://registry.yarnpkg.com/git-raw-commits/-/git-raw-commits-1.3.6.tgz#27c35a32a67777c1ecd412a239a6c19d71b95aff"
@@ -3174,6 +3306,14 @@ git-semver-tags@^1.3.6:
   version "1.3.6"
   resolved "https://registry.yarnpkg.com/git-semver-tags/-/git-semver-tags-1.3.6.tgz#357ea01f7280794fe0927f2806bee6414d2caba5"
   integrity sha512-2jHlJnln4D/ECk9FxGEBh3k44wgYdWjWDtMmJPaecjoRmxKo3Y1Lh8GMYuOPu04CHw86NTAODchYjC5pnpMQig==
+  dependencies:
+    meow "^4.0.0"
+    semver "^5.5.0"
+
+git-semver-tags@^2.0.0, git-semver-tags@^2.0.2:
+  version "2.0.2"
+  resolved "https://repo.neo9.pro/repository/npm-global/git-semver-tags/-/git-semver-tags-2.0.2.tgz#f506ec07caade191ac0c8d5a21bdb8131b4934e3"
+  integrity sha512-34lMF7Yo1xEmsK2EkbArdoU79umpvm0MfzaDkSNYSJqtM5QLAVTPWgpiXSVI5o/O9EvZPSrP4Zvnec/CqhSd5w==
   dependencies:
     meow "^4.0.0"
     semver "^5.5.0"
@@ -3286,10 +3426,10 @@ globby@^7.1.1:
     pify "^3.0.0"
     slash "^1.0.0"
 
-got@8.3.1:
-  version "8.3.1"
-  resolved "https://registry.yarnpkg.com/got/-/got-8.3.1.tgz#093324403d4d955f5a16a7a8d39955d055ae10ed"
-  integrity sha512-tiLX+bnYm5A56T5N/n9Xo89vMaO1mrS9qoDqj3u/anVooqGozvY/HbXzEpDfbNeKsHCBpK40gSbz8wGYSp3i1w==
+got@8.3.2:
+  version "8.3.2"
+  resolved "https://repo.neo9.pro/repository/npm-global/got/-/got-8.3.2.tgz#1d23f64390e97f776cac52e5b936e5f514d2e937"
+  integrity sha512-qjUJ5U/hawxosMryILofZCkm3C84PLJS/0grRIpjAwu+Lkxxj5cxeCU25BG0/3mDSpXKTyZr8oh8wIgLaH0QCw==
   dependencies:
     "@sindresorhus/is" "^0.7.0"
     cacheable-request "^2.1.1"
@@ -3561,14 +3701,14 @@ hullabaloo-config-manager@^2.0.0-beta.3:
     pkg-dir "^2.0.0"
     resolve-from "^4.0.0"
 
-iconv-lite@0.4.23, iconv-lite@^0.4.17:
+iconv-lite@0.4.23:
   version "0.4.23"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.23.tgz#297871f63be507adcfbfca715d0cd0eed84e9a63"
   integrity sha512-neyTUVFtahjf0mB3dZT77u+8O0QB89jFdnBkd5P1JgYPbPaia3gXXOVL2fq8VyU2gMMD7SaN7QukTB/pmXYvDA==
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
 
-iconv-lite@^0.4.4:
+iconv-lite@^0.4.24, iconv-lite@^0.4.4:
   version "0.4.24"
   resolved "https://repo.neo9.pro/repository/npm-global/iconv-lite/-/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
   integrity sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==
@@ -3645,21 +3785,21 @@ ini@^1.3.2, ini@^1.3.4, ini@~1.3.0:
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
   integrity sha512-RZY5huIKCMRWDUqZlEi72f/lmXKMvuszcMBduliQ3nnWbx9X/ZBQO7DijMEYS9EhHBb2qacRUMtC7svLwe0lcw==
 
-inquirer@5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-5.2.0.tgz#db350c2b73daca77ff1243962e9f22f099685726"
-  integrity sha512-E9BmnJbAKLPGonz0HeWHtbKf+EeSP93paWO3ZYoUpq/aowXvYGjjCSuashhXPpzbArIjBbji39THkxTz9ZeEUQ==
+inquirer@6.0.0:
+  version "6.0.0"
+  resolved "https://repo.neo9.pro/repository/npm-global/inquirer/-/inquirer-6.0.0.tgz#e8c20303ddc15bbfc2c12a6213710ccd9e1413d8"
+  integrity sha512-tISQWRwtcAgrz+SHPhTH7d3e73k31gsOy6i1csonLc0u1dVK/wYvuOnFeiWqC5OXFIYbmrIFInef31wbT8MEJg==
   dependencies:
     ansi-escapes "^3.0.0"
     chalk "^2.0.0"
     cli-cursor "^2.1.0"
     cli-width "^2.0.0"
-    external-editor "^2.1.0"
+    external-editor "^3.0.0"
     figures "^2.0.0"
     lodash "^4.3.0"
     mute-stream "0.0.7"
     run-async "^2.2.0"
-    rxjs "^5.5.2"
+    rxjs "^6.1.0"
     string-width "^2.1.0"
     strip-ansi "^4.0.0"
     through "^2.3.6"
@@ -4606,22 +4746,22 @@ micromatch@^3.1.10, micromatch@^3.1.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.2"
 
-mime-db@~1.33.0:
-  version "1.33.0"
-  resolved "https://repo.neo9.pro/repository/npm-global/mime-db/-/mime-db-1.33.0.tgz#a3492050a5cb9b63450541e39d9788d2272783db"
-  integrity sha512-BHJ/EKruNIqJf/QahvxwQZXKygOQ256myeN/Ew+THcAa5q+PjyTTMMeNQC4DZw5AwfvelsUrA6B67NKMqXDbzQ==
+mime-db@~1.35.0:
+  version "1.35.0"
+  resolved "https://repo.neo9.pro/repository/npm-global/mime-db/-/mime-db-1.35.0.tgz#0569d657466491283709663ad379a99b90d9ab47"
+  integrity sha512-JWT/IcCTsB0Io3AhWUMjRqucrHSPsSf2xKLaRldJVULioggvkJvggZ3VXNNSRkCddE6D+BUI4HEIZIA2OjwIvg==
 
 mime-db@~1.37.0:
   version "1.37.0"
   resolved "https://repo.neo9.pro/repository/npm-global/mime-db/-/mime-db-1.37.0.tgz#0b6a0ce6fdbe9576e25f1f2d2fde8830dc0ad0d8"
   integrity sha512-R3C4db6bgQhlIhPU48fUtdVmKnflq+hRdad7IyKhtFj06VPNVdk2RhiYL3UjQIlso8L+YxAtFkobT0VK+S/ybg==
 
-mime-types@2.1.18:
-  version "2.1.18"
-  resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.18.tgz#6f323f60a83d11146f831ff11fd66e2fe5503bb8"
-  integrity sha512-lc/aahn+t4/SWV/qcmumYjymLsWfN3ELhpmVuUFjgsORruuZPVSwAQryq+HHGvO/SI2KVX26bx+En+zhM8g8hQ==
+mime-types@2.1.19:
+  version "2.1.19"
+  resolved "https://repo.neo9.pro/repository/npm-global/mime-types/-/mime-types-2.1.19.tgz#71e464537a7ef81c15f2db9d97e913fc0ff606f0"
+  integrity sha512-P1tKYHVSZ6uFo26mtnve4HQFE3koh1UWVkp8YUC+ESBHe945xWSoXuHHiGarDqcEZ+whpCDnlNw5LON0kLo+sw==
   dependencies:
-    mime-db "~1.33.0"
+    mime-db "~1.35.0"
 
 mime-types@^2.1.12, mime-types@~2.1.18, mime-types@~2.1.19:
   version "2.1.21"
@@ -5062,10 +5202,10 @@ optimist@^0.6.1:
     minimist "~0.0.1"
     wordwrap "~0.0.2"
 
-ora@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/ora/-/ora-2.1.0.tgz#6caf2830eb924941861ec53a173799e008b51e5b"
-  integrity sha512-hNNlAd3gfv/iPmsNxYoAPLvxg7HuPozww7fFonMZvL84tP6Ox5igfk5j/+a9rtJJwqMgKK+JgWsAQik5o0HTLA==
+ora@3.0.0:
+  version "3.0.0"
+  resolved "https://repo.neo9.pro/repository/npm-global/ora/-/ora-3.0.0.tgz#8179e3525b9aafd99242d63cc206fd64732741d0"
+  integrity sha512-LBS97LFe2RV6GJmXBi6OKcETKyklHNMV0xw7BtsVn2MlsgsydyZetSCbCANr+PFLmDyv4KV88nn0eCKza665Mg==
   dependencies:
     chalk "^2.3.1"
     cli-cursor "^2.1.0"
@@ -5767,38 +5907,38 @@ regjsparser@^0.2.1:
   dependencies:
     jsesc "~0.5.0"
 
-release-it@^7.4.0:
-  version "7.4.5"
-  resolved "https://registry.yarnpkg.com/release-it/-/release-it-7.4.5.tgz#cea34bed06622027e6ba50864511a56e925b9e82"
-  integrity sha512-pYTXgIMsxaLETlNMPbHZplce7TZ2MtB+9xGtFh3ynQfu+aybxwFZCe3sSCtL7pz3YN/+a/qQV3LN1HmLNutOYQ==
+release-it@7.4.8:
+  version "7.4.8"
+  resolved "https://repo.neo9.pro/repository/npm-global/release-it/-/release-it-7.4.8.tgz#2b5d8b89c17b4690934d671849643893129d146d"
+  integrity sha512-NuRe6oTFsm26KC9xHWziDl+NtSSnmiy4bdBPOUYNKgYefM13a7+o+BDVOSMvm4SSl5Ek7e1ORraQf9z7YnEjHw==
   dependencies:
-    "@octokit/rest" "15.5.0"
+    "@octokit/rest" "15.9.4"
     async-retry "1.2.1"
     babel-preset-env "1.7.0"
     babel-register "6.26.0"
     bump-file "1.0.0"
     chalk "2.4.1"
-    conventional-changelog "1.1.24"
-    conventional-recommended-bump "2.0.9"
-    cpy "7.0.0"
+    conventional-changelog "2.0.1"
+    conventional-recommended-bump "4.0.0"
+    cpy "7.0.1"
     debug "3.1.0"
     globby "8.0.1"
-    got "8.3.1"
-    inquirer "5.2.0"
+    got "8.3.2"
+    inquirer "6.0.0"
     is-ci "1.1.0"
     lodash "4.17.10"
-    mime-types "2.1.18"
-    ora "2.1.0"
+    mime-types "2.1.19"
+    ora "3.0.0"
     os-name "2.0.1"
     parse-repo "1.0.4"
     semver "5.5.0"
     shelljs "0.8.2"
     supports-color "5.4.0"
-    tmp-promise "1.0.4"
+    tmp-promise "1.0.5"
     update-notifier "2.5.0"
-    uuid "3.2.1"
+    uuid "3.3.2"
     window-size "1.1.0"
-    yargs-parser "10.0.0"
+    yargs-parser "10.1.0"
 
 release-zalgo@^1.0.0:
   version "1.0.0"
@@ -5998,12 +6138,12 @@ run-async@^2.2.0:
   dependencies:
     is-promise "^2.1.0"
 
-rxjs@^5.5.2:
-  version "5.5.10"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.5.10.tgz#fde02d7a614f6c8683d0d1957827f492e09db045"
-  integrity sha512-SRjimIDUHJkon+2hFo7xnvNC4ZEHGzCRwh9P7nzX3zPkCGFEg/tuElrNR7L/rZMagnK2JeH2jQwPRpmyXyLB6A==
+rxjs@^6.1.0:
+  version "6.3.3"
+  resolved "https://repo.neo9.pro/repository/npm-global/rxjs/-/rxjs-6.3.3.tgz#3c6a7fa420e844a81390fb1158a9ec614f4bad55"
+  integrity sha512-JTWmoY9tWCs7zvIk/CvRjhjGaOd+OVBM987mxFo+OW66cGpdKjZcpmc74ES1sB//7Kl/PAe8+wEakuhG4pcgOw==
   dependencies:
-    symbol-observable "1.0.1"
+    tslib "^1.9.0"
 
 safe-buffer@5.1.2, safe-buffer@^5.0.1, safe-buffer@^5.1.1, safe-buffer@^5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
@@ -6527,11 +6667,6 @@ swagger-ui-express@^3.0.8:
   resolved "https://repo.neo9.pro/repository/npm-global/swagger-ui-express/-/swagger-ui-express-3.0.10.tgz#c72b32107a57a47913f3b46003e8fd62a7378ea2"
   integrity sha1-xysyEHpXpHkT87RgA+j9Yqc3jqI=
 
-symbol-observable@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.0.1.tgz#8340fc4702c3122df5d22288f88283f513d3fdd4"
-  integrity sha1-g0D8RwLDEi310iKI+IKD9RPT/dQ=
-
 symbol-observable@^0.2.2:
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-0.2.4.tgz#95a83db26186d6af7e7a18dbd9760a2f86d08f40"
@@ -6619,10 +6754,10 @@ timed-out@^4.0.0, timed-out@^4.0.1:
   resolved "https://registry.yarnpkg.com/timed-out/-/timed-out-4.0.1.tgz#f32eacac5a175bea25d7fab565ab3ed8741ef56f"
   integrity sha1-8y6srFoXW+ol1/q1Zas+2HQe9W8=
 
-tmp-promise@1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/tmp-promise/-/tmp-promise-1.0.4.tgz#cfe2131b78392992e756d8692a059dc4b48be7ac"
-  integrity sha512-76r7LZhAvRJ3kLD/xrPSEGb3aq0tirzMLJKhcchKSkQIiEgXB+RouC0ygReuZX+oiA64taGo+j+1gHTKSG8/Mg==
+tmp-promise@1.0.5:
+  version "1.0.5"
+  resolved "https://repo.neo9.pro/repository/npm-global/tmp-promise/-/tmp-promise-1.0.5.tgz#3208d7fa44758f86a2a4c4060f3c33fea30e8038"
+  integrity sha512-hOabTz9Tp49wCozFwuJe5ISrOqkECm6kzw66XTP23DuzNU7QS/KiZq5LC9Y7QSy8f1rPSLy4bKaViP0OwGI1cA==
   dependencies:
     bluebird "^3.5.0"
     tmp "0.0.33"
@@ -6725,7 +6860,7 @@ ts-node@^5.0.1:
     source-map-support "^0.5.3"
     yn "^2.0.0"
 
-tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.3:
+tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
   version "1.9.3"
   resolved "https://repo.neo9.pro/repository/npm-global/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
   integrity sha512-4krF8scpejhaOgqzBEcGM7yDIEfi0/8+8zDRZhNZZ2kjmHJ4hv3zCbQWxoJGz1iw5U0Jl0nma13xzHXcncMavQ==
@@ -6974,20 +7109,15 @@ utils-merge@1.0.1:
   resolved "https://repo.neo9.pro/repository/npm-global/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
 
-uuid@3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
-  integrity sha512-jZnMwlb9Iku/O3smGWvZhauCf6cvvpKi4BKRiliS3cxnI+Gz9j5MEpTz2UFuXiKPJocb7gnsLHwiS05ige5BEA==
+uuid@3.3.2, uuid@^3.3.2:
+  version "3.3.2"
+  resolved "https://repo.neo9.pro/repository/npm-global/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
+  integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
 
 uuid@^2.0.1:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
   integrity sha1-Z+LoY3lyFVMN/zGOW/nc6/1Hsho=
-
-uuid@^3.3.2:
-  version "3.3.2"
-  resolved "https://repo.neo9.pro/repository/npm-global/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
-  integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
 
 validate-npm-package-license@^3.0.1:
   version "3.0.4"
@@ -7182,10 +7312,10 @@ yallist@^3.0.0, yallist@^3.0.2:
   resolved "https://repo.neo9.pro/repository/npm-global/yallist/-/yallist-3.0.2.tgz#8452b4bb7e83c7c188d8041c1a837c773d6d8bb9"
   integrity sha1-hFK0u36Dx8GI2AQcGoN8dz1ti7k=
 
-yargs-parser@10.0.0:
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-10.0.0.tgz#c737c93de2567657750cb1f2c00be639fd19c994"
-  integrity sha512-+DHejWujTVYeMHLff8U96rLc4uE4Emncoftvn5AjhB1Jw1pWxLzgBUT/WYbPrHmy6YPEBTZQx5myHhVcuuu64g==
+yargs-parser@10.1.0:
+  version "10.1.0"
+  resolved "https://repo.neo9.pro/repository/npm-global/yargs-parser/-/yargs-parser-10.1.0.tgz#7202265b89f7e9e9f2e5765e0fe735a905edbaa8"
+  integrity sha512-VCIyR1wJoEBZUqk5PA+oOBF6ypbwh5aNB3I50guxAL/quggdfs4TtNHQrSazFA3fYZ+tEqfs0zIGlv0c/rgjbQ==
   dependencies:
     camelcase "^4.1.0"
 
