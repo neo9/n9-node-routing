@@ -3,6 +3,11 @@ import { Server } from 'http';
 import { N9NodeRouting } from './models/routing.models';
 
 function shutdown(logger: N9Log, shutdownOptions: N9NodeRouting.ShutdownOptions, server: Server): void {
+	setTimeout(() => {
+		logger.error('shudown-timeout');
+		process.exit(1);
+	}, shutdownOptions.timeout);
+
 	server.close(async (error) => {
 		if (error) {
 			logger.error('can-not-shutdown-gracefully', { error });
@@ -20,10 +25,7 @@ function shutdown(logger: N9Log, shutdownOptions: N9NodeRouting.ShutdownOptions,
 			logger.debug('End closing db connections');
 		}
 
-		setTimeout(() => {
-			logger.error('shudown-timeout');
-			process.exit(1);
-		});
+		logger.info(`Shudown SUCCESS`);
 	});
 }
 
