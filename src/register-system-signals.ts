@@ -26,6 +26,7 @@ function shutdown(logger: N9Log, shutdownOptions: N9NodeRouting.ShutdownOptions,
 		}
 
 		logger.info(`Shudown SUCCESS`);
+		process.exit(0);
 	});
 }
 
