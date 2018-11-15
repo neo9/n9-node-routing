@@ -1,5 +1,18 @@
+## Version [1.9.1](https://github.com/neo9/n9-node-routing/compare/1.9.0...1.9.1) (2018-11-15)
+
+
+### shutdown
+
+* Add graceful shutdown for nodemon ([f1816d8](https://github.com/neo9/n9-node-routing/commit/f1816d8)) (Benjamin Daniel)
+
+
+
 # Version [1.9.0](https://github.com/neo9/n9-node-routing/compare/1.8.1...1.9.0) (2018-11-15)
 
+
+### release
+
+* V 1.9.0 ([442f25f](https://github.com/neo9/n9-node-routing/commit/442f25f)) (Benjamin Daniel)
 
 ### shutdown
 
