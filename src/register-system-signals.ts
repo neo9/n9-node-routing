@@ -37,4 +37,9 @@ export function registerSuhtdown(logger: N9Log, shutdownOptions: N9NodeRouting.S
 		logger.info('Got SIGINT. Graceful shutdown start');
 		shutdown(logger, shutdownOptions, server);
 	});
+
+	process.on('SIGUSR2', () => {
+		logger.info('Got SIGUSR2 (nodemon). Graceful shutdown start');
+		shutdown(logger, shutdownOptions, server);
+	});
 }
