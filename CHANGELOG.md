@@ -1,5 +1,18 @@
+## Version [1.9.2](https://github.com/neo9/n9-node-routing/compare/1.9.1...1.9.2) (2018-11-15)
+
+
+### shutdown
+
+* Fix graceful shutdown timeout ([3376343](https://github.com/neo9/n9-node-routing/commit/3376343)) (Benjamin Daniel)
+
+
+
 ## Version [1.9.1](https://github.com/neo9/n9-node-routing/compare/1.9.0...1.9.1) (2018-11-15)
 
+
+### release
+
+* V 1.9.1 ([9c4f89c](https://github.com/neo9/n9-node-routing/commit/9c4f89c)) (Benjamin Daniel)
 
 ### shutdown
 
