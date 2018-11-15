@@ -1,5 +1,18 @@
+## Version [1.9.3](https://github.com/neo9/n9-node-routing/compare/1.9.2...1.9.3) (2018-11-15)
+
+
+### shutdown
+
+* Fix graceful shutdown ([853bff8](https://github.com/neo9/n9-node-routing/commit/853bff8)) (Benjamin Daniel)
+
+
+
 ## Version [1.9.2](https://github.com/neo9/n9-node-routing/compare/1.9.1...1.9.2) (2018-11-15)
 
+
+### release
+
+* V 1.9.2 ([45957be](https://github.com/neo9/n9-node-routing/commit/45957be)) (Benjamin Daniel)
 
 ### shutdown
 
