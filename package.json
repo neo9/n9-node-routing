@@ -40,6 +40,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
+    "@mardari/routing-controllers": "^0.7.9",
     "@neo9/n9-node-log": "^2.4.0",
     "@neo9/n9-node-utils": "^1.5.0",
     "@types/app-root-dir": "^0.1.0",
@@ -50,7 +51,6 @@
     "@types/url-join": "^0.8.2",
     "app-root-dir": "^1.0.2",
     "body-parser": "^1.17.2",
-    "class-validator": "0.8.5",
     "class-validator-jsonschema": "^1.1.1",
     "codecov": "^3.0.0",
     "continuation-local-storage": "^3.2.1",
@@ -65,7 +65,6 @@
     "reflect-metadata": "^0.1.10",
     "release-it": "7.4.8",
     "request": "^2.85.0",
-    "routing-controllers": "^0.7.0",
     "routing-controllers-openapi": "^1.2.1",
     "shortid": "^2.2.8",
     "stream-array": "^1.1.2",

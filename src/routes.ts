@@ -5,7 +5,7 @@ import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
 import { Express, NextFunction, Request, Response } from 'express';
 import * as oa from 'openapi3-ts';
 import { join } from 'path';
-import { getMetadataArgsStorage } from 'routing-controllers';
+import { getMetadataArgsStorage } from '@mardari/routing-controllers';
 import * as RCOpenApi from 'routing-controllers-openapi';
 import * as SwaggerUi from 'swagger-ui-express';
 import { N9NodeRouting } from './models/routing.models';
@@ -60,7 +60,7 @@ export default async function(expressApp: Express, options: N9NodeRouting.Option
 			});
 			const additionalProperties = Object.assign({}, { components: { schemas } }, baseOpenApiSpec);
 
-			const spec = RCOpenApi.routingControllersToSpec(routesStorage, options.http.routingController, additionalProperties);
+			const spec = RCOpenApi.routingControllersToSpec(routesStorage as any, options.http.routingController, additionalProperties);
 
 			res.header('Access-Control-Allow-Origin', '*');
 			res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');

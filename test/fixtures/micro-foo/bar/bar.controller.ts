@@ -1,5 +1,5 @@
 import { N9Error } from '@neo9/n9-node-utils';
-import { Body, Get, JsonController, Param, Post, QueryParam } from 'routing-controllers';
+import { Body, Get, JsonController, Param, Post, QueryParam } from '@mardari/routing-controllers';
 import { Service } from 'typedi';
 import { User } from '../../micro-validate/validate/users.models';
 import { BodyBar } from './body-bar.models';

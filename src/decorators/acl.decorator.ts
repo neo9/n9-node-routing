@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from 'routing-controllers';
+import { getMetadataArgsStorage } from '@mardari/routing-controllers';
 import { AclPerm } from '../models/routes.models';
 import * as RoutesService from '../routes.service';
 

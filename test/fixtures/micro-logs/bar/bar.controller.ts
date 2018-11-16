@@ -1,5 +1,5 @@
 import { N9Log } from '@neo9/n9-node-log';
-import { Body, Get, JsonController, Post } from 'routing-controllers';
+import { Body, Get, JsonController, Post } from '@mardari/routing-controllers';
 import { Inject, Service } from 'typedi';
 import { Acl } from '../../../../src';
 

@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from 'routing-controllers';
+import { getMetadataArgsStorage } from '@mardari/routing-controllers';
 import { AclPerm, Route } from './models/routes.models';
 
 const aclDescriptions: object[] = [];

@@ -1,6 +1,6 @@
 import { N9JSONStream } from '@neo9/n9-node-utils';
 import { Response } from 'express';
-import { Get, JsonController, Res } from 'routing-controllers';
+import { Get, JsonController, Res } from '@mardari/routing-controllers';
 // @ts-ignore
 import * as streamArray from 'stream-array';
 import { Service } from 'typedi';

@@ -1,4 +1,4 @@
-import { JsonController, Post } from 'routing-controllers';
+import { JsonController, Post } from '@mardari/routing-controllers';
 import { Service } from 'typedi';
 import { Acl } from '../../../../src';
 

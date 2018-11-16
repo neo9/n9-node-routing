@@ -6,7 +6,7 @@ import * as helmet from 'helmet';
 import { createServer } from 'http';
 import * as morgan from 'morgan';
 import { FormatFn, TokenIndexer } from 'morgan';
-import { Action, RoutingControllersOptions, useContainer, useExpressServer } from 'routing-controllers';
+import { Action, RoutingControllersOptions, useContainer, useExpressServer } from '@mardari/routing-controllers';
 import { Container } from 'typedi';
 import { ErrorHandler } from './middleware/error-handler.interceptor';
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
