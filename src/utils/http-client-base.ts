@@ -9,7 +9,7 @@ import { RequestIdNamespaceName } from '../requestid';
 export class N9HttpClient {
 	private readonly requestDefault: RequestAPI<Request, CoreOptions, RequiredUriUrl>;
 
-	constructor(private readonly logger: N9Log = global.log, options?: CoreOptions) {
+	constructor(private readonly logger: N9Log = global.log, options?: CoreOptions, private maxBodyLengthToLogError: number = 100) {
 		this.requestDefault = rpn.defaults(Object.assign({}, options, {
 			useQuerystring: true,
 			json: true,
@@ -51,22 +51,33 @@ export class N9HttpClient {
 		const namespaceRequestId = getNamespace(RequestIdNamespaceName);
 		const requestId = namespaceRequestId && namespaceRequestId.get('request-id');
 		const sentHeaders = Object.assign({}, headers, { 'x-request-id': requestId });
+		const startTime = Date.now();
 
 		try {
 			const res = await this.requestDefault({
 				method,
 				uri,
 				qs: queryParams,
-				headers,
+				headers: sentHeaders,
 				body,
 			});
 
 			return res.body as any;
 		} catch (e) {
-			this.logger.error(`Error on [${method} ${uri}]`, e.statusCode);
+			this.logger.error(`Error on [${method} ${uri}]`, { status: e.statusCode, 'response-time': (Date.now() - startTime) });
+			const bodyJSON = JSON.stringify(body);
 			// istanbul ignore else
 			if (e.error) {
-				throw new N9Error(e.error.code, e.statusCode, e.error.context);
+				throw new N9Error(e.error.code, e.statusCode, {
+					uri,
+					method,
+					code: e.error.code,
+					queryParams,
+					headers,
+					body: bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
+					error: e.error,
+					...e.error.context,
+				});
 			} else {
 				throw e;
 			}
@@ -75,17 +86,31 @@ export class N9HttpClient {
 
 	public async raw<T>(url: string | string[], options: CoreOptions): Promise<T> {
 		const uri = this.getUriFromUrlParts(url);
+		const startTime = Date.now();
 
 		try {
 			const res = await this.requestDefault(uri, options);
 
 			return res.body as any;
 		} catch (e) {
-			this.logger.error(`Error on raw call [${options.method} ${uri}]`, e.statusCode);
+			this.logger.error(`Error on raw call [${options.method} ${uri}]`, { status: e.statusCode, 'response-time': (Date.now() - startTime) });
 			// istanbul ignore else
 			if (e.error) {
-				throw new N9Error(e.error.code, e.statusCode, e.error.context);
-			} else {
+				let isOptionsStringable;
+				try {
+					JSON.stringify(options);
+					isOptionsStringable = true;
+				} catch (e) {
+					isOptionsStringable = false;
+				}
+
+				throw new N9Error(e.error.code, e.statusCode, {
+					uri,
+					isOptionsStringable,
+					options: isOptionsStringable ? options : undefined,
+					error: e.error,
+					...e.error.context,
+				});			} else {
 				throw e;
 			}
 		}
