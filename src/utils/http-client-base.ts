@@ -64,7 +64,7 @@ export class N9HttpClient {
 
 			return res.body as any;
 		} catch (e) {
-			this.logger.error(`Error on [${method} ${uri}]`, { status: e.statusCode, 'response-time': (Date.now() - startTime) });
+			this.logger.error(`Error on [${method} ${uri}]`, { 'status': e.statusCode, 'response-time': (Date.now() - startTime) });
 			const bodyJSON = JSON.stringify(body);
 			// istanbul ignore else
 			if (e.error) {
@@ -74,7 +74,7 @@ export class N9HttpClient {
 					code: e.error.code,
 					queryParams,
 					headers,
-					body: bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
+					body: body && bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
 					error: e.error,
 					...e.error.context,
 				});
@@ -93,7 +93,7 @@ export class N9HttpClient {
 
 			return res.body as any;
 		} catch (e) {
-			this.logger.error(`Error on raw call [${options.method} ${uri}]`, { status: e.statusCode, 'response-time': (Date.now() - startTime) });
+			this.logger.error(`Error on raw call [${options.method} ${uri}]`, { 'status': e.statusCode, 'response-time': (Date.now() - startTime) });
 			// istanbul ignore else
 			if (e.error) {
 				let isOptionsStringable;
