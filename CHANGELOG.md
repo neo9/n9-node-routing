@@ -1,5 +1,14 @@
+## Version [1.10.1](https://github.com/neo9/n9-node-routing/compare/1.10.0...1.10.1) (2018-11-23)
+
+
+
+
 # Version [1.10.0](https://github.com/neo9/n9-node-routing/compare/1.9.3...1.10.0) (2018-11-23)
 
+
+### release
+
+* V 1.10.0 ([f24bdad](https://github.com/neo9/n9-node-routing/commit/f24bdad)) (Benjamin Daniel)
 
 
 
