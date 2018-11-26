@@ -117,9 +117,11 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 							const morganDetails = JSON.parse(message);
 							options.log.info('api call ' + morganDetails.path, morganDetails);
 						} catch (e) {
+							message = message && message.replace('\n', '');
 							options.log.info(message);
 						}
 					} else {
+						message = message && message.replace('\n', '');
 						options.log.info(message);
 					}
 				},
