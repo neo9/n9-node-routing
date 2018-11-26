@@ -1,5 +1,18 @@
+## Version [1.10.2](https://github.com/neo9/n9-node-routing/compare/1.10.1...1.10.2) (2018-11-26)
+
+
+### morgan
+
+* Remove end lines written by morgan ([69d24ae](https://github.com/neo9/n9-node-routing/commit/69d24ae)) (Benjamin Daniel)
+
+
+
 ## Version [1.10.1](https://github.com/neo9/n9-node-routing/compare/1.10.0...1.10.1) (2018-11-23)
 
+
+### release
+
+* V 1.10.1 ([ee6dd1f](https://github.com/neo9/n9-node-routing/commit/ee6dd1f)) (Benjamin Daniel)
 
 
 
