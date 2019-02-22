@@ -1,3 +1,12 @@
+# Version [1.11.0](https://github.com/neo9/n9-node-routing/compare/1.10.2...1.11.0) (2019-02-22)
+
+
+### fix
+
+* Update morgan version due to security concerns ([e970022](https://github.com/neo9/n9-node-routing/commit/e970022)) (Benjamin Daniel)
+
+
+
 ## Version [1.10.2](https://github.com/neo9/n9-node-routing/compare/1.10.1...1.10.2) (2018-11-26)
 
 
@@ -5,23 +14,19 @@
 
 * Remove end lines written by morgan ([69d24ae](https://github.com/neo9/n9-node-routing/commit/69d24ae)) (Benjamin Daniel)
 
-
-
-## Version [1.10.1](https://github.com/neo9/n9-node-routing/compare/1.10.0...1.10.1) (2018-11-23)
-
-
 ### release
 
-* V 1.10.1 ([ee6dd1f](https://github.com/neo9/n9-node-routing/commit/ee6dd1f)) (Benjamin Daniel)
+* V 1.10.2 ([a6fddc9](https://github.com/neo9/n9-node-routing/commit/a6fddc9)) (Benjamin Daniel)
 
 
 
-# Version [1.10.0](https://github.com/neo9/n9-node-routing/compare/1.9.3...1.10.0) (2018-11-23)
+## Version [1.10.1](https://github.com/neo9/n9-node-routing/compare/1.9.3...1.10.1) (2018-11-23)
 
 
 ### release
 
 * V 1.10.0 ([f24bdad](https://github.com/neo9/n9-node-routing/commit/f24bdad)) (Benjamin Daniel)
+* V 1.10.1 ([ee6dd1f](https://github.com/neo9/n9-node-routing/commit/ee6dd1f)) (Benjamin Daniel)
 
 
 
@@ -51,54 +56,32 @@
 
 
 
-## Version [1.9.1](https://github.com/neo9/n9-node-routing/compare/1.9.0...1.9.1) (2018-11-15)
-
-
-### release
-
-* V 1.9.1 ([9c4f89c](https://github.com/neo9/n9-node-routing/commit/9c4f89c)) (Benjamin Daniel)
-
-### shutdown
-
-* Add graceful shutdown for nodemon ([f1816d8](https://github.com/neo9/n9-node-routing/commit/f1816d8)) (Benjamin Daniel)
-
-
-
-# Version [1.9.0](https://github.com/neo9/n9-node-routing/compare/1.8.1...1.9.0) (2018-11-15)
+## Version [1.9.1](https://github.com/neo9/n9-node-routing/compare/1.8.1...1.9.1) (2018-11-15)
 
 
 ### release
 
 * V 1.9.0 ([442f25f](https://github.com/neo9/n9-node-routing/commit/442f25f)) (Benjamin Daniel)
+* V 1.9.1 ([9c4f89c](https://github.com/neo9/n9-node-routing/commit/9c4f89c)) (Benjamin Daniel)
 
 ### shutdown
 
 * Add graceful shutdown ([ec24bdf](https://github.com/neo9/n9-node-routing/commit/ec24bdf)) (Benjamin Daniel)
+* Add graceful shutdown for nodemon ([f1816d8](https://github.com/neo9/n9-node-routing/commit/f1816d8)) (Benjamin Daniel)
 
 
 
-## Version [1.8.1](https://github.com/neo9/n9-node-routing/compare/1.8.0...1.8.1) (2018-11-12)
-
-
-### release
-
-* V 1.8.1 ([c69cbf5](https://github.com/neo9/n9-node-routing/commit/c69cbf5)) (Benjamin Daniel)
-
-### yarn
-
-* Fix dependencies class-validator and upgrade for node v10 ([95179fe](https://github.com/neo9/n9-node-routing/commit/95179fe)) (Benjamin Daniel)
-
-
-
-# Version [1.8.0](https://github.com/neo9/n9-node-routing/compare/1.7.1...1.8.0) (2018-10-26)
+## Version [1.8.1](https://github.com/neo9/n9-node-routing/compare/1.7.1...1.8.1) (2018-11-12)
 
 
 ### release
 
 * V 1.8.0 ([a34696c](https://github.com/neo9/n9-node-routing/commit/a34696c)) (Benjamin Daniel)
+* V 1.8.1 ([c69cbf5](https://github.com/neo9/n9-node-routing/commit/c69cbf5)) (Benjamin Daniel)
 
 ### yarn
 
+* Fix dependencies class-validator and upgrade for node v10 ([95179fe](https://github.com/neo9/n9-node-routing/commit/95179fe)) (Benjamin Daniel)
 * Upgrade class-validator ([b482f52](https://github.com/neo9/n9-node-routing/commit/b482f52)) (Benjamin Daniel)
 
 
