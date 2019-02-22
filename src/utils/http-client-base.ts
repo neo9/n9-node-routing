@@ -75,8 +75,8 @@ export class N9HttpClient {
 					queryParams,
 					headers,
 					body: body && bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
-					error: e.error,
-					...e.error.context,
+					srcError: e.error,
+					srcErrorContext: e.error.context,
 				});
 			} else {
 				throw e;
