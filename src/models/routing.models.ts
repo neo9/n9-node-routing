@@ -17,7 +17,8 @@ export namespace N9NodeRouting {
 	}
 
 	export interface ShutdownOptions {
-		enableGracefulShudown?: boolean;
+		waitDurationBeforeStop?: number;
+		enableGracefulShutdown?: boolean;
 		timeout?: number;
 	}
 

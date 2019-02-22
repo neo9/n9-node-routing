@@ -6,7 +6,7 @@ import 'reflect-metadata';
 import { Container } from 'typedi';
 import initModules from './initialise-modules';
 import { N9NodeRouting } from './models/routing.models';
-import { registerSuhtdown } from './register-system-signals';
+import { registerShutdown } from './register-system-signals';
 import { requestIdFilter } from './requestid';
 import bindSpecificRoutes from './routes';
 import expressAppStarter from './start-express-app';
@@ -39,8 +39,9 @@ export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRo
 	options.enableRequestId = typeof options.enableRequestId === 'boolean' ? options.enableRequestId : true;
 	options.enableLogFormatJSON = typeof options.enableLogFormatJSON === 'boolean' ? options.enableLogFormatJSON : true;
 	options.shutdown = options.shutdown || {};
-	options.shutdown.enableGracefulShudown = typeof options.shutdown.enableGracefulShudown === 'boolean' ? options.shutdown.enableGracefulShudown : true;
+	options.shutdown.enableGracefulShutdown = typeof options.shutdown.enableGracefulShutdown === 'boolean' ? options.shutdown.enableGracefulShutdown : true;
 	options.shutdown.timeout = typeof options.shutdown.timeout === 'number' ? options.shutdown.timeout : 10 * 1000;
+	options.shutdown.waitDurationBeforeStop = typeof options.shutdown.waitDurationBeforeStop === 'number' ? options.shutdown.waitDurationBeforeStop : 1000;
 
 	const formatLogInJSON = options.enableLogFormatJSON && process.env.NODE_ENV && process.env.NODE_ENV !== 'development';
 	global.n9NodeRoutingData = {
@@ -80,8 +81,8 @@ export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRo
 	await bindSpecificRoutes(returnObject.app, options);
 
 	// Manage SIGTERM & SIGINT
-	if (options.shutdown.enableGracefulShudown) {
-		registerSuhtdown(options.log, options.shutdown, returnObject.server);
+	if (options.shutdown.enableGracefulShutdown) {
+		registerShutdown(options.log, options.shutdown, returnObject.server);
 	}
 
 	return returnObject;
