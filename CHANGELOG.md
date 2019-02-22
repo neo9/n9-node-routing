@@ -1,9 +1,22 @@
+## Version [1.11.1](https://github.com/neo9/n9-node-routing/compare/1.11.0...1.11.1) (2019-02-22)
+
+
+### shutdown
+
+* Add some time before exit, new option waitDurationBeforeStop ([3939c58](https://github.com/neo9/n9-node-routing/commit/3939c58)) (Benjamin Daniel)
+
+
+
 # Version [1.11.0](https://github.com/neo9/n9-node-routing/compare/1.10.2...1.11.0) (2019-02-22)
 
 
 ### fix
 
 * Update morgan version due to security concerns ([e970022](https://github.com/neo9/n9-node-routing/commit/e970022)) (Benjamin Daniel)
+
+### release
+
+* V 1.11.0 ([c86aca8](https://github.com/neo9/n9-node-routing/commit/c86aca8)) (Benjamin Daniel)
 
 
 
