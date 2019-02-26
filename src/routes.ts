@@ -30,6 +30,9 @@ export default async function(expressApp: Express, options: N9NodeRouting.Option
 	expressApp.get('/ping', (req: Request, res: Response, next: NextFunction) => {
 		if (global.db && global.dbClient) {
 			if (!global.dbClient.isConnected()) {
+				if (global.log && global.log.error) {
+					global.log.error(`[PING] Can't connect to MongoDB`);
+				}
 				res.status(500).send();
 			} else {
 				res.status(200).send('pong-db');
