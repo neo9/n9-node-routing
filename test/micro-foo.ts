@@ -34,6 +34,12 @@ test('Basic usage, create http server', async (t: Assertions) => {
 	t.is(res.statusCode, 200);
 	t.is(res.body, 'pong');
 
+	// Check /version route
+	res = await rp({ uri: 'http://localhost:5000/version', resolveWithFullResponse: true });
+	t.is(res.statusCode, 200);
+	const matchVersion = (res.body as string).match(/^[0-9]+\.[0-9]+\.[0-9]+.*$$/);
+	t.is(matchVersion.length, 1);
+
 	// Check /404 route
 	res = await t.throws(rp({ uri: 'http://localhost:5000/404', resolveWithFullResponse: true, json: true }));
 	t.is(res.statusCode, 404);
@@ -53,8 +59,9 @@ test('Basic usage, create http server', async (t: Assertions) => {
 	t.true(output.stdout[4].includes('GET /foo'));
 	t.true(output.stdout[5].includes('GET /'));
 	t.true(output.stdout[6].includes('GET /ping'));
-	t.true(output.stdout[7].includes('Error: not-found'));
-	t.true(output.stdout[8].includes('GET /404'));
+	t.true(output.stdout[7].includes('GET /version'));
+	t.true(output.stdout[8].includes('Error: not-found'));
+	t.true(output.stdout[9].includes('GET /404'));
 
 	// Close server
 	await closeServer(server);

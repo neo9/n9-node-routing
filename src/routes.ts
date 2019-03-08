@@ -22,8 +22,9 @@ export default async function(expressApp: Express, options: N9NodeRouting.Option
 	options.openapi.jsonUrl = options.openapi.jsonUrl || '/documentation.json';
 	options.openapi.swaggerui = options.openapi.swaggerui || Object.assign({}, options.openapi.swaggerui, { swaggerUrl: '../documentation.json' });
 
-	expressApp.get('/', (req: Request, res: Response) => {
+	expressApp.get('/', (req: Request, res: Response, next: NextFunction) => {
 		res.status(200).send(packageJson.name);
+		next();
 	});
 
 	// Monitoring route
@@ -40,10 +41,18 @@ export default async function(expressApp: Express, options: N9NodeRouting.Option
 		} else {
 			res.status(200).send('pong');
 		}
+		next();
 	});
 
-	expressApp.get('/routes', (req: Request, res: Response) => {
+	// Return app version
+	expressApp.get('/version', (req: Request, res: Response, next: NextFunction) => {
+		res.status(200).send(packageJson.version);
+		next();
+	});
+
+	expressApp.get('/routes', (req: Request, res: Response, next: NextFunction) => {
 		res.status(200).send(RoutesService.getRoutes());
+		next();
 	});
 
 	if (options.openapi.isEnable) {
@@ -91,5 +100,6 @@ export default async function(expressApp: Express, options: N9NodeRouting.Option
 				error
 			});
 		}
+		next();
 	});
 }
