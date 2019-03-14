@@ -1,3 +1,12 @@
+## Version [1.12.1](https://github.com/neo9/n9-node-routing/compare/1.12.0...1.12.1) (2019-03-14)
+
+
+### errors
+
+* Add errors toJSON function to keep message property ([20338d2](https://github.com/neo9/n9-node-routing/commit/20338d2)) (Benjamin Daniel)
+
+
+
 # Version [1.12.0](https://github.com/neo9/n9-node-routing/compare/1.11.1...1.12.0) (2019-03-14)
 
 
@@ -8,6 +17,10 @@
 ### ping
 
 * Add log is mongo-db is not reachable ([e025d27](https://github.com/neo9/n9-node-routing/commit/e025d27)) (Benjamin Daniel)
+
+### release
+
+* V 1.12.0 ([c60e24d](https://github.com/neo9/n9-node-routing/commit/c60e24d)) (Benjamin Daniel)
 
 ### routes
 
