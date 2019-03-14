@@ -1,5 +1,26 @@
+# Version [1.12.0](https://github.com/neo9/n9-node-routing/compare/1.11.1...1.12.0) (2019-03-14)
+
+
+### errors
+
+* Upgrade @neo9/n9-node-utils ([268fe00](https://github.com/neo9/n9-node-routing/commit/268fe00)) (Benjamin Daniel)
+
+### ping
+
+* Add log is mongo-db is not reachable ([e025d27](https://github.com/neo9/n9-node-routing/commit/e025d27)) (Benjamin Daniel)
+
+### routes
+
+* Add version route and call next function ([ac0300f](https://github.com/neo9/n9-node-routing/commit/ac0300f)) (Benjamin Daniel)
+
+
+
 ## Version [1.11.1](https://github.com/neo9/n9-node-routing/compare/1.11.0...1.11.1) (2019-02-22)
 
+
+### release
+
+* V 1.11.1 ([9924869](https://github.com/neo9/n9-node-routing/commit/9924869)) (Benjamin Daniel)
 
 ### shutdown
 
