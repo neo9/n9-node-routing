@@ -1,9 +1,22 @@
+## Version [1.12.3](https://github.com/neo9/n9-node-routing/compare/1.12.2...1.12.3) (2019-03-14)
+
+
+### yarn
+
+* Upgrade n9-node-utils to 1.8.1 ([73f2c0f](https://github.com/neo9/n9-node-routing/commit/73f2c0f)) (Benjamin Daniel)
+
+
+
 ## Version [1.12.2](https://github.com/neo9/n9-node-routing/compare/1.12.1...1.12.2) (2019-03-14)
 
 
 ### errors
 
 * Fix errors toJSON function return type ([1193bf4](https://github.com/neo9/n9-node-routing/commit/1193bf4)) (Benjamin Daniel)
+
+### release
+
+* V 1.12.2 ([f901321](https://github.com/neo9/n9-node-routing/commit/f901321)) (Benjamin Daniel)
 
 
 
