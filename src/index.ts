@@ -3,6 +3,8 @@ import * as appRootDir from 'app-root-dir';
 import { join } from 'path';
 // tslint:disable-next-line:no-import-side-effect
 import 'reflect-metadata';
+// tslint:disable-next-line:no-import-side-effect
+import './utils/error-to-json';
 import { Container } from 'typedi';
 import initModules from './initialise-modules';
 import { N9NodeRouting } from './models/routing.models';
