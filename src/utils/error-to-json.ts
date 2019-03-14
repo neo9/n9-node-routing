@@ -1,5 +1,5 @@
 
-(Error.prototype as any).toJSON = function(): Error {
+(Error.prototype as any).toJSON = function(): any {
 	return {
 		message: this.message,
 		...this,
