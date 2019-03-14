@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@neo9/n9-node-log": "^2.4.0",
-    "@neo9/n9-node-utils": "^1.8.0",
+    "@neo9/n9-node-utils": "^1.8.1",
     "@types/app-root-dir": "^0.1.0",
     "@types/continuation-local-storage": "^3.2.1",
     "@types/helmet": "^0.0.37",

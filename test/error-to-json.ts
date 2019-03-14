@@ -8,5 +8,5 @@ test('Basic stream', async (t: Assertions) => {
 	const e = Error(text);
 	const eAsJSON = JSON.stringify(e);
 
-	t.is(eAsJSON, JSON.stringify({ message: text}));
+	t.is(eAsJSON, JSON.stringify({ name: 'Error', message: text}));
 });
