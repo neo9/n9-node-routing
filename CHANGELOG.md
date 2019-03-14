@@ -1,9 +1,22 @@
+## Version [1.12.2](https://github.com/neo9/n9-node-routing/compare/1.12.1...1.12.2) (2019-03-14)
+
+
+### errors
+
+* Fix errors toJSON function return type ([1193bf4](https://github.com/neo9/n9-node-routing/commit/1193bf4)) (Benjamin Daniel)
+
+
+
 ## Version [1.12.1](https://github.com/neo9/n9-node-routing/compare/1.12.0...1.12.1) (2019-03-14)
 
 
 ### errors
 
 * Add errors toJSON function to keep message property ([20338d2](https://github.com/neo9/n9-node-routing/commit/20338d2)) (Benjamin Daniel)
+
+### release
+
+* V 1.12.1 ([c4f813e](https://github.com/neo9/n9-node-routing/commit/c4f813e)) (Benjamin Daniel)
 
 
 
