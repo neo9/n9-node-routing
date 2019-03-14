@@ -335,10 +335,10 @@
     "@types/winston" "^2.3.6"
     winston "^2.4.0"
 
-"@neo9/n9-node-utils@^1.5.0":
-  version "1.7.2"
-  resolved "https://registry.npmjs.org/@neo9/n9-node-utils/-/n9-node-utils-1.7.2.tgz#27d94836ea6f5a5ffc31e2498364fc53b4822ca8"
-  integrity sha512-oAqto4CJHI6JyrHbH0OjZ4fr95HnqVLcJXrHwQ8QJIQM8Fi/PndK4j2toZseWJQtWIcHvjcVYm7KbAjhg6jiDA==
+"@neo9/n9-node-utils@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@neo9/n9-node-utils/-/n9-node-utils-1.8.0.tgz#8b08557d981340b44d84bad103d7185c47eced1e"
+  integrity sha512-Ubr6dSwYLUwuzsIl4DoLv8Frkm2Cm1/j6ewh+9GnNC+0lInKW+X9US+h6kWLN8IANHPD63cugBQ8eu7G0bKMNg==
 
 "@nodelib/fs.stat@^1.0.1":
   version "1.0.2"
