@@ -11,7 +11,7 @@ import * as SwaggerUi from 'swagger-ui-express';
 import { N9NodeRouting } from './models/routing.models';
 import * as RoutesService from './routes.service';
 
-export default async function(expressApp: Express, options: N9NodeRouting.Options): Promise<void> {
+async function def(expressApp: Express, options: N9NodeRouting.Options): Promise<void> {
 	// Fetch application name
 	const packageJson = require(join(appRootDir.get(), 'package.json'));
 	if (!options.openapi) {
@@ -28,8 +28,18 @@ export default async function(expressApp: Express, options: N9NodeRouting.Option
 	});
 
 	// Monitoring route
-	expressApp.get('/ping', (req: Request, res: Response, next: NextFunction) => {
-		if (global.db && global.dbClient) {
+	expressApp.get('/ping', async (req: Request, res: Response, next: NextFunction) => {
+		if (options.http.ping && options.http.ping.dbs) {
+			for (const db of options.http.ping.dbs) {
+				if (!await db.isConnected.bind(db.thisArg || this)()) {
+					global.log.error(`[PING] Can't connect to ${db.name}`);
+					res.status(500).send();
+					next();
+					return;
+				}
+			}
+			res.status(200).send('pong-dbs-' + options.http.ping.dbs.length);
+		} else if (global.db && global.dbClient) {
 			if (!global.dbClient.isConnected()) {
 				if (global.log && global.log.error) {
 					global.log.error(`[PING] Can't connect to MongoDB`);
@@ -61,14 +71,14 @@ export default async function(expressApp: Express, options: N9NodeRouting.Option
 				info: {
 					description: packageJson.description,
 					title: packageJson.name,
-					version: packageJson.version
-				}
+					version: packageJson.version,
+				},
 			};
 			const routesStorage = getMetadataArgsStorage();
 			const validationMetadatas = (getFromContainer(MetadataStorage) as any).validationMetadatas;
 
 			const schemas = validationMetadatasToSchemas(validationMetadatas, {
-				refPointerPrefix: '#/components/schemas'
+				refPointerPrefix: '#/components/schemas',
 			});
 			const additionalProperties = Object.assign({}, { components: { schemas } }, baseOpenApiSpec);
 
@@ -97,9 +107,11 @@ export default async function(expressApp: Express, options: N9NodeRouting.Option
 				code: err.message,
 				status: err.status,
 				context: err.context,
-				error
+				error,
 			});
 		}
 		next();
 	});
 }
+
+export default def;

@@ -115,10 +115,13 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 					if (global.n9NodeRoutingData.formatLogInJSON) {
 						try {
 							const morganDetails = JSON.parse(message);
-							options.log.info('api call ' + morganDetails.path, morganDetails);
+							options.log.info('api call ' + morganDetails.path, {
+								... morganDetails,
+								durationMs: Number.parseFloat(morganDetails['response-time'])
+							});
 						} catch (e) {
 							message = message && message.replace('\n', '');
-							options.log.info(message);
+							options.log.info(message, { error : e});
 						}
 					} else {
 						message = message && message.replace('\n', '');

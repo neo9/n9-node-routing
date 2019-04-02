@@ -3,7 +3,7 @@ import { waitFor } from '@neo9/n9-node-utils';
 import { Server } from 'http';
 import { N9NodeRouting } from './models/routing.models';
 
-async function shutdown(logger: N9Log, shutdownOptions: N9NodeRouting.ShutdownOptions, server: Server): Promise<void> {
+async function shutdown(logger: N9Log, shutdownOptions: N9NodeRouting.ShutdownOptions, server: Server, signalReceived: string): Promise<void> {
 	setTimeout(() => {
 		logger.error('shudown-timeout');
 		process.exit(1);
@@ -13,6 +13,13 @@ async function shutdown(logger: N9Log, shutdownOptions: N9NodeRouting.ShutdownOp
 	// For Kubernetes downscale, let the DNS some time to dereference the pod IP
 	logger.info(`Wait ${waitDuration} ms before exit`);
 	await waitFor(waitDuration);
+
+	if (shutdownOptions.callbacksBeforeShutdown && shutdownOptions.callbacksBeforeShutdown.length) {
+		logger.info(`Calling ${shutdownOptions.callbacksBeforeShutdown.length} callbacks`);
+		for (const callbackSpec of shutdownOptions.callbacksBeforeShutdown) {
+			await callbackSpec.function.bind(callbackSpec.thisArg)(logger);
+		}
+	}
 
 	server.close(async (error) => {
 		if (error) {
@@ -31,24 +38,24 @@ async function shutdown(logger: N9Log, shutdownOptions: N9NodeRouting.ShutdownOp
 			logger.debug('End closing db connections');
 		}
 
-		logger.info(`Shudown SUCCESS`);
-		process.exit(0);
+		logger.info(`Shutdown SUCCESS`);
+		process.kill(process.pid, signalReceived);
 	});
 }
 
 export function registerShutdown(logger: N9Log, shutdownOptions: N9NodeRouting.ShutdownOptions, server: Server): void {
-	process.on('SIGTERM', async () => {
+	process.once('SIGTERM', async () => {
 		logger.info('Got SIGTERM. Graceful shutdown start');
-		await shutdown(logger, shutdownOptions, server);
+		await shutdown(logger, shutdownOptions, server, 'SIGTERM');
 	});
 
-	process.on('SIGINT', async () => {
+	process.once('SIGINT', async () => {
 		logger.info('Got SIGINT. Graceful shutdown start');
-		await shutdown(logger, shutdownOptions, server);
+		await shutdown(logger, shutdownOptions, server, 'SIGINT');
 	});
 
-	process.on('SIGUSR2', async () => {
+	process.once('SIGUSR2', async () => {
 		logger.info('Got SIGUSR2 (nodemon). Graceful shutdown start');
-		await shutdown(logger, shutdownOptions, server);
+		await shutdown(logger, shutdownOptions, server, 'SIGUSR2');
 	});
 }

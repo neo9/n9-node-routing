@@ -52,9 +52,10 @@ export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRo
 	};
 
 	if (global.log) {
-		global.log = n9Log(global.log.name, Object.assign({}, global.log.options, {
+		global.log = n9Log(global.log.name, {
+			... global.log.options,
 			formatJSON: formatLogInJSON,
-		}));
+		});
 	}
 
 	// If log if given, add a namespace
