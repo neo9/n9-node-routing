@@ -1,5 +1,18 @@
+# Version [1.13.0](https://github.com/neo9/n9-node-routing/compare/1.12.3...1.13.0) (2019-04-02)
+
+
+### hooks
+
+* Add shutdown and ping hooks ([7678d0d](https://github.com/neo9/n9-node-routing/commit/7678d0d)) (Benjamin Daniel)
+
+
+
 ## Version [1.12.3](https://github.com/neo9/n9-node-routing/compare/1.12.2...1.12.3) (2019-03-14)
 
+
+### release
+
+* V 1.12.3 ([c0bdb6d](https://github.com/neo9/n9-node-routing/commit/c0bdb6d)) (Benjamin Daniel)
 
 ### yarn
 
