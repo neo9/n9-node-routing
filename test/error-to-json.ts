@@ -1,8 +1,9 @@
 import test, { Assertions } from 'ava';
-import routingControllerWrapper from '../src';
+import N9NodeRouting from '../src';
+import { ApplicationModule } from './fixtures/index/app.module';
 
-test('Basic stream', async (t: Assertions) => {
-	await routingControllerWrapper({ http: { port: 6666 } });
+test('Error to json', async (t: Assertions) => {
+	await N9NodeRouting(ApplicationModule);
 
 	const text = 'message-error-text';
 	const e = Error(text);

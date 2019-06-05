@@ -1,10 +1,15 @@
+import { ArgumentsHost, Catch } from '@nestjs/common';
+import { BaseExceptionFilter } from '@nestjs/core';
 import { NextFunction, Request, Response } from 'express';
-import { ExpressErrorMiddlewareInterface, Middleware } from "routing-controllers";
 
-@Middleware({ type: "after" })
-export class ErrorHandler implements ExpressErrorMiddlewareInterface {
+@Catch()
+export class AllErrorsFilter implements BaseExceptionFilter {
 
-	public error(error: any, request: Request, response: Response, next: NextFunction): void {
+	public catch(error: any, host: ArgumentsHost): void {
+		const ctx = host.switchToHttp();
+		const response: Response = ctx.getResponse();
+		const request: Request = ctx.getRequest();
+		console.log(`-- error-handler.interceptor.ts all errors filter --`);
 		const status = error.status || error.httpCode || 500;
 		let code = 'unspecified-error';
 		if (error.name && error.name !== 'Error') {
@@ -23,7 +28,11 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 		response.json({
 			code,
 			status,
-			context
+			context,
 		});
+	}
+
+	isExceptionObject(err: any): err is Error {
+		return true;
 	}
 }

@@ -5,23 +5,20 @@ import { join } from 'path';
 import 'reflect-metadata';
 // tslint:disable-next-line:no-import-side-effect
 import './utils/error-to-json';
-import { Container } from 'typedi';
 import initModules from './initialise-modules';
 import { N9NodeRouting } from './models/routing.models';
 import { registerShutdown } from './register-system-signals';
 import { requestIdFilter } from './requestid';
 import bindSpecificRoutes from './routes';
-import expressAppStarter from './start-express-app';
-import { N9HttpClient } from './utils/http-client-base';
+import startExpressApp from './start-express-app';
 
 /* istanbul ignore next */
 function handleThrow(err: Error): void {
+	(global.log || console).log(`Global error n ot handled`, { err });
 	throw err;
 }
 
 export * from 'class-validator';
-export { getMetadataArgsStorage } from 'routing-controllers';
-export * from 'routing-controllers-openapi';
 
 export * from './decorators/acl.decorator';
 export * from './validators/date-parser.validator';
@@ -29,12 +26,11 @@ export * from './models/routing.models';
 export * from './models/routes.models';
 export * from './utils/http-client-base';
 
-export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> {
+export default async function (nestAppModule: any, options: N9NodeRouting.Options = {}): Promise<N9NodeRouting.ReturnObject> {
 	// Provides a stack trace for unhandled rejections instead of the default message string.
 	process.on('unhandledRejection', handleThrow);
 
 	// Options default
-	options = options || {};
 	options.path = options.path || join(appRootDir.get(), 'src', 'modules');
 	options.log = options.log || global.log;
 	options.hasProxy = typeof options.hasProxy === 'boolean' ? options.hasProxy : true;
@@ -53,7 +49,7 @@ export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRo
 
 	if (global.log) {
 		global.log = n9Log(global.log.name, {
-			... global.log.options,
+			...global.log.options,
 			formatJSON: formatLogInJSON,
 		});
 	}
@@ -72,16 +68,17 @@ export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRo
 		options.log.addFilter(requestIdFilter);
 	}
 
-	Container.set('logger', options.log);
-	if (global.conf) {
-		Container.set('conf', global.conf);
-	}
-	Container.set('N9HttpClient', new N9HttpClient());
+	// TODO: migrate
+	// Container.set('logger', options.log);
+	// if (global.conf) {
+	// 	Container.set('conf', global.conf);
+	// }
+	// Container.set('N9HttpClient', new N9HttpClient());
 
 	// Init every modules
 	await initModules(options.path, options.log);
-	const returnObject = await expressAppStarter(options);
-	await bindSpecificRoutes(returnObject.app, options);
+	const returnObject = await startExpressApp(nestAppModule, options);
+	// console.log(`-- index.ts app._router.stack --`, returnObject.app._router.stack);
 
 	// Manage SIGTERM & SIGINT
 	if (options.shutdown.enableGracefulShutdown) {

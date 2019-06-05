@@ -3,7 +3,7 @@ import { N9Error } from '@neo9/n9-node-utils';
 import { getNamespace } from 'continuation-local-storage';
 import { CoreOptions, Request, RequestAPI, RequiredUriUrl } from 'request';
 import * as rpn from 'request-promise-native';
-import * as UrlJoin from 'url-join';
+import UrlJoin = require('url-join');
 import { RequestIdNamespaceName } from '../requestid';
 
 export class N9HttpClient {
@@ -75,8 +75,7 @@ export class N9HttpClient {
 					queryParams,
 					headers,
 					body: body && bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
-					srcError: e.error,
-					srcErrorContext: e.error.context,
+					srcError: JSON.stringify(e.error),
 				});
 			} else {
 				throw e;

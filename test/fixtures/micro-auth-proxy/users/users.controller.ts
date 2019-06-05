@@ -1,12 +1,11 @@
-import { Authorized, Get, JsonController, Session } from "routing-controllers";
-import { Service } from "typedi";
+import { Controller, Get, Session, UseGuards } from '@nestjs/common';
+import { SessionLoaderInterceptor } from '../../../../src/middleware/session-loader.interceptor';
 
-@Service()
-@JsonController()
+@Controller()
 export class UsersController {
 
 	@Get("/me")
-	@Authorized()
+	@UseGuards(SessionLoaderInterceptor.getAuthCheckerFunction())
 	public async me(@Session() session: any): Promise<any> {
 		return session;
 	}

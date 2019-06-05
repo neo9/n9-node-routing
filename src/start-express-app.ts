@@ -1,34 +1,21 @@
-import { N9Error } from '@neo9/n9-node-utils';
+import { NestFactory } from '@nestjs/core';
+import { ExpressAdapter } from '@nestjs/platform-express';
 import { ValidatorOptions } from 'class-validator';
+import { NextFunction } from 'express';
 import * as express from 'express';
 import { Request, Response } from 'express';
 import * as helmet from 'helmet';
 import { createServer } from 'http';
 import * as morgan from 'morgan';
 import { FormatFn, TokenIndexer } from 'morgan';
-import { Action, RoutingControllersOptions, useContainer, useExpressServer } from 'routing-controllers';
-import { Container } from 'typedi';
-import { ErrorHandler } from './middleware/error-handler.interceptor';
+import { N9NodeRoutingLoggerService } from './logger.service';
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
 import { N9NodeRouting } from './models/routing.models';
 import { setRequestContext } from './requestid';
+import bindSpecificRoutes from './routes';
 import ErrnoException = NodeJS.ErrnoException;
 
-export default async function(options: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> {
-	// Setup routing-controllers to use typedi container.
-	useContainer(Container);
-
-	// Defaults options for routing-controller
-	const defaultRoutingControllerOptions: RoutingControllersOptions = {
-		defaults: {
-			// with this option, null will return 404 by default
-			nullResultCode: 404,
-			// with this option, void or Promise<void> will return 204 by default
-			undefinedResultCode: 204,
-		},
-		defaultErrorHandler: false,
-		controllers: [options.path + '/**/*.controller.*s'],
-	};
+const startExpressApp = async (nestAppModule: any, options: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> => {
 
 	// Default options
 	options.http = options.http || {};
@@ -56,24 +43,10 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 			].join(' ');
 		}
 	});
-	options.http.routingController = Object.assign({}, defaultRoutingControllerOptions, options.http.routingController);
 
-	options.http.routingController.interceptors = [SessionLoaderInterceptor, ErrorHandler];
-	options.http.routingController.authorizationChecker = async (action: Action, roles: string[]) => {
-		if (!action.request.headers.session) {
-			throw new N9Error('session-required', 401);
-		}
-		try {
-			action.request.session = JSON.parse(action.request.headers.session);
-		} catch (err) {
-			throw new N9Error('session-header-is-invalid', 401);
-		}
-		if (!action.request.session.userId) {
-			throw new N9Error('session-header-has-no-userId', 401);
-		}
-		return true;
-	};
-	options.http.routingController.validation = {
+	// TODO:
+	// app.useGlobalInterceptors(new LoggingInterceptor());
+	options.http.validation = {
 		whitelist: true,
 		forbidNonWhitelisted: true,
 	} as ValidatorOptions;
@@ -107,6 +80,7 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 	// Middleware
 	expressApp.use(setRequestContext);
 	expressApp.use(helmet());
+	expressApp.use(SessionLoaderInterceptor.use);
 	// Logger middleware
 	if (options.http.logLevel) {
 		expressApp.use(morgan(options.http.logLevel as FormatFn, {
@@ -116,12 +90,12 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 						try {
 							const morganDetails = JSON.parse(message);
 							options.log.info('api call ' + morganDetails.path, {
-								... morganDetails,
-								durationMs: Number.parseFloat(morganDetails['response-time'])
+								...morganDetails,
+								durationMs: Number.parseFloat(morganDetails['response-time']),
 							});
 						} catch (e) {
 							message = message && message.replace('\n', '');
-							options.log.info(message, { error : e});
+							options.log.info(message, { error: e });
 						}
 					} else {
 						message = message && message.replace('\n', '');
@@ -132,13 +106,19 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 		}));
 	}
 
+	await bindSpecificRoutes(expressApp, options);
+
 	const server = createServer(expressApp);
 
 	if (options.http.beforeRoutingControllerLaunchHook) {
 		await options.http.beforeRoutingControllerLaunchHook(expressApp, options.log, options);
 	}
 
-	expressApp = useExpressServer(expressApp, options.http.routingController);
+	const nestApp = await NestFactory.create(nestAppModule, new ExpressAdapter(expressApp), {
+		bodyParser: true,
+		logger: new N9NodeRoutingLoggerService(options.log, 'nest'),
+	});
+	await nestApp.init();
 
 	if (options.http.afterRoutingControllerLaunchHook) {
 		await options.http.afterRoutingControllerLaunchHook(expressApp, options.log, options);
@@ -165,4 +145,6 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 		app: expressApp,
 		server,
 	};
-}
+};
+
+export default startExpressApp;

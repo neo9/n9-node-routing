@@ -10,7 +10,8 @@
 		"declaration": true,
     "experimentalDecorators": true,
     "noImplicitAny": false,
-    "sourceMap": true
+    "sourceMap": true,
+    "incremental": true
   },
   "exclude": [
     "node_modules",

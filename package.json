@@ -1,7 +1,7 @@
 {
   "name": "n9-node-routing",
   "version": "1.13.0",
-  "description": "Library to easily start app with routing-controllers",
+  "description": "Library to easily start app with nest.js",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "files": [
@@ -9,7 +9,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "rimraf dist/ && tsc",
+    "build": "tsc",
     "lint": "tslint --project tsconfig.json",
     "test": "npm run lint  && npm run build && nyc ava --verbose --serial dist/test/ && nyc report --reporter=html",
     "test:dev": "tslint --project tsconfig.json --force && npm run build && nyc ava --verbose --serial dist/test/ && nyc report --reporter=html",
@@ -37,42 +37,41 @@
     "routing-controllers"
   ],
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "dependencies": {
     "@neo9/n9-node-log": "^2.4.0",
     "@neo9/n9-node-utils": "^1.8.1",
+    "@nestjs/common": "^6.2.4",
+    "@nestjs/core": "^6.2.4",
+    "@nestjs/platform-express": "^6.2.4",
     "@types/app-root-dir": "^0.1.0",
     "@types/continuation-local-storage": "^3.2.1",
     "@types/helmet": "^0.0.37",
+    "@types/lodash": "^4.14.133",
     "@types/morgan": "^1.7.35",
     "@types/shortid": "^0.0.29",
-    "@types/url-join": "^0.8.2",
+    "@types/url-join": "^4.0.0",
     "app-root-dir": "^1.0.2",
-    "body-parser": "^1.17.2",
-    "class-validator": "0.8.5",
-    "class-validator-jsonschema": "^1.1.1",
+    "class-transformer": "^0.2.3",
+    "class-validator": "^0.9.1",
     "codecov": "^3.0.0",
     "continuation-local-storage": "^3.2.1",
     "conventional-changelog-cli": "^1.3.21",
-    "express": "^4.15.3",
     "glob": "^7.1.2",
     "glob-promise": "^3.4.0",
     "helmet": "^3.12.0",
+    "lodash": "^4.17.11",
     "moment": "^2.22.0",
     "morgan": "1.9.1",
-    "multer": "^1.3.0",
     "reflect-metadata": "^0.1.10",
     "release-it": "7.4.8",
     "request": "^2.85.0",
-    "routing-controllers": "^0.7.0",
-    "routing-controllers-openapi": "^1.2.1",
     "shortid": "^2.2.8",
     "stream-array": "^1.1.2",
     "swagger-ui-express": "^3.0.8",
     "ts-node": "^5.0.1",
     "tslint": "^5.9.1",
-    "typedi": "^0.5.2",
     "url-join": "^4.0.0"
   },
   "devDependencies": {
@@ -87,6 +86,6 @@
     "nyc": "^11.6.0",
     "request-promise-native": "^1.0.5",
     "std-mocks": "^1.0.1",
-    "typescript": "^2.3.3"
+    "typescript": "^3.4.5"
   }
 }

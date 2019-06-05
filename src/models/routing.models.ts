@@ -1,8 +1,8 @@
 import { N9Log } from '@neo9/n9-node-log';
+import { ValidatorOptions } from 'class-validator';
 import { Express } from 'express';
 import { Server } from 'http';
 import * as morgan from 'morgan';
-import { RoutingControllersOptions } from 'routing-controllers';
 
 // tslint:disable-next-line:no-namespace
 export namespace N9NodeRouting {
@@ -20,7 +20,7 @@ export namespace N9NodeRouting {
 		logLevel?: string | false | morgan.FormatFn;
 		port?: number | string;
 		preventListen?: boolean;
-		routingController?: RoutingControllersOptions;
+		validation?: ValidatorOptions;
 		beforeRoutingControllerLaunchHook?: (app: Express, log: N9Log, options: Options) => Promise<void>;
 		afterRoutingControllerLaunchHook?: (app: Express, log: N9Log, options: Options) => Promise<void>;
 	}
