@@ -1,16 +1,16 @@
 import n9Log from '@neo9/n9-node-log';
+import { N9Error } from '@neo9/n9-node-utils';
 import * as appRootDir from 'app-root-dir';
 import { join } from 'path';
 // tslint:disable-next-line:no-import-side-effect
 import 'reflect-metadata';
-// tslint:disable-next-line:no-import-side-effect
-import './utils/error-to-json';
 import initModules from './initialise-modules';
 import { N9NodeRouting } from './models/routing.models';
 import { registerShutdown } from './register-system-signals';
 import { requestIdFilter } from './requestid';
-import bindSpecificRoutes from './routes';
 import startExpressApp from './start-express-app';
+// tslint:disable-next-line:no-import-side-effect
+import './utils/error-to-json';
 
 /* istanbul ignore next */
 function handleThrow(err: Error): void {
@@ -26,9 +26,13 @@ export * from './models/routing.models';
 export * from './models/routes.models';
 export * from './utils/http-client-base';
 
-export default async function (nestAppModule: any, options: N9NodeRouting.Options = {}): Promise<N9NodeRouting.ReturnObject> {
+export default async function (options: N9NodeRouting.Options = {}): Promise<N9NodeRouting.ReturnObject> {
 	// Provides a stack trace for unhandled rejections instead of the default message string.
 	process.on('unhandledRejection', handleThrow);
+
+	if(!global.appModule) {
+		throw new N9Error('missing-app-module', 500);
+	}
 
 	// Options default
 	options.path = options.path || join(appRootDir.get(), 'src', 'modules');
@@ -68,16 +72,9 @@ export default async function (nestAppModule: any, options: N9NodeRouting.Option
 		options.log.addFilter(requestIdFilter);
 	}
 
-	// TODO: migrate
-	// Container.set('logger', options.log);
-	// if (global.conf) {
-	// 	Container.set('conf', global.conf);
-	// }
-	// Container.set('N9HttpClient', new N9HttpClient());
-
 	// Init every modules
 	await initModules(options.path, options.log);
-	const returnObject = await startExpressApp(nestAppModule, options);
+	const returnObject = await startExpressApp(options);
 	// console.log(`-- index.ts app._router.stack --`, returnObject.app._router.stack);
 
 	// Manage SIGTERM & SIGINT

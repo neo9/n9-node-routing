@@ -1,4 +1,5 @@
 // import { N9Error } from '@neo9/n9-node-utils';
+import { N9Error } from '@neo9/n9-node-utils';
 import * as appRootDir from 'app-root-dir';
 // import { getFromContainer, MetadataStorage } from 'class-validator';
 import { Express, NextFunction, Request, Response } from 'express';
@@ -83,27 +84,27 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 //
 // 		expressApp.use('/documentation', SwaggerUi.serve, SwaggerUi.setup(null, options.openapi.swaggerui));
 // 	}
-//
-// 	// Handle 404 errors
-// 	expressApp.use((req: Request, res: Response, next: NextFunction) => {
-// 		if (!res.headersSent) {
-// 			const err = new N9Error('not-found', 404, { url: req.url });
-// 			options.log.warn(err as any);
-// 			let error;
-//
-// 			if (!expressApp.get('env') || ['development', 'test'].indexOf(expressApp.get('env')) !== -1) {
-// 				error = err;
-// 			}
-//
-// 			return res.status(404).json({
-// 				code: err.message,
-// 				status: err.status,
-// 				context: err.context,
-// 				error,
-// 			});
-// 		}
-// 		next();
-// 	});
+
+	// Handle 404 errors
+	expressApp.use((req: Request, res: Response, next: NextFunction) => {
+		if (!res.headersSent) {
+			const err = new N9Error('not-found', 404, { url: req.url });
+			options.log.warn(err.message, { url: req.url});
+			let error;
+
+			if (!expressApp.get('env') || ['development', 'test'].indexOf(expressApp.get('env')) !== -1) {
+				error = err;
+			}
+
+			return res.status(404).json({
+				code: err.message,
+				status: err.status,
+				context: err.context,
+				error,
+			});
+		}
+		next();
+	});
 }
 //
 export default def;

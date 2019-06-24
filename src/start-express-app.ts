@@ -15,7 +15,7 @@ import { setRequestContext } from './requestid';
 import bindSpecificRoutes from './routes';
 import ErrnoException = NodeJS.ErrnoException;
 
-const startExpressApp = async (nestAppModule: any, options: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> => {
+const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> => {
 
 	// Default options
 	options.http = options.http || {};
@@ -114,7 +114,7 @@ const startExpressApp = async (nestAppModule: any, options: N9NodeRouting.Option
 		await options.http.beforeRoutingControllerLaunchHook(expressApp, options.log, options);
 	}
 
-	const nestApp = await NestFactory.create(nestAppModule, new ExpressAdapter(expressApp), {
+	const nestApp = await NestFactory.create(global.appModule, new ExpressAdapter(expressApp), {
 		bodyParser: true,
 		logger: new N9NodeRoutingLoggerService(options.log, 'nest'),
 	});
