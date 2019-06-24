@@ -1,9 +1,22 @@
+## Version [1.13.1](https://github.com/neo9/n9-node-routing/compare/1.13.0...1.13.1) (2019-06-24)
+
+
+### shhutdown
+
+* Fix shutdown and increase default timeout ([c6de0cc](https://github.com/neo9/n9-node-routing/commit/c6de0cc)) (Benjamin Daniel)
+
+
+
 # Version [1.13.0](https://github.com/neo9/n9-node-routing/compare/1.12.3...1.13.0) (2019-04-02)
 
 
 ### hooks
 
 * Add shutdown and ping hooks ([7678d0d](https://github.com/neo9/n9-node-routing/commit/7678d0d)) (Benjamin Daniel)
+
+### release
+
+* V 1.13.0 ([e437765](https://github.com/neo9/n9-node-routing/commit/e437765)) (Benjamin Daniel)
 
 
 
