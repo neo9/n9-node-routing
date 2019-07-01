@@ -26,13 +26,9 @@ export * from './models/routing.models';
 export * from './models/routes.models';
 export * from './utils/http-client-base';
 
-export default async function (options: N9NodeRouting.Options = {}): Promise<N9NodeRouting.ReturnObject> {
+export default async function (nestAppModule: any, options: N9NodeRouting.Options = {}): Promise<N9NodeRouting.ReturnObject> {
 	// Provides a stack trace for unhandled rejections instead of the default message string.
 	process.on('unhandledRejection', handleThrow);
-
-	if(!global.appModule) {
-		throw new N9Error('missing-app-module', 500);
-	}
 
 	// Options default
 	options.path = options.path || join(appRootDir.get(), 'src', 'modules');
@@ -74,7 +70,7 @@ export default async function (options: N9NodeRouting.Options = {}): Promise<N9N
 
 	// Init every modules
 	await initModules(options.path, options.log);
-	const returnObject = await startExpressApp(options);
+	const returnObject = await startExpressApp(nestAppModule, options);
 	// console.log(`-- index.ts app._router.stack --`, returnObject.app._router.stack);
 
 	// Manage SIGTERM & SIGINT

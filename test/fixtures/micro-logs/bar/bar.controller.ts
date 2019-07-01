@@ -1,7 +1,7 @@
 import { N9Log } from '@neo9/n9-node-log';
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Controller, Get, HttpCode, Inject } from '@nestjs/common';
 
-@Controller()
+@Controller('/')
 export class BarController {
 
 	@Inject('logger')
@@ -17,6 +17,7 @@ export class BarController {
 	}
 
 	@Get("/empty")
+	@HttpCode(204)
 	public async getBar2(): Promise<void> {
 		return;
 	}

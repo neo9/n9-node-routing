@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { ValidatorOptions } from 'class-validator';
-import { NextFunction } from 'express';
 import * as express from 'express';
 import { Request, Response } from 'express';
 import * as helmet from 'helmet';
@@ -9,13 +8,14 @@ import { createServer } from 'http';
 import * as morgan from 'morgan';
 import { FormatFn, TokenIndexer } from 'morgan';
 import { N9NodeRoutingLoggerService } from './logger.service';
+import { AllErrorsFilter } from './middleware/error-handler.interceptor';
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
 import { N9NodeRouting } from './models/routing.models';
 import { setRequestContext } from './requestid';
 import bindSpecificRoutes from './routes';
 import ErrnoException = NodeJS.ErrnoException;
 
-const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> => {
+const startExpressApp = async (nestAppModule: any, options: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> => {
 
 	// Default options
 	options.http = options.http || {};
@@ -114,10 +114,11 @@ const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRo
 		await options.http.beforeRoutingControllerLaunchHook(expressApp, options.log, options);
 	}
 
-	const nestApp = await NestFactory.create(global.appModule, new ExpressAdapter(expressApp), {
+	const nestApp = await NestFactory.create(nestAppModule, new ExpressAdapter(expressApp), {
 		bodyParser: true,
 		logger: new N9NodeRoutingLoggerService(options.log, 'nest'),
 	});
+	nestApp.useGlobalFilters(new AllErrorsFilter());
 	await nestApp.init();
 
 	if (options.http.afterRoutingControllerLaunchHook) {

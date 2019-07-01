@@ -1,25 +1,25 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { N9HttpClient } from './utils/http-client-base';
 
 
 const globalLoggerProvider = {
 	provide: 'logger',
 	useFactory: () => {
-		console.log(`-- app.module.ts  --`, global.log);
+		// console.log(`-- app.module.ts log --`, global.log);
 		return global.log
 	},
 };
 const globalConfProvider = {
 	provide: 'conf',
 	useFactory: () => {
-		console.log(`-- app.module.ts  --`, global.conf);
+		// console.log(`-- app.module.ts conf  --`, global.conf);
 		return global.conf
 	},
 };
-// TODO
+
 const N9HttpClientInstance = new N9HttpClient();
-export const globalN9HttpClientProvider = {
-	provide: 'logger',
+const globalN9HttpClientProvider = {
+	provide: 'n9HttpClient',
 	useValue: N9HttpClientInstance,
 };
 
@@ -30,8 +30,11 @@ export const globalN9HttpClientProvider = {
 		globalConfProvider,
 		globalN9HttpClientProvider,
 	],
-	imports: [global.appModule],
-	exports: [global.appModule]
+	exports: [
+			'logger',
+			'conf',
+			'n9HttpClient'
+	]
 })
 export class RootModule {
 }
