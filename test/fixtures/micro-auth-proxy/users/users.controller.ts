@@ -1,11 +1,11 @@
-import { Controller, Get, Session, UseGuards } from '@nestjs/common';
-import { SessionLoaderInterceptor } from '../../../../src/middleware/session-loader.interceptor';
+import { Body, Controller, Get, Param, Post, Query, Session, UseGuards } from '@nestjs/common';
+import { SessionAuthGuard } from '../../../../src';
 
 @Controller()
 export class UsersController {
 
 	@Get("/me")
-	@UseGuards(SessionLoaderInterceptor.getAuthCheckerFunction())
+	@UseGuards(SessionAuthGuard)
 	public async me(@Session() session: any): Promise<any> {
 		return session;
 	}

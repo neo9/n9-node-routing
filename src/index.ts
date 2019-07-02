@@ -22,6 +22,7 @@ export * from 'class-validator';
 
 export * from './decorators/acl.decorator';
 export * from './validators/date-parser.validator';
+export * from './middleware/session-auth.guard';
 export * from './models/routing.models';
 export * from './models/routes.models';
 export * from './utils/http-client-base';
