@@ -8,7 +8,7 @@ import { join } from 'path';
 // import * as SwaggerUi from 'swagger-ui-express';
 import * as RoutesService from './routes.service';
 //
-async function def(expressApp: Express, options: N9NodeRouting.Options): Promise<void> {
+async function def(expressApp: Express, options: N9NodeRouting.Options, nestApplicationModule: any): Promise<void> {
 	// Fetch application name
 	const packageJson = require(join(appRootDir.get(), 'package.json'));
 	// if (!options.openapi) {
@@ -55,7 +55,7 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 	});
 
 	expressApp.get('/routes', (req: Request, res: Response, next: NextFunction) => {
-		res.status(200).send(RoutesService.getRoutes());
+		res.status(200).send(RoutesService.getRoutes(nestApplicationModule));
 	});
 //
 // 	if (options.openapi.isEnable) {

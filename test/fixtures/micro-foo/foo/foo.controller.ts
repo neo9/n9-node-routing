@@ -4,8 +4,7 @@ import { Acl } from '../../../../src';
 @Controller()
 export class FooController {
 
-	@Post("/foo")
-	@Post("/v1/fou")
+	@Post(["/foo", "/v1/fou"])
 	public async createFoo(@Body() body: any): Promise<any> {
 		return body;
 	}

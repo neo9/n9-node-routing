@@ -1,3 +1,4 @@
+import { N9Error } from '@neo9/n9-node-utils';
 import { Module } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
@@ -17,9 +18,22 @@ import { RootModule } from './root.module';
 import bindSpecificRoutes from './routes';
 import { importClassesFromDirectories } from './utils/import-classes-from-directories';
 import ErrnoException = NodeJS.ErrnoException;
+import _ = require('lodash');
 
 function createNestAppModule(options: N9NodeRouting.Options): any {
 	const controllers = importClassesFromDirectories([options.path + '/**/*.controller.*s']);
+	const controllersUniq = _.uniqBy(controllers, 'name');
+
+	if (controllers.length !== controllersUniq.length) {
+		const controllerDuplicatedNames: Set<string> = new Set<string>();
+		const sorted: string[] = _.map(controllers, 'name').sort();
+		for (let i = 0; i < sorted.length - 1; i++) {
+			if (sorted[i + 1] == sorted[i]) {
+				controllerDuplicatedNames.add(sorted[i]);
+			}
+		}
+		throw new N9Error('duplicated-controller', 400, { controllerDuplicatedNames: Array.from(controllerDuplicatedNames) })
+	}
 
 	class AppModule {}
 	Module({
@@ -121,8 +135,9 @@ const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRo
 			},
 		}));
 	}
+	const nestAppModule = createNestAppModule(options);
 
-	await bindSpecificRoutes(expressApp, options);
+	await bindSpecificRoutes(expressApp, options, nestAppModule);
 
 	const server = createServer(expressApp);
 
@@ -130,7 +145,6 @@ const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRo
 		await options.http.beforeRoutingControllerLaunchHook(expressApp, options.log, options);
 	}
 
-	const nestAppModule = createNestAppModule(options);
 
 	const nestApp = await NestFactory.create(nestAppModule, new ExpressAdapter(expressApp), {
 		bodyParser: true,
@@ -147,6 +161,10 @@ const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRo
 	const listen = async () => {
 		return new Promise((resolve, reject) => {
 			server.listen(options.http.port);
+			// const routes = _.compact(_.map(expressApp._router.stack, 'route'));
+			// for (const route of routes) {
+			// 	console.log(`-- start-express-app.ts app._router.stack → path --`, route.path);
+			// }
 			server.on('error', (error: ErrnoException) => {
 				reject(analyzeError(error));
 			});
