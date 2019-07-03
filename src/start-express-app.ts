@@ -1,3 +1,4 @@
+import { Module } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { ValidatorOptions } from 'class-validator';
@@ -12,10 +13,25 @@ import { AllErrorsFilter } from './middleware/error-handler.interceptor';
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
 import { N9NodeRouting } from './models/routing.models';
 import { setRequestContext } from './requestid';
+import { RootModule } from './root.module';
 import bindSpecificRoutes from './routes';
+import { importClassesFromDirectories } from './utils/import-classes-from-directories';
 import ErrnoException = NodeJS.ErrnoException;
 
-const startExpressApp = async (nestAppModule: any, options: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> => {
+function createNestAppModule(options: N9NodeRouting.Options): any {
+	const controllers = importClassesFromDirectories([options.path + '/**/*.controller.*s']);
+
+	class AppModule {}
+	Module({
+		controllers,
+		imports: [
+			RootModule,
+		],
+	})(AppModule);
+	return AppModule;
+}
+
+const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> => {
 
 	// Default options
 	options.http = options.http || {};
@@ -113,6 +129,8 @@ const startExpressApp = async (nestAppModule: any, options: N9NodeRouting.Option
 	if (options.http.beforeRoutingControllerLaunchHook) {
 		await options.http.beforeRoutingControllerLaunchHook(expressApp, options.log, options);
 	}
+
+	const nestAppModule = createNestAppModule(options);
 
 	const nestApp = await NestFactory.create(nestAppModule, new ExpressAdapter(expressApp), {
 		bodyParser: true,

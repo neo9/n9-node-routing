@@ -27,7 +27,7 @@ export * from './models/routing.models';
 export * from './models/routes.models';
 export * from './utils/http-client-base';
 
-export default async function (nestAppModule: any, options: N9NodeRouting.Options = {}): Promise<N9NodeRouting.ReturnObject> {
+export default async function (options: N9NodeRouting.Options = {}): Promise<N9NodeRouting.ReturnObject> {
 	// Provides a stack trace for unhandled rejections instead of the default message string.
 	process.on('unhandledRejection', handleThrow);
 
@@ -65,13 +65,18 @@ export default async function (nestAppModule: any, options: N9NodeRouting.Option
 			formatJSON: formatLogInJSON,
 		});
 	}
+
+	if(!global.log) {
+		global.log = options.log;
+	}
+
 	if (options.enableRequestId) {
 		options.log.addFilter(requestIdFilter);
 	}
 
 	// Init every modules
 	await initModules(options.path, options.log);
-	const returnObject = await startExpressApp(nestAppModule, options);
+	const returnObject = await startExpressApp(options);
 	// console.log(`-- index.ts app._router.stack --`, returnObject.app._router.stack);
 
 	// Manage SIGTERM & SIGINT

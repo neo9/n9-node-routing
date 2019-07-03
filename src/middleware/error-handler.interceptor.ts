@@ -1,3 +1,4 @@
+import { N9Error } from '@neo9/n9-node-utils';
 import { ArgumentsHost, Catch, HttpException } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { Response } from 'express';
@@ -9,25 +10,24 @@ export class AllErrorsFilter implements BaseExceptionFilter {
 	public catch(error: any, host: ArgumentsHost): void {
 		const ctx = host.switchToHttp();
 		const response: Response = ctx.getResponse();
-		// const request: Request = ctx.getRequest();
+		const request: Request = ctx.getRequest();
+		const url = request.url;
 
 		if(error instanceof HttpException) {
 			let body;
 			if(error.message && error.message.error) {
+				const err = new N9Error(error.message.error.toLowerCase().replace(' ', '-'), error.getStatus(), { url });
+				global.log.warn(err as any);
 				body = {
-					code: error.message.error.toLowerCase().replace(' ', '-'),
-					status: error.getStatus(),
-					context: {
-						error
-					}
+					code: err.message,
+					status: err.status,
+					context: err.context,
 				}
 			} else {
 				body = {
 					code: _.get(error.message, 'error', error.message),
 					status: error.getStatus(),
-					context: {
-						error
-					}
+					context: {},
 				};
 			}
 
@@ -55,7 +55,7 @@ export class AllErrorsFilter implements BaseExceptionFilter {
 			response.json({
 				code,
 				status,
-				context,
+				context
 			});
 		}
 	}
