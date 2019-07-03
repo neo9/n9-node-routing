@@ -584,6 +584,13 @@
   resolved "https://registry.yarnpkg.com/@types/std-mocks/-/std-mocks-1.0.0.tgz#1d4015e9b16ef4b4acc94860e7fb00b6b4db8530"
   integrity sha512-0PDd05AK/u41wFxr0ytOYhQz15uAhkmwe8fOp33UN506zGARdLVx/Yc/WSeGs+8zKjMMTp1vlB+OXGwD7HmImg==
 
+"@types/stream-array@^1.1.0":
+  version "1.1.0"
+  resolved "https://nexus.oneplace.neo9-solutions.fr/repository/npm-global/@types/stream-array/-/stream-array-1.1.0.tgz#98e1ea5b18c6295c9dc83196285438c0529cc3ef"
+  integrity sha512-39nS0syUqgqYWKrgTa9TdBekZwzqeD8eVT/zzBekUgi28JAGlmtpRim+o8a3xuRI/Pa0s+/Jf/mYq+HNgUcY1A==
+  dependencies:
+    "@types/node" "*"
+
 "@types/tough-cookie@*":
   version "2.3.5"
   resolved "https://repo.neo9.pro/repository/npm-global/@types/tough-cookie/-/tough-cookie-2.3.5.tgz#9da44ed75571999b65c37b60c9b2b88db54c585d"

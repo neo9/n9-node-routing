@@ -83,6 +83,7 @@
     "@types/node": "^7.0.22",
     "@types/request-promise-native": "^1.0.14",
     "@types/std-mocks": "^1.0.0",
+    "@types/stream-array": "^1.1.0",
     "ava": "^1.0.0-beta.3",
     "nodemon": "^1.17.3",
     "nyc": "^11.6.0",
