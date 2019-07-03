@@ -1,5 +1,5 @@
 import { N9Error } from '@neo9/n9-node-utils';
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { ValidatorOptions } from 'class-validator';
@@ -151,6 +151,10 @@ const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRo
 		logger: new N9NodeRoutingLoggerService(options.log, 'nest'),
 	});
 	nestApp.useGlobalFilters(new AllErrorsFilter());
+	nestApp.useGlobalPipes(new ValidationPipe({
+		transform: true,
+		... options.http.validation
+	}));
 	await nestApp.init();
 
 	if (options.http.afterRoutingControllerLaunchHook) {

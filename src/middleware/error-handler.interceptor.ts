@@ -13,16 +13,26 @@ export class AllErrorsFilter implements BaseExceptionFilter {
 		const request: Request = ctx.getRequest();
 		const url = request.url;
 
-		if(error instanceof HttpException) {
+		if (error instanceof HttpException) {
 			let body;
-			if(error.message && error.message.error) {
-				const err = new N9Error(error.message.error.toLowerCase().replace(' ', '-'), error.getStatus(), { url });
+			if (error.message && error.message.error) {
+				let err;
+				switch (error.message.error) {
+					case 'Bad Request':
+						err = new N9Error(error.message.error.toLowerCase().replace(' ', '-'), error.getStatus(), error.message.message);
+						break;
+					case 'Not Found':
+					default:
+						err = new N9Error(error.message.error.toLowerCase().replace(' ', '-'), error.getStatus(), { url });
+						break;
+				}
+
 				global.log.warn(err as any);
 				body = {
 					code: err.message,
 					status: err.status,
 					context: err.context,
-				}
+				};
 			} else {
 				body = {
 					code: _.get(error.message, 'error', error.message),
@@ -55,7 +65,7 @@ export class AllErrorsFilter implements BaseExceptionFilter {
 			response.json({
 				code,
 				status,
-				context
+				context,
 			});
 		}
 	}
