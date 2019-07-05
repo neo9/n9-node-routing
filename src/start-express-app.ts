@@ -2,6 +2,7 @@ import { N9Error } from '@neo9/n9-node-utils';
 import { Module, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
 import { Request, Response } from 'express';
@@ -9,6 +10,7 @@ import * as helmet from 'helmet';
 import { createServer } from 'http';
 import * as morgan from 'morgan';
 import { FormatFn, TokenIndexer } from 'morgan';
+import { join } from "path";
 import { N9NodeRoutingLoggerService } from './logger.service';
 import { AllErrorsFilter } from './middleware/error-handler.interceptor';
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
@@ -19,6 +21,7 @@ import bindSpecificRoutes from './routes';
 import { importClassesFromDirectories } from './utils/import-classes-from-directories';
 import ErrnoException = NodeJS.ErrnoException;
 import _ = require('lodash');
+import * as appRootDir from 'app-root-dir';
 
 function createNestAppModule(options: N9NodeRouting.Options): any {
 	const controllers = importClassesFromDirectories([options.path + '/**/*.controller.*s']);
@@ -82,6 +85,7 @@ const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRo
 	} as ValidatorOptions;
 
 	// options.log.info(`-- start-express-app.ts options.http --`, JSON.stringify(options.http, null, 2));
+	const packageJson = require(join(appRootDir.get(), 'package.json'));
 
 	// Listeners
 	const analyzeError = (error: ErrnoException) => {
@@ -137,7 +141,7 @@ const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRo
 	}
 	const nestAppModule = createNestAppModule(options);
 
-	await bindSpecificRoutes(expressApp, options, nestAppModule);
+	await bindSpecificRoutes(expressApp, options, nestAppModule, packageJson);
 
 	const server = createServer(expressApp);
 
@@ -155,6 +159,20 @@ const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRo
 		transform: true,
 		... options.http.validation
 	}));
+
+	if(options.openapi.isEnable) {
+		const swaggerDocumentOptions = new DocumentBuilder()
+				.setTitle(packageJson.name)
+				.setDescription(packageJson.description)
+				.setVersion(packageJson.version)
+				.build();
+		const document = SwaggerModule.createDocument(nestApp, swaggerDocumentOptions);
+		SwaggerModule.setup('documentation', nestApp, document, {
+			customSiteTitle: packageJson.name + ' -- OpenAPI Doc',
+			...options.openapi.swaggerui
+		});
+	}
+
 	await nestApp.init();
 
 	if (options.http.afterRoutingControllerLaunchHook) {

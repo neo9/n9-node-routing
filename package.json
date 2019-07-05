@@ -48,6 +48,7 @@
     "@nestjs/common": "^6.2.4",
     "@nestjs/core": "^6.2.4",
     "@nestjs/platform-express": "^6.2.4",
+    "@nestjs/swagger": "^3.0.2",
     "@types/app-root-dir": "^0.1.0",
     "@types/continuation-local-storage": "^3.2.1",
     "@types/helmet": "^0.0.37",
@@ -72,7 +73,7 @@
     "request": "^2.85.0",
     "shortid": "^2.2.8",
     "stream-array": "^1.1.2",
-    "swagger-ui-express": "^3.0.8",
+    "swagger-ui-express": "^4.0.7",
     "tslint": "^5.9.1",
     "url-join": "^4.0.0"
   },

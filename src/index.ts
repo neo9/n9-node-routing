@@ -41,6 +41,12 @@ export default async function (options: N9NodeRouting.Options = {}): Promise<N9N
 	options.shutdown.enableGracefulShutdown = typeof options.shutdown.enableGracefulShutdown === 'boolean' ? options.shutdown.enableGracefulShutdown : true;
 	options.shutdown.timeout = typeof options.shutdown.timeout === 'number' ? options.shutdown.timeout : 10 * 1000;
 	options.shutdown.waitDurationBeforeStop = typeof options.shutdown.waitDurationBeforeStop === 'number' ? options.shutdown.waitDurationBeforeStop : 1000;
+	if (!options.openapi) {
+		options.openapi = {
+			isEnable: true,
+		};
+	}
+	options.openapi.swaggerui = options.openapi.swaggerui || Object.assign({}, options.openapi.swaggerui, { swaggerUrl: '../documentation.json' });
 
 	const formatLogInJSON = options.enableLogFormatJSON && process.env.NODE_ENV && process.env.NODE_ENV !== 'development';
 	global.n9NodeRoutingData = {

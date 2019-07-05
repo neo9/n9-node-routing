@@ -4,7 +4,8 @@ import { Acl } from '../../../../src';
 @Controller()
 export class FooController {
 
-	@Post(["/foo", "/v1/fou"])
+	@Post("/foo")
+	// @Post(["/foo", "/v1/fou"]) : Syntax not supported by nestJS & swagger
 	public async createFoo(@Body() body: any): Promise<any> {
 		return body;
 	}

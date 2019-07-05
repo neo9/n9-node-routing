@@ -1,6 +1,5 @@
 // import { N9Error } from '@neo9/n9-node-utils';
 import { N9Error } from '@neo9/n9-node-utils';
-import * as appRootDir from 'app-root-dir';
 // import { getFromContainer, MetadataStorage } from 'class-validator';
 import { Express, NextFunction, Request, Response } from 'express';
 import { N9NodeRouting } from './models/routing.models';
@@ -8,17 +7,8 @@ import { join } from 'path';
 // import * as SwaggerUi from 'swagger-ui-express';
 import * as RoutesService from './routes.service';
 //
-async function def(expressApp: Express, options: N9NodeRouting.Options, nestApplicationModule: any): Promise<void> {
-	// Fetch application name
-	const packageJson = require(join(appRootDir.get(), 'package.json'));
-	// if (!options.openapi) {
-	// 	options.openapi = {
-	// 		isEnable: true,
-	// 	};
-	// }
-// 	options.openapi.jsonUrl = options.openapi.jsonUrl || '/documentation.json';
-// 	options.openapi.swaggerui = options.openapi.swaggerui || Object.assign({}, options.openapi.swaggerui, { swaggerUrl: '../documentation.json' });
-//
+async function def(expressApp: Express, options: N9NodeRouting.Options, nestApplicationModule: any, packageJson: any): Promise<void> {
+
 	expressApp.get('/', (req: Request, res: Response, next: NextFunction) => {
 		res.status(200).send(packageJson.name);
 	});

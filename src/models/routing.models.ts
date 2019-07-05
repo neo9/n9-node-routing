@@ -59,7 +59,6 @@ export namespace N9NodeRouting {
 
 	export interface SwaggerOptions {
 		isEnable?: boolean;
-		jsonUrl?: string;
 		swaggerui?: SwaggerUi;
 	}
 

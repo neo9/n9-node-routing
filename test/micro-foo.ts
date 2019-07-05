@@ -149,64 +149,65 @@ test('Check /routes', async (t) => {
 	await closeServer(server);
 });
 
-test('Call routes (versioning)', async (t: Assertions) => {
-	stdMock.use();
-	const { app, server } = await n9NodeRouting({
-		path: MICRO_FOO,
-		http: { port: 5559 },
-	});
-	let res = await rp({
-		method: 'POST',
-		uri: 'http://localhost:5559/v1/bar',
-		body: {},
-		resolveWithFullResponse: true,
-		json: true,
-	});
-	t.is(res.statusCode, 201, 'v1/bar statusCode');
-	t.is(res.body.bar, 'foo', 'v1/bar body');
-
-	// Call /v1/fou
-	res = await rp({
-		method: 'POST',
-		uri: 'http://localhost:5559/v1/fou',
-		body: { hi: 'hello' },
-		resolveWithFullResponse: true,
-		json: true,
-	});
-	t.is(res.statusCode, 201);
-	t.deepEqual(res.body, { hi: 'hello' });
-
-	// Call special route which fails
-	let err = await t.throwsAsync<StatusCodeError>(async () => rp({
-		method: 'POST',
-		uri: 'http://localhost:5559/v1/bar',
-		qs: { error: true },
-		body: {},
-		resolveWithFullResponse: true,
-		json: true,
-	}));
-	t.is(err.statusCode, 500);
-	t.is(err.response.body.code, 'bar-error');
-
-	// Call special route which fails with extendable error
-	err = await t.throwsAsync(async () => rp({
-		method: 'POST',
-		uri: 'http://localhost:5559/v2/bar',
-		qs: { error: true },
-		body: {},
-		resolveWithFullResponse: true,
-		json: true,
-	}));
-	t.is(err.statusCode, 505);
-	t.is(err.response.body.code, 'bar-extendable-error');
-	t.is(err.response.body.status, 505);
-	t.deepEqual(err.response.body.context, { test: true });
-	stdMock.restore();
-	const output = stdMock.flush();
-	t.true(output.stderr.join(' ').includes('Error: bar-extendable-error'));
-	// Close server
-	await closeServer(server);
-});
+// Can't be done with nest swagger
+// test('Call routes (versioning)', async (t: Assertions) => {
+// 	stdMock.use();
+// 	const { app, server } = await n9NodeRouting({
+// 		path: MICRO_FOO,
+// 		http: { port: 5559 },
+// 	});
+// 	let res = await rp({
+// 		method: 'POST',
+// 		uri: 'http://localhost:5559/v1/bar',
+// 		body: {},
+// 		resolveWithFullResponse: true,
+// 		json: true,
+// 	});
+// 	t.is(res.statusCode, 201, 'v1/bar statusCode');
+// 	t.is(res.body.bar, 'foo', 'v1/bar body');
+//
+// 	// Call /v1/fou
+// 	res = await rp({
+// 		method: 'POST',
+// 		uri: 'http://localhost:5559/v1/fou',
+// 		body: { hi: 'hello' },
+// 		resolveWithFullResponse: true,
+// 		json: true,
+// 	});
+// 	t.is(res.statusCode, 201);
+// 	t.deepEqual(res.body, { hi: 'hello' });
+//
+// 	// Call special route which fails
+// 	let err = await t.throwsAsync<StatusCodeError>(async () => rp({
+// 		method: 'POST',
+// 		uri: 'http://localhost:5559/v1/bar',
+// 		qs: { error: true },
+// 		body: {},
+// 		resolveWithFullResponse: true,
+// 		json: true,
+// 	}));
+// 	t.is(err.statusCode, 500);
+// 	t.is(err.response.body.code, 'bar-error');
+//
+// 	// Call special route which fails with extendable error
+// 	err = await t.throwsAsync(async () => rp({
+// 		method: 'POST',
+// 		uri: 'http://localhost:5559/v2/bar',
+// 		qs: { error: true },
+// 		body: {},
+// 		resolveWithFullResponse: true,
+// 		json: true,
+// 	}));
+// 	t.is(err.statusCode, 505);
+// 	t.is(err.response.body.code, 'bar-extendable-error');
+// 	t.is(err.response.body.status, 505);
+// 	t.deepEqual(err.response.body.context, { test: true });
+// 	stdMock.restore();
+// 	const output = stdMock.flush();
+// 	t.true(output.stderr.join(' ').includes('Error: bar-extendable-error'));
+// 	// Close server
+// 	await closeServer(server);
+// });
 
 test('Call routes with error in development (error key)', async (t: Assertions) => {
 	stdMock.use({ print });
