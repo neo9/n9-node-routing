@@ -45,8 +45,6 @@ export class AllErrorsFilter implements BaseExceptionFilter {
 					.status(error.getStatus())
 					.json(body);
 		} else {
-			console.log(`-- error-handler.interceptor.ts all errors filter --`, typeof error, error instanceof HttpException, JSON.stringify(error));
-			console.log(`-- -------------------------------- --`);
 			const status = error.status || error.httpCode || 500;
 			let code = 'unspecified-error';
 			if (error.name && error.name !== 'Error') {

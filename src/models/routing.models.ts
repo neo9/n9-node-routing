@@ -1,4 +1,5 @@
 import { N9Log } from '@neo9/n9-node-log';
+import { Type } from '@nestjs/common';
 import { ValidatorOptions } from 'class-validator';
 import { Express } from 'express';
 import { Server } from 'http';
@@ -14,6 +15,10 @@ export namespace N9NodeRouting {
 	}
 
 	export interface HttpOptions {
+		nest?: {
+			controllers?: Type<any>[];
+			providers?: Type<any>[];
+		};
 		ping?: {
 			dbs?: PingDb[];
 		};

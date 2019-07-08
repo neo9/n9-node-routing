@@ -10,7 +10,7 @@ import * as helmet from 'helmet';
 import { createServer } from 'http';
 import * as morgan from 'morgan';
 import { FormatFn, TokenIndexer } from 'morgan';
-import { join } from "path";
+import { join } from 'path';
 import { N9NodeRoutingLoggerService } from './logger.service';
 import { AllErrorsFilter } from './middleware/error-handler.interceptor';
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
@@ -35,12 +35,29 @@ function createNestAppModule(options: N9NodeRouting.Options): any {
 				controllerDuplicatedNames.add(sorted[i]);
 			}
 		}
-		throw new N9Error('duplicated-controller', 400, { controllerDuplicatedNames: Array.from(controllerDuplicatedNames) })
+		throw new N9Error('duplicated-controller', 400, { controllerDuplicatedNames: Array.from(controllerDuplicatedNames) });
 	}
 
-	class AppModule {}
+	const services = importClassesFromDirectories([options.path + '/**/*.service.*s']);
+	const servicesUniq = _.uniqBy(services, 'name');
+
+	if (services.length !== servicesUniq.length) {
+		const serviceDuplicatedNames: Set<string> = new Set<string>();
+		const sorted: string[] = _.map(services, 'name').sort();
+		for (let i = 0; i < sorted.length - 1; i++) {
+			if (sorted[i + 1] == sorted[i]) {
+				serviceDuplicatedNames.add(sorted[i]);
+			}
+		}
+		throw new N9Error('duplicated-service', 400, { serviceDuplicatedNames: Array.from(serviceDuplicatedNames) });
+	}
+
+	class AppModule {
+	}
+
 	Module({
-		controllers,
+		controllers: [...controllers, ...options.http.nest.controllers],
+		providers: [...services, ...options.http.nest.providers],
 		imports: [
 			RootModule,
 		],
@@ -76,6 +93,9 @@ const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRo
 			].join(' ');
 		}
 	});
+	options.http.nest = options.http.nest || {};
+	options.http.nest.controllers = options.http.nest.controllers || [];
+	options.http.nest.providers = options.http.nest.providers || [];
 
 	// TODO:
 	// app.useGlobalInterceptors(new LoggingInterceptor());
@@ -157,10 +177,10 @@ const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRo
 	nestApp.useGlobalFilters(new AllErrorsFilter());
 	nestApp.useGlobalPipes(new ValidationPipe({
 		transform: true,
-		... options.http.validation
+		...options.http.validation,
 	}));
 
-	if(options.openapi.isEnable) {
+	if (options.openapi.isEnable) {
 		const swaggerDocumentOptions = new DocumentBuilder()
 				.setTitle(packageJson.name)
 				.setDescription(packageJson.description)
@@ -169,7 +189,7 @@ const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRo
 		const document = SwaggerModule.createDocument(nestApp, swaggerDocumentOptions);
 		SwaggerModule.setup('documentation', nestApp, document, {
 			customSiteTitle: packageJson.name + ' -- OpenAPI Doc',
-			...options.openapi.swaggerui
+			...options.openapi.swaggerui,
 		});
 	}
 
