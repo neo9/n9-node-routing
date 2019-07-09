@@ -7,7 +7,7 @@ import { join } from "path";
 import * as rp from 'request-promise-native';
 import * as stdMock from 'std-mocks';
 
-import n9NodeRouting, { N9HttpClient } from '../src';
+import N9NodeRouting, { N9HttpClient } from '../src';
 import commons from './fixtures/commons';
 const MICRO_HOOKS = join(__dirname, 'fixtures/micro-hooks/');
 
@@ -19,8 +19,8 @@ const closeServer = async (server: Server) => {
 
 test('Call new route (imagine a proxy)', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
-	const { app, server } = await n9NodeRouting({
-		hasProxy: true, // tell n9NodeRouting to parse `session` header
+	const { server } = await N9NodeRouting({
+		hasProxy: true, // tell N9NodeRouting to parse `session` header
 		path: '/opt/null',
 		http: {
 			port: 6001,
@@ -32,7 +32,7 @@ test('Call new route (imagine a proxy)', async (t: Assertions) => {
 			}
 		}
 	});
-	const output = stdMock.flush().stdout.filter((line) => !line.includes(':nest:'));
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 
 	t.is(output.length, 3);
 	t.true(output[0].includes('beforeRoutingControllerLaunchHook'));
@@ -59,15 +59,14 @@ test('Call new route (imagine a proxy)', async (t: Assertions) => {
 
 test('Limit max payload size reached for bodyparser', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
-	const { app, server } = await n9NodeRouting({
+	const { server } = await N9NodeRouting({
 		hasProxy: true, // tell n9NodeRouting to parse `session` header
 		path: MICRO_HOOKS,
 		http: {
 			port: 6001,
 		}
 	});
-	const output = stdMock.flush().stdout.filter((line) => !line.includes(':nest:'));
-
+	stdMock.flush();
 	const httpClient = new N9HttpClient(new N9Log('test'));
 	const longString = 'A very long string. '.repeat(10000);
 
@@ -84,18 +83,17 @@ test('Limit max payload size reached for bodyparser', async (t: Assertions) => {
 
 test('Increase max payload size to bodyparser', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
-	const { app, server } = await n9NodeRouting({
+	const { server } = await N9NodeRouting({
 		hasProxy: true, // tell n9NodeRouting to parse `session` header
 		path: MICRO_HOOKS,
 		http: {
 			port: 6001,
-			beforeRoutingControllerLaunchHook: async (expressApp: Express, log: N9Log) => {
+			beforeRoutingControllerLaunchHook: async (expressApp: Express) => {
 				expressApp.use(bodyParser.json({ limit:  '1024kb' }));
 			}
 		}
 	});
-	const output = stdMock.flush().stdout.filter((line) => !line.includes(':nest:'));
-
+	stdMock.flush();
 	const httpClient = new N9HttpClient(new N9Log('test'));
 
 	/*

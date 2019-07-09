@@ -18,6 +18,6 @@
 
 ## API Documentation
 
-Documentation available as openapi 3.0 format : /documentation.json
+Documentation available as openapi 3.0 format : /documentation-json
 
 Swagger UI for API available at : /documentation

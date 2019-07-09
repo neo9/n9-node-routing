@@ -4,7 +4,7 @@ import { join } from 'path';
 import * as rp from 'request-promise-native';
 import * as stdMock from 'std-mocks';
 
-import routingControllerWrapper from '../src';
+import N9NodeRouting from '../src';
 import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
@@ -18,7 +18,7 @@ const print = commons.print;
 
 test('Acl usage with JSON Controller, check /routes', async (t) => {
 	stdMock.use({ print });
-	const { app, server } = await routingControllerWrapper({
+	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 		http: { port: 5575 },
 	});
@@ -59,7 +59,7 @@ test('Acl usage with JSON Controller, check /routes', async (t) => {
 
 	// Check logs
 	stdMock.restore();
-	const output = stdMock.flush();
+	stdMock.flush();
 	// Close server
 	await closeServer(server);
 });

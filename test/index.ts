@@ -3,9 +3,8 @@ import test, { Assertions } from 'ava';
 import { Server } from 'http';
 import * as rp from 'request-promise-native';
 import * as stdMock from 'std-mocks';
-import commons from './fixtures/commons';
-
 import N9NodeRouting from '../src';
+import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
 	return new Promise((resolve) => {
@@ -20,9 +19,9 @@ test.beforeEach(() => {
 
 test('Works with custom port', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { app, server } = await N9NodeRouting({ http: { port: 4002 } });
+	const { server } = await N9NodeRouting({ http: { port: 4002 } });
 	stdMock.restore();
-	const output = stdMock.flush().stdout.filter((line) => !line.includes(':nest:'));
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	t.true(output[0].includes('Listening on port 4002'), 'print launch port');
 	// Close server
 	await closeServer(server);
@@ -30,21 +29,21 @@ test('Works with custom port', async (t: Assertions) => {
 
 test('Works with preventListen = true', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { app, server } = await N9NodeRouting({ http: { port: 4002, preventListen: true } });
+	await N9NodeRouting({ http: { port: 4002, preventListen: true } });
 	stdMock.restore();
 	const output = stdMock.flush();
 
 	t.is(output.stderr.length, 0);
-	const err = await t.throwsAsync(() => rp('http://localhost:4200'));
+	const err = await t.throwsAsync(async () => rp('http://localhost:4200'));
 	t.is(err.name, 'RequestError');
 });
 
 test('Works with custom log and should add a namespace', async (t: Assertions) => {
 	const log = n9Log('custom');
 	stdMock.use({ print });
-	const { app, server } = await N9NodeRouting({ log });
+	const { server } = await N9NodeRouting({ log });
 	stdMock.restore();
-	const output = stdMock.flush().stdout.filter((line) => !line.includes(':nest:'));
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	t.true(output[0].includes('[custom:n9-node-routing] Listening on port 5000'));
 	// Close server
 	await closeServer(server);
@@ -52,9 +51,9 @@ test('Works with custom log and should add a namespace', async (t: Assertions) =
 
 test('Works without options', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { app, server } = await N9NodeRouting();
+	const { server } = await N9NodeRouting();
 	stdMock.restore();
-	const output = stdMock.flush().stdout.filter((line) => !line.includes(':nest:'));
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	t.true(output[0].includes('[n9-node-routing] Listening on port 5000'), '[n9-node-routing] Listening on port 5000');
 	// Close server
 	await closeServer(server);
@@ -80,8 +79,7 @@ test('Should not log the requests http.logLevel=false', async (t: Assertions) =>
 	await rp('http://localhost:5000/ping');
 	await rp('http://localhost:5000/routes');
 	stdMock.restore();
-	const output = stdMock.flush().stdout.filter((line) => !line.includes(':nest:'));
-
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	t.is(output.length, 1);
 	// Close server
 	await closeServer(server);
@@ -96,7 +94,7 @@ test('Should log the requests with custom level', async (t: Assertions) => {
 	await rp('http://localhost:5000/ping');
 	await rp('http://localhost:5000/routes');
 	stdMock.restore();
-	const output = stdMock.flush().stdout.filter((line) => !line.includes(':nest:'));
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	t.is(output.length, 4, 'length');
 	t.true(output[1].includes('200 /'), '200 /');
 	t.true(output[2].includes('200 /ping'), 'ping');
@@ -122,7 +120,7 @@ test('Fails with PORT already used', async (t: Assertions) => {
 		await N9NodeRouting({ http: { port: 6000 } });
 	});
 	stdMock.restore();
-	const output = stdMock.flush().stdout.filter((line) => !line.includes(':nest:'));
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	t.true(output[0].includes('Listening on port 6000'));
 	t.true(err.message.includes('Port 6000 is already in use'));
 });

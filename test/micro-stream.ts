@@ -4,7 +4,7 @@ import { join } from 'path';
 import * as rp from 'request-promise-native';
 import * as stdMock from 'std-mocks';
 
-import routingControllerWrapper from '../src';
+import N9NodeRouting from '../src';
 import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
@@ -17,7 +17,7 @@ const MICRO_FOO = join(__dirname, 'fixtures/micro-stream/');
 
 test('Basic stream', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
-	const { app, server } = await routingControllerWrapper({
+	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 		http: { port: 6001 }
 	});

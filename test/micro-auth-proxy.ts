@@ -19,7 +19,7 @@ const MICRO_AUTH = join(__dirname, 'fixtures/micro-auth-proxy/');
 test('Call session route (req.headers.session)', async (t: Assertions) => {
 	stdMock.use( { print });
 
-	const { app, server } = await N9NodeRouting( {
+	const { server } = await N9NodeRouting({
 		hasProxy: true, // tell n9NodeRouting to parse `session` header
 		path: MICRO_AUTH,
 		http: { port: 6001 }
@@ -38,7 +38,7 @@ test('Call session route (req.headers.session)', async (t: Assertions) => {
 	/*
 	** Fails with bad `session` header
 	*/
-	err = await t.throwsAsync(async () => rp({
+	err = await t.throwsAsync<StatusCodeError>(async () => rp({
 		method: 'GET',
 		uri: 'http://localhost:6001/me',
 		headers: {
@@ -52,7 +52,7 @@ test('Call session route (req.headers.session)', async (t: Assertions) => {
 	/*
 	** Fails with bad `session` header (no `userId`)
 	*/
-	err = await t.throwsAsync(async () => rp({
+	err = await t.throwsAsync<StatusCodeError>(async () => rp({
 		method: 'GET',
 		uri: 'http://localhost:6001/me',
 		headers: {

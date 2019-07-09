@@ -1,11 +1,10 @@
-import { waitFor } from '@neo9/n9-node-utils';
 import test, { Assertions } from 'ava';
 import { Server } from 'http';
 import { join } from 'path';
 import * as rp from 'request-promise-native';
 import * as stdMock from 'std-mocks';
 
-import routingControllerWrapper from '../src';
+import N9NodeRouting from '../src';
 import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
@@ -18,7 +17,7 @@ const MICRO_VALIDATE = join(__dirname, 'fixtures/micro-validate/');
 
 test('Read documentation', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
-	const { app, server } = await routingControllerWrapper({
+	const { server } = await N9NodeRouting({
 		path: MICRO_VALIDATE
 	});
 
@@ -27,8 +26,7 @@ test('Read documentation', async (t: Assertions) => {
 
 	// Check logs
 	stdMock.restore();
-	const output = stdMock.flush();
-
+	stdMock.flush();
 	t.is(res.statusCode, 200);
 	t.is(res.body.info.title, 'n9-node-routing');
 	t.is(Object.keys(res.body.paths).length, 2);

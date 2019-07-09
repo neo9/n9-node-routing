@@ -5,7 +5,7 @@ import * as rp from 'request-promise-native';
 import { StatusCodeError } from 'request-promise-native/errors';
 import * as stdMock from 'std-mocks';
 
-import n9NodeRouting from '../src';
+import N9NodeRouting from '../src';
 import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
@@ -23,7 +23,7 @@ test.beforeEach(() => {
 
 test('Basic usage, create http server', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { app, server } = await n9NodeRouting({
+	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 	});
 	// Check /foo route added on foo/foo.init.ts
@@ -44,12 +44,11 @@ test('Basic usage, create http server', async (t: Assertions) => {
 	// Check /version route
 	res = await rp({ uri: 'http://localhost:5000/version', resolveWithFullResponse: true });
 	t.is(res.statusCode, 200);
-	const matchVersion = (res.body as string).match(/^[0-9]+\.[0-9]+\.[0-9]+.*$$/);
+	const matchVersion = (res.body as string).match(/^[0-9]+\.[0-9]+\.[0-9]+.*$/);
 	t.is(matchVersion.length, 1);
 
 	// Check /404 route
-	res = await t.throwsAsync(async () => await rp({ uri: 'http://localhost:5000/404', resolveWithFullResponse: true, json: true }));
-
+	res = await t.throwsAsync<StatusCodeError>(async () => await rp({ uri: 'http://localhost:5000/404', resolveWithFullResponse: true, json: true }));
 	t.is(res.statusCode, 404, '404');
 	t.is(res.response.body.code, 'not-found', 'not-found');
 	t.is(res.response.body.status, 404);
@@ -57,7 +56,7 @@ test('Basic usage, create http server', async (t: Assertions) => {
 
 	// Check logs
 	stdMock.restore();
-	const output = stdMock.flush().stdout.filter((line) => !line.includes(':nest:'));
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 
 	// Logs on stdout
 	t.true(output[0].includes('Init module bar'), 'Init module bar');
@@ -78,7 +77,7 @@ test('Basic usage, create http server', async (t: Assertions) => {
 test('Basic usage, create http server on production', async (t: Assertions) => {
 	stdMock.use({ print });
 	process.env.NODE_ENV = 'production';
-	const { app, server } = await n9NodeRouting({
+	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 	});
 	// Check /foo route added on foo/foo.init.ts
@@ -104,7 +103,7 @@ test('Basic usage, create http server on production', async (t: Assertions) => {
 
 	// Check logs
 	stdMock.restore();
-	const output = stdMock.flush().stdout.filter((line) => !line.includes(':nest:'));
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 
 	// Logs on stdout
 	t.true(output[0].includes(`{"level":"info","message":"Init module bar","label":"n9-node-routing","timestamp":`), `Init module bar`);
@@ -125,7 +124,7 @@ test('Basic usage, create http server on production', async (t: Assertions) => {
 
 test('Check /routes', async (t) => {
 	stdMock.use({ print });
-	const { app, server } = await n9NodeRouting({
+	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 		http: { port: 5575 },
 	});
@@ -144,7 +143,7 @@ test('Check /routes', async (t) => {
 
 	// Check logs
 	stdMock.restore();
-	const output = stdMock.flush();
+	stdMock.flush();
 	// Close server
 	await closeServer(server);
 });
@@ -211,7 +210,7 @@ test('Check /routes', async (t) => {
 
 test('Call routes with error in development (error key)', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { app, server } = await n9NodeRouting({
+	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 		http: { port: 5587 },
 	});
@@ -237,7 +236,7 @@ test('Call routes with error in development (error key)', async (t: Assertions) 
 test('Call routes with error in production (no leak)', async (t: Assertions) => {
 	process.env.NODE_ENV = 'production';
 	stdMock.use({ print });
-	const { app, server } = await n9NodeRouting({
+	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 		http: { port: 5587 },
 	});
