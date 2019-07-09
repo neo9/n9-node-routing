@@ -1,5 +1,23 @@
+# Version [1.14.0](https://github.com/neo9/n9-node-routing/compare/1.13.1...1.14.0) (2019-07-09)
+
+
+### tests
+
+* Add test to validation with schema in pseudo parallel ([c7b48de](https://github.com/neo9/n9-node-routing/commit/c7b48de)) (Benjamin Daniel)
+* Improve tests and add one with services ([efcf88e](https://github.com/neo9/n9-node-routing/commit/efcf88e)) (Benjamin Daniel)
+
+### yarn
+
+* Upgrade dependencies and use fork of routing-controller ([78d0344](https://github.com/neo9/n9-node-routing/commit/78d0344)) (Benjamin Daniel)
+
+
+
 ## Version [1.13.1](https://github.com/neo9/n9-node-routing/compare/1.13.0...1.13.1) (2019-06-24)
 
+
+### release
+
+* V 1.13.1 ([8cb362f](https://github.com/neo9/n9-node-routing/commit/8cb362f)) (Benjamin Daniel)
 
 ### shhutdown
 
