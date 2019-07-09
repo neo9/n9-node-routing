@@ -13,8 +13,8 @@ const aclDescriptions: {
 }[] = [];
 let controllersRoutes: { name: string; data: string; path: string }[];
 
-function getControllersRoutes(nestApplicationModule: any) {
-	if(controllersRoutes) return controllersRoutes;
+function getControllersRoutes(nestApplicationModule: any): { name: string; data: string; path: string }[] {
+	if (controllersRoutes) return controllersRoutes;
 
 	// TODO: add recursive seek to find all controllers in sub modules too
 	controllersRoutes = [];
@@ -40,7 +40,7 @@ function addRoute(object: object, methodName: string, descriptor: TypedPropertyD
 	});
 }
 
-function mapNestMethodToHttpName(requestMethod: RequestMethod) {
+function mapNestMethodToHttpName(requestMethod: RequestMethod): string {
 	switch (requestMethod) {
 		case RequestMethod.GET:
 			return 'get';
@@ -64,8 +64,8 @@ function mapNestMethodToHttpName(requestMethod: RequestMethod) {
 }
 
 function removeLastSlash(path: string): string {
-	if(path[path.length - 1] === '/') {
-		return path.substr(0, path.length - 1)
+	if (path[path.length - 1] === '/') {
+		return path.substr(0, path.length - 1);
 	} else {
 		return path;
 	}
@@ -74,7 +74,7 @@ function removeLastSlash(path: string): string {
 function getRoutes(nestApplicationModule: any): Route[] {
 	const localControllersRoutes = getControllersRoutes(nestApplicationModule);
 
-	const ret = aclDescriptions.map((aclDescription: any) => {
+	return aclDescriptions.map((aclDescription: any) => {
 		const actPath = Reflect.getMetadata(PATH_METADATA, aclDescription.descriptor.value);
 		const actMethod = mapNestMethodToHttpName(Reflect.getMetadata(METHOD_METADATA, aclDescription.descriptor.value));
 		const controllerRoute = localControllersRoutes.find((controllerBaseRoute) => controllerBaseRoute.data === aclDescription.object.constructor.toString());
@@ -95,8 +95,6 @@ function getRoutes(nestApplicationModule: any): Route[] {
 			},
 		};
 	});
-
-	return ret;
 }
 
 export {

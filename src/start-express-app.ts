@@ -31,7 +31,7 @@ function createNestAppModule(options: N9NodeRouting.Options): any {
 		const controllerDuplicatedNames: Set<string> = new Set<string>();
 		const sorted: string[] = _.map(controllers, 'name').sort();
 		for (let i = 0; i < sorted.length - 1; i++) {
-			if (sorted[i + 1] == sorted[i]) {
+			if (sorted[i + 1] === sorted[i]) {
 				controllerDuplicatedNames.add(sorted[i]);
 			}
 		}
@@ -45,7 +45,7 @@ function createNestAppModule(options: N9NodeRouting.Options): any {
 		const serviceDuplicatedNames: Set<string> = new Set<string>();
 		const sorted: string[] = _.map(services, 'name').sort();
 		for (let i = 0; i < sorted.length - 1; i++) {
-			if (sorted[i + 1] == sorted[i]) {
+			if (sorted[i + 1] === sorted[i]) {
 				serviceDuplicatedNames.add(sorted[i]);
 			}
 		}
@@ -129,7 +129,7 @@ const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRo
 	};
 
 	// Create HTTP server
-	let expressApp = express();
+	const expressApp = express();
 
 	// Middleware
 	expressApp.use(setRequestContext);
@@ -168,7 +168,6 @@ const startExpressApp = async (options: N9NodeRouting.Options): Promise<N9NodeRo
 	if (options.http.beforeRoutingControllerLaunchHook) {
 		await options.http.beforeRoutingControllerLaunchHook(expressApp, options.log, options);
 	}
-
 
 	const nestApp = await NestFactory.create(nestAppModule, new ExpressAdapter(expressApp), {
 		bodyParser: true,

@@ -1,6 +1,7 @@
 import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import test, { Assertions } from 'ava';
+import { Express } from 'express';
 import { Server } from 'http';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
@@ -15,7 +16,7 @@ const closeServer = async (server: Server) => {
 	});
 };
 
-async function init() {
+async function init(): Promise<{ app: Express, server: Server, httpClient: N9HttpClient }> {
 	stdMock.use({ print: commons.print });
 	const MICRO_USERS = join(__dirname, 'fixtures/micro-users/');
 	const { app, server } = await n9NodeRouting({
@@ -27,13 +28,12 @@ async function init() {
 
 const urlPrefix = 'http://localhost:5000';
 
-async function end(server: Server) {
+async function end(server: Server): Promise<void> {
 	stdMock.restore();
 	stdMock.flush();
 	// Close server
 	await closeServer(server);
 }
-
 
 test('[USERS] POST /users => 200 with good params', async (t: Assertions) => {
 	const { server, httpClient } = await init();
@@ -121,4 +121,3 @@ test('[USERS] GET /users/:id => 200 with user found', async (t: Assertions) => {
 
 	await end(server);
 });
-

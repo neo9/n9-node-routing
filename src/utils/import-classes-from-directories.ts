@@ -5,15 +5,15 @@ import { Type } from '@nestjs/common';
 /**
  * Loads all exported classes from the given directory.
  */
-export function importClassesFromDirectories(directories: string[], formats = ['.js', '.ts']): Type<any>[] {
+export function importClassesFromDirectories(directories: string[], formats: string[] = ['.js', '.ts']): Type<any>[] {
 
-	const loadFileClasses = function (exported: any, allLoaded: Type<any>[]) {
+	const loadFileClasses = (exported: any, allLoaded: Type<any>[]) => {
 		if (exported instanceof Function) {
 			allLoaded.push(exported);
 		} else if (exported instanceof Array) {
 			exported.forEach((i: any) => loadFileClasses(i, allLoaded));
 		} else if (exported instanceof Object || typeof exported === 'object') {
-			Object.keys(exported).forEach(key => loadFileClasses(exported[key], allLoaded));
+			Object.keys(exported).forEach((key) => loadFileClasses(exported[key], allLoaded));
 		}
 
 		return allLoaded;
@@ -24,11 +24,11 @@ export function importClassesFromDirectories(directories: string[], formats = ['
 	}, [] as string[]);
 
 	const dirs = allFiles
-			.filter(file => {
+			.filter((file) => {
 				const dtsExtension = file.substring(file.length - 5, file.length);
 				return formats.indexOf(path.extname(file)) !== -1 && dtsExtension !== '.d.ts';
 			})
-			.map(file => {
+			.map((file) => {
 				return require(file);
 			});
 

@@ -68,7 +68,7 @@ export class AllErrorsFilter implements BaseExceptionFilter {
 		}
 	}
 
-	isExceptionObject(err: any): err is Error {
+	public isExceptionObject(err: any): err is Error {
 		return true;
 	}
 }

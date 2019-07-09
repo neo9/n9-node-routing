@@ -15,7 +15,6 @@ const closeServer = async (server: Server) => {
 const MICRO_LOGS = join(__dirname, 'fixtures/micro-logs/');
 const print = commons.print;
 
-
 test('Basic usage, check logs', async (t: Assertions) => {
 	stdMock.use({ print });
 	global.conf = {

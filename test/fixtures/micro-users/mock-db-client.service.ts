@@ -5,7 +5,7 @@ export class MockDbClientService<E extends BaseMongoObject> {
 	private collection: E[] = [];
 
 	public async insertOne(user: E, creatorUserId: string): Promise<E> {
-		let createdItem = {
+		const createdItem = {
 			...user,
 			_id: this.generateObjectId(),
 			objectInfos: {
@@ -19,18 +19,20 @@ export class MockDbClientService<E extends BaseMongoObject> {
 		return createdItem;
 	}
 
-	private generateObjectId(): string {
-		const timestamp = (new Date().getTime() / 1000 | 0).toString(16);
-		return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, () => {
-			return (Math.random() * 16 | 0).toString(16);
-		}).toLowerCase();
-	};
-
-	findOneByKey(value: string, key: string) {
+	public findOneByKey(value: string, key: string): E {
 		return this.collection.find((elm) => elm[key] === value);
 	}
 
-	findOneById(id: string) {
+	public findOneById(id: string): E {
 		return this.findOneByKey(id, '_id');
+	}
+
+	private generateObjectId(): string {
+		// tslint:disable-next-line:no-bitwise
+		const timestamp = (new Date().getTime() / 1000 | 0).toString(16);
+		return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, () => {
+			// tslint:disable-next-line:no-bitwise
+			return (Math.random() * 16 | 0).toString(16);
+		}).toLowerCase();
 	}
 }

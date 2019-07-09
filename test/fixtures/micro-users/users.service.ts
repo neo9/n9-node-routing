@@ -5,13 +5,13 @@ import { User } from './models/users.models';
 
 @Injectable()
 export class UsersService {
-	private mongoClient: MockDbClientService<User>;
 
 	private static async hashPassword(password: string): Promise<string> {
 		const hasher = crypto.createHash('sha256');
 		await hasher.update(password);
 		return hasher.digest('hex');
 	}
+	private mongoClient: MockDbClientService<User>;
 
 	constructor() {
 		this.mongoClient = new MockDbClientService();

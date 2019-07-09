@@ -57,7 +57,6 @@ test('Call new route (imagine a proxy)', async (t: Assertions) => {
 	await closeServer(server);
 });
 
-
 test('Limit max payload size reached for bodyparser', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { app, server } = await n9NodeRouting({
@@ -91,7 +90,7 @@ test('Increase max payload size to bodyparser', async (t: Assertions) => {
 		http: {
 			port: 6001,
 			beforeRoutingControllerLaunchHook: async (expressApp: Express, log: N9Log) => {
-				expressApp.use(bodyParser.json({ limit:  '1024kb' }))
+				expressApp.use(bodyParser.json({ limit:  '1024kb' }));
 			}
 		}
 	});
@@ -104,7 +103,7 @@ test('Increase max payload size to bodyparser', async (t: Assertions) => {
 	*/
 	const longString = 'A very long string. '.repeat(10000);
 
-	let rep = await httpClient.post<any>('http://localhost:6001/bar', {longString});
+	const rep = await httpClient.post<any>('http://localhost:6001/bar', {longString});
 	t.deepEqual(rep, { longString });
 
 	// Clear stdout

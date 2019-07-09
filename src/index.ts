@@ -27,7 +27,7 @@ export * from './models/routing.models';
 export * from './models/routes.models';
 export * from './utils/http-client-base';
 
-export default async function (options: N9NodeRouting.Options = {}): Promise<N9NodeRouting.ReturnObject> {
+export default async function(options: N9NodeRouting.Options = {}): Promise<N9NodeRouting.ReturnObject> {
 	// Provides a stack trace for unhandled rejections instead of the default message string.
 	process.on('unhandledRejection', handleThrow);
 
@@ -72,7 +72,7 @@ export default async function (options: N9NodeRouting.Options = {}): Promise<N9N
 		});
 	}
 
-	if(!global.log) {
+	if (!global.log) {
 		global.log = options.log;
 	}
 

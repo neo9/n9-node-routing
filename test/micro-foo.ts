@@ -107,16 +107,16 @@ test('Basic usage, create http server on production', async (t: Assertions) => {
 	const output = stdMock.flush().stdout.filter((line) => !line.includes(':nest:'));
 
 	// Logs on stdout
-	t.true(output[0].includes(`{"level":"info","message":"Init module bar","label":"n9-node-routing","timestamp":`), `{"level":"info","message":"Init module bar","label":"n9-node-routing","timestamp":`);
-	t.true(output[1].includes(`{"level":"info","message":"Init module foo","label":"n9-node-routing","timestamp":`), `{"level":"info","message":"Init module foo","label":"n9-node-routing","timestamp":`);
-	t.true(output[2].includes(`{"level":"info","message":"Hello foo.init","label":"n9-node-routing","timestamp":`), `{"level":"info","message":"Hello foo.init","label":"n9-node-routing","timestamp":`);
-	t.true(output[3].includes('{"level":"info","message":"Listening on port 5000","label":"n9-node-routing","timestamp":'), '{"level":"info","message":"Listening on port 5000","label":"n9-node-routing","timestamp":');
-	t.true(output[4].includes(',"path":"/foo","status":"200","duration":"'), ',"path":"/foo","status":"200","duration":"');
-	t.true(output[5].includes(',"path":"/","status":"200","duration":"'), ',"path":"/","status":"200","duration":"');
-	t.true(output[6].includes(',"path":"/ping","status":"200","duration":"'), ',"path":"/ping","status":"200","duration":"');
-	t.true(output[7].includes('"status":404,"context":{"url":"/404"},"requestId":'), '"status":404,"context":{"url":"/404"},"requestId":');
-	t.true(output[7].includes('"stack":"Error: not-found'), '"stack":"Error: not-found');
-	t.true(output[8].includes(',"path":"/404","status":"404","duration":'), ',"path":"/404","status":"404","duration":');
+	t.true(output[0].includes(`{"level":"info","message":"Init module bar","label":"n9-node-routing","timestamp":`), `Init module bar`);
+	t.true(output[1].includes(`{"level":"info","message":"Init module foo","label":"n9-node-routing","timestamp":`), `Init module foo`);
+	t.true(output[2].includes(`{"level":"info","message":"Hello foo.init","label":"n9-node-routing","timestamp":`), `Hello foo.init`);
+	t.true(output[3].includes('{"level":"info","message":"Listening on port 5000","label":"n9-node-routing","timestamp":'), 'Listening on port 5000');
+	t.true(output[4].includes(',"path":"/foo","status":"200","duration":"'), 'path" /foo');
+	t.true(output[5].includes(',"path":"/","status":"200","duration":"'), 'path /');
+	t.true(output[6].includes(',"path":"/ping","status":"200","duration":"'), 'path /ping');
+	t.true(output[7].includes('"status":404,"context":{"url":"/404"},"requestId":'), 'status 404');
+	t.true(output[7].includes('"stack":"Error: not-found'), 'Error: not-found');
+	t.true(output[8].includes(',"path":"/404","status":"404","duration":'), 'path /404');
 
 	// Close server
 	await closeServer(server);

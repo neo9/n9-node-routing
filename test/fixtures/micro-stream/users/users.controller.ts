@@ -3,7 +3,6 @@ import { Controller, Get, Res } from '@nestjs/common';
 import { Response } from 'express';
 import streamArray = require('stream-array');
 
-
 @Controller()
 export class UsersController {
 

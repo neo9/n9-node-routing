@@ -15,7 +15,7 @@ const closeServer = async (server: Server) => {
 const print = commons.print;
 
 test.beforeEach(() => {
-	delete global.log
+	delete global.log;
 });
 
 test('Works with custom port', async (t: Assertions) => {

@@ -2,8 +2,8 @@ import { Expose } from 'class-transformer';
 import { DateParser } from '../../../../src';
 
 export class BaseMongoObject {
-	_id?: string;
-	objectInfos?: BaseMongoObjectInfos;
+	public _id?: string;
+	public objectInfos?: BaseMongoObjectInfos;
 }
 
 export class BaseMongoObjectInfosUpdate {
