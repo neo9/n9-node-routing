@@ -1,3 +1,4 @@
 export default {
-	print: false
+	print: false,
+	excludeSomeLogs: () => true
 };

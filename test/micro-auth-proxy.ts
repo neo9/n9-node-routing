@@ -5,7 +5,7 @@ import * as rp from 'request-promise-native';
 import { StatusCodeError } from 'request-promise-native/errors';
 import * as stdMock from 'std-mocks';
 
-import routingControllerWrapper from '../src';
+import N9NodeRouting from '../src';
 import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
@@ -13,13 +13,14 @@ const closeServer = async (server: Server) => {
 		server.close(resolve);
 	});
 };
-
+const print = commons.print;
 const MICRO_AUTH = join(__dirname, 'fixtures/micro-auth-proxy/');
 
 test('Call session route (req.headers.session)', async (t: Assertions) => {
-	stdMock.use({ print: commons.print });
-	const { server } = await routingControllerWrapper({
-		hasProxy: true, // tell routingControllerWrapper to parse `session` header
+	stdMock.use( { print });
+
+	const { server } = await N9NodeRouting({
+		hasProxy: true, // tell n9NodeRouting to parse `session` header
 		path: MICRO_AUTH,
 		http: { port: 6001 }
 	});

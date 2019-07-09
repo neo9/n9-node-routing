@@ -42,7 +42,7 @@ const userValidationSchemas: ValidationSchema[] = [{
 	},
 }];
 
-async function testValidation(t: Assertions, index: number): Promise<void> {
+async function testValidation(index: number): Promise<void> {
 	const user = { firstName: 'Johny', lastName: 'Cage', email: 'johny@cage.com' };
 	const expectedErrorsFromIndex: boolean[] = [false, false, true];
 	const expectErrors = expectedErrorsFromIndex[index];
@@ -56,14 +56,14 @@ async function testValidation(t: Assertions, index: number): Promise<void> {
 
 	try {
 		await validateOrReject(schemaName, user);
+		// istanbul ignore next
 		if (expectErrors) throw new N9Error('Errors are expected for index : ' + index, 400, { schemaName, schema, index });
 	} catch (errors) {
+		// istanbul ignore next
 		if (!Array.isArray(errors)) throw errors;
 
+		// istanbul ignore next
 		if (!expectErrors) {
-			if (errors.length > 0) {
-				console.warn(`Errors no expected for index ${index} ! `, errors);
-			}
 			throw new N9Error('No error expected for index : ' + index, 400, { errors, index });
 		}
 	} finally {
@@ -77,11 +77,11 @@ test('[VALIDATE-PARALLEL] Check validation with multiple schemas', async (t: Ass
 
 	// Serial exec
 	for (let i = 0; i < userValidationSchemas.length; i++) {
-		await t.notThrows(async () => await testValidation(t, i), 'Validation ok for index : ' + i);
+		await t.notThrows(async () => await testValidation(i), 'Validation ok for index : ' + i);
 	}
 
 	// Parallel exec
-	await t.notThrows(async () => await Promise.all(userValidationSchemas.map(async (v, i) => await testValidation(t, i))), 'Validation parallel is OK');
+	await t.notThrows(async () => await Promise.all(userValidationSchemas.map(async (v, i) => await testValidation(i))), 'Validation parallel is OK');
 
 	stdMock.restore();
 	stdMock.flush();

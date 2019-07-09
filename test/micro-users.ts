@@ -27,6 +27,7 @@ async function init(): Promise<{ app: Express, server: Server, httpClient: N9Htt
 }
 
 const urlPrefix = 'http://localhost:5000';
+
 async function end(server: Server): Promise<void> {
 	stdMock.restore();
 	stdMock.flush();

@@ -4,7 +4,7 @@ import { join } from 'path';
 import * as rp from 'request-promise-native';
 import * as stdMock from 'std-mocks';
 
-import routingControllerWrapper from '../src';
+import N9NodeRouting from '../src';
 import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
@@ -13,13 +13,14 @@ const closeServer = async (server: Server) => {
 	});
 };
 
-const MICRO_FOO = join(__dirname, 'fixtures/micro-validate/');
+const MICRO_VALIDATE = join(__dirname, 'fixtures/micro-validate/');
 
 test('Read documentation', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
-	const { server } = await routingControllerWrapper({
-		path: MICRO_FOO
+	const { server } = await N9NodeRouting({
+		path: MICRO_VALIDATE
 	});
+
 	// Check /documentation
 	const res = await rp({ uri: 'http://localhost:5000/documentation.json', resolveWithFullResponse: true, json: true });
 

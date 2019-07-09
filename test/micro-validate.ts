@@ -5,7 +5,7 @@ import * as rp from 'request-promise-native';
 import { StatusCodeError } from 'request-promise-native/errors';
 import * as stdMock from 'std-mocks';
 
-import routingControllerWrapper from '../src';
+import N9NodeRouting from '../src';
 import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
@@ -19,7 +19,7 @@ const MICRO_VALIDATE = join(__dirname, 'fixtures/micro-validate/');
 test('Check allowUnkown', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 
-	const { server } = await routingControllerWrapper({
+	const { server } = await N9NodeRouting({
 		path: MICRO_VALIDATE,
 		http: { port: 5585 },
 	});
@@ -73,7 +73,7 @@ test('Check allowUnkown', async (t: Assertions) => {
 test('Check date parsing', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 
-	const { server } = await routingControllerWrapper({
+	const { server } = await N9NodeRouting({
 		path: MICRO_VALIDATE,
 		http: { port: 5585 },
 	});

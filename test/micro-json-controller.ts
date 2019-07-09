@@ -4,7 +4,7 @@ import { join } from 'path';
 import * as rp from 'request-promise-native';
 import * as stdMock from 'std-mocks';
 
-import routingControllerWrapper from '../src';
+import N9NodeRouting from '../src';
 import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
@@ -14,15 +14,17 @@ const closeServer = async (server: Server) => {
 };
 
 const MICRO_FOO = join(__dirname, 'fixtures/micro-json-controller/');
+const print = commons.print;
 
 test('Acl usage with JSON Controller, check /routes', async (t) => {
-	stdMock.use({ print: commons.print });
-	const { server } = await routingControllerWrapper({
+	stdMock.use({ print });
+	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
-		http: { port: 5575 }
+		http: { port: 5575 },
 	});
 
 	// Check acl on routes
+	await rp({ uri: 'http://localhost:5575/routes', resolveWithFullResponse: true, json: true });
 	const res = await rp({ uri: 'http://localhost:5575/routes', resolveWithFullResponse: true, json: true });
 
 	t.is(res.statusCode, 200);
@@ -51,7 +53,7 @@ test('Acl usage with JSON Controller, check /routes', async (t) => {
 	routesToCall.push(route3.path);
 
 	for (const routeToCall of routesToCall) {
-		await rp({ method: 'POST', uri: 'http://localhost:5575' + routeToCall, resolveWithFullResponse: true, json: true });
+		await t.notThrowsAsync(async () => await rp({ method: 'POST', uri: 'http://localhost:5575' + routeToCall, resolveWithFullResponse: true, json: true }), 'call ' + routeToCall);
 		t.is(res.statusCode, 200);
 	}
 

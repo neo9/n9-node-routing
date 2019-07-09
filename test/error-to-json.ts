@@ -1,8 +1,13 @@
 import test, { Assertions } from 'ava';
-import routingControllerWrapper from '../src';
+import * as stdMock from 'std-mocks';
+import N9NodeRouting from '../src';
+import commons from './fixtures/commons';
 
-test('Basic stream', async (t: Assertions) => {
-	await routingControllerWrapper({ http: { port: 6666 } });
+const print = commons.print;
+
+test('Error to json', async (t: Assertions) => {
+	stdMock.use({ print });
+	await N9NodeRouting();
 
 	const text = 'message-error-text';
 	const e = Error(text);

@@ -5,7 +5,7 @@ import * as rp from 'request-promise-native';
 import { StatusCodeError } from 'request-promise-native/errors';
 import * as stdMock from 'std-mocks';
 
-import routingControllerWrapper from '../src';
+import N9NodeRouting from '../src';
 import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
@@ -13,12 +13,17 @@ const closeServer = async (server: Server) => {
 		server.close(resolve);
 	});
 };
+const print = commons.print;
 
 const MICRO_FOO = join(__dirname, 'fixtures/micro-foo/');
 
+test.beforeEach(() => {
+	delete global.log;
+});
+
 test('Basic usage, create http server', async (t: Assertions) => {
-	stdMock.use({ print: commons.print });
-	const { server } = await routingControllerWrapper({
+	stdMock.use({ print });
+	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 	});
 	// Check /foo route added on foo/foo.init.ts
@@ -43,36 +48,36 @@ test('Basic usage, create http server', async (t: Assertions) => {
 	t.is(matchVersion.length, 1);
 
 	// Check /404 route
-	res = await t.throwsAsync<StatusCodeError>(async () => rp({ uri: 'http://localhost:5000/404', resolveWithFullResponse: true, json: true }));
-	t.is(res.statusCode, 404);
-	t.is(res.response.body.code, 'not-found');
-	t.is(res.response.body.error.status, 404);
-	t.is(res.response.body.error.context.url, '/404');
+	res = await t.throwsAsync<StatusCodeError>(async () => await rp({ uri: 'http://localhost:5000/404', resolveWithFullResponse: true, json: true }));
+	t.is(res.statusCode, 404, '404');
+	t.is(res.response.body.code, 'not-found', 'not-found');
+	t.is(res.response.body.status, 404);
+	t.is(res.response.body.context.url, '/404', '/404');
 
 	// Check logs
 	stdMock.restore();
-	const output = stdMock.flush();
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 
 	// Logs on stdout
-	t.true(output.stdout[0].includes('Init module bar'));
-	t.true(output.stdout[1].includes('Init module foo'));
-	t.true(output.stdout[2].includes('Hello foo.init'));
-	t.true(output.stdout[3].includes('Listening on port 5000'));
-	t.true(output.stdout[4].includes('GET /foo'));
-	t.true(output.stdout[5].includes('GET /'));
-	t.true(output.stdout[6].includes('GET /ping'));
-	t.true(output.stdout[7].includes('GET /version'));
-	t.true(output.stdout[8].includes('Error: not-found'));
-	t.true(output.stdout[9].includes('GET /404'));
+	t.true(output[0].includes('Init module bar'), 'Init module bar');
+	t.true(output[1].includes('Init module foo'), 'Init module foo');
+	t.true(output[2].includes('Hello foo.init'), 'Hello foo.init');
+	t.true(output[3].includes('Listening on port 5000'), 'Listening on port 5000');
+	t.true(output[4].includes('GET /foo'), 'GET /foo');
+	t.true(output[5].includes('GET /'), 'GET /');
+	t.true(output[6].includes('GET /ping'), 'GET /ping');
+	t.true(output[7].includes('GET /version'), 'GET /version');
+	t.true(output[8].includes('Error: not-found'), 'Error: not-found');
+	t.true(output[9].includes('GET /404'), 'GET /404');
 
 	// Close server
 	await closeServer(server);
 });
 
 test('Basic usage, create http server on production', async (t: Assertions) => {
-	stdMock.use({ print: commons.print });
+	stdMock.use({ print });
 	process.env.NODE_ENV = 'production';
-	const { server } = await routingControllerWrapper({
+	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 	});
 	// Check /foo route added on foo/foo.init.ts
@@ -98,18 +103,19 @@ test('Basic usage, create http server on production', async (t: Assertions) => {
 
 	// Check logs
 	stdMock.restore();
-	const output = stdMock.flush();
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
+
 	// Logs on stdout
-	t.true(output.stdout[0].includes(`{"level":"info","message":"Init module bar","label":"n9-node-routing","timestamp":`));
-	t.true(output.stdout[1].includes(`{"level":"info","message":"Init module foo","label":"n9-node-routing","timestamp":`));
-	t.true(output.stdout[2].includes(`{"level":"info","message":"Hello foo.init","label":"n9-node-routing","timestamp":`));
-	t.true(output.stdout[3].includes('{"level":"info","message":"Listening on port 5000","label":"n9-node-routing","timestamp":'));
-	t.true(output.stdout[4].includes(',"path":"/foo","status":"200","duration":"'));
-	t.true(output.stdout[5].includes(',"path":"/","status":"200","duration":"'));
-	t.true(output.stdout[6].includes(',"path":"/ping","status":"200","duration":"'));
-	t.true(output.stdout[7].includes('"status":404,"context":{"url":"/404"},"requestId":'));
-	t.true(output.stdout[7].includes('"stack":"Error: not-found'));
-	t.true(output.stdout[8].includes(',"path":"/404","status":"404","duration":'));
+	t.true(output[0].includes(`{"level":"info","message":"Init module bar","label":"n9-node-routing","timestamp":`), `Init module bar`);
+	t.true(output[1].includes(`{"level":"info","message":"Init module foo","label":"n9-node-routing","timestamp":`), `Init module foo`);
+	t.true(output[2].includes(`{"level":"info","message":"Hello foo.init","label":"n9-node-routing","timestamp":`), `Hello foo.init`);
+	t.true(output[3].includes('{"level":"info","message":"Listening on port 5000","label":"n9-node-routing","timestamp":'), 'Listening on port 5000');
+	t.true(output[4].includes(',"path":"/foo","status":"200","duration":"'), 'path" /foo');
+	t.true(output[5].includes(',"path":"/","status":"200","duration":"'), 'path /');
+	t.true(output[6].includes(',"path":"/ping","status":"200","duration":"'), 'path /ping');
+	t.true(output[7].includes('"status":404,"context":{"url":"/404"},"requestId":'), 'status 404');
+	t.true(output[7].includes('"stack":"Error: not-found'), 'Error: not-found');
+	t.true(output[8].includes(',"path":"/404","status":"404","duration":'), 'path /404');
 
 	// Close server
 	await closeServer(server);
@@ -117,8 +123,8 @@ test('Basic usage, create http server on production', async (t: Assertions) => {
 });
 
 test('Check /routes', async (t) => {
-	stdMock.use({ print: commons.print });
-	const { server } = await routingControllerWrapper({
+	stdMock.use({ print });
+	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 		http: { port: 5575 },
 	});
@@ -144,7 +150,7 @@ test('Check /routes', async (t) => {
 
 test('Call routes (versionning)', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
-	const { server } = await routingControllerWrapper({
+	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 		http: { port: 5559 },
 	});
@@ -202,8 +208,8 @@ test('Call routes (versionning)', async (t: Assertions) => {
 });
 
 test('Call routes with error in development (error key)', async (t: Assertions) => {
-	stdMock.use({ print: commons.print });
-	const { server } = await routingControllerWrapper({
+	stdMock.use({ print });
+	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 		http: { port: 5587 },
 	});
@@ -219,7 +225,7 @@ test('Call routes with error in development (error key)', async (t: Assertions) 
 		code: 'unspecified-error',
 		status: 500,
 		context: {},
-	});
+	}, 'response body should be a n9 error');
 	stdMock.restore();
 	stdMock.flush();
 	// Close server
@@ -228,8 +234,8 @@ test('Call routes with error in development (error key)', async (t: Assertions) 
 
 test('Call routes with error in production (no leak)', async (t: Assertions) => {
 	process.env.NODE_ENV = 'production';
-	stdMock.use({ print: commons.print });
-	const { server } = await routingControllerWrapper({
+	stdMock.use({ print });
+	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 		http: { port: 5587 },
 	});
@@ -249,7 +255,7 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 		status: 500,
 		context: {},
 		// no error key
-	});
+	}, 'bar-error');
 
 	// Call special route which fails with extendable error
 	err = await t.throwsAsync(async () => rp({
@@ -268,7 +274,7 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 			test: true,
 		},
 		// no error key
-	});
+	}, 'bar-extendable-error');
 
 	// Call 404
 	err = await t.throwsAsync(async () => rp({
@@ -285,7 +291,7 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 			url: '/404',
 		},
 		// no error key
-	});
+	}, 'not-found');
 
 	// Call error with no message
 	err = await t.throwsAsync(async () => rp({
@@ -300,7 +306,7 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 		status: 500,
 		context: {},
 		// no error key
-	});
+	}, 'unspecified-error');
 	stdMock.restore();
 	const output = stdMock.flush();
 	t.true(output.stderr.join(' ').includes('Error: bar-extendable-error'));
