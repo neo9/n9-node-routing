@@ -5,6 +5,7 @@ import * as rp from 'request-promise-native';
 import * as stdMock from 'std-mocks';
 
 import routingControllerWrapper from '../src';
+import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
 	return new Promise((resolve) => {
@@ -13,7 +14,7 @@ const closeServer = async (server: Server) => {
 };
 
 test('Works with custom port', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	const { server } = await routingControllerWrapper({ http: { port: 4002 } });
 	stdMock.restore();
 	const output = stdMock.flush();
@@ -24,7 +25,7 @@ test('Works with custom port', async (t: Assertions) => {
 });
 
 test('Works with preventListen = true', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	await routingControllerWrapper({ http: { port: 4002, preventListen: true } });
 	stdMock.restore();
 	const output = stdMock.flush();
@@ -37,7 +38,7 @@ test('Works with preventListen = true', async (t: Assertions) => {
 
 test('Works with custom log and should add a namespace', async (t: Assertions) => {
 	const log = n9Log('custom');
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	const { server } = await routingControllerWrapper({ log });
 	stdMock.restore();
 	const output = stdMock.flush();
@@ -47,7 +48,7 @@ test('Works with custom log and should add a namespace', async (t: Assertions) =
 });
 
 test('Works without params', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	const { server } = await routingControllerWrapper();
 	stdMock.restore();
 	const output = stdMock.flush();
@@ -57,7 +58,7 @@ test('Works without params', async (t: Assertions) => {
 });
 
 test('Should not log the requests http.logLevel=false', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	const { server } = await(routingControllerWrapper({
 		http: { logLevel: false }
 	}));
@@ -72,7 +73,7 @@ test('Should not log the requests http.logLevel=false', async (t: Assertions) =>
 });
 
 test('Should log the requests with custom level', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	const { server } = await(routingControllerWrapper({
 		http: { logLevel: ':status :url' }
 	}));
@@ -90,7 +91,7 @@ test('Should log the requests with custom level', async (t: Assertions) => {
 });
 
 test('Fails with PORT without access', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	const err = await t.throwsAsync(async () => routingControllerWrapper({ http: { port: 80 } }));
 	stdMock.restore();
 	stdMock.flush();
@@ -98,7 +99,7 @@ test('Fails with PORT without access', async (t: Assertions) => {
 });
 
 test('Fails with PORT already used', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	await routingControllerWrapper({ http: { port: 6000 } });
 	const err = await t.throwsAsync(async () => routingControllerWrapper({ http: { port: 6000 } }));
 	stdMock.restore();
@@ -108,7 +109,7 @@ test('Fails with PORT already used', async (t: Assertions) => {
 });
 
 test('Fails with PORT not in common range', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	const err = await t.throwsAsync(async () => routingControllerWrapper({ http: { port: 10000000 } }));
 	t.true(err.message.includes('ort'));
 	stdMock.restore();

@@ -6,6 +6,7 @@ import { StatusCodeError } from 'request-promise-native/errors';
 import * as stdMock from 'std-mocks';
 
 import routingControllerWrapper from '../src';
+import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
 	return new Promise((resolve) => {
@@ -16,7 +17,7 @@ const closeServer = async (server: Server) => {
 const MICRO_VALIDATE = join(__dirname, 'fixtures/micro-validate/');
 
 test('Check allowUnkown', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 
 	const { server } = await routingControllerWrapper({
 		path: MICRO_VALIDATE,
@@ -70,7 +71,7 @@ test('Check allowUnkown', async (t: Assertions) => {
 });
 
 test('Check date parsing', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 
 	const { server } = await routingControllerWrapper({
 		path: MICRO_VALIDATE,

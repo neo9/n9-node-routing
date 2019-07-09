@@ -6,6 +6,7 @@ import { StatusCodeError } from 'request-promise-native/errors';
 import * as stdMock from 'std-mocks';
 
 import routingControllerWrapper from '../src';
+import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
 	return new Promise((resolve) => {
@@ -16,7 +17,7 @@ const closeServer = async (server: Server) => {
 const MICRO_FOO = join(__dirname, 'fixtures/micro-foo/');
 
 test('Basic usage, create http server', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	const { server } = await routingControllerWrapper({
 		path: MICRO_FOO,
 	});
@@ -69,7 +70,7 @@ test('Basic usage, create http server', async (t: Assertions) => {
 });
 
 test('Basic usage, create http server on production', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	process.env.NODE_ENV = 'production';
 	const { server } = await routingControllerWrapper({
 		path: MICRO_FOO,
@@ -116,7 +117,7 @@ test('Basic usage, create http server on production', async (t: Assertions) => {
 });
 
 test('Check /routes', async (t) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	const { server } = await routingControllerWrapper({
 		path: MICRO_FOO,
 		http: { port: 5575 },
@@ -142,7 +143,7 @@ test('Check /routes', async (t) => {
 });
 
 test('Call routes (versionning)', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	const { server } = await routingControllerWrapper({
 		path: MICRO_FOO,
 		http: { port: 5559 },
@@ -201,7 +202,7 @@ test('Call routes (versionning)', async (t: Assertions) => {
 });
 
 test('Call routes with error in development (error key)', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	const { server } = await routingControllerWrapper({
 		path: MICRO_FOO,
 		http: { port: 5587 },
@@ -227,7 +228,7 @@ test('Call routes with error in development (error key)', async (t: Assertions) 
 
 test('Call routes with error in production (no leak)', async (t: Assertions) => {
 	process.env.NODE_ENV = 'production';
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	const { server } = await routingControllerWrapper({
 		path: MICRO_FOO,
 		http: { port: 5587 },

@@ -3,6 +3,7 @@ import test, { Assertions } from 'ava';
 import { getFromContainer, MetadataStorage, registerSchema, validateOrReject, ValidationSchema } from 'class-validator';
 import { ValidationMetadata } from 'class-validator/metadata/ValidationMetadata';
 import * as stdMock from 'std-mocks';
+import commons from './fixtures/commons';
 
 const userValidationSchemas: ValidationSchema[] = [{
 	name: '',
@@ -72,7 +73,7 @@ async function testValidation(t: Assertions, index: number): Promise<void> {
 }
 
 test('[VALIDATE-PARALLEL] Check validation with multiple schemas', async (t: Assertions) => {
-	stdMock.use({ print: true });
+	stdMock.use({ print: commons.print });
 
 	// Serial exec
 	for (let i = 0; i < userValidationSchemas.length; i++) {

@@ -5,6 +5,7 @@ import * as rp from 'request-promise-native';
 import * as stdMock from 'std-mocks';
 
 import routingControllerWrapper from '../src';
+import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
 	return new Promise((resolve) => {
@@ -15,8 +16,8 @@ const closeServer = async (server: Server) => {
 const MICRO_FOO = join(__dirname, 'fixtures/micro-json-controller/');
 
 test('Acl usage with JSON Controller, check /routes', async (t) => {
-	stdMock.use();
-	const { app, server } = await routingControllerWrapper({
+	stdMock.use({ print: commons.print });
+	const { server } = await routingControllerWrapper({
 		path: MICRO_FOO,
 		http: { port: 5575 }
 	});
@@ -56,7 +57,7 @@ test('Acl usage with JSON Controller, check /routes', async (t) => {
 
 	// Check logs
 	stdMock.restore();
-	const output = stdMock.flush();
+	stdMock.flush();
 	// Close server
 	await closeServer(server);
 });

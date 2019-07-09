@@ -2,11 +2,11 @@ import { N9Log } from '@neo9/n9-node-log';
 import test, { Assertions } from 'ava';
 import { Express } from 'express';
 import { Server } from 'http';
-import { join } from 'path';
 import * as rp from 'request-promise-native';
 import * as stdMock from 'std-mocks';
 
 import routingControllerWrapper from '../src';
+import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
 	return new Promise((resolve) => {
@@ -15,8 +15,8 @@ const closeServer = async (server: Server) => {
 };
 
 test('Call new route (imagine a proxy)', async (t: Assertions) => {
-	stdMock.use();
-	const { app, server } = await routingControllerWrapper({
+	stdMock.use({ print: commons.print });
+	const { server } = await routingControllerWrapper({
 		hasProxy: true, // tell routingControllerWrapper to parse `session` header
 		path: '/opt/null',
 		http: {

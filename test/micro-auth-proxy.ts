@@ -6,6 +6,7 @@ import { StatusCodeError } from 'request-promise-native/errors';
 import * as stdMock from 'std-mocks';
 
 import routingControllerWrapper from '../src';
+import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
 	return new Promise((resolve) => {
@@ -16,7 +17,7 @@ const closeServer = async (server: Server) => {
 const MICRO_AUTH = join(__dirname, 'fixtures/micro-auth-proxy/');
 
 test('Call session route (req.headers.session)', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	const { server } = await routingControllerWrapper({
 		hasProxy: true, // tell routingControllerWrapper to parse `session` header
 		path: MICRO_AUTH,

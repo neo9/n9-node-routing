@@ -5,6 +5,7 @@ import * as rp from 'request-promise-native';
 import * as stdMock from 'std-mocks';
 
 import routingControllerWrapper from '../src';
+import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
 	return new Promise((resolve) => {
@@ -15,12 +16,12 @@ const closeServer = async (server: Server) => {
 const MICRO_LOGS = join(__dirname, 'fixtures/micro-logs/');
 
 test('Basic usage, check logs', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	global.conf = {
 		someConfAttr: 'value',
 	};
 
-	const { app, server } = await routingControllerWrapper({
+	const { server } = await routingControllerWrapper({
 		path: MICRO_LOGS,
 	});
 	// Check /foo route added on foo/foo.init.ts
@@ -48,12 +49,12 @@ test('Basic usage, check logs', async (t: Assertions) => {
 });
 
 test('Basic usage, check logs with empty response', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	global.conf = {
 		someConfAttr: 'value'
 	};
 
-	const { app, server } = await routingControllerWrapper({
+	const { server } = await routingControllerWrapper({
 		http: {
 			port: 5002
 		},

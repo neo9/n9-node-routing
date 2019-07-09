@@ -7,6 +7,7 @@ import * as stdMock from 'std-mocks';
 
 import routingControllerWrapper, { N9HttpClient } from '../src';
 import { RequestIdNamespaceName } from '../src/requestid';
+import commons from './fixtures/commons';
 
 const closeServer = async (server: Server) => {
 	return new Promise((resolve) => {
@@ -19,7 +20,7 @@ namespaceRequestId.run(() => {
 });
 
 test('Call a route with HttpClient', async (t: Assertions) => {
-	stdMock.use();
+	stdMock.use({ print: commons.print });
 	const { server } = await routingControllerWrapper({
 		hasProxy: true, // tell routingControllerWrapper to parse `session` header
 		path: '/opt/null',
