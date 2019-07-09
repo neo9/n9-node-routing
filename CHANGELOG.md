@@ -1,9 +1,47 @@
+# Version [2.0.0-beta.0](https://github.com/neo9/n9-node-routing/compare/1.13.0...2.0.0-beta.0) (2019-07-09)
+
+
+### lint
+
+* Fix tslint errors ([2016bcc](https://github.com/neo9/n9-node-routing/commit/2016bcc)) (Benjamin Daniel)
+
+### migrate
+
+* Add last test for documentation ([0fa6734](https://github.com/neo9/n9-node-routing/commit/0fa6734)) (Benjamin Daniel)
+* Add users test to check services dependencies ([679850d](https://github.com/neo9/n9-node-routing/commit/679850d)) (Benjamin Daniel)
+
+### migration
+
+* Add acl management ([80435ff](https://github.com/neo9/n9-node-routing/commit/80435ff)) (Benjamin Daniel)
+* Add auth and session reading ([6a1d3c4](https://github.com/neo9/n9-node-routing/commit/6a1d3c4)) (Benjamin Daniel)
+* Add hooks tests ([927c13c](https://github.com/neo9/n9-node-routing/commit/927c13c)) (Benjamin Daniel)
+* Add validation with class-validator ([dff0663](https://github.com/neo9/n9-node-routing/commit/dff0663)) (Benjamin Daniel)
+* Check stream support ([d91e536](https://github.com/neo9/n9-node-routing/commit/d91e536)) (Benjamin Daniel)
+* Dynamically generate app module ([0a46f7e](https://github.com/neo9/n9-node-routing/commit/0a46f7e)) (Benjamin Daniel)
+
+### tests
+
+* Add test to validation with schema in pseudo parallel ([783cd9a](https://github.com/neo9/n9-node-routing/commit/783cd9a)) (Benjamin Daniel)
+* Improve tests readability and fix readme ([2230a87](https://github.com/neo9/n9-node-routing/commit/2230a87)) (Benjamin Daniel)
+
+### wip
+
+* Keep migrating ([4de7a60](https://github.com/neo9/n9-node-routing/commit/4de7a60)) (Benjamin Daniel)
+* Keep migrating ([128acbe](https://github.com/neo9/n9-node-routing/commit/128acbe)) (Benjamin Daniel)
+* Migrate to nestjs ([c2d25cd](https://github.com/neo9/n9-node-routing/commit/c2d25cd)) (Benjamin Daniel)
+
+
+
 # Version [1.13.0](https://github.com/neo9/n9-node-routing/compare/1.12.3...1.13.0) (2019-04-02)
 
 
 ### hooks
 
 * Add shutdown and ping hooks ([7678d0d](https://github.com/neo9/n9-node-routing/commit/7678d0d)) (Benjamin Daniel)
+
+### release
+
+* V 1.13.0 ([e437765](https://github.com/neo9/n9-node-routing/commit/e437765)) (Benjamin Daniel)
 
 
 
