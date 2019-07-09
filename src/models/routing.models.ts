@@ -1,8 +1,8 @@
+import { RoutingControllersOptions } from '@flyacts/routing-controllers';
 import { N9Log } from '@neo9/n9-node-log';
 import { Express } from 'express';
 import { Server } from 'http';
 import * as morgan from 'morgan';
-import { RoutingControllersOptions } from 'routing-controllers';
 
 // tslint:disable-next-line:no-namespace
 export namespace N9NodeRouting {

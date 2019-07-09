@@ -1,3 +1,5 @@
+import * as RCOpenApi from '@benjd90/routing-controllers-openapi';
+import { getMetadataArgsStorage } from '@flyacts/routing-controllers';
 import { N9Error } from '@neo9/n9-node-utils';
 import * as appRootDir from 'app-root-dir';
 import { getFromContainer, MetadataStorage } from 'class-validator';
@@ -5,8 +7,6 @@ import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
 import { Express, NextFunction, Request, Response } from 'express';
 import * as oa from 'openapi3-ts';
 import { join } from 'path';
-import { getMetadataArgsStorage } from 'routing-controllers';
-import * as RCOpenApi from 'routing-controllers-openapi';
 import * as SwaggerUi from 'swagger-ui-express';
 import { N9NodeRouting } from './models/routing.models';
 import * as RoutesService from './routes.service';
@@ -82,7 +82,7 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 			});
 			const additionalProperties = Object.assign({}, { components: { schemas } }, baseOpenApiSpec);
 
-			const spec = RCOpenApi.routingControllersToSpec(routesStorage, options.http.routingController, additionalProperties);
+			const spec = RCOpenApi.routingControllersToSpec(routesStorage as any, options.http.routingController, additionalProperties);
 
 			res.header('Access-Control-Allow-Origin', '*');
 			res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');

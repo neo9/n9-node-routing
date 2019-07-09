@@ -2,6 +2,7 @@ import test, { Assertions } from 'ava';
 import { Server } from 'http';
 import { join } from 'path';
 import * as rp from 'request-promise-native';
+import { StatusCodeError } from 'request-promise-native/errors';
 import * as stdMock from 'std-mocks';
 
 import routingControllerWrapper from '../src';
@@ -16,7 +17,7 @@ const MICRO_AUTH = join(__dirname, 'fixtures/micro-auth-proxy/');
 
 test('Call session route (req.headers.session)', async (t: Assertions) => {
 	stdMock.use();
-	const { app, server } = await routingControllerWrapper({
+	const { server } = await routingControllerWrapper({
 		hasProxy: true, // tell routingControllerWrapper to parse `session` header
 		path: MICRO_AUTH,
 		http: { port: 6001 }
@@ -24,7 +25,7 @@ test('Call session route (req.headers.session)', async (t: Assertions) => {
 	/*
 	** Fails with no `session` header
 	*/
-	let err = await t.throws(rp({
+	let err = await t.throwsAsync<StatusCodeError>(async () => rp({
 		method: 'GET',
 		uri: 'http://localhost:6001/me',
 		resolveWithFullResponse: true,
@@ -35,7 +36,7 @@ test('Call session route (req.headers.session)', async (t: Assertions) => {
 	/*
 	** Fails with bad `session` header
 	*/
-	err = await t.throws(rp({
+	err = await t.throwsAsync<StatusCodeError>(async () => rp({
 		method: 'GET',
 		uri: 'http://localhost:6001/me',
 		headers: {
@@ -49,7 +50,7 @@ test('Call session route (req.headers.session)', async (t: Assertions) => {
 	/*
 	** Fails with bad `session` header (no `userId`)
 	*/
-	err = await t.throws(rp({
+	err = await t.throwsAsync<StatusCodeError>(async () => rp({
 		method: 'GET',
 		uri: 'http://localhost:6001/me',
 		headers: {

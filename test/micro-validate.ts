@@ -2,6 +2,7 @@ import test, { Assertions } from 'ava';
 import { Server } from 'http';
 import { join } from 'path';
 import * as rp from 'request-promise-native';
+import { StatusCodeError } from 'request-promise-native/errors';
 import * as stdMock from 'std-mocks';
 
 import routingControllerWrapper from '../src';
@@ -17,20 +18,20 @@ const MICRO_VALIDATE = join(__dirname, 'fixtures/micro-validate/');
 test('Check allowUnkown', async (t: Assertions) => {
 	stdMock.use();
 
-	const { app, server } = await routingControllerWrapper({
+	const { server } = await routingControllerWrapper({
 		path: MICRO_VALIDATE,
-		http: { port: 5585 }
+		http: { port: 5585 },
 	});
 	// Should not allow others keys
-	const err = await t.throws(rp({
+	const err = await t.throwsAsync<StatusCodeError>(async () => rp({
 		method: 'POST',
 		uri: 'http://localhost:5585/validate',
 		resolveWithFullResponse: true,
 		body: {
 			bad: true,
-			username: 'ok'
+			username: 'ok',
 		},
-		json: true
+		json: true,
 	}));
 	t.is(err.statusCode, 400);
 	t.true(err.response.body.context[0].constraints.whitelistValidation === 'property bad should not exist');
@@ -41,9 +42,9 @@ test('Check allowUnkown', async (t: Assertions) => {
 		uri: 'http://localhost:5585/validate',
 		resolveWithFullResponse: true,
 		body: {
-			username: 'ok'
+			username: 'ok',
 		},
-		json: true
+		json: true,
 	});
 	t.is(res.statusCode, 200);
 	t.true(res.body.ok);
@@ -55,15 +56,15 @@ test('Check allowUnkown', async (t: Assertions) => {
 		resolveWithFullResponse: true,
 		body: {
 			bad: true,
-			username: 'ok'
+			username: 'ok',
 		},
-		json: true
+		json: true,
 	});
 	t.is(res.statusCode, 200);
 	t.true(res.body.ok);
 	// Check logs
 	stdMock.restore();
-	const output = stdMock.flush();
+	stdMock.flush();
 	// Close server
 	await closeServer(server);
 });
@@ -71,20 +72,20 @@ test('Check allowUnkown', async (t: Assertions) => {
 test('Check date parsing', async (t: Assertions) => {
 	stdMock.use();
 
-	const { app, server } = await routingControllerWrapper({
+	const { server } = await routingControllerWrapper({
 		path: MICRO_VALIDATE,
-		http: { port: 5585 }
+		http: { port: 5585 },
 	});
 	// Should not allow others keys
-	const err = await t.throws(rp({
+	const err = await t.throwsAsync<StatusCodeError>(async () => rp({
 		method: 'POST',
 		uri: 'http://localhost:5585/validate',
 		resolveWithFullResponse: true,
 		body: {
 			bad: true,
-			username: 'ok'
+			username: 'ok',
 		},
-		json: true
+		json: true,
 	}));
 	t.is(err.statusCode, 400);
 	t.true(err.response.body.context[0].constraints.whitelistValidation === 'property bad should not exist');
@@ -95,9 +96,9 @@ test('Check date parsing', async (t: Assertions) => {
 		uri: 'http://localhost:5585/validate',
 		resolveWithFullResponse: true,
 		body: {
-			username: 'ok'
+			username: 'ok',
 		},
-		json: true
+		json: true,
 	});
 	t.is(res.statusCode, 200);
 	t.true(res.body.ok);
@@ -109,9 +110,9 @@ test('Check date parsing', async (t: Assertions) => {
 		resolveWithFullResponse: true,
 		body: {
 			bad: true,
-			username: 'ok'
+			username: 'ok',
 		},
-		json: true
+		json: true,
 	});
 	t.is(res.statusCode, 200);
 	t.true(res.body.ok);
@@ -123,16 +124,16 @@ test('Check date parsing', async (t: Assertions) => {
 		resolveWithFullResponse: true,
 		body: {
 			date: '2018-01-03',
-			body: 'A message body sample'
+			body: 'A message body sample',
 		},
-		json: true
+		json: true,
 	});
 	t.is(res.statusCode, 200);
 	t.deepEqual(res.body, { ok: true });
 
 	// Check logs
 	stdMock.restore();
-	const output = stdMock.flush();
+	stdMock.flush();
 	// Close server
 	await closeServer(server);
 });

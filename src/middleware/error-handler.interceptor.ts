@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from 'express';
-import { ExpressErrorMiddlewareInterface, Middleware } from "routing-controllers";
+import { ExpressErrorMiddlewareInterface, Middleware } from '@flyacts/routing-controllers';
+import { Request, Response } from 'express';
 
 @Middleware({ type: "after" })
 export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 
-	public error(error: any, request: Request, response: Response, next: NextFunction): void {
+	public error(error: any, request: Request, response: Response): void {
 		const status = error.status || error.httpCode || 500;
 		let code = 'unspecified-error';
 		if (error.name && error.name !== 'Error') {

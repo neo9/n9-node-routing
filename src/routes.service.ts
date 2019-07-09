@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from 'routing-controllers';
+import { getMetadataArgsStorage } from '@flyacts/routing-controllers';
 import { AclPerm, Route } from './models/routes.models';
 
 const aclDescriptions: object[] = [];
@@ -13,7 +13,7 @@ function addRoute(object: object, methodName: string, perms: AclPerm[], loadPath
 }
 
 function getRoutes(): Route[] {
-	const ret = aclDescriptions.map((d: any) => {
+	return aclDescriptions.map((d: any) => {
 		const act = getMetadataArgsStorage().actions.filter((action) => {
 			return action.target === d.object.constructor && action.method === d.methodName;
 		})[0];
@@ -41,8 +41,6 @@ function getRoutes(): Route[] {
 			}
 		};
 	});
-
-	return ret;
 }
 
 export {

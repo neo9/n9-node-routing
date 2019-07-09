@@ -20,14 +20,14 @@ namespaceRequestId.run(() => {
 
 test('Call a route with HttpClient', async (t: Assertions) => {
 	stdMock.use();
-	const { app, server } = await routingControllerWrapper({
+	const { server } = await routingControllerWrapper({
 		hasProxy: true, // tell routingControllerWrapper to parse `session` header
 		path: '/opt/null',
 		http: {
 			port: 6001,
 		},
 	});
-	const output = stdMock.flush();
+	stdMock.flush();
 
 	const httpClient = new N9HttpClient(new N9Log('test'));
 
@@ -41,30 +41,30 @@ test('Call a route with HttpClient', async (t: Assertions) => {
 	rep = await httpClient.raw<string>('http://localhost:6001/ping', { method: 'get' });
 	t.is(rep, 'pong');
 
-	let error = await t.throws(async () => await httpClient.post<string>('http://localhost:6001/ping')) as N9Error;
+	let error = await t.throwsAsync<N9Error>(async () => await httpClient.post<string>('http://localhost:6001/ping'));
 	t.is(error.message, 'not-found');
 
-	error = await t.throws(async () => await httpClient.put<string>('http://localhost:6001/ping')) as N9Error;
+	error = await t.throwsAsync<N9Error>(async () => await httpClient.put<string>('http://localhost:6001/ping')) as N9Error;
 	t.is(error.message, 'not-found');
 
-	error = await t.throws(async () => await httpClient.delete<string>('http://localhost:6001/ping')) as N9Error;
+	error = await t.throwsAsync<N9Error>(async () => await httpClient.delete<string>('http://localhost:6001/ping')) as N9Error;
 	t.is(error.message, 'not-found');
 
-	error = await t.throws(async () => await httpClient.options<string>('http://localhost:6001/ping')) as N9Error;
+	error = await t.throwsAsync<N9Error>(async () => await httpClient.options<string>('http://localhost:6001/ping')) as N9Error;
 	t.is(error.message, 'not-found');
 
-	error = await t.throws(async () => await httpClient.patch<string>('http://localhost:6001/ping')) as N9Error;
+	error = await t.throwsAsync<N9Error>(async () => await httpClient.patch<string>('http://localhost:6001/ping')) as N9Error;
 	t.is(error.message, 'not-found');
 
-	error = await t.throws(async () => await httpClient.request<string>('post', ['http://localhost:6001', 'ping'])) as N9Error;
+	error = await t.throwsAsync<N9Error>(async () => await httpClient.request<string>('post', ['http://localhost:6001', 'ping']));
 	t.is(error.message, 'not-found');
 
-	error = await t.throws(async () => await httpClient.raw<string>('http://localhost:6001/ping', {
+	error = await t.throwsAsync<N9Error>(async () => await httpClient.raw<string>('http://localhost:6001/ping', {
 		method: 'post',
 	})) as N9Error;
 	t.is(error.message, 'not-found');
 
-	error = await t.throws(async () => await httpClient.get<string>('http://localhost:0'));
+	error = await t.throwsAsync<N9Error>(async () => await httpClient.get<string>('http://localhost:0'));
 	t.is(error.status, 500);
 	t.is(error.message, 'ECONNREFUSED');
 

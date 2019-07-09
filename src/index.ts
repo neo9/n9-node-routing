@@ -3,8 +3,6 @@ import * as appRootDir from 'app-root-dir';
 import { join } from 'path';
 // tslint:disable-next-line:no-import-side-effect
 import 'reflect-metadata';
-// tslint:disable-next-line:no-import-side-effect
-import './utils/error-to-json';
 import { Container } from 'typedi';
 import initModules from './initialise-modules';
 import { N9NodeRouting } from './models/routing.models';
@@ -12,6 +10,8 @@ import { registerShutdown } from './register-system-signals';
 import { requestIdFilter } from './requestid';
 import bindSpecificRoutes from './routes';
 import expressAppStarter from './start-express-app';
+// tslint:disable-next-line:no-import-side-effect
+import './utils/error-to-json';
 import { N9HttpClient } from './utils/http-client-base';
 
 /* istanbul ignore next */
@@ -20,8 +20,8 @@ function handleThrow(err: Error): void {
 }
 
 export * from 'class-validator';
-export { getMetadataArgsStorage } from 'routing-controllers';
-export * from 'routing-controllers-openapi';
+export { getMetadataArgsStorage } from '@flyacts/routing-controllers';
+export * from '@benjd90/routing-controllers-openapi';
 
 export * from './decorators/acl.decorator';
 export * from './validators/date-parser.validator';

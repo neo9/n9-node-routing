@@ -2,6 +2,7 @@ import test, { Assertions } from 'ava';
 import { Server } from 'http';
 import { join } from 'path';
 import * as rp from 'request-promise-native';
+import { StatusCodeError } from 'request-promise-native/errors';
 import * as stdMock from 'std-mocks';
 
 import routingControllerWrapper from '../src';
@@ -16,7 +17,7 @@ const MICRO_FOO = join(__dirname, 'fixtures/micro-foo/');
 
 test('Basic usage, create http server', async (t: Assertions) => {
 	stdMock.use();
-	const { app, server } = await routingControllerWrapper({
+	const { server } = await routingControllerWrapper({
 		path: MICRO_FOO,
 	});
 	// Check /foo route added on foo/foo.init.ts
@@ -37,11 +38,11 @@ test('Basic usage, create http server', async (t: Assertions) => {
 	// Check /version route
 	res = await rp({ uri: 'http://localhost:5000/version', resolveWithFullResponse: true });
 	t.is(res.statusCode, 200);
-	const matchVersion = (res.body as string).match(/^[0-9]+\.[0-9]+\.[0-9]+.*$$/);
+	const matchVersion = (res.body as string).match(/^[0-9]+\.[0-9]+\.[0-9]+.*$/);
 	t.is(matchVersion.length, 1);
 
 	// Check /404 route
-	res = await t.throws(rp({ uri: 'http://localhost:5000/404', resolveWithFullResponse: true, json: true }));
+	res = await t.throwsAsync<StatusCodeError>(async () => rp({ uri: 'http://localhost:5000/404', resolveWithFullResponse: true, json: true }));
 	t.is(res.statusCode, 404);
 	t.is(res.response.body.code, 'not-found');
 	t.is(res.response.body.error.status, 404);
@@ -70,7 +71,7 @@ test('Basic usage, create http server', async (t: Assertions) => {
 test('Basic usage, create http server on production', async (t: Assertions) => {
 	stdMock.use();
 	process.env.NODE_ENV = 'production';
-	const { app, server } = await routingControllerWrapper({
+	const { server } = await routingControllerWrapper({
 		path: MICRO_FOO,
 	});
 	// Check /foo route added on foo/foo.init.ts
@@ -89,7 +90,7 @@ test('Basic usage, create http server on production', async (t: Assertions) => {
 	t.is(res.body, 'pong');
 
 	// Check /404 route
-	res = await t.throws(rp({ uri: 'http://localhost:5000/404', resolveWithFullResponse: true, json: true }));
+	res = await t.throwsAsync(async () => rp({ uri: 'http://localhost:5000/404', resolveWithFullResponse: true, json: true }));
 	t.is(res.statusCode, 404);
 	t.is(res.response.body.code, 'not-found');
 	t.is(res.response.body.context.url, '/404');
@@ -116,7 +117,7 @@ test('Basic usage, create http server on production', async (t: Assertions) => {
 
 test('Check /routes', async (t) => {
 	stdMock.use();
-	const { app, server } = await routingControllerWrapper({
+	const { server } = await routingControllerWrapper({
 		path: MICRO_FOO,
 		http: { port: 5575 },
 	});
@@ -135,14 +136,14 @@ test('Check /routes', async (t) => {
 
 	// Check logs
 	stdMock.restore();
-	const output = stdMock.flush();
+	stdMock.flush();
 	// Close server
 	await closeServer(server);
 });
 
 test('Call routes (versionning)', async (t: Assertions) => {
 	stdMock.use();
-	const { app, server } = await routingControllerWrapper({
+	const { server } = await routingControllerWrapper({
 		path: MICRO_FOO,
 		http: { port: 5559 },
 	});
@@ -168,7 +169,7 @@ test('Call routes (versionning)', async (t: Assertions) => {
 	t.deepEqual(res.body, { hi: 'hello' });
 
 	// Call special route which fails
-	let err = await t.throws(rp({
+	let err = await t.throwsAsync<StatusCodeError>(async () => rp({
 		method: 'POST',
 		uri: 'http://localhost:5559/v1/bar',
 		qs: { error: true },
@@ -180,7 +181,7 @@ test('Call routes (versionning)', async (t: Assertions) => {
 	t.is(err.response.body.code, 'bar-error');
 
 	// Call special route which fails with extendable error
-	err = await t.throws(rp({
+	err = await t.throwsAsync(async () => rp({
 		method: 'POST',
 		uri: 'http://localhost:5559/v2/bar',
 		qs: { error: true },
@@ -201,12 +202,12 @@ test('Call routes (versionning)', async (t: Assertions) => {
 
 test('Call routes with error in development (error key)', async (t: Assertions) => {
 	stdMock.use();
-	const { app, server } = await routingControllerWrapper({
+	const { server } = await routingControllerWrapper({
 		path: MICRO_FOO,
 		http: { port: 5587 },
 	});
 	// Call error with no message
-	const err = await t.throws(rp({
+	const err = await t.throwsAsync<StatusCodeError>(async () => rp({
 		method: 'GET',
 		uri: 'http://localhost:5587/bar-fail',
 		resolveWithFullResponse: true,
@@ -227,13 +228,13 @@ test('Call routes with error in development (error key)', async (t: Assertions) 
 test('Call routes with error in production (no leak)', async (t: Assertions) => {
 	process.env.NODE_ENV = 'production';
 	stdMock.use();
-	const { app, server } = await routingControllerWrapper({
+	const { server } = await routingControllerWrapper({
 		path: MICRO_FOO,
 		http: { port: 5587 },
 	});
 
 	// Call special route which fails
-	let err = await t.throws(rp({
+	let err = await t.throwsAsync<StatusCodeError>(async () => rp({
 		method: 'POST',
 		uri: 'http://localhost:5587/v1/bar',
 		qs: { error: true },
@@ -250,7 +251,7 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 	});
 
 	// Call special route which fails with extendable error
-	err = await t.throws(rp({
+	err = await t.throwsAsync(async () => rp({
 		method: 'POST',
 		uri: 'http://localhost:5587/v2/bar',
 		qs: { error: true },
@@ -269,7 +270,7 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 	});
 
 	// Call 404
-	err = await t.throws(rp({
+	err = await t.throwsAsync(async () => rp({
 		method: 'GET',
 		uri: 'http://localhost:5587/404',
 		resolveWithFullResponse: true,
@@ -286,7 +287,7 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 	});
 
 	// Call error with no message
-	err = await t.throws(rp({
+	err = await t.throwsAsync(async () => rp({
 		method: 'GET',
 		uri: 'http://localhost:5587/bar-fail',
 		resolveWithFullResponse: true,

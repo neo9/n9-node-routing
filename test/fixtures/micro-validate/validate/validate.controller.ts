@@ -1,6 +1,6 @@
+import { Body, JsonController, Post } from '@flyacts/routing-controllers';
 import { N9Error } from '@neo9/n9-node-utils';
-import { Body, JsonController, Post } from "routing-controllers";
-import { Service } from "typedi";
+import { Service } from 'typedi';
 import { Message } from './messages.models';
 import { User } from './users.models';
 

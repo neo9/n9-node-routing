@@ -1,5 +1,5 @@
+import { ExpressMiddlewareInterface, Middleware } from '@flyacts/routing-controllers';
 import { NextFunction, Request, Response } from 'express';
-import { ExpressMiddlewareInterface, Middleware } from "routing-controllers";
 
 @Middleware({ type: "before" })
 export class SessionLoaderInterceptor implements ExpressMiddlewareInterface {

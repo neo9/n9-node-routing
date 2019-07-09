@@ -1,3 +1,4 @@
+import { Action, RoutingControllersOptions, useContainer, useExpressServer } from '@flyacts/routing-controllers';
 import { N9Error } from '@neo9/n9-node-utils';
 import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
@@ -6,7 +7,6 @@ import * as helmet from 'helmet';
 import { createServer } from 'http';
 import * as morgan from 'morgan';
 import { FormatFn, TokenIndexer } from 'morgan';
-import { Action, RoutingControllersOptions, useContainer, useExpressServer } from 'routing-controllers';
 import { Container } from 'typedi';
 import { ErrorHandler } from './middleware/error-handler.interceptor';
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
@@ -15,7 +15,7 @@ import { setRequestContext } from './requestid';
 import ErrnoException = NodeJS.ErrnoException;
 
 export default async function(options: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> {
-	// Setup routing-controllers to use typedi container.
+	// Setup @flyacts/routing-controllers to use typedi container.
 	useContainer(Container);
 
 	// Defaults options for routing-controller
@@ -59,7 +59,7 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 	options.http.routingController = Object.assign({}, defaultRoutingControllerOptions, options.http.routingController);
 
 	options.http.routingController.interceptors = [SessionLoaderInterceptor, ErrorHandler];
-	options.http.routingController.authorizationChecker = async (action: Action, roles: string[]) => {
+	options.http.routingController.authorizationChecker = async (action: Action) => {
 		if (!action.request.headers.session) {
 			throw new N9Error('session-required', 401);
 		}

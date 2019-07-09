@@ -3,10 +3,18 @@ import { N9Error } from '@neo9/n9-node-utils';
 import { getNamespace } from 'continuation-local-storage';
 import { CoreOptions, Request, RequestAPI, RequiredUriUrl } from 'request';
 import * as rpn from 'request-promise-native';
-import * as UrlJoin from 'url-join';
 import { RequestIdNamespaceName } from '../requestid';
+import UrlJoin = require('url-join');
 
 export class N9HttpClient {
+
+	private static getUriFromUrlParts(url: string | string[]): string {
+		let uri;
+		if (Array.isArray(url)) uri = UrlJoin(...url);
+		else uri = UrlJoin(url);
+		return uri;
+	}
+
 	private readonly requestDefault: RequestAPI<Request, CoreOptions, RequiredUriUrl>;
 
 	constructor(private readonly logger: N9Log = global.log, options?: CoreOptions, private maxBodyLengthToLogError: number = 100) {
@@ -46,7 +54,7 @@ export class N9HttpClient {
 	}
 
 	public async request<T>(method: string, url: string | string[], queryParams?: object, headers: object = {}, body?: any): Promise<T> {
-		const uri = this.getUriFromUrlParts(url);
+		const uri = N9HttpClient.getUriFromUrlParts(url);
 
 		const namespaceRequestId = getNamespace(RequestIdNamespaceName);
 		const requestId = namespaceRequestId && namespaceRequestId.get('request-id');
@@ -75,8 +83,7 @@ export class N9HttpClient {
 					queryParams,
 					headers,
 					body: body && bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
-					srcError: e.error,
-					srcErrorContext: e.error.context,
+					srcError: JSON.stringify(e.error),
 				});
 			} else {
 				throw e;
@@ -85,7 +92,7 @@ export class N9HttpClient {
 	}
 
 	public async raw<T>(url: string | string[], options: CoreOptions): Promise<T> {
-		const uri = this.getUriFromUrlParts(url);
+		const uri = N9HttpClient.getUriFromUrlParts(url);
 		const startTime = Date.now();
 
 		try {
@@ -114,12 +121,5 @@ export class N9HttpClient {
 				throw e;
 			}
 		}
-	}
-
-	private getUriFromUrlParts(url: string | string[]): string {
-		let uri;
-		if (Array.isArray(url)) uri = UrlJoin(...url);
-		else uri = UrlJoin(url);
-		return uri;
 	}
 }

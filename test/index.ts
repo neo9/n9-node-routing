@@ -14,7 +14,7 @@ const closeServer = async (server: Server) => {
 
 test('Works with custom port', async (t: Assertions) => {
 	stdMock.use();
-	const { app, server } = await routingControllerWrapper({ http: { port: 4002 } });
+	const { server } = await routingControllerWrapper({ http: { port: 4002 } });
 	stdMock.restore();
 	const output = stdMock.flush();
 
@@ -25,20 +25,20 @@ test('Works with custom port', async (t: Assertions) => {
 
 test('Works with preventListen = true', async (t: Assertions) => {
 	stdMock.use();
-	const { app, server } = await routingControllerWrapper({ http: { port: 4002, preventListen: true } });
+	await routingControllerWrapper({ http: { port: 4002, preventListen: true } });
 	stdMock.restore();
 	const output = stdMock.flush();
 
 	t.is(output.stdout.length, 0);
 	t.is(output.stderr.length, 0);
-	const err = await t.throws(rp('http://localhost:4200'));
+	const err = await t.throwsAsync(async () => rp('http://localhost:4200'));
 	t.is(err.name, 'RequestError');
 });
 
 test('Works with custom log and should add a namespace', async (t: Assertions) => {
 	const log = n9Log('custom');
 	stdMock.use();
-	const { app, server } = await routingControllerWrapper({ log });
+	const { server } = await routingControllerWrapper({ log });
 	stdMock.restore();
 	const output = stdMock.flush();
 	t.true(output.stdout[0].includes('[custom:n9-node-routing] Listening on port 5000'));
@@ -48,7 +48,7 @@ test('Works with custom log and should add a namespace', async (t: Assertions) =
 
 test('Works without params', async (t: Assertions) => {
 	stdMock.use();
-	const { app, server } = await routingControllerWrapper();
+	const { server } = await routingControllerWrapper();
 	stdMock.restore();
 	const output = stdMock.flush();
 	t.true(output.stdout[0].includes('[n9-node-routing] Listening on port 5000'));
@@ -91,7 +91,7 @@ test('Should log the requests with custom level', async (t: Assertions) => {
 
 test('Fails with PORT without access', async (t: Assertions) => {
 	stdMock.use();
-	const err = await t.throws(routingControllerWrapper({ http: { port: 80 } }));
+	const err = await t.throwsAsync(async () => routingControllerWrapper({ http: { port: 80 } }));
 	stdMock.restore();
 	stdMock.flush();
 	t.true(err.message.includes('Port 80 requires elevated privileges'));
@@ -100,7 +100,7 @@ test('Fails with PORT without access', async (t: Assertions) => {
 test('Fails with PORT already used', async (t: Assertions) => {
 	stdMock.use();
 	await routingControllerWrapper({ http: { port: 6000 } });
-	const err = await t.throws(routingControllerWrapper({ http: { port: 6000 } }));
+	const err = await t.throwsAsync(async () => routingControllerWrapper({ http: { port: 6000 } }));
 	stdMock.restore();
 	const output = stdMock.flush();
 	t.true(output.stdout[0].includes('Listening on port 6000'));
@@ -109,7 +109,7 @@ test('Fails with PORT already used', async (t: Assertions) => {
 
 test('Fails with PORT not in common range', async (t: Assertions) => {
 	stdMock.use();
-	const err = await t.throws(routingControllerWrapper({ http: { port: 10000000 } }));
+	const err = await t.throwsAsync(async () => routingControllerWrapper({ http: { port: 10000000 } }));
 	t.true(err.message.includes('ort'));
 	stdMock.restore();
 	stdMock.flush();

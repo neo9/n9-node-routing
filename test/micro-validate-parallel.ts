@@ -80,8 +80,7 @@ test('[VALIDATE-PARALLEL] Check validation with multiple schemas', async (t: Ass
 	}
 
 	// Parallel exec
-	// Bug in routing controllers, can't validate multiple at once
-	// await t.notThrows(async () => await Promise.all(userValidationSchemas.map(async (v, i) => await testValidation(t, i))), 'Validation parallel is OK');
+	await t.notThrows(async () => await Promise.all(userValidationSchemas.map(async (v, i) => await testValidation(t, i))), 'Validation parallel is OK');
 
 	stdMock.restore();
 	stdMock.flush();
