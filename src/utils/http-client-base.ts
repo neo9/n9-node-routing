@@ -53,6 +53,10 @@ export class N9HttpClient {
 		return this.request<T>('patch', url, queryParams, headers, body);
 	}
 
+	public async head(url: string | string[], queryParams?: object, headers: object = {}): Promise<void> {
+		return this.request<void>('head', url, queryParams, headers);
+	}
+
 	public async request<T>(method: string, url: string | string[], queryParams?: object, headers: object = {}, body?: any): Promise<T> {
 		const uri = N9HttpClient.getUriFromUrlParts(url);
 
