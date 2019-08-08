@@ -30,20 +30,40 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 		controllers: [options.path + '/**/*.controller.*s'],
 	};
 
+	// Configure morgan
+	morgan.token('total-response-time', (req: Request, res: Response, digits: number = 3): string => {
+		if (!(req as any)._startAt) {
+			// missing request start time
+			return;
+		}
+
+		// // calculate diff
+		const reqStartTime = (req as any)._startAt;
+		const resEndTime = process.hrtime();
+		const ms = (resEndTime[0] - reqStartTime[0]) * 1e3 + (resEndTime[1] - reqStartTime[1]) * 1e-6;
+
+		// return truncated value
+		return ms.toFixed(digits);
+	});
+
 	// Default options
 	options.http = options.http || {};
 	options.http.port = options.http.port || process.env.PORT || 5000;
+
 	options.http.logLevel = (typeof options.http.logLevel !== 'undefined' ? options.http.logLevel : (tokens: TokenIndexer, req: Request, res: Response) => {
 		const formatLogInJSON: boolean = global.n9NodeRoutingData.formatLogInJSON;
 
 		if (formatLogInJSON) {
+			const totalResponseTime = tokens['total-response-time'](req, res);
 			return JSON.stringify({
 				'method': tokens.method(req, res),
 				'request-id': options.enableRequestId ? `(${req.headers['x-request-id']})` : '',
 				'path': tokens.url(req, res),
 				'status': tokens.status(req, res),
 				'duration': (Number.parseFloat(tokens['response-time'](req, res)) / 1000).toFixed(6),
+				'total-duration': (Number.parseFloat(totalResponseTime) / 1000).toFixed(6),
 				'response-time': tokens['response-time'](req, res),
+				'total-response-time': totalResponseTime,
 				'content-length': tokens.res(req, res, 'content-length'),
 			});
 		} else {
@@ -117,7 +137,8 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 							const morganDetails = JSON.parse(message);
 							options.log.info('api call ' + morganDetails.path, {
 								... morganDetails,
-								durationMs: Number.parseFloat(morganDetails['response-time'])
+								durationMs: Number.parseFloat(morganDetails['response-time']),
+								totalDurationMs: Number.parseFloat(morganDetails['total-response-time']),
 							});
 						} catch (e) {
 							message = message && message.replace('\n', '');
