@@ -34,18 +34,21 @@ export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRo
 	process.on('unhandledRejection', handleThrow);
 
 	// Options default
+	const developmentEnv = (process.env.NODE_ENV && process.env.NODE_ENV === 'development');
 	options = options || {};
 	options.path = options.path || join(appRootDir.get(), 'src', 'modules');
 	options.log = options.log || global.log;
 	options.hasProxy = typeof options.hasProxy === 'boolean' ? options.hasProxy : true;
 	options.enableRequestId = typeof options.enableRequestId === 'boolean' ? options.enableRequestId : true;
-	options.enableLogFormatJSON = typeof options.enableLogFormatJSON === 'boolean' ? options.enableLogFormatJSON : true;
+	// If enableLogFormatJSON is provided, we use it's value.
+	// Otherwise, we activate the plain logs for development env and JSON logs for other environments
+	options.enableLogFormatJSON = typeof options.enableLogFormatJSON === 'boolean' ? options.enableLogFormatJSON : !developmentEnv;
 	options.shutdown = options.shutdown || {};
 	options.shutdown.enableGracefulShutdown = typeof options.shutdown.enableGracefulShutdown === 'boolean' ? options.shutdown.enableGracefulShutdown : true;
 	options.shutdown.timeout = typeof options.shutdown.timeout === 'number' ? options.shutdown.timeout : 25 * 1_000;
 	options.shutdown.waitDurationBeforeStop = typeof options.shutdown.waitDurationBeforeStop === 'number' ? options.shutdown.waitDurationBeforeStop : 10_000;
 
-	const formatLogInJSON = options.enableLogFormatJSON && process.env.NODE_ENV && process.env.NODE_ENV !== 'development';
+	const formatLogInJSON = options.enableLogFormatJSON;
 	global.n9NodeRoutingData = {
 		formatLogInJSON,
 		options,
