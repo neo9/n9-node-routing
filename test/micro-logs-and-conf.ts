@@ -24,6 +24,7 @@ test('Basic usage, check logs', async (t: Assertions) => {
 
 	const { server } = await N9NodeRouting({
 		path: MICRO_LOGS,
+		enableLogFormatJSON: false
 	});
 	// Check /foo route added on foo/foo.init.ts
 	const res = await rp({ uri: 'http://localhost:5000/bar', resolveWithFullResponse: true, json: true });
@@ -40,7 +41,7 @@ test('Basic usage, check logs', async (t: Assertions) => {
 	t.true(output[3].includes('] ('), 'contains request id');
 	t.true(output[3].includes(')'), 'contains request id 2');
 	t.true(output[4].includes('] ('));
-	const matchLength = output[4].match(/\([a-zA-Z0-9_\-]{7,14}\)/g).length;
+	const matchLength = (output[4].match(/\([a-zA-Z0-9_\-]{7,14}\)/g) || []).length;
 	t.true(matchLength === 1);
 	t.true(output[4].includes('GET /bar'));
 	t.deepEqual(res.body, global.conf, 'body response is conf');
@@ -73,8 +74,36 @@ test('Basic usage, check logs with empty response', async (t: Assertions) => {
 	t.true(output[1].includes('Hello bar.init'), 'Hello bar.init');
 	t.true(output[2].includes('Listening on port 5002'), 'Listening on port 5002');
 	t.true(output[3].includes('] ('));
-	t.true(output[3].match(/\([a-zA-Z0-9_\-]{7,14}\)/g).length > 0);
+	t.truthy(output[3].match(/\([a-zA-Z0-9_\-]{7,14}\)/g));
 	t.true(output[3].includes('GET /empty'), 'GET /empty');
+
+	// Close server
+	await closeServer(server);
+});
+
+test('JSON output', async (t: Assertions) => {
+	stdMock.use({ print });
+	global.conf = {
+		someConfAttr: 'value',
+	};
+
+	const { server } = await N9NodeRouting({
+		path: MICRO_LOGS,
+		enableLogFormatJSON: true
+	});
+
+	// Check /foo route added on foo/foo.init.ts
+	const res = await rp({ uri: 'http://localhost:5000/bar', resolveWithFullResponse: true, json: true });
+	t.is(res.statusCode, 200);
+
+	// Check logs
+	stdMock.restore();
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
+	// Logs on stdout
+	t.truthy(output[4].match(/"method":"GET"/g), 'GET /bar 1');
+	t.truthy(output[4].match(/"path":"\/bar"/g), 'GET /bar 2');
+	t.truthy(output[4].match(/"response-time":"[0-9]{1,5}\.[0-9]{1,5}"/g), 'Has response time');
+	t.truthy(output[4].match(/"total-response-time":"[0-9]{1,5}\.[0-9]{1,5}"/g), 'Has total response time');
 
 	// Close server
 	await closeServer(server);
