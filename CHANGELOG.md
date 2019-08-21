@@ -1,5 +1,32 @@
+# Version [1.15.0](https://github.com/neo9/n9-node-routing/compare/1.14.0...1.15.0) (2019-08-21)
+
+
+### errors
+
+* Stringify default error in logs and use safe stringify ([d68ca5c](https://github.com/neo9/n9-node-routing/commit/d68ca5c)) (Benjamin Daniel)
+
+### httpClient
+
+* Add head http method ([6fb27c5](https://github.com/neo9/n9-node-routing/commit/6fb27c5)) (Benjamin Daniel)
+* Add requestStream function ([9aa1447](https://github.com/neo9/n9-node-routing/commit/9aa1447)) (Benjamin Daniel)
+
+### logs
+
+* Add total response time ([101d192](https://github.com/neo9/n9-node-routing/commit/101d192)) (Clement Petit)
+* Fix enableLogFormatJSON default behaviour and add tests ([2311958](https://github.com/neo9/n9-node-routing/commit/2311958)) (Clement Petit)
+
+### tests
+
+* Improve tests readability and add one for 403 errors ([4e2276b](https://github.com/neo9/n9-node-routing/commit/4e2276b)) (Benjamin Daniel)
+
+
+
 # Version [1.14.0](https://github.com/neo9/n9-node-routing/compare/1.13.1...1.14.0) (2019-07-09)
 
+
+### release
+
+* V 1.14.0 ([a88704a](https://github.com/neo9/n9-node-routing/commit/a88704a)) (Benjamin Daniel)
 
 ### tests
 
