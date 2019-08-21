@@ -38,7 +38,7 @@ test('Call a route with HttpClient', async (t: Assertions) => {
 	** Test ping route
 	*/
 	let rep = await httpClient.get<string>('http://localhost:6001/ping', {}, {
-		'x-request-id': 'test-request-id'
+		'x-request-id': 'test-request-id',
 	});
 	t.is(rep, 'pong');
 	rep = await httpClient.raw<string>('http://localhost:6001/ping', { method: 'get' });
@@ -62,6 +62,9 @@ test('Call a route with HttpClient', async (t: Assertions) => {
 	error = await t.throwsAsync<N9Error>(async () => await httpClient.request<string>('post', ['http://localhost:6001', 'ping']));
 	t.is(error.message, 'not-found', 'request not-found');
 
+	error = await t.throwsAsync<N9Error>(async () => await httpClient.requestStream(['http://localhost:6001', '404']));
+	t.is(error.status, 404, 'request stream not-found');
+
 	error = await t.throwsAsync<N9Error>(async () => await httpClient.raw<string>('http://localhost:6001/ping', {
 		method: 'post',
 	})) as N9Error;
@@ -70,6 +73,18 @@ test('Call a route with HttpClient', async (t: Assertions) => {
 	error = await t.throwsAsync<N9Error>(async () => await httpClient.get<string>('http://localhost:0'));
 	t.is(error.status, 500);
 	t.is(error.message, 'ECONNREFUSED');
+
+	const { incomingMessage, responseAsStream } = await httpClient.requestStream(['http://localhost:6001', 'ping']);
+	t.is(incomingMessage.statusCode, 200, 'status code 200');
+	let responseContent: string = null;
+	await new Promise(((resolve) => {
+		responseAsStream
+				.on('data', (data) => {
+					responseContent = data.toString();
+				})
+				.on('end', resolve);
+	}));
+	t.is(responseContent, 'pong', 'reponse is pong');
 
 	// Clear stdout
 	stdMock.restore();

@@ -41,7 +41,9 @@ test('Basic usage, check logs', async (t: Assertions) => {
 	t.true(output[3].includes('] ('), 'contains request id');
 	t.true(output[3].includes(')'), 'contains request id 2');
 	t.true(output[4].includes('] ('));
-	const matchLength = (output[4].match(/\([a-zA-Z0-9_\-]{7,14}\)/g) || []).length;
+	const match = output[4].match(/\([a-zA-Z0-9_\-]{7,14}\)/g);
+	t.truthy(match, 'should match one');
+	const matchLength = match.length;
 	t.true(matchLength === 1);
 	t.true(output[4].includes('GET /bar'));
 	t.deepEqual(res.body, global.conf, 'body response is conf');
