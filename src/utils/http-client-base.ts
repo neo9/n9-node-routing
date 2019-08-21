@@ -5,6 +5,7 @@ import { CoreOptions, Request, RequestAPI, RequiredUriUrl } from 'request';
 import * as rpn from 'request-promise-native';
 import { RequestIdNamespaceName } from '../requestid';
 import UrlJoin = require('url-join');
+import stringify from 'fast-safe-stringify';
 
 export class N9HttpClient {
 
@@ -76,8 +77,9 @@ export class N9HttpClient {
 
 			return res.body as any;
 		} catch (e) {
-			this.logger.error(`Error on [${method} ${uri}]`, { 'status': e.statusCode, 'response-time': (Date.now() - startTime) });
-			const bodyJSON = JSON.stringify(body);
+			const responseTime = Date.now() - startTime;
+			this.logger.error(`Error on [${method} ${uri}]`, { 'status': e.statusCode, 'response-time': responseTime });
+			const bodyJSON = stringify(body);
 			// istanbul ignore else
 			if (e.error) {
 				throw new N9Error(e.error.code, e.statusCode, {
@@ -87,7 +89,8 @@ export class N9HttpClient {
 					queryParams,
 					headers,
 					body: body && bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
-					srcError: JSON.stringify(e.error),
+					srcError: stringify(e.error),
+					responseTime
 				});
 			} else {
 				throw e;
@@ -107,18 +110,9 @@ export class N9HttpClient {
 			this.logger.error(`Error on raw call [${options.method} ${uri}]`, { 'status': e.statusCode, 'response-time': (Date.now() - startTime) });
 			// istanbul ignore else
 			if (e.error) {
-				let isOptionsStringable;
-				try {
-					JSON.stringify(options);
-					isOptionsStringable = true;
-				} catch (e) {
-					isOptionsStringable = false;
-				}
-
 				throw new N9Error(e.error.code, e.statusCode, {
 					uri,
-					isOptionsStringable,
-					options: isOptionsStringable ? options : undefined,
+					options: stringify(options),
 					error: e.error,
 					...e.error.context,
 				});			} else {

@@ -202,7 +202,7 @@ test('Call routes (versionning)', async (t: Assertions) => {
 	t.deepEqual(err.response.body.context, { test: true });
 	stdMock.restore();
 	const output = stdMock.flush();
-	t.true(output.stderr.join(' ').includes('Error: bar-extendable-error'));
+	t.true(output.stderr.join(' ').includes('bar-extendable-error'), 'bar-extendable-error');
 	// Close server
 	await closeServer(server);
 });
@@ -309,7 +309,7 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 	}, 'unspecified-error');
 	stdMock.restore();
 	const output = stdMock.flush();
-	t.true(output.stderr.join(' ').includes('Error: bar-extendable-error'));
+	t.true(output.stderr.join(' ').includes('bar-extendable-error'), 'bar-extendable-error');
 	// Close server
 	await closeServer(server);
 	delete process.env.NODE_ENV;
