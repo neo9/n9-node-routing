@@ -92,7 +92,7 @@ export class N9HttpClient {
 					queryParams,
 					headers,
 					body: body && bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
-					srcError: stringify(e.error),
+					srcError: e.error,
 					responseTime,
 				});
 			} else {
@@ -154,15 +154,15 @@ export class N9HttpClient {
 				});
 			});
 		} catch (e) {
-			this.logger.error('Error while calling URL', { url });
 			const durationCatch = Date.now() - startTime;
+			this.logger.error(`Error on [${options ? options.method || 'GET' : 'GET'} ${uri}]`, { 'status': e.statusCode, 'response-time': durationCatch });
 			this.logger.debug(`File TTFB : ${durationCatch} ms`, { durationMs: durationCatch, statusCode: e.statusCode, url });
 			throw new N9Error((e.error && e.error.code) || e.message || e.name || 'unknown-error', e.statusCode, {
 				uri,
 				method: options && options.method,
-				code: e.error && e.error.code,
+				code: (e.error && e.error.code) || e.statusCode,
 				headers: options && options.headers,
-				srcError: stringify(e.error),
+				srcError: e.error,
 				responseTime: durationCatch,
 			});
 		}
