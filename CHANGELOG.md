@@ -1,3 +1,12 @@
+## Version [1.15.1](https://github.com/neo9/n9-node-routing/compare/1.15.0...1.15.1) (2019-08-23)
+
+
+### httpClient
+
+* Do not stringify error before throwing error ([96dbc94](https://github.com/neo9/n9-node-routing/commit/96dbc94)) (Benjamin Daniel)
+
+
+
 # Version [1.15.0](https://github.com/neo9/n9-node-routing/compare/1.14.0...1.15.0) (2019-08-21)
 
 
@@ -14,6 +23,10 @@
 
 * Add total response time ([101d192](https://github.com/neo9/n9-node-routing/commit/101d192)) (Clement Petit)
 * Fix enableLogFormatJSON default behaviour and add tests ([2311958](https://github.com/neo9/n9-node-routing/commit/2311958)) (Clement Petit)
+
+### release
+
+* V 1.15.0 ([f5704a6](https://github.com/neo9/n9-node-routing/commit/f5704a6)) (Benjamin Daniel)
 
 ### tests
 
