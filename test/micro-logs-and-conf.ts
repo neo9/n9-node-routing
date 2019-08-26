@@ -104,8 +104,8 @@ test('JSON output', async (t: Assertions) => {
 	// Logs on stdout
 	t.truthy(output[4].match(/"method":"GET"/g), 'GET /bar 1');
 	t.truthy(output[4].match(/"path":"\/bar"/g), 'GET /bar 2');
-	t.truthy(output[4].match(/"response-time":"[0-9]{1,5}\.[0-9]{1,5}"/g), 'Has response time');
-	t.truthy(output[4].match(/"total-response-time":"[0-9]{1,5}\.[0-9]{1,5}"/g), 'Has total response time');
+	t.truthy(output[4].match(/"durationMs":[0-9]{1,5}\.[0-9]{1,5}/g), 'Has response time ms : ' + output[4]);
+	t.truthy(output[4].match(/"totalDurationMs":[0-9]{1,5}\.[0-9]{1,5}/g), 'Has total response time ms');
 
 	// Close server
 	await closeServer(server);

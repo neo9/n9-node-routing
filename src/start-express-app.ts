@@ -3,6 +3,7 @@ import { N9Error } from '@neo9/n9-node-utils';
 import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
 import { Request, Response } from 'express';
+import stringify from 'fast-safe-stringify';
 import * as helmet from 'helmet';
 import { createServer } from 'http';
 import * as morgan from 'morgan';
@@ -54,16 +55,13 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 		const formatLogInJSON: boolean = global.n9NodeRoutingData.formatLogInJSON;
 
 		if (formatLogInJSON) {
-			const totalResponseTime = tokens['total-response-time'](req, res);
 			return JSON.stringify({
 				'method': tokens.method(req, res),
 				'request-id': options.enableRequestId ? `(${req.headers['x-request-id']})` : '',
 				'path': tokens.url(req, res),
 				'status': tokens.status(req, res),
-				'duration': (Number.parseFloat(tokens['response-time'](req, res)) / 1000).toFixed(6),
-				'total-duration': (Number.parseFloat(totalResponseTime) / 1000).toFixed(6),
-				'response-time': tokens['response-time'](req, res),
-				'total-response-time': totalResponseTime,
+				'durationMs': Number.parseFloat(tokens['response-time'](req, res)),
+				'totalDurationMs': Number.parseFloat(tokens['total-response-time'](req, res)),
 				'content-length': tokens.res(req, res, 'content-length'),
 			});
 		} else {
@@ -135,14 +133,10 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 					if (global.n9NodeRoutingData.formatLogInJSON) {
 						try {
 							const morganDetails = JSON.parse(message);
-							options.log.info('api call ' + morganDetails.path, {
-								... morganDetails,
-								durationMs: Number.parseFloat(morganDetails['response-time']),
-								totalDurationMs: Number.parseFloat(morganDetails['total-response-time']),
-							});
+							options.log.info('api call ' + morganDetails.path, morganDetails);
 						} catch (e) {
 							message = message && message.replace('\n', '');
-							options.log.info(message, { error : e});
+							options.log.info(message, { errString: stringify(e) });
 						}
 					} else {
 						message = message && message.replace('\n', '');
