@@ -1,9 +1,22 @@
+# Version [1.16.0](https://github.com/neo9/n9-node-routing/compare/1.15.1...1.16.0) (2019-08-29)
+
+
+### logs
+
+* Remove string duration logs and keep only float once ([c9f342c](https://github.com/neo9/n9-node-routing/commit/c9f342c)) (Benjamin Daniel)
+
+
+
 ## Version [1.15.1](https://github.com/neo9/n9-node-routing/compare/1.15.0...1.15.1) (2019-08-23)
 
 
 ### httpClient
 
 * Do not stringify error before throwing error ([96dbc94](https://github.com/neo9/n9-node-routing/commit/96dbc94)) (Benjamin Daniel)
+
+### release
+
+* V 1.15.1 ([aaaaa90](https://github.com/neo9/n9-node-routing/commit/aaaaa90)) (Benjamin Daniel)
 
 
 
