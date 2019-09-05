@@ -5,6 +5,7 @@ import { join } from 'path';
 import 'reflect-metadata';
 import { Container } from 'typedi';
 import initModules from './initialise-modules';
+import startModules from './start-modules';
 import { N9NodeRouting } from './models/routing.models';
 import { registerShutdown } from './register-system-signals';
 import { requestIdFilter } from './requestid';
@@ -81,7 +82,7 @@ export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRo
 	}
 	Container.set('N9HttpClient', new N9HttpClient());
 
-	// Init every modules
+	// Execute all *.init.ts files in modules before app started listening on the HTTP Port
 	await initModules(options.path, options.log);
 	const returnObject = await expressAppStarter(options);
 	await bindSpecificRoutes(returnObject.app, options);
@@ -90,6 +91,9 @@ export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRo
 	if (options.shutdown.enableGracefulShutdown) {
 		registerShutdown(options.log, options.shutdown, returnObject.server);
 	}
+
+	// Execute all *.started.ts files in modules after app started listening on the HTTP Port
+	await startModules(options.path, options.log);
 
 	return returnObject;
 }
