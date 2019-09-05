@@ -1,9 +1,22 @@
+# Version [1.17.0](https://github.com/neo9/n9-node-routing/compare/1.16.0...1.17.0) (2019-09-05)
+
+
+### hooks
+
+* Add start lifecycle hook ([fe6c773](https://github.com/neo9/n9-node-routing/commit/fe6c773)) (Clement Petit)
+
+
+
 # Version [1.16.0](https://github.com/neo9/n9-node-routing/compare/1.15.1...1.16.0) (2019-08-29)
 
 
 ### logs
 
 * Remove string duration logs and keep only float once ([c9f342c](https://github.com/neo9/n9-node-routing/commit/c9f342c)) (Benjamin Daniel)
+
+### release
+
+* V 1.16.0 ([9f0018d](https://github.com/neo9/n9-node-routing/commit/9f0018d)) (Benjamin Daniel)
 
 
 
