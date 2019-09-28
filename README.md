@@ -21,3 +21,8 @@
 Documentation available as openapi 3.0 format : /documentation.json
 
 Swagger UI for API available at : /documentation
+
+## starter
+
+A starter app is available here : https://github.com/neo9/n9-node-microservice-skeleton
+
