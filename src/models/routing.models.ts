@@ -1,6 +1,6 @@
 import { RoutingControllersOptions } from '@flyacts/routing-controllers';
 import { N9Log } from '@neo9/n9-node-log';
-import { Express } from 'express';
+import { Express, Request, Response } from 'express';
 import { Server } from 'http';
 import * as morgan from 'morgan';
 
@@ -17,6 +17,7 @@ export namespace N9NodeRouting {
 		jwt?: JWTOptions;
 		openapi?: SwaggerOptions;
 		shutdown?: ShutdownOptions;
+		prometheus?: PrometheusOptions;
 	}
 
 	export interface HttpOptions {
@@ -68,6 +69,14 @@ export namespace N9NodeRouting {
 	}
 
 	export type CallbacksBeforeShutdownFunction = ((log: N9Log) => Promise<void>);
+
+	export interface PrometheusOptions {
+		port?: number;
+		labels?: string[];
+		getLabelValues?: (req: Request, res: Response) => { [label: string]: string };
+		accuracies?: string[];
+		skip?: (req: Request, res: Response, labels: string[]) => boolean;
+	}
 
 	export interface ReturnObject {
 		app: Express;

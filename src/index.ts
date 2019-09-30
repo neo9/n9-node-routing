@@ -1,16 +1,17 @@
 import n9Log from '@neo9/n9-node-log';
 import * as appRootDir from 'app-root-dir';
 import { join } from 'path';
+import * as PrometheusClient from 'prom-client';
 // tslint:disable-next-line:no-import-side-effect
 import 'reflect-metadata';
 import { Container } from 'typedi';
 import initModules from './initialise-modules';
-import startModules from './start-modules';
 import { N9NodeRouting } from './models/routing.models';
 import { registerShutdown } from './register-system-signals';
 import { requestIdFilter } from './requestid';
 import bindSpecificRoutes from './routes';
 import expressAppStarter from './start-express-app';
+import startModules from './start-modules';
 // tslint:disable-next-line:no-import-side-effect
 import './utils/error-to-json';
 import { N9HttpClient } from './utils/http-client-base';
@@ -30,7 +31,9 @@ export * from './models/routing.models';
 export * from './models/routes.models';
 export * from './utils/http-client-base';
 
-export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> {
+export { PrometheusClient };
+
+export default async (options?: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> => {
 	// Provides a stack trace for unhandled rejections instead of the default message string.
 	process.on('unhandledRejection', handleThrow);
 
@@ -48,6 +51,10 @@ export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRo
 	options.shutdown.enableGracefulShutdown = typeof options.shutdown.enableGracefulShutdown === 'boolean' ? options.shutdown.enableGracefulShutdown : true;
 	options.shutdown.timeout = typeof options.shutdown.timeout === 'number' ? options.shutdown.timeout : 25 * 1_000;
 	options.shutdown.waitDurationBeforeStop = typeof options.shutdown.waitDurationBeforeStop === 'number' ? options.shutdown.waitDurationBeforeStop : 10_000;
+	if (options.prometheus) {
+		options.prometheus.port = typeof options.prometheus.port === 'number' ? options.prometheus.port : 9101;
+		options.prometheus.accuracies = options.prometheus.accuracies || ['s'];
+	}
 
 	const formatLogInJSON = options.enableLogFormatJSON;
 	global.n9NodeRoutingData = {
@@ -57,7 +64,7 @@ export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRo
 
 	if (global.log) {
 		global.log = n9Log(global.log.name, {
-			... global.log.options,
+			...global.log.options,
 			formatJSON: formatLogInJSON,
 		});
 	}
@@ -96,4 +103,4 @@ export default async function(options?: N9NodeRouting.Options): Promise<N9NodeRo
 	await startModules(options.path, options.log);
 
 	return returnObject;
-}
+};

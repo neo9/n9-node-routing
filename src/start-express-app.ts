@@ -1,5 +1,7 @@
 import { Action, RoutingControllersOptions, useContainer, useExpressServer } from '@flyacts/routing-controllers';
 import { N9Error } from '@neo9/n9-node-utils';
+import { createMiddleware, signalIsUp } from '@promster/express';
+import * as PromsterServer from '@promster/server';
 import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
 import { Request, Response } from 'express';
@@ -15,7 +17,7 @@ import { N9NodeRouting } from './models/routing.models';
 import { setRequestContext } from './requestid';
 import ErrnoException = NodeJS.ErrnoException;
 
-export default async function(options: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> {
+export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> => {
 	// Setup @flyacts/routing-controllers to use typedi container.
 	useContainer(Container);
 
@@ -117,6 +119,9 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 	};
 	const onListening = () => {
 		options.log.info('Listening on port ' + options.http.port);
+		if (options.prometheus) {
+			signalIsUp();
+		}
 	};
 
 	// Create HTTP server
@@ -125,6 +130,18 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 	// Middleware
 	expressApp.use(setRequestContext);
 	expressApp.use(helmet());
+	if (options.prometheus) {
+		expressApp.use(createMiddleware({
+			options: {
+				normalizePath: (path: string, rr: { req: Request, res: Response }): string => rr.req.route.path,
+				labels: options.prometheus.labels,
+				getLabelValues: options.prometheus.getLabelValues,
+				accuracies: options.prometheus.accuracies,
+				skip: options.prometheus.skip,
+			},
+		}));
+		await PromsterServer.createServer({ port: options.prometheus.port });
+	}
 	// Logger middleware
 	if (options.http.logLevel) {
 		expressApp.use(morgan(options.http.logLevel as FormatFn, {
@@ -180,4 +197,4 @@ export default async function(options: N9NodeRouting.Options): Promise<N9NodeRou
 		app: expressApp,
 		server,
 	};
-}
+};

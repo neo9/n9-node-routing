@@ -1,6 +1,7 @@
 import * as RCOpenApi from '@benjd90/routing-controllers-openapi';
 import { getMetadataArgsStorage } from '@flyacts/routing-controllers';
 import { N9Error } from '@neo9/n9-node-utils';
+import { signalIsNotUp } from '@promster/express';
 import * as appRootDir from 'app-root-dir';
 import { getFromContainer, MetadataStorage } from 'class-validator';
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
@@ -34,6 +35,9 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 				if (!await db.isConnected.bind(db.thisArg || this)()) {
 					global.log.error(`[PING] Can't connect to ${db.name}`);
 					res.status(500).send();
+					if (options.prometheus) {
+						signalIsNotUp();
+					}
 					next();
 					return;
 				}

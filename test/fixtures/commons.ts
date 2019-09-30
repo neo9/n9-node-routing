@@ -1,4 +1,4 @@
 export default {
 	print: false,
-	excludeSomeLogs: () => true
+	excludeSomeLogs: () => true,
 };
