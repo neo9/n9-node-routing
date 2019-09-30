@@ -7,10 +7,16 @@ import * as morgan from 'morgan';
 // tslint:disable-next-line:no-namespace
 export namespace N9NodeRouting {
 
-	export interface PingDb {
-		name: string;
-		isConnected: () => boolean | Promise<boolean>;
-		thisArg?: any;
+	export interface Options {
+		hasProxy?: boolean;
+		enableRequestId?: boolean;
+		enableLogFormatJSON?: boolean;
+		path?: string;
+		log?: N9Log;
+		http?: HttpOptions;
+		jwt?: JWTOptions;
+		openapi?: SwaggerOptions;
+		shutdown?: ShutdownOptions;
 	}
 
 	export interface HttpOptions {
@@ -25,11 +31,28 @@ export namespace N9NodeRouting {
 		afterRoutingControllerLaunchHook?: (app: Express, log: N9Log, options: Options) => Promise<void>;
 	}
 
-	export type CallbacksBeforeShutdownFunction = ((log: N9Log) => Promise<void>);
+	export interface PingDb {
+		name: string;
+		isConnected: () => boolean | Promise<boolean>;
+		thisArg?: any;
+	}
 
-	export interface CallbacksBeforeShutdown {
-		function: CallbacksBeforeShutdownFunction;
-		thisArg: any;
+	export interface JWTOptions {
+		headerKey?: string;
+		secret?: string;
+		expiresIn?: number | string;
+	}
+
+	export interface SwaggerOptions {
+		isEnable?: boolean;
+		jsonUrl?: string;
+		swaggerui?: SwaggerUi;
+	}
+
+	export interface SwaggerUi {
+		customCss?: string;
+		customJs?: string;
+		swaggerUrl?: string;
 	}
 
 	export interface ShutdownOptions {
@@ -39,38 +62,15 @@ export namespace N9NodeRouting {
 		timeout?: number;
 	}
 
-	export interface JWTOptions {
-		headerKey?: string;
-		secret?: string;
-		expiresIn?: number | string;
+	export interface CallbacksBeforeShutdown {
+		function: CallbacksBeforeShutdownFunction;
+		thisArg: any;
 	}
 
-	export interface Options {
-		hasProxy?: boolean;
-		enableRequestId?: boolean;
-		enableLogFormatJSON?: boolean;
-		path?: string;
-		log?: N9Log;
-		http?: HttpOptions;
-		jwt?: JWTOptions;
-		openapi?: SwaggerOptions;
-		shutdown?: ShutdownOptions;
-	}
-
-	export interface SwaggerOptions {
-		isEnable?: boolean;
-		jsonUrl?: string;
-		swaggerui?: SwaggerUi;
-	}
+	export type CallbacksBeforeShutdownFunction = ((log: N9Log) => Promise<void>);
 
 	export interface ReturnObject {
 		app: Express;
 		server: Server;
-	}
-
-	export interface SwaggerUi {
-		customCss?: string;
-		customJs?: string;
-		swaggerUrl?: string;
 	}
 }
