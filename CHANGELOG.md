@@ -1,9 +1,30 @@
+# Version [1.18.0](https://github.com/neo9/n9-node-routing/compare/1.17.0...1.18.0) (2019-09-30)
+
+
+### doc
+
+* Update readme by adding starter link ([95babcc](https://github.com/neo9/n9-node-routing/commit/95babcc)) (Benjamin DANIEL)
+
+### options
+
+* Organise options interfaces ([e95879f](https://github.com/neo9/n9-node-routing/commit/e95879f)) (Benjamin Daniel)
+
+### prometheus
+
+* Add prometheus options ([76b892e](https://github.com/neo9/n9-node-routing/commit/76b892e)) (Benjamin Daniel)
+
+
+
 # Version [1.17.0](https://github.com/neo9/n9-node-routing/compare/1.16.0...1.17.0) (2019-09-05)
 
 
 ### hooks
 
 * Add start lifecycle hook ([fe6c773](https://github.com/neo9/n9-node-routing/commit/fe6c773)) (Clement Petit)
+
+### release
+
+* V 1.17.0 ([d410772](https://github.com/neo9/n9-node-routing/commit/d410772)) (Benjamin Daniel)
 
 
 
