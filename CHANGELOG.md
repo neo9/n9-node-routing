@@ -1,3 +1,12 @@
+## Version [1.18.1](https://github.com/neo9/n9-node-routing/compare/1.18.0...1.18.1) (2019-10-01)
+
+
+### prometheus
+
+* Fix path normalize for route not found ([da32476](https://github.com/neo9/n9-node-routing/commit/da32476)) (Benjamin Daniel)
+
+
+
 # Version [1.18.0](https://github.com/neo9/n9-node-routing/compare/1.17.0...1.18.0) (2019-09-30)
 
 
@@ -12,6 +21,10 @@
 ### prometheus
 
 * Add prometheus options ([76b892e](https://github.com/neo9/n9-node-routing/commit/76b892e)) (Benjamin Daniel)
+
+### release
+
+* V 1.18.0 ([24480d1](https://github.com/neo9/n9-node-routing/commit/24480d1)) (Benjamin Daniel)
 
 
 
