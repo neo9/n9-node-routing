@@ -133,7 +133,7 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 	if (options.prometheus) {
 		expressApp.use(createMiddleware({
 			options: {
-				normalizePath: (path: string, rr: { req: Request, res: Response }): string => rr.req.route.path,
+				normalizePath: (path: string, rr: { req: Request, res: Response }): string => (rr.req.route && rr.req.route.path) || rr.req.originalUrl || rr.req.url,
 				labels: options.prometheus.labels,
 				getLabelValues: options.prometheus.getLabelValues,
 				accuracies: options.prometheus.accuracies,
