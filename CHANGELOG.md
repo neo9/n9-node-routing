@@ -1,9 +1,22 @@
+## Version [1.18.2](https://github.com/neo9/n9-node-routing/compare/1.18.1...1.18.2) (2019-10-03)
+
+
+### prometheus
+
+* Add version as metric ([def83a7](https://github.com/neo9/n9-node-routing/commit/def83a7)) (Benjamin Daniel)
+
+
+
 ## Version [1.18.1](https://github.com/neo9/n9-node-routing/compare/1.18.0...1.18.1) (2019-10-01)
 
 
 ### prometheus
 
 * Fix path normalize for route not found ([da32476](https://github.com/neo9/n9-node-routing/commit/da32476)) (Benjamin Daniel)
+
+### release
+
+* V 1.18.1 ([8eb2fa6](https://github.com/neo9/n9-node-routing/commit/8eb2fa6)) (Benjamin Daniel)
 
 
 
