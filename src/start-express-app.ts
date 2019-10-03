@@ -2,6 +2,7 @@ import { Action, RoutingControllersOptions, useContainer, useExpressServer } fro
 import { N9Error } from '@neo9/n9-node-utils';
 import { createMiddleware, signalIsUp } from '@promster/express';
 import * as PromsterServer from '@promster/server';
+import * as appRootDir from 'app-root-dir';
 import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
 import { Request, Response } from 'express';
@@ -10,6 +11,8 @@ import * as helmet from 'helmet';
 import { createServer } from 'http';
 import * as morgan from 'morgan';
 import { FormatFn, TokenIndexer } from 'morgan';
+import { join } from 'path';
+import * as PrometheusClient from 'prom-client';
 import { Container } from 'typedi';
 import { ErrorHandler } from './middleware/error-handler.interceptor';
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
@@ -140,6 +143,15 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 				skip: options.prometheus.skip,
 			},
 		}));
+
+		const packageJson = require(join(appRootDir.get(), 'package.json'));
+
+		new PrometheusClient.Gauge({
+			name: 'version_info',
+			help: 'App version',
+			labelNames: ['version'],
+		}).set({ version: packageJson.version }, 1);
+
 		await PromsterServer.createServer({ port: options.prometheus.port });
 	}
 	// Logger middleware

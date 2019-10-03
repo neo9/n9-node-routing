@@ -45,6 +45,7 @@ test('Basic usage, create http server', async (t: Assertions) => {
 	const resProm = await rp({ uri: 'http://localhost:5001/' });
 	t.true(resProm.includes('http_requests_total{method="get",status_code="204",path="/sample-route"} 1'), 'Prom exposition contains call to sample-route');
 	t.true(resProm.includes('http_requests_total{method="get",status_code="204",path="/by-code/:code"} 1'), 'Prom exposition contains call with route pattern');
+	t.true(resProm.includes('version_info{version="'), 'Prom exposition contains version info');
 
 	// Check logs
 	stdMock.restore();
