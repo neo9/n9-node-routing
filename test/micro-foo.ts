@@ -119,7 +119,7 @@ test('Basic usage, create http server on production', async (t: Assertions) => {
 
 	// Close server
 	await closeServer(server);
-	delete  process.env.NODE_ENV;
+	delete process.env.NODE_ENV;
 });
 
 test('Check /routes', async (t) => {
@@ -186,6 +186,7 @@ test('Call routes (versionning)', async (t: Assertions) => {
 	}));
 	t.is(err.statusCode, 500);
 	t.is(err.response.body.code, 'bar-error');
+	t.is(err.response.body.stack, undefined, `Stack stay inside api`);
 
 	// Call special route which fails with extendable error
 	err = await t.throwsAsync(async () => rp({
@@ -200,6 +201,7 @@ test('Call routes (versionning)', async (t: Assertions) => {
 	t.is(err.response.body.code, 'bar-extendable-error');
 	t.is(err.response.body.status, 505);
 	t.deepEqual(err.response.body.context, { test: true });
+	t.is(err.response.body.stack, undefined, `Stack stay inside api`);
 	stdMock.restore();
 	const output = stdMock.flush();
 	t.true(output.stderr.join(' ').includes('bar-extendable-error'), 'bar-extendable-error');

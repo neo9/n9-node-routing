@@ -13,5 +13,6 @@ test('Error to json', async (t: Assertions) => {
 	const e = Error(text);
 	const eAsJSON = JSON.stringify(e);
 
-	t.is(eAsJSON, JSON.stringify({ name: 'Error', message: text}));
+	const expectedStart = JSON.stringify({ name: 'Error', message: text, stack: 'Error: message-error-text' }).substring(0, -2);
+	t.true(eAsJSON.startsWith(expectedStart), ` \n${eAsJSON} \n ${expectedStart}`);
 });
