@@ -1,6 +1,6 @@
 {
   "name": "n9-node-routing",
-  "version": "1.18.2",
+  "version": "1.19.0",
   "description": "Library to easily start app with routing-controllers",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",

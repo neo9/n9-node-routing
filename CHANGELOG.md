@@ -1,9 +1,22 @@
+# Version [1.19.0](https://github.com/neo9/n9-node-routing/compare/1.18.2...1.19.0) (2019-10-09)
+
+
+### errors
+
+* Add stack trace to errors as JSON ([13cabc7](https://github.com/neo9/n9-node-routing/commit/13cabc7)) (Benjamin Daniel)
+
+
+
 ## Version [1.18.2](https://github.com/neo9/n9-node-routing/compare/1.18.1...1.18.2) (2019-10-03)
 
 
 ### prometheus
 
 * Add version as metric ([def83a7](https://github.com/neo9/n9-node-routing/commit/def83a7)) (Benjamin Daniel)
+
+### release
+
+* V 1.18.2 ([7a425b8](https://github.com/neo9/n9-node-routing/commit/7a425b8)) (Benjamin Daniel)
 
 
 
