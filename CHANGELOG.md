@@ -1,9 +1,22 @@
+## Version [1.19.1](https://github.com/neo9/n9-node-routing/compare/1.19.0...1.19.1) (2019-10-10)
+
+
+### errors
+
+* Keep stack in error context du not through HTTP ([b97f94c](https://github.com/neo9/n9-node-routing/commit/b97f94c)) (Benjamin Daniel)
+
+
+
 # Version [1.19.0](https://github.com/neo9/n9-node-routing/compare/1.18.2...1.19.0) (2019-10-09)
 
 
 ### errors
 
 * Add stack trace to errors as JSON ([13cabc7](https://github.com/neo9/n9-node-routing/commit/13cabc7)) (Benjamin Daniel)
+
+### release
+
+* V 1.19.0 ([c6dcd43](https://github.com/neo9/n9-node-routing/commit/c6dcd43)) (Benjamin Daniel)
 
 
 
