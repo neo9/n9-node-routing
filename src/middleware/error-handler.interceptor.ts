@@ -16,6 +16,9 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 			code = error.message;
 		}
 		const context = error.context || error.errors || {};
+		// remove stack properties to avoid leak
+		removeProps(context, ['stack']);
+
 		error.code = code;
 
 		if (status < 500) {
@@ -29,6 +32,21 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 			code,
 			status,
 			context,
+		});
+	}
+}
+
+function removeProps(obj: object, keys: string[]): void {
+	if (!obj) return;
+
+	if (obj instanceof Array) {
+		obj.forEach((item) => {
+			removeProps(item, keys);
+		});
+	} else if (typeof obj === 'object') {
+		Object.getOwnPropertyNames(obj).forEach((key) => {
+			if (keys.includes(key)) delete obj[key];
+			else removeProps(obj[key], keys);
 		});
 	}
 }

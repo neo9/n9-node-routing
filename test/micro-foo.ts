@@ -200,7 +200,7 @@ test('Call routes (versionning)', async (t: Assertions) => {
 	t.is(err.statusCode, 505);
 	t.is(err.response.body.code, 'bar-extendable-error');
 	t.is(err.response.body.status, 505);
-	t.deepEqual(err.response.body.context, { test: true });
+	t.deepEqual(err.response.body.context, { test: true, error: { message: 'sample-error', name: 'Error' } });
 	t.is(err.response.body.stack, undefined, `Stack stay inside api`);
 	stdMock.restore();
 	const output = stdMock.flush();
@@ -274,6 +274,10 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 		status: 505,
 		context: {
 			test: true,
+			error: {
+				message: 'sample-error',
+				name: 'Error',
+			},
 		},
 		// no error key
 	}, 'bar-extendable-error');
