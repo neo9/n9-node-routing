@@ -1,9 +1,22 @@
+## Version [1.19.2](https://github.com/neo9/n9-node-routing/compare/1.19.1...1.19.2) (2019-11-14)
+
+
+### yarn
+
+* Upgrade dependencies especially n9-node-utils ([aa059c1](https://github.com/neo9/n9-node-routing/commit/aa059c1)) (Benjamin Daniel)
+
+
+
 ## Version [1.19.1](https://github.com/neo9/n9-node-routing/compare/1.19.0...1.19.1) (2019-10-10)
 
 
 ### errors
 
 * Keep stack in error context du not through HTTP ([b97f94c](https://github.com/neo9/n9-node-routing/commit/b97f94c)) (Benjamin Daniel)
+
+### release
+
+* V 1.19.1 ([25583ea](https://github.com/neo9/n9-node-routing/commit/25583ea)) (Benjamin Daniel)
 
 
 
