@@ -45,22 +45,22 @@ test('Call a route with HttpClient', async (t: Assertions) => {
 	t.is(rep, 'pong');
 
 	let error = await t.throwsAsync<N9Error>(async () => await httpClient.post<string>('http://localhost:6001/ping'));
-	t.is(error.message, 'not-found', 'post not-found');
+	t.is(error.message, 'Response code 404 (Not Found)', 'post not-found');
 
 	error = await t.throwsAsync<N9Error>(async () => await httpClient.put<string>('http://localhost:6001/ping')) as N9Error;
-	t.is(error.message, 'not-found', 'put not-found');
+	t.is(error.message, 'Response code 404 (Not Found)', 'put not-found');
 
 	error = await t.throwsAsync<N9Error>(async () => await httpClient.delete<string>('http://localhost:6001/ping')) as N9Error;
-	t.is(error.message, 'not-found', 'delete not-found');
+	t.is(error.message, 'Response code 404 (Not Found)', 'delete not-found');
 
 	error = await t.throwsAsync<N9Error>(async () => await httpClient.options<string>('http://localhost:6001/ping')) as N9Error;
-	t.is(error.message, 'not-found', 'options not-found');
+	t.is(error.message, 'Response code 404 (Not Found)', 'options not-found');
 
 	error = await t.throwsAsync<N9Error>(async () => await httpClient.patch<string>('http://localhost:6001/ping')) as N9Error;
-	t.is(error.message, 'not-found', 'patch not-found');
+	t.is(error.message, 'Response code 404 (Not Found)', 'patch not-found');
 
 	error = await t.throwsAsync<N9Error>(async () => await httpClient.request<string>('post', ['http://localhost:6001', 'ping']));
-	t.is(error.message, 'not-found', 'request not-found');
+	t.is(error.message, 'Response code 404 (Not Found)', 'request not-found');
 
 	error = await t.throwsAsync<N9Error>(async () => await httpClient.requestStream(['http://localhost:6001', '404']));
 	t.is(error.status, 404, 'request stream not-found');
@@ -68,11 +68,11 @@ test('Call a route with HttpClient', async (t: Assertions) => {
 	error = await t.throwsAsync<N9Error>(async () => await httpClient.raw<string>('http://localhost:6001/ping', {
 		method: 'post',
 	})) as N9Error;
-	t.is(error.message, 'not-found', 'raw not-found');
-
+	t.is(error.message, 'Response code 404 (Not Found)', 'raw not-found');
+	// NOTE: port is gonna be replaced by 80
 	error = await t.throwsAsync<N9Error>(async () => await httpClient.get<string>('http://localhost:0'));
-	t.is(error.status, 500);
-	t.is(error.message, 'ECONNREFUSED');
+	t.is(error.status, undefined);
+	t.regex(error.message, /ECONNREFUSED/);
 
 	const { incomingMessage, responseAsStream } = await httpClient.requestStream(['http://localhost:6001', 'ping']);
 	t.is(incomingMessage.statusCode, 200, 'status code 200');

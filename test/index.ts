@@ -1,7 +1,7 @@
 import n9Log from '@neo9/n9-node-log';
 import test, { Assertions } from 'ava';
 import { Server } from 'http';
-import * as rp from 'request-promise-native';
+import got from 'got';
 import * as stdMock from 'std-mocks';
 import N9NodeRouting from '../src';
 import commons from './fixtures/commons';
@@ -34,7 +34,7 @@ test('Works with preventListen = true', async (t: Assertions) => {
 	const output = stdMock.flush();
 
 	t.is(output.stderr.length, 0);
-	const err = await t.throwsAsync(async () => rp('http://localhost:4200'));
+	const err = await t.throwsAsync(async () => got('http://localhost:4200'));
 	t.is(err.name, 'RequestError');
 });
 
@@ -63,7 +63,7 @@ test('Get app name on /', async (t: Assertions) => {
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({});
 	// OK if no error thrown
-	await t.notThrowsAsync(async () => await rp('http://localhost:5000/'));
+	await t.notThrowsAsync(async () => await got('http://localhost:5000/'));
 	stdMock.restore();
 	stdMock.flush();
 	// Close server
@@ -75,9 +75,9 @@ test('Should not log the requests http.logLevel=false', async (t: Assertions) =>
 	const { server } = await N9NodeRouting({
 		http: { logLevel: false },
 	});
-	await rp('http://localhost:5000/');
-	await rp('http://localhost:5000/ping');
-	await rp('http://localhost:5000/routes');
+	await got('http://localhost:5000/');
+	await got('http://localhost:5000/ping');
+	await got('http://localhost:5000/routes');
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	t.is(output.length, 1);
@@ -90,9 +90,9 @@ test('Should log the requests with custom level', async (t: Assertions) => {
 	const { server } = await N9NodeRouting({
 		http: { logLevel: ':status :url' },
 	});
-	await rp('http://localhost:5000/');
-	await rp('http://localhost:5000/ping');
-	await rp('http://localhost:5000/routes');
+	await got('http://localhost:5000/');
+	await got('http://localhost:5000/ping');
+	await got('http://localhost:5000/routes');
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	t.is(output.length, 4, 'length');
