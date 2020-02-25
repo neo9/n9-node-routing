@@ -2,13 +2,22 @@ import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import { getNamespace } from 'continuation-local-storage';
 import { IncomingMessage } from 'http';
-import { CoreOptions, Request, RequestAPI, RequiredUriUrl } from 'request';
-import * as rpn from 'request-promise-native';
 import { PassThrough } from 'stream';
 import { RequestIdNamespaceName } from '../requestid';
 import UrlJoin = require('url-join');
 import stringify from 'fast-safe-stringify';
-import request = require('request');
+import got from 'got';
+import { ExtendOptions, Got, Method, Options } from 'got';
+import { Merge } from 'type-fest';
+import hasOwnProperty from './has-own-property';
+
+type OptionsOfDefaultResponseBody = Merge<Options, {
+	isStream?: false;
+	resolveBodyOnly?: false;
+	responseType?: 'default';
+}>;
+
+type QueryParams =  string | Record<string, string | number | boolean> | URLSearchParams;
 
 export class N9HttpClient {
 
@@ -19,49 +28,51 @@ export class N9HttpClient {
 		return uri;
 	}
 
-	private readonly requestDefault: RequestAPI<Request, CoreOptions, RequiredUriUrl>;
+	private readonly requestDefault: Got;
 
-	constructor(private readonly logger: N9Log = global.log, options?: CoreOptions, private maxBodyLengthToLogError: number = 100) {
-		this.requestDefault = rpn.defaults(Object.assign({}, options, {
-			useQuerystring: true,
-			json: true,
-			resolveWithFullResponse: true,
-			gzip: true,
+	constructor(private readonly logger: N9Log = global.log, options?: ExtendOptions, private maxBodyLengthToLogError: number = 100) {
+		this.requestDefault = got.extend(Object.assign({}, options, {
+			compress: true
 		}));
 	}
 
 	/**
 	 * QueryParams samples : https://github.com/request/request/blob/master/tests/test-qs.js
 	 */
-	public async get<T>(url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
+	public async get<T>(url: string | string[], queryParams?: QueryParams, headers: object = {}): Promise<T> {
 		return this.request<T>('get', url, queryParams, headers);
 	}
 
-	public async post<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
+	public async post<T>(url: string | string[], body?: any, queryParams?: QueryParams, headers: object = {}): Promise<T> {
 		return this.request<T>('post', url, queryParams, headers, body);
 	}
 
-	public async put<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
+	public async put<T>(url: string | string[], body?: any, queryParams?: QueryParams, headers: object = {}): Promise<T> {
 		return this.request<T>('put', url, queryParams, headers, body);
 	}
 
-	public async delete<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
+	public async delete<T>(url: string | string[], body?: any, queryParams?: QueryParams, headers: object = {}): Promise<T> {
 		return this.request<T>('delete', url, queryParams, headers, body);
 	}
 
-	public async options<T>(url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
+	public async options<T>(url: string | string[], queryParams?: QueryParams, headers: object = {}): Promise<T> {
 		return this.request<T>('options', url, queryParams, headers);
 	}
 
-	public async patch<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
+	public async patch<T>(url: string | string[], body?: any, queryParams?: QueryParams, headers: object = {}): Promise<T> {
 		return this.request<T>('patch', url, queryParams, headers, body);
 	}
 
-	public async head(url: string | string[], queryParams?: object, headers: object = {}): Promise<void> {
+	public async head(url: string | string[], queryParams?: QueryParams, headers: object = {}): Promise<void> {
 		return this.request<void>('head', url, queryParams, headers);
 	}
 
-	public async request<T>(method: string, url: string | string[], queryParams?: object, headers: object = {}, body?: any): Promise<T> {
+	public async request<T>(
+		method: Method, url: string | string[],
+		queryParams?: string | Record<string, string | number | boolean> | URLSearchParams,
+		headers: object = {},
+		body?: any
+	): Promise<T> {
 		const uri = N9HttpClient.getUriFromUrlParts(url);
 
 		const namespaceRequestId = getNamespace(RequestIdNamespaceName);
@@ -70,66 +81,62 @@ export class N9HttpClient {
 		const startTime = Date.now();
 
 		try {
-			const res = await this.requestDefault({
+			const res = this.requestDefault(uri, {
 				method,
-				uri,
-				qs: queryParams,
+				searchParams: queryParams,
 				headers: sentHeaders,
-				body,
+				json: body,
 			});
+			const ret = await body ? res.json() : res.text();
 
-			return res.body as any;
+			return ret as any;
 		} catch (e) {
 			const responseTime = Date.now() - startTime;
-			this.logger.error(`Error on [${method} ${uri}]`, { 'status': e.statusCode, 'response-time': responseTime });
 			const bodyJSON = stringify(body);
-			// istanbul ignore else
-			if (e.error) {
-				throw new N9Error(e.error.code, e.statusCode, {
-					uri,
-					method,
-					code: e.error.code,
-					queryParams,
-					headers,
-					body: body && bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
-					srcError: e.error,
-					responseTime,
-				});
-			} else {
-				throw e;
-			}
+			const { message, code } = this.prepareErrorMessageAndCode(e);
+			this.logger.error(`Error on [${method} ${uri}]`, { 'status': code, 'response-time': responseTime });
+
+			throw new N9Error(message, code, {
+				uri,
+				method,
+				code: e.code,
+				queryParams,
+				headers,
+				body: body && bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
+				srcError: e,
+				responseTime,
+			});
 		}
 	}
 
-	public async raw<T>(url: string | string[], options: CoreOptions): Promise<T> {
+	public async raw<T>(url: string | string[], options: OptionsOfDefaultResponseBody): Promise<T> {
 		const uri = N9HttpClient.getUriFromUrlParts(url);
 		const startTime = Date.now();
 
 		try {
-			const res = await this.requestDefault(uri, options);
+			const res = this.requestDefault(uri, options);
+			const body = await options.body ?  res.json() : res.text();
 
-			return res.body as any;
+			return body as any;
 		} catch (e) {
-			this.logger.error(`Error on raw call [${options.method} ${uri}]`, { 'status': e.statusCode, 'response-time': (Date.now() - startTime) });
-			// istanbul ignore else
-			if (e.error) {
-				throw new N9Error(e.error.code, e.statusCode, {
-					uri,
-					options: stringify(options),
-					error: e.error,
-					...e.error.context,
-				});
-			} else {
-				throw e;
-			}
+			const { message, code } = this.prepareErrorMessageAndCode(e);
+			this.logger.error(`Error on raw call [${options.method} ${uri}]`, { 'status': code, 'response-time': (Date.now() - startTime) });
+
+			throw new N9Error(message, code, {
+				uri,
+				options: stringify(options),
+				error: e,
+				...e.context,
+			});
+
 		}
 	}
 
-	public async requestStream(url: string | string[], options?: CoreOptions): Promise<{ incomingMessage: IncomingMessage, responseAsStream: PassThrough }> {
+	public async requestStream(url: string | string[], options?: Options): Promise<{ incomingMessage: IncomingMessage, responseAsStream: PassThrough }> {
 		const responseAsStream = new PassThrough();
 		const startTime = Date.now();
 		const uri = N9HttpClient.getUriFromUrlParts(url);
-		const requestResponse = await request(uri, options);
+		const requestResponse = await got.stream(uri, options);
 		requestResponse.pipe(responseAsStream);
 
 		let incomingMessage: IncomingMessage;
@@ -157,17 +164,29 @@ export class N9HttpClient {
 			const durationCatch = Date.now() - startTime;
 			this.logger.error(`Error on [${options ? options.method || 'GET' : 'GET'} ${uri}]`, { 'status': e.statusCode, 'response-time': durationCatch });
 			this.logger.debug(`File TTFB : ${durationCatch} ms`, { durationMs: durationCatch, statusCode: e.statusCode, url });
-			throw new N9Error((e.error && e.error.code) || e.message || e.name || 'unknown-error', e.statusCode, {
+			const { message, code } = this.prepareErrorMessageAndCode(e);
+
+			throw new N9Error(message || 'unknown-error', code, {
 				uri,
 				method: options && options.method,
-				code: (e.error && e.error.code) || e.statusCode,
+				code: e.code || code,
 				headers: options && options.headers,
-				srcError: e.error,
+				srcError: e,
 				responseTime: durationCatch,
 			});
 		}
 		durationMsTTFB = Date.now() - startTime;
 		this.logger.debug(`File TTFB : ${durationMsTTFB} ms`, { durationMs: durationMsTTFB, statusCode: incomingMessage.statusCode, url });
 		return { incomingMessage, responseAsStream };
+	}
+
+	private prepareErrorMessageAndCode(e: any): { message: string, code: number } {
+		const hasResponse = hasOwnProperty(e, 'response');
+		const errorJson = hasResponse && hasOwnProperty(e.response, 'body')
+			? JSON.parse(e.response.body) : null;
+		const message = errorJson && errorJson.code ? errorJson.code : e.message;
+		const code = hasResponse && hasOwnProperty(e.response, 'statusCode') ? e.response.statusCode : null;
+
+		return { message, code };
 	}
 }
