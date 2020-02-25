@@ -2,5 +2,6 @@
 declare namespace NodeJS {
 	interface Global {
 		n9NodeRoutingData: any;
+		log: any;
 	}
 }

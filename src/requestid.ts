@@ -1,6 +1,7 @@
 import { createNamespace, getNamespace } from 'continuation-local-storage';
 import { NextFunction, Request, Response } from 'express';
 import * as shortid from 'shortid';
+import hasOwnProperty from './utils/has-own-property';
 
 const RequestIdNamespaceName = 'requestIdNamespace';
 export { RequestIdNamespaceName };
@@ -17,7 +18,10 @@ function flattenWithInheritProperties(obj: object): object {
 }
 
 export function requestIdFilter(level: string, msg: string, meta: any): string | { msg: any; meta: any; } {
-	const formatLogInJSON: boolean = global.n9NodeRoutingData.formatLogInJSON;
+	const formatLogInJSON: boolean =
+	hasOwnProperty(global, "n9NodeRoutingData") && hasOwnProperty(global.n9NodeRoutingData, "formatLogInJSON")
+		? global.n9NodeRoutingData.formatLogInJSON
+		: false;
 
 	const namespaceRequestId = getNamespace(RequestIdNamespaceName);
 	const requestId = namespaceRequestId && namespaceRequestId.get('request-id');
