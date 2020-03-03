@@ -1,5 +1,36 @@
+# Version [1.20.0](https://github.com/neo9/n9-node-routing/compare/1.19.2...1.20.0) (2020-03-03)
+
+
+### format
+
+* Format all with prettier ([7c80f1f](https://github.com/neo9/n9-node-routing/commit/7c80f1f)) (Benjamin Daniel)
+* Format before commit ([6f892f8](https://github.com/neo9/n9-node-routing/commit/6f892f8)) (Benjamin Daniel)
+
+### http
+
+* Add got to replace request and upgrade typescript ([ee632db](https://github.com/neo9/n9-node-routing/commit/ee632db)) (Benjamin Daniel)
+* Add logs before retries on http client ([1886735](https://github.com/neo9/n9-node-routing/commit/1886735)) (Benjamin Daniel)
+
+### lint
+
+* Use neo9 coding style and use husky ([15b82e9](https://github.com/neo9/n9-node-routing/commit/15b82e9)) (Benjamin Daniel)
+
+### typescript
+
+* Use optional chaining ([290cab4](https://github.com/neo9/n9-node-routing/commit/290cab4)) (Benjamin Daniel)
+
+### yarn
+
+* Upgrade dependencies ([3d28742](https://github.com/neo9/n9-node-routing/commit/3d28742)) (Benjamin Daniel)
+
+
+
 ## Version [1.19.2](https://github.com/neo9/n9-node-routing/compare/1.19.1...1.19.2) (2019-11-14)
 
+
+### release
+
+* V 1.19.2 ([fa45cec](https://github.com/neo9/n9-node-routing/commit/fa45cec)) (Benjamin Daniel)
 
 ### yarn
 
