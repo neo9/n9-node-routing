@@ -120,7 +120,7 @@ export class N9HttpClient {
 		const uri = N9HttpClient.getUriFromUrlParts(url);
 
 		const namespaceRequestId = getNamespace(RequestIdNamespaceName);
-		const requestId = namespaceRequestId && namespaceRequestId.get('request-id');
+		const requestId = namespaceRequestId?.get('request-id');
 		const sentHeaders = Object.assign({}, headers, { 'x-request-id': requestId });
 		const startTime = Date.now();
 
@@ -140,7 +140,6 @@ export class N9HttpClient {
 		} catch (e) {
 			const responseTime = Date.now() - startTime;
 			const bodyJSON = fastSafeStringify(body);
-			const errorBodyJSON = fastSafeStringify(e.response?.body);
 			const { code, status } = N9HttpClient.prepareErrorCodeAndStatus(e);
 			this.logger.error(`Error on [${method} ${uri}]`, {
 				'status': status,
@@ -242,9 +241,9 @@ export class N9HttpClient {
 
 			throw new N9Error(code || 'unknown-error', status, {
 				uri,
-				method: options && options.method,
+				method: options?.method,
 				code: e.code || code,
-				headers: options && options.headers,
+				headers: options?.headers,
 				srcError: e,
 				responseTime: durationCatch,
 			});

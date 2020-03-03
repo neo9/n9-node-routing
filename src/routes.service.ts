@@ -8,7 +8,7 @@ function addRoute(object: object, methodName: string, perms: AclPerm[], loadPath
 		object,
 		methodName,
 		perms,
-		loadPath
+		loadPath,
 	});
 }
 
@@ -23,7 +23,7 @@ function getRoutes(): Route[] {
 		});
 
 		let controllerRoutePrefix = '';
-		if (controller && controller[0] && controller[0].route) {
+		if (controller?.[0]?.route) {
 			controllerRoutePrefix = controller[0].route;
 		}
 
@@ -37,13 +37,10 @@ function getRoutes(): Route[] {
 			path: controllerRoutePrefix + actRoute,
 			acl: {
 				perms: d.perms,
-				loadPath: d.loadPath
-			}
+				loadPath: d.loadPath,
+			},
 		};
 	});
 }
 
-export {
-	addRoute,
-	getRoutes
-};
+export { addRoute, getRoutes };

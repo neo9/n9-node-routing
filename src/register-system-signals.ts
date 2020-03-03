@@ -19,7 +19,7 @@ async function shutdown(
 	logger.info(`Wait ${waitDuration} ms before exit`);
 	await waitFor(waitDuration);
 
-	if (shutdownOptions.callbacksBeforeShutdown && shutdownOptions.callbacksBeforeShutdown.length) {
+	if (shutdownOptions.callbacksBeforeShutdown?.length) {
 		logger.info(`Calling ${shutdownOptions.callbacksBeforeShutdown.length} callbacks`);
 		for (const callbackSpec of shutdownOptions.callbacksBeforeShutdown) {
 			await callbackSpec.function.bind(callbackSpec.thisArg)(logger);

@@ -153,7 +153,7 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 					normalizePath: (
 						path: string,
 						rr: { req: express.Request; res: express.Response },
-					): string => (rr.req.route && rr.req.route.path) || rr.req.originalUrl || rr.req.url,
+					): string => rr.req.route?.path || rr.req.originalUrl || rr.req.url,
 					labels: options.prometheus.labels,
 					getLabelValues: options.prometheus.getLabelValues,
 					accuracies: options.prometheus.accuracies,

@@ -24,7 +24,7 @@ export function requestIdFilter(
 	const formatLogInJSON: boolean = global.n9NodeRoutingData?.formatLogInJSON ?? false;
 
 	const namespaceRequestId = getNamespace(RequestIdNamespaceName);
-	const requestId = namespaceRequestId && namespaceRequestId.get('request-id');
+	const requestId = namespaceRequestId?.get('request-id');
 	if (formatLogInJSON) {
 		const metaFull = flattenWithInheritProperties(meta);
 		return {

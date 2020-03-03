@@ -32,7 +32,7 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 
 	// Monitoring route
 	expressApp.get('/ping', async (req: Request, res: Response, next: NextFunction) => {
-		if (options.http.ping && options.http.ping.dbs) {
+		if (options.http.ping?.dbs) {
 			for (const db of options.http.ping.dbs) {
 				if (!(await db.isConnected.bind(db.thisArg || this)())) {
 					global.log.error(`[PING] Can't connect to ${db.name}`);
@@ -47,7 +47,7 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 			res.status(200).send(`pong-dbs-${options.http.ping.dbs.length}`);
 		} else if (global.db && global.dbClient) {
 			if (!global.dbClient.isConnected()) {
-				if (global.log && global.log.error) {
+				if (global.log?.error) {
 					global.log.error(`[PING] Can't connect to MongoDB`);
 				}
 				res.status(500).send();
