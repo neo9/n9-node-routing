@@ -4,7 +4,6 @@ import { Service } from 'typedi';
 @Service()
 @JsonController()
 export class PrometheusController {
-
 	@Get('/sample-route')
 	public async voidRoute(): Promise<void> {
 		return;

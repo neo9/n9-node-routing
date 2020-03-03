@@ -4,8 +4,7 @@ import { Service } from 'typedi';
 @Service()
 @JsonController()
 export class UsersController {
-
-	@Get("/me")
+	@Get('/me')
 	@Authorized()
 	public async me(@Session() session: any): Promise<any> {
 		return session;

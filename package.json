@@ -10,6 +10,7 @@
   "license": "MIT",
   "scripts": {
     "build": "rimraf dist/ && tsc",
+    "format": "prettier --write '{,@(src|test)/**/}*.*'",
     "lint": "tslint --project tsconfig.json --format verbose '{src,test}/**/*.ts'",
     "lint:apply": "npm run format && tslint --fix --project tsconfig.json '{src,test}/**/*.ts'",
     "lint:verbose": "tslint --fix --project tsconfig.json --format verbose '{src,test}/**/*.ts'",

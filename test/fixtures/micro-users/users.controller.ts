@@ -1,5 +1,13 @@
 import { OpenAPI } from '@benjd90/routing-controllers-openapi';
-import { Authorized, Body, Get, JsonController, Param, Post, Session } from '@flyacts/routing-controllers';
+import {
+	Authorized,
+	Body,
+	Get,
+	JsonController,
+	Param,
+	Post,
+	Session,
+} from '@flyacts/routing-controllers';
 import { N9Error } from '@neo9/n9-node-utils';
 import { Service } from 'typedi';
 import { Acl } from '../../../src';
@@ -10,9 +18,7 @@ import { UsersService } from './users.service';
 @Service()
 @JsonController('/users')
 export class UsersController {
-
-	constructor(private usersService: UsersService) {
-	}
+	constructor(private usersService: UsersService) {}
 
 	@OpenAPI({
 		description: 'Create one user',
@@ -27,19 +33,24 @@ export class UsersController {
 	})
 	@Acl([{ action: 'createUser' }])
 	@Post()
-	public async createUser(@Session({ required: false }) session: TokenContent, @Body() user: User): Promise<User> {
-
+	public async createUser(
+		@Session({ required: false }) session: TokenContent,
+		@Body() user: User,
+	): Promise<User> {
 		// sanitize email to lowercase
 		user.email = user.email.toLowerCase();
 		// Check if user by email already exists
-		const userExists = !!await this.usersService.getByEmail(user.email);
+		const userExists = !!(await this.usersService.getByEmail(user.email));
 
 		if (userExists) {
 			throw new N9Error('user-already-exists', 409);
 		}
 
 		// Add user to database
-		const userMongo = await this.usersService.create(user, session ? session.userId : 'no-auth-user');
+		const userMongo = await this.usersService.create(
+			user,
+			session ? session.userId : 'no-auth-user',
+		);
 
 		delete userMongo.password;
 		// Send back the user created

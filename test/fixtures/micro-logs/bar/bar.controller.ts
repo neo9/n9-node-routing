@@ -5,20 +5,19 @@ import { Inject, Service } from 'typedi';
 @Service()
 @JsonController()
 export class ValidateController {
-
 	@Inject('logger')
 	private logger: N9Log;
 
 	@Inject('conf')
 	private conf: any;
 
-	@Get("/bar")
+	@Get('/bar')
 	public async getBar(): Promise<any> {
 		this.logger.info(' message in controller');
 		return this.conf;
 	}
 
-	@Get("/empty")
+	@Get('/empty')
 	public async getBar2(): Promise<void> {
 		return;
 	}

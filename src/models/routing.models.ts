@@ -6,7 +6,6 @@ import * as morgan from 'morgan';
 
 // tslint:disable-next-line:no-namespace
 export namespace N9NodeRouting {
-
 	export interface Options {
 		hasProxy?: boolean;
 		enableRequestId?: boolean;
@@ -28,8 +27,16 @@ export namespace N9NodeRouting {
 		port?: number | string;
 		preventListen?: boolean;
 		routingController?: RoutingControllersOptions;
-		beforeRoutingControllerLaunchHook?: (app: Express, log: N9Log, options: Options) => Promise<void>;
-		afterRoutingControllerLaunchHook?: (app: Express, log: N9Log, options: Options) => Promise<void>;
+		beforeRoutingControllerLaunchHook?: (
+			app: Express,
+			log: N9Log,
+			options: Options,
+		) => Promise<void>;
+		afterRoutingControllerLaunchHook?: (
+			app: Express,
+			log: N9Log,
+			options: Options,
+		) => Promise<void>;
 	}
 
 	export interface PingDb {
@@ -68,7 +75,7 @@ export namespace N9NodeRouting {
 		thisArg: any;
 	}
 
-	export type CallbacksBeforeShutdownFunction = ((log: N9Log) => Promise<void>);
+	export type CallbacksBeforeShutdownFunction = (log: N9Log) => Promise<void>;
 
 	export interface PrometheusOptions {
 		port?: number;

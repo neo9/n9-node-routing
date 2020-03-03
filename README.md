@@ -1,20 +1,22 @@
 [![npm version](https://img.shields.io/npm/v/n9-node-routing.svg)](https://www.npmjs.com/package/n9-node-routing)
 
 # n9-node-routing
-## Easily create express app in TypeScript with Decorators 
+
+## Easily create express app in TypeScript with Decorators
+
 ## Wrapper of project [routing-controllers](https://github.com/typestack/routing-controllers)
 
 1. Install all dependencies:
 
-    `yarn`
-    
+   `yarn`
+
 2. Setup git hooks
 
    `yarn run init`
 
 3. Run the project tests:
 
-    `yarn test`
+   `yarn test`
 
 ## API Documentation
 
@@ -25,4 +27,3 @@ Swagger UI for API available at : /documentation
 ## starter
 
 A starter app is available here : https://github.com/neo9/n9-node-microservice-skeleton
-

@@ -5,7 +5,6 @@ import { User } from './models/users.models';
 
 @Service()
 export class UsersService {
-
 	private static async hashPassword(password: string): Promise<string> {
 		const hasher = crypto.createHash('sha256');
 		await hasher.update(password);

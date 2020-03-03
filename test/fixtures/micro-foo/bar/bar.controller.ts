@@ -6,14 +6,20 @@ import { BodyBar } from './body-bar.models';
 @Service()
 @JsonController()
 export class ValidateController {
-
 	@Post('/:version/bar')
-	public async bar(@Param('version') version: string, @QueryParam('error') queryError: boolean, @Body() body: BodyBar): Promise<any> {
+	public async bar(
+		@Param('version') version: string,
+		@QueryParam('error') queryError: boolean,
+		@Body() body: BodyBar,
+	): Promise<any> {
 		if (queryError) {
 			if (version === 'v1') {
 				throw new N9Error('bar-error');
 			}
-			throw new N9Error('bar-extendable-error', 505, { test: true, error: new Error('sample-error') });
+			throw new N9Error('bar-extendable-error', 505, {
+				test: true,
+				error: new Error('sample-error'),
+			});
 		}
 		return { bar: 'foo' };
 	}
