@@ -1,21 +1,36 @@
 import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import { getNamespace } from 'continuation-local-storage';
-import { RequestIdNamespaceName } from '../requestid';
-import stringify from 'fast-safe-stringify';
+import fastSafeStringify from 'fast-safe-stringify';
 import got, { Method, Options } from 'got';
 import { IncomingMessage } from 'http';
 import { PassThrough } from 'stream';
-import UrlJoin = require('url-join');
+import urlJoin = require('url-join');
+import { RequestIdNamespaceName } from '../requestid';
 
 export type QueryParams = string | Record<string, string | number | boolean> | URLSearchParams;
 
 export class N9HttpClient {
 	private static getUriFromUrlParts(url: string | string[]): string {
 		let uri;
-		if (Array.isArray(url)) uri = UrlJoin(...url);
-		else uri = UrlJoin(url);
+		if (Array.isArray(url)) uri = urlJoin(...url);
+		else uri = urlJoin(url);
 		return uri;
+	}
+
+	private static prepareErrorCodeAndStatus(e: any): { code: string; status: number } {
+		let code;
+		try {
+			const errorJson =
+				typeof e.response?.body === 'object' ? e.response?.body : JSON.parse(e.response?.body);
+			code = errorJson?.code;
+		} catch (error) {
+			code = e.code;
+		}
+		if (!code) code = e.code;
+
+		const status = e.response?.statusCode;
+		return { code, status };
 	}
 
 	constructor(
@@ -124,9 +139,9 @@ export class N9HttpClient {
 			return res.body;
 		} catch (e) {
 			const responseTime = Date.now() - startTime;
-			const bodyJSON = stringify(body);
-			const errorBodyJSON = stringify(e.response?.body);
-			const { code, status } = this.prepareErrorCodeAndStatus(e);
+			const bodyJSON = fastSafeStringify(body);
+			const errorBodyJSON = fastSafeStringify(e.response?.body);
+			const { code, status } = N9HttpClient.prepareErrorCodeAndStatus(e);
 			this.logger.error(`Error on [${method} ${uri}]`, {
 				'status': status,
 				'response-time': responseTime,
@@ -135,12 +150,12 @@ export class N9HttpClient {
 			throw new N9Error(code, status, {
 				uri,
 				method,
-				code: e.code,
 				queryParams,
 				headers,
+				responseTime,
+				code: e.code,
 				body: body && bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
 				srcError: e.response?.body,
-				responseTime,
 			});
 		}
 	}
@@ -159,7 +174,7 @@ export class N9HttpClient {
 			return res.body;
 		} catch (e) {
 			const responseTime = Date.now() - startTime;
-			const { code, status } = this.prepareErrorCodeAndStatus(e);
+			const { code, status } = N9HttpClient.prepareErrorCodeAndStatus(e);
 			this.logger.error(`Error on [${options.method} ${uri}]`, {
 				status,
 				'response-time': responseTime,
@@ -167,7 +182,7 @@ export class N9HttpClient {
 
 			throw new N9Error(code, status, {
 				uri,
-				options: stringify(options),
+				options: fastSafeStringify(options),
 				error: e,
 				...e.context,
 			});
@@ -195,14 +210,14 @@ export class N9HttpClient {
 						if (durationMsTTFB !== null && durationMsTTFB !== undefined) {
 							const durationDLMs = durationMsTTLB - durationMsTTFB;
 							this.logger.debug(`File TTLB : ${durationMsTTLB} ms TTDL : ${durationDLMs} ms`, {
-								durationMs: durationMsTTLB,
 								durationDLMs,
 								url,
+								durationMs: durationMsTTLB,
 							});
 						} else {
 							this.logger.debug(`File TTLB : ${durationMsTTLB} ms`, {
-								durationMs: durationMsTTLB,
 								url,
+								durationMs: durationMsTTLB,
 							});
 						}
 					});
@@ -219,11 +234,11 @@ export class N9HttpClient {
 				'response-time': durationCatch,
 			});
 			this.logger.debug(`File TTFB : ${durationCatch} ms`, {
+				url,
 				durationMs: durationCatch,
 				statusCode: e.statusCode,
-				url,
 			});
-			const { code, status } = this.prepareErrorCodeAndStatus(e);
+			const { code, status } = N9HttpClient.prepareErrorCodeAndStatus(e);
 
 			throw new N9Error(code || 'unknown-error', status, {
 				uri,
@@ -236,36 +251,10 @@ export class N9HttpClient {
 		}
 		durationMsTTFB = Date.now() - startTime;
 		this.logger.debug(`File TTFB : ${durationMsTTFB} ms`, {
+			url,
 			durationMs: durationMsTTFB,
 			statusCode: incomingMessage.statusCode,
-			url,
 		});
 		return { incomingMessage, responseAsStream };
-	}
-
-	private prepareErrorCodeAndStatus(e: any): { code: string; status: number } {
-		// console.log(`-- http-client-base.ts e --`, e);
-		// console.log(`-- http-client-base.ts e.response --`, e.response);
-		// console.log(`-- http-client-base.ts JSON.stringify(e) --`, JSON.stringify(e));
-
-		let code;
-		try {
-			const errorJson =
-				typeof e.response?.body === 'object' ? e.response?.body : JSON.parse(e.response?.body);
-			code = errorJson?.code;
-		} catch (error) {
-			code = e.code;
-		}
-		if (!code) code = e.code;
-
-		const status = e.response?.statusCode;
-		// console.log(`-- ----------------  --`);
-		// console.log(`-- ----------------  --`);
-		// console.log(`-- ----------------  --`);
-		// console.log(`-- http-client-base.ts {code, status } --`, { code, status });
-		// console.log(`-- ----------------  --`);
-		// console.log(`-- ----------------  --`);
-		// console.log(`-- ----------------  --`);
-		return { code, status };
 	}
 }

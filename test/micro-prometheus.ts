@@ -1,19 +1,20 @@
-import test, { Assertions } from 'ava';
+import ava, { Assertions } from 'ava';
+import got from 'got';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
+// tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
-import got from 'got';
 
 const print = commons.print;
 
 const MICRO_FOO = join(__dirname, 'fixtures/micro-prometheus/');
 
-test.beforeEach(() => {
+ava.beforeEach(() => {
 	delete global.log;
 });
 
-test('Basic usage, create http server', async (t: Assertions) => {
+ava('Basic usage, create http server', async (t: Assertions) => {
 	stdMock.use({ print });
 	global.conf = {
 		name: 'my-awesome-app',

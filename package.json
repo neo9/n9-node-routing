@@ -4,11 +4,15 @@
   "description": "Library to easily start app with routing-controllers",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
-  "files": ["dist/src"],
+  "files": [
+    "dist/src"
+  ],
   "license": "MIT",
   "scripts": {
     "build": "rimraf dist/ && tsc",
-    "lint": "tslint --project tsconfig.json",
+    "lint": "tslint --project tsconfig.json --format verbose '{src,test}/**/*.ts'",
+    "lint:apply": "npm run format && tslint --fix --project tsconfig.json '{src,test}/**/*.ts'",
+    "lint:verbose": "tslint --fix --project tsconfig.json --format verbose '{src,test}/**/*.ts'",
     "test": "npm run lint  && npm run build && nyc ava --verbose --serial dist/test/ && nyc report --reporter=html",
     "test:dev": "tslint --project tsconfig.json --force && npm run build && nyc ava --inspect --verbose --serial dist/test/ && nyc report --reporter=html",
     "pretest:no-lint": "npm run build",
@@ -23,6 +27,13 @@
     "post:release": "echo Successfully released $npm_package_version",
     "init": "./bin/setup-git-hooks"
   },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "npm run lint",
+      "pre-push": "npm run test"
+    }
+  },
   "author": {
     "name": "Benjamin DANIEL",
     "email": "benjamin.daniel@neo9.fr"
@@ -32,7 +43,11 @@
     "url": "https://github.com/neo9/n9-node-routing.git"
   },
   "homepage": "https://github.com/neo9/n9-node-routing#n9-node-routing",
-  "tags": ["express", "typescript-express", "routing-controllers"],
+  "tags": [
+    "express",
+    "typescript-express",
+    "routing-controllers"
+  ],
   "engines": {
     "node": ">=10"
   },
@@ -71,20 +86,26 @@
     "stream-array": "^1.1.2",
     "swagger-ui-express": "^3.0.8",
     "ts-node": "^5.0.1",
-    "tslint": "^5.9.1",
+    "tslint": "^5.20.0",
     "typedi": "^0.5.2",
     "url-join": "^4.0.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@neo9/n9-coding-style": "^1.0.2",
     "@types/body-parser": "^1.16.3",
     "@types/express": "^4.0.35",
     "@types/multer": "^0.0.33",
     "@types/node": "^7.0.22",
     "@types/std-mocks": "^1.0.0",
     "ava": "^1.0.0-beta.3",
+    "husky": "^4.2.3",
     "nodemon": "^1.17.3",
     "nyc": "^11.6.0",
+    "prettier": "^1.19.1",
     "std-mocks": "^1.0.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.1.0",
     "typescript": "^3.8.3"
   }
 }

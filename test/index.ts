@@ -1,18 +1,18 @@
-import n9Log from '@neo9/n9-node-log';
-import test, { Assertions } from 'ava';
-import { Server } from 'http';
+import n9NodeLog from '@neo9/n9-node-log';
+import ava, { Assertions } from 'ava';
 import got from 'got';
 import * as stdMock from 'std-mocks';
+// tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
 
 const print = commons.print;
 
-test.beforeEach(() => {
+ava.beforeEach(() => {
 	delete global.log;
 });
 
-test('Works with custom port', async (t: Assertions) => {
+ava('Works with custom port', async (t: Assertions) => {
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({ http: { port: 4002 } });
 	stdMock.restore();
@@ -22,7 +22,7 @@ test('Works with custom port', async (t: Assertions) => {
 	await closeServer(server);
 });
 
-test('Works with preventListen = true', async (t: Assertions) => {
+ava('Works with preventListen = true', async (t: Assertions) => {
 	stdMock.use({ print });
 	await N9NodeRouting({ http: { port: 4002, preventListen: true } });
 	stdMock.restore();
@@ -33,8 +33,8 @@ test('Works with preventListen = true', async (t: Assertions) => {
 	t.is(err.name, 'RequestError');
 });
 
-test('Works with custom log and should add a namespace', async (t: Assertions) => {
-	const log = n9Log('custom');
+ava('Works with custom log and should add a namespace', async (t: Assertions) => {
+	const log = n9NodeLog('custom');
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({ log });
 	stdMock.restore();
@@ -44,7 +44,7 @@ test('Works with custom log and should add a namespace', async (t: Assertions) =
 	await closeServer(server);
 });
 
-test('Works without options', async (t: Assertions) => {
+ava('Works without options', async (t: Assertions) => {
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting();
 	stdMock.restore();
@@ -57,7 +57,7 @@ test('Works without options', async (t: Assertions) => {
 	await closeServer(server);
 });
 
-test('Get app name on /', async (t: Assertions) => {
+ava('Get app name on /', async (t: Assertions) => {
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({});
 	// OK if no error thrown
@@ -68,7 +68,7 @@ test('Get app name on /', async (t: Assertions) => {
 	await closeServer(server);
 });
 
-test('Should not log the requests http.logLevel=false', async (t: Assertions) => {
+ava('Should not log the requests http.logLevel=false', async (t: Assertions) => {
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
 		http: { logLevel: false },
@@ -83,7 +83,7 @@ test('Should not log the requests http.logLevel=false', async (t: Assertions) =>
 	await closeServer(server);
 });
 
-test('Should log the requests with custom level', async (t: Assertions) => {
+ava('Should log the requests with custom level', async (t: Assertions) => {
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
 		http: { logLevel: ':status :url' },
@@ -101,7 +101,7 @@ test('Should log the requests with custom level', async (t: Assertions) => {
 	await closeServer(server);
 });
 
-test('Fails with PORT without access', async (t: Assertions) => {
+ava('Fails with PORT without access', async (t: Assertions) => {
 	stdMock.use({ print });
 	const err = await t.throwsAsync(async () => {
 		await N9NodeRouting({ http: { port: 80 } });
@@ -111,7 +111,7 @@ test('Fails with PORT without access', async (t: Assertions) => {
 	t.true(err.message.includes('Port 80 requires elevated privileges'));
 });
 
-test('Fails with PORT already used', async (t: Assertions) => {
+ava('Fails with PORT already used', async (t: Assertions) => {
 	stdMock.use({ print });
 	await N9NodeRouting({ http: { port: 6000 } });
 	const err = await t.throwsAsync(async () => {
@@ -123,7 +123,7 @@ test('Fails with PORT already used', async (t: Assertions) => {
 	t.true(err.message.includes('Port 6000 is already in use'));
 });
 
-test('Fails with PORT not in common range', async (t: Assertions) => {
+ava('Fails with PORT not in common range', async (t: Assertions) => {
 	stdMock.use({ print });
 	const err = await t.throwsAsync(async () => {
 		await N9NodeRouting({ http: { port: 10000000 } });

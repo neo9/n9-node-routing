@@ -1,11 +1,12 @@
-import test, { Assertions } from 'ava';
+import ava, { Assertions } from 'ava';
 import * as stdMock from 'std-mocks';
+// tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons from './fixtures/commons';
 
 const print = commons.print;
 
-test('Error to json', async (t: Assertions) => {
+ava('Error to json', async (t: Assertions) => {
 	stdMock.use({ print });
 	await N9NodeRouting();
 

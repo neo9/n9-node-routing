@@ -1,9 +1,9 @@
-import test, { Assertions } from 'ava';
+import ava, { Assertions } from 'ava';
 import { Express } from 'express';
 import { Server } from 'http';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
-
+// tslint:disable-next-line:import-name
 import n9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
 
@@ -15,7 +15,7 @@ async function init(): Promise<{ app: Express; server: Server }> {
 	});
 }
 
-test('[Lifecycle Hooks] init and started hooks called', async (t: Assertions) => {
+ava('[Lifecycle Hooks] init and started hooks called', async (t: Assertions) => {
 	const { server } = await init();
 
 	stdMock.restore();

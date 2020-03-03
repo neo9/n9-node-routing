@@ -1,14 +1,14 @@
-import test from 'ava';
+import ava from 'ava';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
-
+// tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
 
 const MICRO_FOO = join(__dirname, 'fixtures/micro-json-controller/');
 const print = commons.print;
 
-test('Acl usage with JSON Controller, check /routes', async (t) => {
+ava('Acl usage with JSON Controller, check /routes', async (t) => {
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
@@ -45,8 +45,8 @@ test('Acl usage with JSON Controller, check /routes', async (t) => {
 
 	for (const routeToCall of routesToCall) {
 		await t.notThrowsAsync(
-			async () => await commons.jsonHttpClient.post('http://localhost:5575' + routeToCall),
-			'call ' + routeToCall,
+			async () => await commons.jsonHttpClient.post(`http://localhost:5575${routeToCall}`),
+			`call ${routeToCall}`,
 		);
 	}
 

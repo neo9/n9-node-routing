@@ -1,5 +1,5 @@
 import { N9Error, waitFor } from '@neo9/n9-node-utils';
-import test, { Assertions } from 'ava';
+import ava, { Assertions } from 'ava';
 import {
 	getFromContainer,
 	MetadataStorage,
@@ -66,7 +66,7 @@ async function testValidation(index: number): Promise<void> {
 	const user = { firstName: 'Johny', lastName: 'Cage', email: 'johny@cage.com' };
 	const expectedErrorsFromIndex: boolean[] = [false, false, true];
 	const expectErrors = expectedErrorsFromIndex[index];
-	const schemaName = 'myUserSchema-' + new Date().getTime() + Math.random();
+	const schemaName = `myUserSchema-${new Date().getTime() + Math.random()}`;
 
 	const schema = JSON.parse(JSON.stringify(userValidationSchemas[index])); // Clone deep
 	schema.name = schemaName;
@@ -78,7 +78,7 @@ async function testValidation(index: number): Promise<void> {
 		await validateOrReject(schemaName, user);
 		// istanbul ignore next
 		if (expectErrors) {
-			throw new N9Error('Errors are expected for index : ' + index, 400, {
+			throw new N9Error(`Errors are expected for index : ${index}`, 400, {
 				schemaName,
 				schema,
 				index,
@@ -90,22 +90,22 @@ async function testValidation(index: number): Promise<void> {
 
 		// istanbul ignore next
 		if (!expectErrors) {
-			throw new N9Error('No error expected for index : ' + index, 400, { errors, index });
+			throw new N9Error(`No error expected for index : ${index}`, 400, { errors, index });
 		}
 	} finally {
-		const classValidatorStorage = getFromContainer(MetadataStorage);
-		classValidatorStorage['validationMetadatas'] = classValidatorStorage[
-			'validationMetadatas'
-		].filter((metaData: ValidationMetadata) => metaData.target !== schemaName);
+		const classValidatorStorage: any = getFromContainer(MetadataStorage);
+		classValidatorStorage.validationMetadatas = classValidatorStorage.validationMetadatas.filter(
+			(metaData: ValidationMetadata) => metaData.target !== schemaName,
+		);
 	}
 }
 
-test('[VALIDATE-PARALLEL] Check validation with multiple schemas', async (t: Assertions) => {
+ava('[VALIDATE-PARALLEL] Check validation with multiple schemas', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 
 	// Serial exec
-	for (let i = 0; i < userValidationSchemas.length; i++) {
-		await t.notThrows(async () => await testValidation(i), 'Validation ok for index : ' + i);
+	for (let i = 0; i < userValidationSchemas.length; i += 1) {
+		await t.notThrows(async () => await testValidation(i), `Validation ok for index : ${i}`);
 	}
 
 	// Parallel exec

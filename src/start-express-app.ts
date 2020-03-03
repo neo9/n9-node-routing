@@ -1,16 +1,19 @@
-import { Action, RoutingControllersOptions, useContainer, useExpressServer } from '@flyacts/routing-controllers';
+import {
+	Action,
+	RoutingControllersOptions,
+	useContainer,
+	useExpressServer,
+} from '@flyacts/routing-controllers';
 import { N9Error } from '@neo9/n9-node-utils';
 import { createMiddleware, signalIsUp } from '@promster/express';
 import * as PromsterServer from '@promster/server';
 import * as appRootDir from 'app-root-dir';
 import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
-import { Request, Response } from 'express';
-import stringify from 'fast-safe-stringify';
+import fastSafeStringify from 'fast-safe-stringify';
 import * as helmet from 'helmet';
 import { createServer } from 'http';
 import * as morgan from 'morgan';
-import { FormatFn, TokenIndexer } from 'morgan';
 import { join } from 'path';
 import * as PrometheusClient from 'prom-client';
 import { Container } from 'typedi';
@@ -33,53 +36,63 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 			undefinedResultCode: 204,
 		},
 		defaultErrorHandler: false,
-		controllers: [options.path + '/**/*.controller.*s'],
+		controllers: [`${options.path}/**/*.controller.*s`],
 	};
 
 	// Configure morgan
-	morgan.token('total-response-time', (req: Request, res: Response, digits: number = 3): string => {
-		if (!(req as any)._startAt) {
-			// missing request start time
-			return;
-		}
+	morgan.token(
+		'total-response-time',
+		(req: express.Request, res: express.Response, digits: number = 3): string => {
+			if (!(req as any)._startAt) {
+				// missing request start time
+				return;
+			}
 
-		// // calculate diff
-		const reqStartTime = (req as any)._startAt;
-		const resEndTime = process.hrtime();
-		const ms = (resEndTime[0] - reqStartTime[0]) * 1e3 + (resEndTime[1] - reqStartTime[1]) * 1e-6;
+			// // calculate diff
+			const reqStartTime = (req as any)._startAt;
+			const resEndTime = process.hrtime();
+			const ms = (resEndTime[0] - reqStartTime[0]) * 1e3 + (resEndTime[1] - reqStartTime[1]) * 1e-6;
 
-		// return truncated value
-		return ms.toFixed(digits);
-	});
+			// return truncated value
+			return ms.toFixed(digits);
+		},
+	);
 
 	// Default options
 	options.http = options.http || {};
 	options.http.port = options.http.port || process.env.PORT || 5000;
 
-	options.http.logLevel = (typeof options.http.logLevel !== 'undefined' ? options.http.logLevel : (tokens: TokenIndexer, req: Request, res: Response) => {
-		const formatLogInJSON: boolean = global.n9NodeRoutingData.formatLogInJSON;
+	options.http.logLevel =
+		typeof options.http.logLevel !== 'undefined'
+			? options.http.logLevel
+			: (tokens: morgan.TokenIndexer, req: express.Request, res: express.Response) => {
+					const formatLogInJSON: boolean = global.n9NodeRoutingData.formatLogInJSON;
 
-		if (formatLogInJSON) {
-			return JSON.stringify({
-				'method': tokens.method(req, res),
-				'request-id': options.enableRequestId ? `(${req.headers['x-request-id']})` : '',
-				'path': tokens.url(req, res),
-				'status': tokens.status(req, res),
-				'durationMs': Number.parseFloat(tokens['response-time'](req, res)),
-				'totalDurationMs': Number.parseFloat(tokens['total-response-time'](req, res)),
-				'content-length': tokens.res(req, res, 'content-length'),
-			});
-		} else {
-			return [
-				tokens.method(req, res),
-				tokens.url(req, res),
-				tokens.status(req, res),
-				tokens['response-time'](req, res), 'ms - ',
-				tokens.res(req, res, 'content-length'),
-			].join(' ');
-		}
-	});
-	options.http.routingController = Object.assign({}, defaultRoutingControllerOptions, options.http.routingController);
+					if (formatLogInJSON) {
+						return JSON.stringify({
+							'method': tokens.method(req, res),
+							'request-id': options.enableRequestId ? `(${req.headers['x-request-id']})` : '',
+							'path': tokens.url(req, res),
+							'status': tokens.status(req, res),
+							'durationMs': Number.parseFloat(tokens['response-time'](req, res)),
+							'totalDurationMs': Number.parseFloat(tokens['total-response-time'](req, res)),
+							'content-length': tokens.res(req, res, 'content-length'),
+						});
+					}
+					return [
+						tokens.method(req, res),
+						tokens.url(req, res),
+						tokens.status(req, res),
+						tokens['response-time'](req, res),
+						'ms - ',
+						tokens.res(req, res, 'content-length'),
+					].join(' ');
+			  };
+	options.http.routingController = Object.assign(
+		{},
+		defaultRoutingControllerOptions,
+		options.http.routingController,
+	);
 
 	options.http.routingController.interceptors = [SessionLoaderInterceptor, ErrorHandler];
 	options.http.routingController.authorizationChecker = async (action: Action) => {
@@ -115,13 +128,13 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 				return new Error(`Port ${options.http.port} requires elevated privileges`);
 			case 'EADDRINUSE':
 				return new Error(`Port ${options.http.port} is already in use`);
-				/* istanbul ignore next */
+			/* istanbul ignore next */
 			default:
 				return error;
 		}
 	};
 	const onListening = () => {
-		options.log.info('Listening on port ' + options.http.port);
+		options.log.info(`Listening on port ${options.http.port}`);
 		if (options.prometheus) {
 			signalIsUp();
 		}
@@ -134,15 +147,20 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 	expressApp.use(setRequestContext);
 	expressApp.use(helmet());
 	if (options.prometheus) {
-		expressApp.use(createMiddleware({
-			options: {
-				normalizePath: (path: string, rr: { req: Request, res: Response }): string => (rr.req.route && rr.req.route.path) || rr.req.originalUrl || rr.req.url,
-				labels: options.prometheus.labels,
-				getLabelValues: options.prometheus.getLabelValues,
-				accuracies: options.prometheus.accuracies,
-				skip: options.prometheus.skip,
-			},
-		}));
+		expressApp.use(
+			createMiddleware({
+				options: {
+					normalizePath: (
+						path: string,
+						rr: { req: express.Request; res: express.Response },
+					): string => (rr.req.route && rr.req.route.path) || rr.req.originalUrl || rr.req.url,
+					labels: options.prometheus.labels,
+					getLabelValues: options.prometheus.getLabelValues,
+					accuracies: options.prometheus.accuracies,
+					skip: options.prometheus.skip,
+				},
+			}),
+		);
 
 		const packageJson = require(join(appRootDir.get(), 'package.json'));
 
@@ -156,24 +174,24 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 	}
 	// Logger middleware
 	if (options.http.logLevel) {
-		expressApp.use(morgan(options.http.logLevel as FormatFn, {
-			stream: {
-				write: (message) => {
-					if (global.n9NodeRoutingData.formatLogInJSON) {
-						try {
-							const morganDetails = JSON.parse(message);
-							options.log.info('api call ' + morganDetails.path, morganDetails);
-						} catch (e) {
-							message = message && message.replace('\n', '');
-							options.log.info(message, { errString: stringify(e) });
+		expressApp.use(
+			morgan(options.http.logLevel as morgan.FormatFn, {
+				stream: {
+					write: (message) => {
+						if (global.n9NodeRoutingData.formatLogInJSON) {
+							try {
+								const morganDetails = JSON.parse(message);
+								options.log.info(`api call ${morganDetails.path}`, morganDetails);
+							} catch (e) {
+								options.log.info(message?.replace('\n', ''), { errString: fastSafeStringify(e) });
+							}
+						} else {
+							options.log.info(message?.replace('\n', ''));
 						}
-					} else {
-						message = message && message.replace('\n', '');
-						options.log.info(message);
-					}
+					},
 				},
-			},
-		}));
+			}),
+		);
 	}
 
 	const server = createServer(expressApp);
@@ -206,7 +224,7 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 	if (!options.http.preventListen) await listen();
 
 	return {
-		app: expressApp,
 		server,
+		app: expressApp,
 	};
 };

@@ -1,14 +1,14 @@
-import test, { Assertions } from 'ava';
-import { join } from 'path';
+import ava, { Assertions } from 'ava';
 import got from 'got';
+import { join } from 'path';
 import * as stdMock from 'std-mocks';
-
+// tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
 
 const MICRO_VALIDATE = join(__dirname, 'fixtures/micro-validate/');
 
-test('Read documentation', async (t: Assertions) => {
+ava('Read documentation', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({
 		path: MICRO_VALIDATE,

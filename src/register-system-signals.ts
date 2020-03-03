@@ -1,10 +1,14 @@
 import { N9Log } from '@neo9/n9-node-log';
 import { waitFor } from '@neo9/n9-node-utils';
-import stringify from 'fast-safe-stringify';
+import fastSafeStringify from 'fast-safe-stringify';
 import { Server } from 'http';
 import { N9NodeRouting } from './models/routing.models';
 
-async function shutdown(logger: N9Log, shutdownOptions: N9NodeRouting.ShutdownOptions, server: Server): Promise<void> {
+async function shutdown(
+	logger: N9Log,
+	shutdownOptions: N9NodeRouting.ShutdownOptions,
+	server: Server,
+): Promise<void> {
 	setTimeout(() => {
 		logger.error('shutdown-timeout');
 		process.exit(1);
@@ -23,14 +27,20 @@ async function shutdown(logger: N9Log, shutdownOptions: N9NodeRouting.ShutdownOp
 	}
 	server.getConnections((error1, count) => {
 		if (error1) {
-			logger.error('can-not-get-number-of-connections', { errString: stringify(error1), errMessage: error1.message });
+			logger.error('can-not-get-number-of-connections', {
+				errString: fastSafeStringify(error1),
+				errMessage: error1.message,
+			});
 			process.exit(1);
 		}
 		logger.info(`Nb of connections before close : ${count}`);
 
 		server.close(async (error2) => {
 			if (error2) {
-				logger.error('can-not-shutdown-gracefully', { errString: stringify(error2), errMessage: error2.message });
+				logger.error('can-not-shutdown-gracefully', {
+					errString: fastSafeStringify(error2),
+					errMessage: error2.message,
+				});
 				process.exit(1);
 			}
 
@@ -46,7 +56,10 @@ async function shutdown(logger: N9Log, shutdownOptions: N9NodeRouting.ShutdownOp
 			}
 			server.getConnections((error3, count2) => {
 				if (error3) {
-					logger.error('can-not-get-number-of-connections', { errString: stringify(error3), errMessage: error3.message });
+					logger.error('can-not-get-number-of-connections', {
+						errString: fastSafeStringify(error3),
+						errMessage: error3.message,
+					});
 					process.exit(1);
 				}
 				logger.info(`Nb of connections after close : ${count2}`);
@@ -58,7 +71,11 @@ async function shutdown(logger: N9Log, shutdownOptions: N9NodeRouting.ShutdownOp
 	});
 }
 
-export function registerShutdown(logger: N9Log, shutdownOptions: N9NodeRouting.ShutdownOptions, server: Server): void {
+export function registerShutdown(
+	logger: N9Log,
+	shutdownOptions: N9NodeRouting.ShutdownOptions,
+	server: Server,
+): void {
 	process.once('SIGTERM', async () => {
 		logger.info('Got SIGTERM. Graceful shutdown start');
 		await shutdown(logger, shutdownOptions, server);

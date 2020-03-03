@@ -1,0 +1,57 @@
+# not supported files
+.prettierignore
+.dockerignore
+.env
+.gitignore
+.mailmap
+Dockerfile
+Jenkinsfile
+# scripts
+*.sh
+
+# generated files
+CHANGELOG.md
+yarn.lock
+package.json
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules
+
+# Build directory
+dist
+
+# Editor's config directories
+.vscode
+.idea
+*.iml
+
+# MacOS related files
+*.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows related files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Optional npm cache directory
+.npm
+
+# Coverage
+coverage
+.nyc_output
+
+# Sonar
+.scannerwork
+sonar-project.properties
+
+#local conf
+*local.ts

@@ -1,10 +1,9 @@
 import { ExpressErrorMiddlewareInterface, Middleware } from '@flyacts/routing-controllers';
 import { Request, Response } from 'express';
-import stringify from 'fast-safe-stringify';
+import fastSafeStringify from 'fast-safe-stringify';
 
 @Middleware({ type: 'after' })
 export class ErrorHandler implements ExpressErrorMiddlewareInterface {
-
 	public error(error: any, request: Request, response: Response): void {
 		const status = error.status || error.httpCode || 500;
 		let code = 'unspecified-error';
@@ -22,9 +21,9 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 		error.code = code;
 
 		if (status < 500) {
-			(global.log || console).warn(code, { errString: stringify(error) });
+			(global.log || console).warn(code, { errString: fastSafeStringify(error) });
 		} else {
-			(global.log || console).error(code, { errString: stringify(error) });
+			(global.log || console).error(code, { errString: fastSafeStringify(error) });
 		}
 
 		response.status(status);

@@ -1,15 +1,15 @@
-import test, { Assertions } from 'ava';
+import ava, { Assertions } from 'ava';
+import got from 'got';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
-
+// tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
-import got from 'got';
 
 const MICRO_LOGS = join(__dirname, 'fixtures/micro-logs/');
 const print = commons.print;
 
-test('Basic usage, check logs', async (t: Assertions) => {
+ava('Basic usage, check logs', async (t: Assertions) => {
 	stdMock.use({ print });
 	global.conf = {
 		someConfAttr: 'value',
@@ -44,7 +44,7 @@ test('Basic usage, check logs', async (t: Assertions) => {
 	await closeServer(server);
 });
 
-test('Basic usage, check logs with empty response', async (t: Assertions) => {
+ava('Basic usage, check logs with empty response', async (t: Assertions) => {
 	stdMock.use({ print });
 	global.conf = {
 		someConfAttr: 'value',
@@ -76,7 +76,7 @@ test('Basic usage, check logs with empty response', async (t: Assertions) => {
 	await closeServer(server);
 });
 
-test('JSON output', async (t: Assertions) => {
+ava('JSON output', async (t: Assertions) => {
 	stdMock.use({ print });
 	global.conf = {
 		someConfAttr: 'value',
@@ -99,7 +99,7 @@ test('JSON output', async (t: Assertions) => {
 	t.truthy(output[4].match(/"path":"\/bar"/g), 'GET /bar 2');
 	t.truthy(
 		output[4].match(/"durationMs":[0-9]{1,5}\.[0-9]{1,5}/g),
-		'Has response time ms : ' + output[4],
+		`Has response time ms : ${output[4]}`,
 	);
 	t.truthy(
 		output[4].match(/"totalDurationMs":[0-9]{1,5}\.[0-9]{1,5}/g),

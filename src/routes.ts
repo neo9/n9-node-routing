@@ -21,7 +21,9 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 		};
 	}
 	options.openapi.jsonUrl = options.openapi.jsonUrl || '/documentation.json';
-	options.openapi.swaggerui = options.openapi.swaggerui || Object.assign({}, options.openapi.swaggerui, { swaggerUrl: '../documentation.json' });
+	options.openapi.swaggerui =
+		options.openapi.swaggerui ||
+		Object.assign({}, options.openapi.swaggerui, { swaggerUrl: '../documentation.json' });
 
 	expressApp.get('/', (req: Request, res: Response, next: NextFunction) => {
 		res.status(200).send(packageJson.name);
@@ -32,7 +34,7 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 	expressApp.get('/ping', async (req: Request, res: Response, next: NextFunction) => {
 		if (options.http.ping && options.http.ping.dbs) {
 			for (const db of options.http.ping.dbs) {
-				if (!await db.isConnected.bind(db.thisArg || this)()) {
+				if (!(await db.isConnected.bind(db.thisArg || this)())) {
 					global.log.error(`[PING] Can't connect to ${db.name}`);
 					res.status(500).send();
 					if (options.prometheus) {
@@ -42,7 +44,7 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 					return;
 				}
 			}
-			res.status(200).send('pong-dbs-' + options.http.ping.dbs.length);
+			res.status(200).send(`pong-dbs-${options.http.ping.dbs.length}`);
 		} else if (global.db && global.dbClient) {
 			if (!global.dbClient.isConnected()) {
 				if (global.log && global.log.error) {
@@ -86,14 +88,22 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 			});
 			const additionalProperties = Object.assign({}, { components: { schemas } }, baseOpenApiSpec);
 
-			const spec = RCOpenApi.routingControllersToSpec(routesStorage as any, options.http.routingController, additionalProperties);
+			const spec = RCOpenApi.routingControllersToSpec(
+				routesStorage as any,
+				options.http.routingController,
+				additionalProperties,
+			);
 
 			res.header('Access-Control-Allow-Origin', '*');
 			res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 			res.json(spec);
 		});
 
-		expressApp.use('/documentation', SwaggerUi.serve, SwaggerUi.setup(null, options.openapi.swaggerui));
+		expressApp.use(
+			'/documentation',
+			SwaggerUi.serve,
+			SwaggerUi.setup(null, options.openapi.swaggerui),
+		);
 	}
 
 	// Handle 404 errors
@@ -108,10 +118,10 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 			}
 
 			return res.status(404).json({
+				error,
 				code: err.message,
 				status: err.status,
 				context: err.context,
-				error,
 			});
 		}
 		next();

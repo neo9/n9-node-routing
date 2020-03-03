@@ -1,14 +1,14 @@
-import test, { Assertions } from 'ava';
+import { N9Error } from '@neo9/n9-node-utils';
+import ava, { Assertions } from 'ava';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
-
+// tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
-import { N9Error } from '@neo9/n9-node-utils';
 
 const MICRO_VALIDATE = join(__dirname, 'fixtures/micro-validate/');
 
-test('Check allowUnkown', async (t: Assertions) => {
+ava('Check allowUnkown', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 
 	const { server } = await N9NodeRouting({
@@ -50,7 +50,7 @@ test('Check allowUnkown', async (t: Assertions) => {
 	await closeServer(server);
 });
 
-test('Check date parsing', async (t: Assertions) => {
+ava('Check date parsing', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 
 	const { server } = await N9NodeRouting({

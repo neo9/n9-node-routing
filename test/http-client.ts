@@ -1,11 +1,12 @@
 import { N9Log } from '@neo9/n9-node-log';
-import test, { Assertions } from 'ava';
+import { N9Error } from '@neo9/n9-node-utils';
+import ava, { Assertions } from 'ava';
 import { getNamespace } from 'continuation-local-storage';
 import * as stdMock from 'std-mocks';
+// tslint:disable-next-line:import-name
 import N9NodeRouting, { N9HttpClient } from '../src';
 import { RequestIdNamespaceName } from '../src/requestid';
 import commons, { closeServer } from './fixtures/commons';
-import { N9Error } from '@neo9/n9-node-utils';
 
 const print = commons.print;
 
@@ -14,7 +15,7 @@ namespaceRequestId.run(() => {
 	namespaceRequestId.set('requestId', 'ReQuEsTiD');
 });
 
-test('Call a route with HttpClient', async (t: Assertions) => {
+ava('Call a route with HttpClient', async (t: Assertions) => {
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
 		hasProxy: true, // tell N9NodeRouting to parse `session` header

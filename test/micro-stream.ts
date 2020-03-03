@@ -1,14 +1,14 @@
-import test, { Assertions } from 'ava';
+import { N9JsonStreamResponse } from '@neo9/n9-node-utils';
+import ava, { Assertions } from 'ava';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
-
+// tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
-import { N9JsonStreamResponse } from '@neo9/n9-node-utils';
 
 const MICRO_FOO = join(__dirname, 'fixtures/micro-stream/');
 
-test('Basic stream', async (t: Assertions) => {
+ava('Basic stream', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,

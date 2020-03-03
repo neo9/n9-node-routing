@@ -1,11 +1,11 @@
 import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
-import test, { Assertions } from 'ava';
+import ava, { Assertions } from 'ava';
 import { Express } from 'express';
 import { Server } from 'http';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
-
+// tslint:disable-next-line:import-name
 import n9NodeRouting, { N9HttpClient } from '../src';
 import commons, { closeServer } from './fixtures/commons';
 import { User } from './fixtures/micro-users/models/users.models';
@@ -30,7 +30,7 @@ async function end(server: Server): Promise<void> {
 }
 const context: { user?: User; session?: string } = {};
 
-test('[USERS] POST /users => 200 with good params', async (t: Assertions) => {
+ava('[USERS] POST /users => 200 with good params', async (t: Assertions) => {
 	const { server, httpClient } = await init();
 	const userCreated = await httpClient.post<User>([urlPrefix, 'users'], {
 		firstName: 'Neo',
@@ -51,13 +51,13 @@ test('[USERS] POST /users => 200 with good params', async (t: Assertions) => {
 	await end(server);
 });
 
-test('[USERS] POST /users => 400 with wrong params', async (t: Assertions) => {
+ava('[USERS] POST /users => 400 with wrong params', async (t: Assertions) => {
 	const { server, httpClient } = await init();
 	const errorThrown = await t.throwsAsync<N9Error>(
 		async () =>
 			await httpClient.post([urlPrefix, 'users'], {
 				firstName: 'Neo',
-				email: 'newameil' + new Date().getTime() + '@test.com',
+				email: `new-email${new Date().getTime()}@test.com`,
 				password: 'azerty',
 			}),
 	);
@@ -67,7 +67,7 @@ test('[USERS] POST /users => 400 with wrong params', async (t: Assertions) => {
 	await end(server);
 });
 
-test('[USERS] POST /users => 409 with user already exists', async (t: Assertions) => {
+ava('[USERS] POST /users => 409 with user already exists', async (t: Assertions) => {
 	const { server, httpClient } = await init();
 	const errorThrown = await t.throwsAsync<N9Error>(
 		async () =>
@@ -87,7 +87,7 @@ test('[USERS] POST /users => 409 with user already exists', async (t: Assertions
 /*
  ** modules/users/
  */
-test('[USERS] GET /users/:id => 404 with user not found', async (t: Assertions) => {
+ava('[USERS] GET /users/:id => 404 with user not found', async (t: Assertions) => {
 	const { server, httpClient } = await init();
 
 	const headers = { session: JSON.stringify({ userId: context.user._id }) };
@@ -100,7 +100,7 @@ test('[USERS] GET /users/:id => 404 with user not found', async (t: Assertions) 
 	await end(server);
 });
 
-test('[USERS] GET /users/:id => 200 with user found', async (t: Assertions) => {
+ava('[USERS] GET /users/:id => 200 with user found', async (t: Assertions) => {
 	const { server, httpClient } = await init();
 
 	const headers = { session: context.session };

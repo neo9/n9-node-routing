@@ -1,6 +1,6 @@
-import { N9HttpClient } from '../../src';
 import { N9Log } from '@neo9/n9-node-log';
 import { Server } from 'http';
+import { N9HttpClient } from '../../src';
 
 export default {
 	print: false,

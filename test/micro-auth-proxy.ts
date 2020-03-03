@@ -1,15 +1,15 @@
-import test, { Assertions } from 'ava';
+import { N9Error } from '@neo9/n9-node-utils';
+import ava, { Assertions } from 'ava';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
-
+// tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import { N9Error } from '@neo9/n9-node-utils';
-import c, { closeServer } from './fixtures/commons';
+import commons, { closeServer } from './fixtures/commons';
 
-const print = c.print;
+const print = commons.print;
 const MICRO_AUTH = join(__dirname, 'fixtures/micro-auth-proxy/');
 
-test('Call session route (req.headers.session)', async (t: Assertions) => {
+ava('Call session route (req.headers.session)', async (t: Assertions) => {
 	stdMock.use({ print });
 
 	const { server } = await N9NodeRouting({
@@ -21,7 +21,7 @@ test('Call session route (req.headers.session)', async (t: Assertions) => {
 	 ** Fails with no `session` header
 	 */
 	let err = await t.throwsAsync<N9Error>(async () =>
-		c.jsonHttpClient.get('http://localhost:6001/me'),
+		commons.jsonHttpClient.get('http://localhost:6001/me'),
 	);
 	t.is(err.status, 401);
 	t.is(err.message, 'session-required');
@@ -29,7 +29,7 @@ test('Call session route (req.headers.session)', async (t: Assertions) => {
 	 ** Fails with bad `session` header
 	 */
 	err = await t.throwsAsync<N9Error>(async () =>
-		c.jsonHttpClient.get(
+		commons.jsonHttpClient.get(
 			'http://localhost:6001/me',
 			{},
 			{
@@ -43,7 +43,7 @@ test('Call session route (req.headers.session)', async (t: Assertions) => {
 	 ** Fails with bad `session` header (no `userId`)
 	 */
 	err = await t.throwsAsync<N9Error>(async () =>
-		c.jsonHttpClient.get(
+		commons.jsonHttpClient.get(
 			'http://localhost:6001/me',
 			{},
 			{
@@ -57,7 +57,7 @@ test('Call session route (req.headers.session)', async (t: Assertions) => {
 	 ** Good `session` header
 	 */
 	const session = { userId: 1, name: 'Bruce Wayne' };
-	let res = await c.jsonHttpClient.get(
+	let res = await commons.jsonHttpClient.get(
 		'http://localhost:6001/me',
 		{},
 		{
@@ -68,12 +68,12 @@ test('Call session route (req.headers.session)', async (t: Assertions) => {
 	/*
 	 ** No `session` header but session: { type: 'load' }
 	 */
-	res = await c.jsonHttpClient.get('http://localhost:6001/me-load');
+	res = await commons.jsonHttpClient.get('http://localhost:6001/me-load');
 	t.deepEqual(res, { session: false });
 	/*
 	 ** With `session` header and session: { type: 'load' }
 	 */
-	res = await c.jsonHttpClient.get(
+	res = await commons.jsonHttpClient.get(
 		'http://localhost:6001/me-load',
 		{},
 		{

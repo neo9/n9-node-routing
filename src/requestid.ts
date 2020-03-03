@@ -34,10 +34,8 @@ export function requestIdFilter(
 				requestId,
 			},
 		};
-	} else {
-		const messageWithRequestID = requestId ? `(${requestId}) ${msg}` : msg;
-		return messageWithRequestID;
 	}
+	return requestId ? `(${requestId}) ${msg}` : msg;
 }
 
 export function setRequestContext(req: Request, res: Response, next: NextFunction): void {

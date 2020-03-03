@@ -1,16 +1,16 @@
 import { N9Log } from '@neo9/n9-node-log';
-import test, { Assertions } from 'ava';
+import ava, { Assertions } from 'ava';
 import * as bodyParser from 'body-parser';
 import { Express } from 'express';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
-
+// tslint:disable-next-line:import-name
 import N9NodeRouting, { N9HttpClient } from '../src';
 import commons, { closeServer } from './fixtures/commons';
 
 const MICRO_HOOKS = join(__dirname, 'fixtures/micro-hooks/');
 
-test('Call new route (imagine a proxy)', async (t: Assertions) => {
+ava('Call new route (imagine a proxy)', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({
 		hasProxy: true, // tell N9NodeRouting to parse `session` header
@@ -49,7 +49,7 @@ test('Call new route (imagine a proxy)', async (t: Assertions) => {
 	await closeServer(server);
 });
 
-test('Limit max payload size reached for bodyparser', async (t: Assertions) => {
+ava('Limit max payload size reached for bodyparser', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({
 		hasProxy: true, // tell n9NodeRouting to parse `session` header
@@ -77,7 +77,7 @@ test('Limit max payload size reached for bodyparser', async (t: Assertions) => {
 	await closeServer(server);
 });
 
-test('Increase max payload size to bodyparser', async (t: Assertions) => {
+ava('Increase max payload size to bodyparser', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({
 		hasProxy: true, // tell n9NodeRouting to parse `session` header

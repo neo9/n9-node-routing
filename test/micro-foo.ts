@@ -1,30 +1,30 @@
-import test, { Assertions } from 'ava';
+import { N9Error } from '@neo9/n9-node-utils';
+import ava, { Assertions } from 'ava';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
-
+// tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import c, { closeServer } from './fixtures/commons';
-import { N9Error } from '@neo9/n9-node-utils';
+import commons, { closeServer } from './fixtures/commons';
 
-const print = c.print;
+const print = commons.print;
 
 const MICRO_FOO = join(__dirname, 'fixtures/micro-foo/');
 
-test.beforeEach(() => {
+ava.beforeEach(() => {
 	delete global.log;
 });
 
-test('Basic usage, create http server', async (t: Assertions) => {
+ava('Basic usage, create http server', async (t: Assertions) => {
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 	});
 	// Check /foo route added on foo/foo.init.ts
-	let res: any = await c.jsonHttpClient.get<{ foo: string }>('http://localhost:5000/foo');
+	let res: any = await commons.jsonHttpClient.get<{ foo: string }>('http://localhost:5000/foo');
 	t.is(res.foo, 'bar');
 
 	// Check / route
-	res = await c.jsonHttpClient.get<string>(
+	res = await commons.jsonHttpClient.get<string>(
 		'http://localhost:5000/',
 		{},
 		{},
@@ -33,7 +33,7 @@ test('Basic usage, create http server', async (t: Assertions) => {
 	t.is(res, 'n9-node-routing');
 
 	// Check /ping route
-	res = await c.jsonHttpClient.get<string>(
+	res = await commons.jsonHttpClient.get<string>(
 		'http://localhost:5000/ping',
 		{},
 		{},
@@ -42,7 +42,7 @@ test('Basic usage, create http server', async (t: Assertions) => {
 	t.is(res, 'pong');
 
 	// Check /version route
-	res = await c.jsonHttpClient.get<string>(
+	res = await commons.jsonHttpClient.get<string>(
 		'http://localhost:5000/version',
 		{},
 		{},
@@ -53,7 +53,7 @@ test('Basic usage, create http server', async (t: Assertions) => {
 
 	// Check /404 route
 	res = await t.throwsAsync<N9Error>(
-		async () => await c.jsonHttpClient.get('http://localhost:5000/404'),
+		async () => await commons.jsonHttpClient.get('http://localhost:5000/404'),
 	);
 	t.is(res.status, 404, '404');
 	t.is(res.message, 'not-found', 'not-found');
@@ -61,7 +61,7 @@ test('Basic usage, create http server', async (t: Assertions) => {
 
 	// Check logs
 	stdMock.restore();
-	const output = stdMock.flush().stdout.filter(c.excludeSomeLogs);
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 
 	// Logs on stdout
 	t.true(output[0].includes('Init module bar'), 'Init module bar');
@@ -79,18 +79,18 @@ test('Basic usage, create http server', async (t: Assertions) => {
 	await closeServer(server);
 });
 
-test('Basic usage, create http server on production', async (t: Assertions) => {
+ava('Basic usage, create http server on production', async (t: Assertions) => {
 	stdMock.use({ print });
 	process.env.NODE_ENV = 'production';
 	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 	});
 	// Check /foo route added on foo/foo.init.ts
-	let res: any = await c.jsonHttpClient.get('http://localhost:5000/foo');
+	let res: any = await commons.jsonHttpClient.get('http://localhost:5000/foo');
 	t.is(res.foo, 'bar');
 
 	// Check / route
-	res = await c.jsonHttpClient.get<string>(
+	res = await commons.jsonHttpClient.get<string>(
 		'http://localhost:5000/',
 		{},
 		{},
@@ -99,7 +99,7 @@ test('Basic usage, create http server on production', async (t: Assertions) => {
 	t.is(res, 'n9-node-routing');
 
 	// Check /ping route
-	res = await c.jsonHttpClient.get<string>(
+	res = await commons.jsonHttpClient.get<string>(
 		'http://localhost:5000/ping',
 		{},
 		{},
@@ -109,7 +109,7 @@ test('Basic usage, create http server on production', async (t: Assertions) => {
 
 	// Check /404 route
 	res = await t.throwsAsync<N9Error>(
-		async () => await c.jsonHttpClient.get('http://localhost:5000/404'),
+		async () => await commons.jsonHttpClient.get('http://localhost:5000/404'),
 	);
 	t.is(res.status, 404);
 	t.is(res.message, 'not-found');
@@ -117,7 +117,7 @@ test('Basic usage, create http server on production', async (t: Assertions) => {
 
 	// Check logs
 	stdMock.restore();
-	const output = stdMock.flush().stdout.filter(c.excludeSomeLogs);
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 
 	// Logs on stdout
 	t.true(
@@ -156,7 +156,7 @@ test('Basic usage, create http server on production', async (t: Assertions) => {
 	delete process.env.NODE_ENV;
 });
 
-test('Check /routes', async (t) => {
+ava('Check /routes', async (t) => {
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
@@ -164,7 +164,7 @@ test('Check /routes', async (t) => {
 	});
 
 	// Check acl on routes
-	const res = await c.jsonHttpClient.get<any[]>('http://localhost:5575/routes');
+	const res = await commons.jsonHttpClient.get<any[]>('http://localhost:5575/routes');
 	t.is(res.length, 1);
 
 	const route1 = res[0];
@@ -180,22 +180,22 @@ test('Check /routes', async (t) => {
 	await closeServer(server);
 });
 
-test('Call routes (versionning)', async (t: Assertions) => {
-	stdMock.use({ print: c.print });
+ava('Call routes (versionning)', async (t: Assertions) => {
+	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
 		http: { port: 5559 },
 	});
-	let res = await c.jsonHttpClient.post<any>('http://localhost:5559/v1/bar');
+	let res = await commons.jsonHttpClient.post<any>('http://localhost:5559/v1/bar');
 	t.is(res.bar, 'foo');
 
 	// Call /v1/fou
-	res = await c.jsonHttpClient.post('http://localhost:5559/v1/fou', { hi: 'hello' });
+	res = await commons.jsonHttpClient.post('http://localhost:5559/v1/fou', { hi: 'hello' });
 	t.deepEqual(res, { hi: 'hello' });
 
 	// Call special route which fails
 	let err = await t.throwsAsync<N9Error>(async () =>
-		c.jsonHttpClient.post('http://localhost:5559/v1/bar', {}, { error: true }),
+		commons.jsonHttpClient.post('http://localhost:5559/v1/bar', {}, { error: true }),
 	);
 	t.is(err.status, 500);
 	t.is(err.message, 'bar-error');
@@ -203,7 +203,7 @@ test('Call routes (versionning)', async (t: Assertions) => {
 
 	// Call special route which fails with extendable error
 	err = await t.throwsAsync(async () =>
-		c.jsonHttpClient.post('http://localhost:5559/v2/bar', {}, { error: true }),
+		commons.jsonHttpClient.post('http://localhost:5559/v2/bar', {}, { error: true }),
 	);
 	t.is(err.status, 505);
 	t.is(err.message, 'bar-extendable-error');
@@ -219,7 +219,7 @@ test('Call routes (versionning)', async (t: Assertions) => {
 	await closeServer(server);
 });
 
-test('Call routes with error in development (error key)', async (t: Assertions) => {
+ava('Call routes with error in development (error key)', async (t: Assertions) => {
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
@@ -227,7 +227,7 @@ test('Call routes with error in development (error key)', async (t: Assertions) 
 	});
 	// Call error with no message
 	const err = await t.throwsAsync<N9Error>(async () =>
-		c.jsonHttpClient.get('http://localhost:5587/bar-fail'),
+		commons.jsonHttpClient.get('http://localhost:5587/bar-fail'),
 	);
 	t.is(err.status, 500);
 	t.deepEqual(
@@ -245,7 +245,7 @@ test('Call routes with error in development (error key)', async (t: Assertions) 
 	await closeServer(server);
 });
 
-test('Call routes with error in production (no leak)', async (t: Assertions) => {
+ava('Call routes with error in production (no leak)', async (t: Assertions) => {
 	process.env.NODE_ENV = 'production';
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
@@ -255,7 +255,7 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 
 	// Call special route which fails
 	let err = await t.throwsAsync<N9Error>(async () =>
-		c.jsonHttpClient.post('http://localhost:5587/v1/bar', {}, { error: true }),
+		commons.jsonHttpClient.post('http://localhost:5587/v1/bar', {}, { error: true }),
 	);
 	t.is(err.status, 500);
 	t.deepEqual(
@@ -271,7 +271,7 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 
 	// Call special route which fails with extendable error
 	err = await t.throwsAsync(async () =>
-		c.jsonHttpClient.post('http://localhost:5587/v2/bar', {}, { error: true }),
+		commons.jsonHttpClient.post('http://localhost:5587/v2/bar', {}, { error: true }),
 	);
 	t.is(err.status, 505);
 	t.deepEqual(
@@ -292,7 +292,7 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 	);
 
 	// Call 404
-	err = await t.throwsAsync(async () => c.jsonHttpClient.get('http://localhost:5587/404'));
+	err = await t.throwsAsync(async () => commons.jsonHttpClient.get('http://localhost:5587/404'));
 	t.is(err.status, 404);
 	t.deepEqual(
 		err.context.srcError,
@@ -308,7 +308,9 @@ test('Call routes with error in production (no leak)', async (t: Assertions) => 
 	);
 
 	// Call error with no message
-	err = await t.throwsAsync(async () => c.jsonHttpClient.get('http://localhost:5587/bar-fail'));
+	err = await t.throwsAsync(async () =>
+		commons.jsonHttpClient.get('http://localhost:5587/bar-fail'),
+	);
 	t.is(err.status, 500);
 	t.deepEqual(
 		err.context.srcError,
