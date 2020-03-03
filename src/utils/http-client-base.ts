@@ -35,7 +35,21 @@ export class N9HttpClient {
 
 	constructor(
 		private readonly logger: N9Log = global.log,
-		private baseOptions: Options = { responseType: 'json' },
+		private baseOptions: Options = {
+			responseType: 'json',
+			hooks: {
+				beforeRetry: [
+					(options, error, retryCount) => {
+						logger.debug(
+							`Retry call [${options.method} ${options.url}] n°${retryCount} due to ${error.name} ${error.message}`,
+							{
+								errString: fastSafeStringify(error),
+							},
+						);
+					},
+				],
+			},
+		},
 		private maxBodyLengthToLogError: number = 100,
 	) {}
 

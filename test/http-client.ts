@@ -2,6 +2,7 @@ import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import ava, { Assertions } from 'ava';
 import { getNamespace } from 'continuation-local-storage';
+import { join } from 'path';
 import * as stdMock from 'std-mocks';
 // tslint:disable-next-line:import-name
 import N9NodeRouting, { N9HttpClient } from '../src';
@@ -128,5 +129,69 @@ ava('Call a route with HttpClient', async (t: Assertions) => {
 	stdMock.restore();
 	stdMock.flush();
 	// Close server
+	await closeServer(server);
+});
+
+ava('Check retries of HttpClient', async (t: Assertions) => {
+	stdMock.use({ print });
+	const httpClient = new N9HttpClient(new N9Log('test'));
+	const error = await t.throwsAsync<N9Error>(
+		async () => await httpClient.get<string>('http://localhost:1'),
+	);
+	const { stdout, stderr } = stdMock.flush();
+
+	t.is(error.message, 'ECONNREFUSED', 'connection refused');
+	t.is(error.status, 500);
+	t.true(
+		stdout[stdout.length - 1].includes(
+			`Retry call [GET http://localhost:1/] n°2 due to RequestError connect ECONNREFUSED 127.0.0.1:1`,
+		),
+		`Retry n°2 is logged by client`,
+	);
+	t.true(
+		stderr[stderr.length - 1].includes(`Error on [get http://localhost:1]`),
+		`Fail is also logged by client`,
+	);
+});
+
+ava('Check retries of HttpClient against error controller', async (t: Assertions) => {
+	stdMock.use({ print });
+	const { server } = await N9NodeRouting({
+		hasProxy: true, // tell N9NodeRouting to parse `session` header
+		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
+		http: {
+			port: 6001,
+		},
+	});
+
+	const httpClient = new N9HttpClient(new N9Log('test'));
+	const error = await t.throwsAsync<N9Error>(
+		async () => await httpClient.get<string>('http://localhost:6001/503'),
+	);
+	const { stdout, stderr } = stdMock.flush();
+
+	t.is(error.message, 'an-error', 'connection refused');
+	t.is(error.status, 503);
+	t.is(
+		stderr.filter((line) => line.includes('An error occurred, client should retry')).length,
+		3,
+		`Count 3 calls, 1 + 2 retries`,
+	);
+	t.true(
+		stdout[2].includes(
+			`Retry call [GET http://localhost:6001/503] n°1 due to HTTPError Response code 503 (Service Unavailable)`,
+		),
+		`Retry n°1 is logged by client`,
+	);
+	t.true(
+		stdout[4].includes(
+			`Retry call [GET http://localhost:6001/503] n°2 due to HTTPError Response code 503 (Service Unavailable)`,
+		),
+		`Retry n°2 is logged by client`,
+	);
+	t.true(
+		stderr[stderr.length - 1].includes(`Error on [get http://localhost:6001/503]`),
+		`Fail is also logged by client`,
+	);
 	await closeServer(server);
 });
