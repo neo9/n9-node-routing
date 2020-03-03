@@ -1,17 +1,9 @@
 import test from 'ava';
-import { Server } from 'http';
 import { join } from 'path';
-import * as rp from 'request-promise-native';
 import * as stdMock from 'std-mocks';
 
 import N9NodeRouting from '../src';
-import commons from './fixtures/commons';
-
-const closeServer = async (server: Server) => {
-	return new Promise((resolve) => {
-		server.close(resolve);
-	});
-};
+import commons, { closeServer } from './fixtures/commons';
 
 const MICRO_FOO = join(__dirname, 'fixtures/micro-json-controller/');
 const print = commons.print;
@@ -24,28 +16,27 @@ test('Acl usage with JSON Controller, check /routes', async (t) => {
 	});
 
 	// Check acl on routes
-	await rp({ uri: 'http://localhost:5575/routes', resolveWithFullResponse: true, json: true });
-	const res = await rp({ uri: 'http://localhost:5575/routes', resolveWithFullResponse: true, json: true });
+	await commons.jsonHttpClient.get('http://localhost:5575/routes');
+	const res = await commons.jsonHttpClient.get<any[]>('http://localhost:5575/routes');
 
-	t.is(res.statusCode, 200);
-	t.is(res.body.length, 3);
+	t.is(res.length, 3);
 
 	const routesToCall = [];
-	const route1 = res.body[0];
+	const route1 = res[0];
 	t.is(route1.description, undefined);
 	t.is(route1.method, 'post');
 	t.is(route1.path, '/toto/foo');
 	t.is(route1.acl.perms[0].action, 'createFoo');
 	routesToCall.push(route1.path);
 
-	const route2 = res.body[1];
+	const route2 = res[1];
 	t.is(route2.description, undefined);
 	t.is(route2.method, 'post');
 	t.is(route2.path, '/tata');
 	t.is(route2.acl.perms[0].action, 'createBar');
 	routesToCall.push(route2.path);
 
-	const route3 = res.body[2];
+	const route3 = res[2];
 	t.is(route3.description, undefined);
 	t.is(route3.method, 'post');
 	t.is(route3.path, '/no-controller');
@@ -53,8 +44,10 @@ test('Acl usage with JSON Controller, check /routes', async (t) => {
 	routesToCall.push(route3.path);
 
 	for (const routeToCall of routesToCall) {
-		await t.notThrowsAsync(async () => await rp({ method: 'POST', uri: 'http://localhost:5575' + routeToCall, resolveWithFullResponse: true, json: true }), 'call ' + routeToCall);
-		t.is(res.statusCode, 200);
+		await t.notThrowsAsync(
+			async () => await commons.jsonHttpClient.post('http://localhost:5575' + routeToCall),
+			'call ' + routeToCall,
+		);
 	}
 
 	// Check logs

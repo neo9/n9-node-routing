@@ -1,17 +1,10 @@
 import test, { Assertions } from 'ava';
-import { Server } from 'http';
 import { join } from 'path';
-import * as rp from 'request-promise-native';
 import * as stdMock from 'std-mocks';
 
 import N9NodeRouting from '../src';
-import commons from './fixtures/commons';
-
-const closeServer = async (server: Server) => {
-	return new Promise((resolve) => {
-		server.close(resolve);
-	});
-};
+import commons, { closeServer } from './fixtures/commons';
+import got from 'got';
 
 const MICRO_LOGS = join(__dirname, 'fixtures/micro-logs/');
 const print = commons.print;
@@ -24,16 +17,16 @@ test('Basic usage, check logs', async (t: Assertions) => {
 
 	const { server } = await N9NodeRouting({
 		path: MICRO_LOGS,
-		enableLogFormatJSON: false
+		enableLogFormatJSON: false,
 	});
 	// Check /foo route added on foo/foo.init.ts
-	const res = await rp({ uri: 'http://localhost:5000/bar', resolveWithFullResponse: true, json: true });
-	t.is(res.statusCode, 200);
+	const res = await commons.jsonHttpClient.get('http://localhost:5000/bar');
 
 	// Check logs
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	// Logs on stdout
+	t.is(output.length, 5, 'output length');
 	t.true(output[0].includes('Init module bar'), 'Init module bar');
 	t.true(output[1].includes('Hello bar.init'), 'Hello bar.init');
 	t.true(output[2].includes('Listening on port 5000'), 'Listening on port 5000');
@@ -46,7 +39,7 @@ test('Basic usage, check logs', async (t: Assertions) => {
 	const matchLength = match.length;
 	t.true(matchLength === 1);
 	t.true(output[4].includes('GET /bar'));
-	t.deepEqual(res.body, global.conf, 'body response is conf');
+	t.deepEqual(res, global.conf, 'body response is conf');
 	// Close server
 	await closeServer(server);
 });
@@ -64,7 +57,7 @@ test('Basic usage, check logs with empty response', async (t: Assertions) => {
 		path: MICRO_LOGS,
 	});
 	// Check /foo route added on foo/foo.init.ts
-	const res = await rp({ uri: 'http://localhost:5002/empty', resolveWithFullResponse: true, json: true });
+	const res = await got('http://localhost:5002/empty');
 	t.is(res.statusCode, 204, 'resp 204 status');
 
 	// Check logs
@@ -91,11 +84,11 @@ test('JSON output', async (t: Assertions) => {
 
 	const { server } = await N9NodeRouting({
 		path: MICRO_LOGS,
-		enableLogFormatJSON: true
+		enableLogFormatJSON: true,
 	});
 
 	// Check /foo route added on foo/foo.init.ts
-	const res = await rp({ uri: 'http://localhost:5000/bar', resolveWithFullResponse: true, json: true });
+	const res = await got('http://localhost:5000/bar');
 	t.is(res.statusCode, 200);
 
 	// Check logs
@@ -104,8 +97,14 @@ test('JSON output', async (t: Assertions) => {
 	// Logs on stdout
 	t.truthy(output[4].match(/"method":"GET"/g), 'GET /bar 1');
 	t.truthy(output[4].match(/"path":"\/bar"/g), 'GET /bar 2');
-	t.truthy(output[4].match(/"durationMs":[0-9]{1,5}\.[0-9]{1,5}/g), 'Has response time ms : ' + output[4]);
-	t.truthy(output[4].match(/"totalDurationMs":[0-9]{1,5}\.[0-9]{1,5}/g), 'Has total response time ms');
+	t.truthy(
+		output[4].match(/"durationMs":[0-9]{1,5}\.[0-9]{1,5}/g),
+		'Has response time ms : ' + output[4],
+	);
+	t.truthy(
+		output[4].match(/"totalDurationMs":[0-9]{1,5}\.[0-9]{1,5}/g),
+		'Has total response time ms',
+	);
 
 	// Close server
 	await closeServer(server);

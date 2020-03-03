@@ -1,17 +1,16 @@
 import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import { getNamespace } from 'continuation-local-storage';
-import { IncomingMessage } from 'http';
-import { CoreOptions, Request, RequestAPI, RequiredUriUrl } from 'request';
-import * as rpn from 'request-promise-native';
-import { PassThrough } from 'stream';
 import { RequestIdNamespaceName } from '../requestid';
-import UrlJoin = require('url-join');
 import stringify from 'fast-safe-stringify';
-import request = require('request');
+import got, { Method, Options } from 'got';
+import { IncomingMessage } from 'http';
+import { PassThrough } from 'stream';
+import UrlJoin = require('url-join');
+
+export type QueryParams = string | Record<string, string | number | boolean> | URLSearchParams;
 
 export class N9HttpClient {
-
 	private static getUriFromUrlParts(url: string | string[]): string {
 		let uri;
 		if (Array.isArray(url)) uri = UrlJoin(...url);
@@ -19,49 +18,90 @@ export class N9HttpClient {
 		return uri;
 	}
 
-	private readonly requestDefault: RequestAPI<Request, CoreOptions, RequiredUriUrl>;
-
-	constructor(private readonly logger: N9Log = global.log, options?: CoreOptions, private maxBodyLengthToLogError: number = 100) {
-		this.requestDefault = rpn.defaults(Object.assign({}, options, {
-			useQuerystring: true,
-			json: true,
-			resolveWithFullResponse: true,
-			gzip: true,
-		}));
-	}
+	constructor(
+		private readonly logger: N9Log = global.log,
+		private baseOptions: Options = { responseType: 'json' },
+		private maxBodyLengthToLogError: number = 100,
+	) {}
 
 	/**
 	 * QueryParams samples : https://github.com/request/request/blob/master/tests/test-qs.js
 	 */
-	public async get<T>(url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
-		return this.request<T>('get', url, queryParams, headers);
+	public async get<T>(
+		url: string | string[],
+		queryParams?: QueryParams,
+		headers: object = {},
+		options: Options = {},
+	): Promise<T> {
+		return this.request<T>('get', url, queryParams, headers, undefined, options);
 	}
 
-	public async post<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
-		return this.request<T>('post', url, queryParams, headers, body);
+	public async post<T>(
+		url: string | string[],
+		body?: any,
+		queryParams?: QueryParams,
+		headers: object = {},
+		options: Options = {},
+	): Promise<T> {
+		return this.request<T>('post', url, queryParams, headers, body, options);
 	}
 
-	public async put<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
-		return this.request<T>('put', url, queryParams, headers, body);
+	public async put<T>(
+		url: string | string[],
+		body?: any,
+		queryParams?: QueryParams,
+		headers: object = {},
+		options: Options = {},
+	): Promise<T> {
+		return this.request<T>('put', url, queryParams, headers, body, options);
 	}
 
-	public async delete<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
-		return this.request<T>('delete', url, queryParams, headers, body);
+	public async delete<T>(
+		url: string | string[],
+		body?: any,
+		queryParams?: QueryParams,
+		headers: object = {},
+		options: Options = {},
+	): Promise<T> {
+		return this.request<T>('delete', url, queryParams, headers, body, options);
 	}
 
-	public async options<T>(url: string | string[], queryParams?: object, headers: object = {}): Promise<T> {
-		return this.request<T>('options', url, queryParams, headers);
+	public async options<T>(
+		url: string | string[],
+		queryParams?: QueryParams,
+		headers: object = {},
+		options: Options = {},
+	): Promise<T> {
+		return this.request<T>('options', url, queryParams, headers, undefined, options);
 	}
 
-	public async patch<T>(url: string | string[], body?: any, queryParams?: object, headers: object = {}): Promise<T> {
-		return this.request<T>('patch', url, queryParams, headers, body);
+	public async patch<T>(
+		url: string | string[],
+		body?: any,
+		queryParams?: QueryParams,
+		headers: object = {},
+		options: Options = {},
+	): Promise<T> {
+		return this.request<T>('patch', url, queryParams, headers, body, options);
 	}
 
-	public async head(url: string | string[], queryParams?: object, headers: object = {}): Promise<void> {
-		return this.request<void>('head', url, queryParams, headers);
+	public async head(
+		url: string | string[],
+		queryParams?: QueryParams,
+		headers: object = {},
+		options: Options = {},
+	): Promise<void> {
+		return this.request<void>('head', url, queryParams, headers, undefined, options);
 	}
 
-	public async request<T>(method: string, url: string | string[], queryParams?: object, headers: object = {}, body?: any): Promise<T> {
+	public async request<T>(
+		method: Method,
+		url: string | string[],
+		queryParams?: string | Record<string, string | number | boolean> | URLSearchParams,
+		headers: object = {},
+		body?: any,
+		options: Options = {},
+	): Promise<T> {
 		const uri = N9HttpClient.getUriFromUrlParts(url);
 
 		const namespaceRequestId = getNamespace(RequestIdNamespaceName);
@@ -70,66 +110,78 @@ export class N9HttpClient {
 		const startTime = Date.now();
 
 		try {
-			const res = await this.requestDefault({
+			const optionsSent: Options = {
 				method,
-				uri,
-				qs: queryParams,
+				searchParams: queryParams,
 				headers: sentHeaders,
-				body,
-			});
-
-			return res.body as any;
+				json: body,
+				resolveBodyOnly: false,
+				...this.baseOptions,
+				...options,
+			};
+			const res = await got<T>(uri, optionsSent as any);
+			// console.log(`-- http-client-base.ts res --`, res);
+			return res.body;
 		} catch (e) {
 			const responseTime = Date.now() - startTime;
-			this.logger.error(`Error on [${method} ${uri}]`, { 'status': e.statusCode, 'response-time': responseTime });
 			const bodyJSON = stringify(body);
-			// istanbul ignore else
-			if (e.error) {
-				throw new N9Error(e.error.code, e.statusCode, {
-					uri,
-					method,
-					code: e.error.code,
-					queryParams,
-					headers,
-					body: body && bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
-					srcError: e.error,
-					responseTime,
-				});
-			} else {
-				throw e;
-			}
+			const errorBodyJSON = stringify(e.response?.body);
+			const { code, status } = this.prepareErrorCodeAndStatus(e);
+			this.logger.error(`Error on [${method} ${uri}]`, {
+				'status': status,
+				'response-time': responseTime,
+			});
+
+			throw new N9Error(code, status, {
+				uri,
+				method,
+				code: e.code,
+				queryParams,
+				headers,
+				body: body && bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
+				srcError: e.response?.body,
+				responseTime,
+			});
 		}
 	}
 
-	public async raw<T>(url: string | string[], options: CoreOptions): Promise<T> {
+	public async raw<T>(url: string | string[], options: Options): Promise<T> {
 		const uri = N9HttpClient.getUriFromUrlParts(url);
 		const startTime = Date.now();
 
 		try {
-			const res = await this.requestDefault(uri, options);
+			const res = await got<T>(uri, {
+				resolveBodyOnly: false,
+				...this.baseOptions,
+				...options,
+			} as any);
 
-			return res.body as any;
+			return res.body;
 		} catch (e) {
-			this.logger.error(`Error on raw call [${options.method} ${uri}]`, { 'status': e.statusCode, 'response-time': (Date.now() - startTime) });
-			// istanbul ignore else
-			if (e.error) {
-				throw new N9Error(e.error.code, e.statusCode, {
-					uri,
-					options: stringify(options),
-					error: e.error,
-					...e.error.context,
-				});
-			} else {
-				throw e;
-			}
+			const responseTime = Date.now() - startTime;
+			const { code, status } = this.prepareErrorCodeAndStatus(e);
+			this.logger.error(`Error on [${options.method} ${uri}]`, {
+				status,
+				'response-time': responseTime,
+			});
+
+			throw new N9Error(code, status, {
+				uri,
+				options: stringify(options),
+				error: e,
+				...e.context,
+			});
 		}
 	}
 
-	public async requestStream(url: string | string[], options?: CoreOptions): Promise<{ incomingMessage: IncomingMessage, responseAsStream: PassThrough }> {
+	public async requestStream(
+		url: string | string[],
+		options?: Options,
+	): Promise<{ incomingMessage: IncomingMessage; responseAsStream: PassThrough }> {
 		const responseAsStream = new PassThrough();
 		const startTime = Date.now();
 		const uri = N9HttpClient.getUriFromUrlParts(url);
-		const requestResponse = await request(uri, options);
+		const requestResponse = await got.stream(uri, options);
 		requestResponse.pipe(responseAsStream);
 
 		let incomingMessage: IncomingMessage;
@@ -142,9 +194,16 @@ export class N9HttpClient {
 						const durationMsTTLB = Date.now() - startTime;
 						if (durationMsTTFB !== null && durationMsTTFB !== undefined) {
 							const durationDLMs = durationMsTTLB - durationMsTTFB;
-							this.logger.debug(`File TTLB : ${durationMsTTLB} ms TTDL : ${durationDLMs} ms`, { durationMs: durationMsTTLB, durationDLMs, url });
+							this.logger.debug(`File TTLB : ${durationMsTTLB} ms TTDL : ${durationDLMs} ms`, {
+								durationMs: durationMsTTLB,
+								durationDLMs,
+								url,
+							});
 						} else {
-							this.logger.debug(`File TTLB : ${durationMsTTLB} ms`, { durationMs: durationMsTTLB, url });
+							this.logger.debug(`File TTLB : ${durationMsTTLB} ms`, {
+								durationMs: durationMsTTLB,
+								url,
+							});
 						}
 					});
 					if (response.statusCode >= 400) {
@@ -155,19 +214,58 @@ export class N9HttpClient {
 			});
 		} catch (e) {
 			const durationCatch = Date.now() - startTime;
-			this.logger.error(`Error on [${options ? options.method || 'GET' : 'GET'} ${uri}]`, { 'status': e.statusCode, 'response-time': durationCatch });
-			this.logger.debug(`File TTFB : ${durationCatch} ms`, { durationMs: durationCatch, statusCode: e.statusCode, url });
-			throw new N9Error((e.error && e.error.code) || e.message || e.name || 'unknown-error', e.statusCode, {
+			this.logger.error(`Error on [${options ? options.method || 'GET' : 'GET'} ${uri}]`, {
+				'status': e.statusCode,
+				'response-time': durationCatch,
+			});
+			this.logger.debug(`File TTFB : ${durationCatch} ms`, {
+				durationMs: durationCatch,
+				statusCode: e.statusCode,
+				url,
+			});
+			const { code, status } = this.prepareErrorCodeAndStatus(e);
+
+			throw new N9Error(code || 'unknown-error', status, {
 				uri,
 				method: options && options.method,
-				code: (e.error && e.error.code) || e.statusCode,
+				code: e.code || code,
 				headers: options && options.headers,
-				srcError: e.error,
+				srcError: e,
 				responseTime: durationCatch,
 			});
 		}
 		durationMsTTFB = Date.now() - startTime;
-		this.logger.debug(`File TTFB : ${durationMsTTFB} ms`, { durationMs: durationMsTTFB, statusCode: incomingMessage.statusCode, url });
+		this.logger.debug(`File TTFB : ${durationMsTTFB} ms`, {
+			durationMs: durationMsTTFB,
+			statusCode: incomingMessage.statusCode,
+			url,
+		});
 		return { incomingMessage, responseAsStream };
+	}
+
+	private prepareErrorCodeAndStatus(e: any): { code: string; status: number } {
+		// console.log(`-- http-client-base.ts e --`, e);
+		// console.log(`-- http-client-base.ts e.response --`, e.response);
+		// console.log(`-- http-client-base.ts JSON.stringify(e) --`, JSON.stringify(e));
+
+		let code;
+		try {
+			const errorJson =
+				typeof e.response?.body === 'object' ? e.response?.body : JSON.parse(e.response?.body);
+			code = errorJson?.code;
+		} catch (error) {
+			code = e.code;
+		}
+		if (!code) code = e.code;
+
+		const status = e.response?.statusCode;
+		// console.log(`-- ----------------  --`);
+		// console.log(`-- ----------------  --`);
+		// console.log(`-- ----------------  --`);
+		// console.log(`-- http-client-base.ts {code, status } --`, { code, status });
+		// console.log(`-- ----------------  --`);
+		// console.log(`-- ----------------  --`);
+		// console.log(`-- ----------------  --`);
+		return { code, status };
 	}
 }

@@ -4,15 +4,13 @@
   "description": "Library to easily start app with routing-controllers",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
-  "files": [
-    "dist/src"
-  ],
+  "files": ["dist/src"],
   "license": "MIT",
   "scripts": {
     "build": "rimraf dist/ && tsc",
     "lint": "tslint --project tsconfig.json",
     "test": "npm run lint  && npm run build && nyc ava --verbose --serial dist/test/ && nyc report --reporter=html",
-    "test:dev": "tslint --project tsconfig.json --force && npm run build && nyc ava --verbose --serial dist/test/ && nyc report --reporter=html",
+    "test:dev": "tslint --project tsconfig.json --force && npm run build && nyc ava --inspect --verbose --serial dist/test/ && nyc report --reporter=html",
     "pretest:no-lint": "npm run build",
     "test:no-lint": "nyc ava --verbose --serial dist/test/",
     "posttest:no-lint": "nyc report --reporter=html",
@@ -34,13 +32,9 @@
     "url": "https://github.com/neo9/n9-node-routing.git"
   },
   "homepage": "https://github.com/neo9/n9-node-routing#n9-node-routing",
-  "tags": [
-    "express",
-    "typescript-express",
-    "routing-controllers"
-  ],
+  "tags": ["express", "typescript-express", "routing-controllers"],
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10"
   },
   "dependencies": {
     "@benjd90/routing-controllers-openapi": "^1.7.0",
@@ -65,6 +59,7 @@
     "fast-safe-stringify": "^2.0.6",
     "glob": "^7.1.2",
     "glob-promise": "^3.4.0",
+    "got": "^10.6.0",
     "helmet": "^3.12.0",
     "moment": "^2.22.0",
     "morgan": "1.9.1",
@@ -72,7 +67,6 @@
     "prom-client": "^11.5.3",
     "reflect-metadata": "^0.1.10",
     "release-it": "7.4.8",
-    "request": "^2.85.0",
     "shortid": "^2.2.8",
     "stream-array": "^1.1.2",
     "swagger-ui-express": "^3.0.8",
@@ -86,13 +80,11 @@
     "@types/express": "^4.0.35",
     "@types/multer": "^0.0.33",
     "@types/node": "^7.0.22",
-    "@types/request-promise-native": "^1.0.14",
     "@types/std-mocks": "^1.0.0",
     "ava": "^1.0.0-beta.3",
     "nodemon": "^1.17.3",
     "nyc": "^11.6.0",
-    "request-promise-native": "^1.0.5",
     "std-mocks": "^1.0.1",
-    "typescript": "^3.5.3"
+    "typescript": "^3.8.3"
   }
 }

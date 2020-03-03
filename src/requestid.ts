@@ -16,8 +16,12 @@ function flattenWithInheritProperties(obj: object): object {
 	return result;
 }
 
-export function requestIdFilter(level: string, msg: string, meta: any): string | { msg: any; meta: any; } {
-	const formatLogInJSON: boolean = global.n9NodeRoutingData.formatLogInJSON;
+export function requestIdFilter(
+	level: string,
+	msg: string,
+	meta: any,
+): string | { msg: any; meta: any } {
+	const formatLogInJSON: boolean = global.n9NodeRoutingData?.formatLogInJSON ?? false;
 
 	const namespaceRequestId = getNamespace(RequestIdNamespaceName);
 	const requestId = namespaceRequestId && namespaceRequestId.get('request-id');

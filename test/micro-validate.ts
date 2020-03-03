@@ -1,18 +1,10 @@
 import test, { Assertions } from 'ava';
-import { Server } from 'http';
 import { join } from 'path';
-import * as rp from 'request-promise-native';
-import { StatusCodeError } from 'request-promise-native/errors';
 import * as stdMock from 'std-mocks';
 
 import N9NodeRouting from '../src';
-import commons from './fixtures/commons';
-
-const closeServer = async (server: Server) => {
-	return new Promise((resolve) => {
-		server.close(resolve);
-	});
-};
+import commons, { closeServer } from './fixtures/commons';
+import { N9Error } from '@neo9/n9-node-utils';
 
 const MICRO_VALIDATE = join(__dirname, 'fixtures/micro-validate/');
 
@@ -24,45 +16,33 @@ test('Check allowUnkown', async (t: Assertions) => {
 		http: { port: 5585 },
 	});
 	// Should not allow others keys
-	const err = await t.throwsAsync<StatusCodeError>(async () => rp({
-		method: 'POST',
-		uri: 'http://localhost:5585/validate',
-		resolveWithFullResponse: true,
-		body: {
+	const err = await t.throwsAsync<N9Error>(async () =>
+		commons.jsonHttpClient.post('http://localhost:5585/validate', {
 			bad: true,
 			username: 'ok',
-		},
-		json: true,
-	}));
-	t.is(err.statusCode, 400);
-	t.true(err.response.body.context[0].constraints.whitelistValidation === 'property bad should not exist');
+		}),
+	);
+	t.is(err.status, 400);
+	t.true(
+		err.context.srcError.context[0].constraints.whitelistValidation ===
+			'property bad should not exist',
+	);
 
 	// Should not allow others keys
-	let res = await rp({
-		method: 'POST',
-		uri: 'http://localhost:5585/validate',
-		resolveWithFullResponse: true,
-		body: {
-			username: 'ok',
-		},
-		json: true,
+	let res = await commons.jsonHttpClient.post<{ ok: boolean }>('http://localhost:5585/validate', {
+		username: 'ok',
 	});
-	t.is(res.statusCode, 200);
-	t.true(res.body.ok);
+	t.true(res.ok);
 
 	// Should allow others keys
-	res = await rp({
-		method: 'POST',
-		uri: 'http://localhost:5585/validate-allow-all',
-		resolveWithFullResponse: true,
-		body: {
+	res = await await commons.jsonHttpClient.post<{ ok: boolean }>(
+		'http://localhost:5585/validate-allow-all',
+		{
 			bad: true,
 			username: 'ok',
 		},
-		json: true,
-	});
-	t.is(res.statusCode, 200);
-	t.true(res.body.ok);
+	);
+	t.true(res.ok);
 	// Check logs
 	stdMock.restore();
 	stdMock.flush();
@@ -78,59 +58,44 @@ test('Check date parsing', async (t: Assertions) => {
 		http: { port: 5585 },
 	});
 	// Should not allow others keys
-	const err = await t.throwsAsync<StatusCodeError>(async () => rp({
-		method: 'POST',
-		uri: 'http://localhost:5585/validate',
-		resolveWithFullResponse: true,
-		body: {
-			bad: true,
-			username: 'ok',
-		},
-		json: true,
-	}));
-	t.is(err.statusCode, 400);
-	t.true(err.response.body.context[0].constraints.whitelistValidation === 'property bad should not exist');
+	const err = await t.throwsAsync<N9Error>(
+		async () =>
+			await commons.jsonHttpClient.post('http://localhost:5585/validate', {
+				bad: true,
+				username: 'ok',
+			}),
+	);
+	t.is(err.status, 400);
+	t.true(
+		err.context.srcError.context[0].constraints.whitelistValidation ===
+			'property bad should not exist',
+	);
 
 	// Should not allow others keys
-	let res = await rp({
-		method: 'POST',
-		uri: 'http://localhost:5585/validate',
-		resolveWithFullResponse: true,
-		body: {
-			username: 'ok',
-		},
-		json: true,
+	let res = await commons.jsonHttpClient.post<{ ok: boolean }>('http://localhost:5585/validate', {
+		username: 'ok',
 	});
-	t.is(res.statusCode, 200);
-	t.true(res.body.ok);
+	t.true(res.ok);
 
 	// Should allow others keys
-	res = await rp({
-		method: 'POST',
-		uri: 'http://localhost:5585/validate-allow-all',
-		resolveWithFullResponse: true,
-		body: {
+	res = await await commons.jsonHttpClient.post<{ ok: boolean }>(
+		'http://localhost:5585/validate-allow-all',
+		{
 			bad: true,
 			username: 'ok',
 		},
-		json: true,
-	});
-	t.is(res.statusCode, 200);
-	t.true(res.body.ok);
+	);
+	t.true(res.ok);
 
 	// Should return { ok: true }
-	res = await rp({
-		method: 'POST',
-		uri: 'http://localhost:5585/parse-date',
-		resolveWithFullResponse: true,
-		body: {
+	res = await await commons.jsonHttpClient.post<{ ok: boolean }>(
+		'http://localhost:5585/parse-date',
+		{
 			date: '2018-01-03',
 			body: 'A message body sample',
 		},
-		json: true,
-	});
-	t.is(res.statusCode, 200);
-	t.deepEqual(res.body, { ok: true });
+	);
+	t.deepEqual(res, { ok: true });
 
 	// Check logs
 	stdMock.restore();

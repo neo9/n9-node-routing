@@ -2,18 +2,15 @@
   "compileOnSave": true,
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es6",
+    "target": "es2018",
     "outDir": "dist",
     "moduleResolution": "node",
     "skipLibCheck": true,
     "emitDecoratorMetadata": true,
-		"declaration": true,
+    "declaration": true,
     "experimentalDecorators": true,
     "noImplicitAny": false,
     "sourceMap": true
   },
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "exclude": ["node_modules", "dist"]
 }

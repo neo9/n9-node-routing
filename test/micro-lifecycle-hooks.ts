@@ -1,20 +1,13 @@
-import { N9Log } from '@neo9/n9-node-log';
 import test, { Assertions } from 'ava';
 import { Express } from 'express';
 import { Server } from 'http';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
 
-import n9NodeRouting, { N9HttpClient } from '../src';
-import commons from './fixtures/commons';
+import n9NodeRouting from '../src';
+import commons, { closeServer } from './fixtures/commons';
 
-const closeServer = async (server: Server) => {
-	return new Promise((resolve) => {
-		server.close(resolve);
-	});
-};
-
-async function init(): Promise<{ app: Express, server: Server }> {
+async function init(): Promise<{ app: Express; server: Server }> {
 	stdMock.use({ print: commons.print });
 	const MICRO_LIFECYCLE_HOOKS = join(__dirname, 'fixtures/micro-lifecycle-hooks/');
 	return await n9NodeRouting({
