@@ -32,10 +32,14 @@ export class N9HttpClient {
 		const status = e.response?.statusCode;
 		return { code, status };
 	}
+	private readonly baseOptions: Options;
 
 	constructor(
 		private readonly logger: N9Log = global.log,
-		private baseOptions: Options = {
+		baseOptions?: Options,
+		private maxBodyLengthToLogError: number = 100,
+	) {
+		this.baseOptions = {
 			responseType: 'json',
 			hooks: {
 				beforeRetry: [
@@ -49,9 +53,9 @@ export class N9HttpClient {
 					},
 				],
 			},
-		},
-		private maxBodyLengthToLogError: number = 100,
-	) {}
+			...baseOptions,
+		};
+	}
 
 	/**
 	 * QueryParams samples : https://github.com/request/request/blob/master/tests/test-qs.js
