@@ -4,11 +4,14 @@ import { getNamespace } from 'continuation-local-storage';
 import fastSafeStringify from 'fast-safe-stringify';
 import got, { Method, Options } from 'got';
 import { IncomingMessage } from 'http';
+import * as QueryString from 'query-string';
 import { PassThrough } from 'stream';
 import urlJoin = require('url-join');
 import { RequestIdNamespaceName } from '../requestid';
 
-export type QueryParams = string | Record<string, string | number | boolean> | URLSearchParams;
+export type QueryParams =
+	| string
+	| Record<string, string | number | boolean | string[] | number[] | boolean[]>;
 
 export class N9HttpClient {
 	private static getUriFromUrlParts(url: string | string[]): string {
@@ -130,7 +133,7 @@ export class N9HttpClient {
 	public async request<T>(
 		method: Method,
 		url: string | string[],
-		queryParams?: string | Record<string, string | number | boolean> | URLSearchParams,
+		queryParams?: QueryParams,
 		headers: object = {},
 		body?: any,
 		options: Options = {},
@@ -139,13 +142,17 @@ export class N9HttpClient {
 
 		const namespaceRequestId = getNamespace(RequestIdNamespaceName);
 		const requestId = namespaceRequestId?.get('request-id');
-		const sentHeaders = Object.assign({}, headers, { 'x-request-id': requestId });
+		const sentHeaders = { ...headers, 'x-request-id': requestId };
+		const searchParams =
+			typeof queryParams === 'string'
+				? queryParams
+				: QueryString.stringify(queryParams, { arrayFormat: 'none' });
 		const startTime = Date.now();
 
 		try {
 			const optionsSent: Options = {
 				method,
-				searchParams: queryParams,
+				searchParams,
 				headers: sentHeaders,
 				json: body,
 				resolveBodyOnly: false,
@@ -170,9 +177,9 @@ export class N9HttpClient {
 				queryParams,
 				headers,
 				responseTime,
-				code: e.code,
+				code: e.code ?? e.message,
 				body: body && bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
-				srcError: e.response?.body,
+				srcError: e.response?.body ?? e,
 			});
 		}
 	}

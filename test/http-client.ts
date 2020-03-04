@@ -215,3 +215,21 @@ ava('Use HttpClient base options', async (t: Assertions) => {
 	t.deepEqual(rep, { ok: true }, 'ok expected');
 	await closeServer(server);
 });
+
+ava('Use HttpClient with multiple queryParams', async (t: Assertions) => {
+	stdMock.use({ print });
+	const { server } = await N9NodeRouting({
+		hasProxy: true, // tell N9NodeRouting to parse `session` header
+		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
+		http: {
+			port: 6001,
+		},
+	});
+
+	const httpClient = new N9HttpClient(new N9Log('test'));
+	const rep = await httpClient.get<{ ids: string[] }>('http://localhost:6001/by-multiple-ids', {
+		ids: [1, 2, 3],
+	});
+	t.deepEqual(rep, { ids: ['1', '2', '3'] }, 'ok expected');
+	await closeServer(server);
+});
