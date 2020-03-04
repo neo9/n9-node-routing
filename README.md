@@ -6,15 +6,11 @@
 
 ## Wrapper of project [routing-controllers](https://github.com/typestack/routing-controllers)
 
-1. Install all dependencies:
+1. Install all dependencies and install git hooks with husky :
 
    `yarn`
 
-2. Setup git hooks
-
-   `yarn run init`
-
-3. Run the project tests:
+2. Run the project tests:
 
    `yarn test`
 
