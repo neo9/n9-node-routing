@@ -1,3 +1,12 @@
+## Version [1.20.2](https://github.com/neo9/n9-node-routing/compare/1.20.1...1.20.2) (2020-03-04)
+
+
+### http
+
+* Fix query-params array support ([eaa75a6](https://github.com/neo9/n9-node-routing/commit/eaa75a6)) (Benjamin Daniel)
+
+
+
 ## Version [1.20.1](https://github.com/neo9/n9-node-routing/compare/1.20.0...1.20.1) (2020-03-04)
 
 
@@ -8,6 +17,10 @@
 ### http
 
 * Fix bas options merge ([175a7d6](https://github.com/neo9/n9-node-routing/commit/175a7d6)) (Benjamin Daniel)
+
+### release
+
+* V 1.20.1 ([3894c32](https://github.com/neo9/n9-node-routing/commit/3894c32)) (Benjamin Daniel)
 
 
 
