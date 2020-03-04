@@ -160,7 +160,9 @@ export class N9HttpClient {
 				...options,
 			};
 			const res = await got<T>(uri, optionsSent as any);
-			// console.log(`-- http-client-base.ts res --`, res);
+
+			// for responses 204
+			if (optionsSent.responseType === 'json' && (res.body as any) === '') return;
 			return res.body;
 		} catch (e) {
 			const responseTime = Date.now() - startTime;
@@ -253,7 +255,7 @@ export class N9HttpClient {
 			});
 		} catch (e) {
 			const durationCatch = Date.now() - startTime;
-			this.logger.error(`Error on [${options ? options.method || 'GET' : 'GET'} ${uri}]`, {
+			this.logger.error(`Error on [${options?.method ?? 'GET'} ${uri}]`, {
 				'status': e.statusCode,
 				'response-time': durationCatch,
 			});

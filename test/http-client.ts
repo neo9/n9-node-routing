@@ -2,6 +2,8 @@ import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import ava, { Assertions } from 'ava';
 import { getNamespace } from 'continuation-local-storage';
+import * as FormData from 'form-data';
+import * as fs from 'fs';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
 // tslint:disable-next-line:import-name
@@ -227,9 +229,61 @@ ava('Use HttpClient with multiple queryParams', async (t: Assertions) => {
 	});
 
 	const httpClient = new N9HttpClient(new N9Log('test'));
-	const rep = await httpClient.get<{ ids: string[] }>('http://localhost:6001/by-multiple-ids', {
+	let rep = await httpClient.get<{ ids: string[] }>('http://localhost:6001/by-multiple-ids', {
 		ids: [1, 2, 3],
 	});
-	t.deepEqual(rep, { ids: ['1', '2', '3'] }, 'ok expected');
+	t.deepEqual(rep, { ids: ['1', '2', '3'] }, 'array with 3 values expected');
+
+	rep = await httpClient.get<{ ids: string[] }>('http://localhost:6001/by-multiple-ids', {
+		ids: 1,
+	});
+	t.deepEqual(rep, { ids: ['1'] }, 'array with 1 value expected');
+
+	await closeServer(server);
+});
+
+ava('Use HttpClient to call route with response 204', async (t: Assertions) => {
+	stdMock.use({ print });
+	const { server } = await N9NodeRouting({
+		hasProxy: true, // tell N9NodeRouting to parse `session` header
+		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
+		http: {
+			port: 6001,
+		},
+	});
+
+	const httpClient = new N9HttpClient(new N9Log('test'));
+	const rep = await httpClient.get<object>('http://localhost:6001/empty-response');
+	t.is(rep, undefined, 'response is undefined');
+
+	await closeServer(server);
+});
+
+ava('Use HttpClient to upload a file', async (t: Assertions) => {
+	stdMock.use({ print });
+	const { server } = await N9NodeRouting({
+		hasProxy: true, // tell N9NodeRouting to parse `session` header
+		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
+		http: {
+			port: 6001,
+		},
+	});
+
+	const httpClient = new N9HttpClient(new N9Log('test'));
+	const body = new FormData();
+	body.append(
+		'file1',
+		fs.createReadStream(join(__dirname, 'fixtures/micro-mock-http-responses/test.txt')),
+		{
+			filename: 'test.png',
+			contentType: 'text/csv',
+		},
+	);
+	const rep = await httpClient.raw('http://localhost:6001/files', {
+		body,
+		method: 'post',
+	});
+	t.deepEqual(rep, { bytesWritten: 2020, size: 2020 }, 'response is undefined');
+
 	await closeServer(server);
 });

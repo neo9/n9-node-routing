@@ -55,3 +55,6 @@ sonar-project.properties
 
 #local conf
 *local.ts
+
+#resources
+test/fixtures/micro-mock-http-responses/test.txt
