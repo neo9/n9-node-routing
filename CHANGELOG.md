@@ -1,3 +1,16 @@
+## Version [1.20.1](https://github.com/neo9/n9-node-routing/compare/1.20.0...1.20.1) (2020-03-04)
+
+
+### doc
+
+* Update README ([28432d9](https://github.com/neo9/n9-node-routing/commit/28432d9)) (Benjamin DANIEL)
+
+### http
+
+* Fix bas options merge ([175a7d6](https://github.com/neo9/n9-node-routing/commit/175a7d6)) (Benjamin Daniel)
+
+
+
 # Version [1.20.0](https://github.com/neo9/n9-node-routing/compare/1.19.2...1.20.0) (2020-03-03)
 
 
@@ -14,6 +27,10 @@
 ### lint
 
 * Use neo9 coding style and use husky ([15b82e9](https://github.com/neo9/n9-node-routing/commit/15b82e9)) (Benjamin Daniel)
+
+### release
+
+* V 1.20.0 ([35e1e18](https://github.com/neo9/n9-node-routing/commit/35e1e18)) (Benjamin Daniel)
 
 ### typescript
 
