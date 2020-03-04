@@ -1,9 +1,22 @@
+## Version [1.20.3](https://github.com/neo9/n9-node-routing/compare/1.20.2...1.20.3) (2020-03-04)
+
+
+### http
+
+* Fix response 204 and add tests for files ([e285a1a](https://github.com/neo9/n9-node-routing/commit/e285a1a)) (Benjamin Daniel)
+
+
+
 ## Version [1.20.2](https://github.com/neo9/n9-node-routing/compare/1.20.1...1.20.2) (2020-03-04)
 
 
 ### http
 
 * Fix query-params array support ([eaa75a6](https://github.com/neo9/n9-node-routing/commit/eaa75a6)) (Benjamin Daniel)
+
+### release
+
+* V 1.20.2 ([b20b575](https://github.com/neo9/n9-node-routing/commit/b20b575)) (Benjamin Daniel)
 
 
 
