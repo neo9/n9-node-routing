@@ -270,7 +270,7 @@ ava('Use HttpClient to upload a file', async (t: Assertions) => {
 	});
 
 	const httpClient = new N9HttpClient(new N9Log('test'));
-	const body = new FormData();
+	let body = new FormData();
 	body.append(
 		'file1',
 		fs.createReadStream(join(__dirname, 'fixtures/micro-mock-http-responses/test.txt')),
@@ -279,11 +279,26 @@ ava('Use HttpClient to upload a file', async (t: Assertions) => {
 			contentType: 'text/csv',
 		},
 	);
-	const rep = await httpClient.raw('http://localhost:6001/files', {
+	let rep = await httpClient.raw('http://localhost:6001/files', {
 		body,
 		method: 'post',
 	});
-	t.deepEqual(rep, { bytesWritten: 2020, size: 2020 }, 'response is undefined');
+	t.deepEqual(rep, { bytesWritten: 2020, size: 2020 }, 'response is filled with file infos');
+
+	body = new FormData();
+	body.append(
+		'file1',
+		fs.createReadStream(join(__dirname, 'fixtures/micro-mock-http-responses/test.txt')),
+		{
+			filename: 'test.png',
+			contentType: 'text/csv',
+		},
+	);
+	rep = await httpClient.raw('http://localhost:6001/files-no-response', {
+		body,
+		method: 'post',
+	});
+	t.is(rep, undefined, 'response is undefined');
 
 	await closeServer(server);
 });

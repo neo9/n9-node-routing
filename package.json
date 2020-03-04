@@ -15,7 +15,7 @@
     "lint:apply": "npm run format && tslint --fix --project tsconfig.json '{src,test}/**/*.ts'",
     "lint:verbose": "tslint --fix --project tsconfig.json --format verbose '{src,test}/**/*.ts'",
     "test": "npm run lint  && npm run build  && cp test/fixtures/micro-mock-http-responses/test.txt dist/test/fixtures/micro-mock-http-responses/test.txt && nyc ava --verbose --serial dist/test/ && nyc report --reporter=html",
-    "test:dev": "tslint --project tsconfig.json --force && npm run build  && cp test/fixtures/micro-mock-http-responses/test.txt dist/test/fixtures/micro-mock-http-responses/test.txt nyc ava --inspect --verbose --serial dist/test/ && nyc report --reporter=html",
+    "test:dev": "tslint --project tsconfig.json --force && npm run build  && cp test/fixtures/micro-mock-http-responses/test.txt dist/test/fixtures/micro-mock-http-responses/test.txt && nyc ava --inspect --verbose --serial dist/test/ && nyc report --reporter=html",
     "pretest:no-lint": "npm run build  && cp test/fixtures/micro-mock-http-responses/test.txt dist/test/fixtures/micro-mock-http-responses/test.txt",
     "test:no-lint": "nyc ava --verbose --serial dist/test/",
     "posttest:no-lint": "nyc report --reporter=html",

@@ -11,7 +11,8 @@ import { RequestIdNamespaceName } from '../requestid';
 
 export type QueryParams =
 	| string
-	| Record<string, string | number | boolean | string[] | number[] | boolean[]>;
+	| Record<string, string | number | boolean | string[] | number[] | boolean[]>
+	| object;
 
 export class N9HttpClient {
 	private static getUriFromUrlParts(url: string | string[]): string {
@@ -191,12 +192,15 @@ export class N9HttpClient {
 		const startTime = Date.now();
 
 		try {
-			const res = await got<T>(uri, {
+			const optionsSent: Options = {
 				resolveBodyOnly: false,
 				...this.baseOptions,
 				...options,
-			} as any);
+			};
+			const res = await got<T>(uri, optionsSent as any);
 
+			// for responses 204
+			if (optionsSent.responseType === 'json' && (res.body as any) === '') return;
 			return res.body;
 		} catch (e) {
 			const responseTime = Date.now() - startTime;

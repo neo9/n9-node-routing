@@ -22,7 +22,6 @@ const fileUploadOptions = () => ({
 @Service()
 @JsonController()
 export class ErrorsController {
-	// use options this way:
 	@Post('/files')
 	public async saveFile(
 		@UploadedFile('file1', { options: fileUploadOptions() })
@@ -35,6 +34,28 @@ export class ErrorsController {
 		let size = 0;
 
 		return await new Promise((resolve, reject) => {
+			file.stream.on('data', (chunk) => (size += chunk.length)).pipe(outStream);
+			outStream.on('error', reject).on('finish', () => {
+				resolve({
+					size,
+					bytesWritten: outStream.bytesWritten,
+				});
+			});
+		});
+	}
+
+	@Post('/files-no-response')
+	public async saveFileResponseEmpty(
+		@UploadedFile('file1', { options: fileUploadOptions() })
+		file: {
+			stream: PassThrough;
+			mimeType: string;
+		},
+	): Promise<void> {
+		const outStream = fs.createWriteStream('/dev/null');
+		let size = 0;
+
+		await new Promise((resolve, reject) => {
 			file.stream.on('data', (chunk) => (size += chunk.length)).pipe(outStream);
 			outStream.on('error', reject).on('finish', () => {
 				resolve({
