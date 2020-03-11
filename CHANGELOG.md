@@ -1,9 +1,22 @@
+## Version [1.20.5](https://github.com/neo9/n9-node-routing/compare/1.20.4...1.20.5) (2020-03-11)
+
+
+### yarn
+
+* Upgrade dependencies and move some to devDependencies ([8e0450a](https://github.com/neo9/n9-node-routing/commit/8e0450a)) (Benjamin Daniel)
+
+
+
 ## Version [1.20.4](https://github.com/neo9/n9-node-routing/compare/1.20.3...1.20.4) (2020-03-04)
 
 
 ### http
 
 * Fix 204 response handling on file upload ([d99c035](https://github.com/neo9/n9-node-routing/commit/d99c035)) (Benjamin Daniel)
+
+### release
+
+* V 1.20.4 ([e319680](https://github.com/neo9/n9-node-routing/commit/e319680)) (Benjamin Daniel)
 
 
 
