@@ -1,5 +1,18 @@
+## Version [1.20.6](https://github.com/neo9/n9-node-routing/compare/1.20.5...1.20.6) (2020-04-30)
+
+
+### prometheus
+
+* Fix signal back to up after ping fail ([71af866](https://github.com/neo9/n9-node-routing/commit/71af866)) (Benjamin Daniel)
+
+
+
 ## Version [1.20.5](https://github.com/neo9/n9-node-routing/compare/1.20.4...1.20.5) (2020-03-11)
 
+
+### release
+
+* V 1.20.5 ([b7a54a4](https://github.com/neo9/n9-node-routing/commit/b7a54a4)) (Benjamin Daniel)
 
 ### yarn
 
