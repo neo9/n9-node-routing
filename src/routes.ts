@@ -1,7 +1,7 @@
 import * as RCOpenApi from '@benjd90/routing-controllers-openapi';
 import { getMetadataArgsStorage } from '@flyacts/routing-controllers';
 import { N9Error } from '@neo9/n9-node-utils';
-import { signalIsNotUp } from '@promster/express';
+import { signalIsNotUp, signalIsUp } from '@promster/express';
 import * as appRootDir from 'app-root-dir';
 import { getFromContainer, MetadataStorage } from 'class-validator';
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
@@ -44,14 +44,23 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 					return;
 				}
 			}
+			if (options.prometheus) {
+				signalIsUp();
+			}
 			res.status(200).send(`pong-dbs-${options.http.ping.dbs.length}`);
 		} else if (global.db && global.dbClient) {
 			if (!global.dbClient.isConnected()) {
 				if (global.log?.error) {
 					global.log.error(`[PING] Can't connect to MongoDB`);
 				}
+				if (options.prometheus) {
+					signalIsNotUp();
+				}
 				res.status(500).send();
 			} else {
+				if (options.prometheus) {
+					signalIsUp();
+				}
 				res.status(200).send('pong-db');
 			}
 		} else {
