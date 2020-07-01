@@ -17,6 +17,8 @@ export namespace N9NodeRouting {
 		openapi?: SwaggerOptions;
 		shutdown?: ShutdownOptions;
 		prometheus?: PrometheusOptions;
+		firstSequentialInitFileNames?: string[];
+		firstSequentialStartFileNames?: string[];
 	}
 
 	export interface HttpOptions {

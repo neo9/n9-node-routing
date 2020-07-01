@@ -101,7 +101,7 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 	Container.set('N9HttpClient', new N9HttpClient());
 
 	// Execute all *.init.ts files in modules before app started listening on the HTTP Port
-	await initialiseModules(options.path, options.log);
+	await initialiseModules(options.path, options.log, options.firstSequentialInitFileNames);
 	const returnObject = await startExpressApp(options);
 	await routes(returnObject.app, options);
 
@@ -111,7 +111,7 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 	}
 
 	// Execute all *.started.ts files in modules after app started listening on the HTTP Port
-	await startModules(options.path, options.log);
+	await startModules(options.path, options.log, options.firstSequentialStartFileNames);
 
 	return returnObject;
 };
