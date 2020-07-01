@@ -1,9 +1,22 @@
+# Version [1.21.0](https://github.com/neo9/n9-node-routing/compare/1.20.6...1.21.0) (2020-07-01)
+
+
+### init
+
+* Add options to set first ordered init files ([ebf93a7](https://github.com/neo9/n9-node-routing/commit/ebf93a7)) (Benjamin Daniel)
+
+
+
 ## Version [1.20.6](https://github.com/neo9/n9-node-routing/compare/1.20.5...1.20.6) (2020-04-30)
 
 
 ### prometheus
 
 * Fix signal back to up after ping fail ([71af866](https://github.com/neo9/n9-node-routing/commit/71af866)) (Benjamin Daniel)
+
+### release
+
+* V 1.20.6 ([b66a791](https://github.com/neo9/n9-node-routing/commit/b66a791)) (Benjamin Daniel)
 
 
 
