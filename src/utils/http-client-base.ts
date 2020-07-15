@@ -39,7 +39,7 @@ export class N9HttpClient {
 	private readonly baseOptions: Options;
 
 	constructor(
-		private readonly logger: N9Log = global.log,
+		private readonly logger: N9Log = (global as any).log,
 		baseOptions?: Options,
 		private maxBodyLengthToLogError: number = 100,
 	) {

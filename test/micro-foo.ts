@@ -15,8 +15,8 @@ ava.beforeEach(() => {
 });
 
 ava('Basic usage, create http server', async (t: Assertions) => {
-  const oldNodeEnv = process.env.NODE_ENV;
-  process.env.NODE_ENV = 'development';
+	const oldNodeEnv = process.env.NODE_ENV;
+	process.env.NODE_ENV = 'development';
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
 		path: MICRO_FOO,
@@ -79,7 +79,7 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 
 	// Close server
 	await closeServer(server);
-  process.env.NODE_ENV = oldNodeEnv;
+	process.env.NODE_ENV = oldNodeEnv;
 });
 
 ava('Basic usage, create http server on production', async (t: Assertions) => {

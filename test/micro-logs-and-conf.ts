@@ -11,7 +11,7 @@ const print = commons.print;
 
 ava('Basic usage, check logs', async (t: Assertions) => {
 	stdMock.use({ print });
-  (global as any).conf = {
+	(global as any).conf = {
 		someConfAttr: 'value',
 	};
 
@@ -45,10 +45,10 @@ ava('Basic usage, check logs', async (t: Assertions) => {
 });
 
 ava('Basic usage, check logs with empty response', async (t: Assertions) => {
-  const oldNodeEnv = process.env.NODE_ENV;
-  process.env.NODE_ENV = 'development';
-  stdMock.use({ print });
-  (global as any).conf = {
+	const oldNodeEnv = process.env.NODE_ENV;
+	process.env.NODE_ENV = 'development';
+	stdMock.use({ print });
+	(global as any).conf = {
 		someConfAttr: 'value',
 	};
 
@@ -76,12 +76,12 @@ ava('Basic usage, check logs with empty response', async (t: Assertions) => {
 
 	// Close server
 	await closeServer(server);
-  process.env.NODE_ENV = oldNodeEnv;
+	process.env.NODE_ENV = oldNodeEnv;
 });
 
 ava('JSON output', async (t: Assertions) => {
 	stdMock.use({ print });
-  (global as any).conf = {
+	(global as any).conf = {
 		someConfAttr: 'value',
 	};
 

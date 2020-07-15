@@ -68,13 +68,13 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 	}
 
 	const formatLogInJSON = options.enableLogFormatJSON;
-  (global as any).n9NodeRoutingData = {
+	(global as any).n9NodeRoutingData = {
 		formatLogInJSON,
 		options,
 	};
 
 	if ((global as any).log) {
-    (global as any).log = n9NodeLog((global as any).log.name, {
+		(global as any).log = n9NodeLog((global as any).log.name, {
 			...(global as any).log.options,
 			formatJSON: formatLogInJSON,
 		});
