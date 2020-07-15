@@ -43,13 +43,16 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	});
 	t.true(
 		resProm.includes('http_requests_total{method="get",status_code="204",path="/sample-route"} 1'),
-		'Prom exposition contains call to sample-route',
+		`Prom exposition contains call to sample-route, ${JSON.stringify(resProm)}`,
 	);
 	t.true(
 		resProm.includes('http_requests_total{method="get",status_code="204",path="/by-code/:code"} 1'),
-		'Prom exposition contains call with route pattern',
+		`Prom exposition contains call with route pattern`,
 	);
-	t.true(resProm.includes('version_info{version="'), 'Prom exposition contains version info');
+	t.true(
+		resProm.includes('version_info{version="'),
+		`Prom exposition contains version info, ${JSON.stringify(resProm)}`,
+	);
 
 	// Check logs
 	stdMock.restore();
