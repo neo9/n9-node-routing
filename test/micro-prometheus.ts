@@ -41,18 +41,30 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 		responseType: 'text',
 		resolveBodyOnly: true,
 	});
-	t.true(
-		resProm.includes('http_requests_total{method="get",status_code="204",path="/sample-route"} 1'),
-		`Prom exposition contains call to sample-route, ${JSON.stringify(resProm)}`,
+	const resPromAsArray = resProm.split('\n');
+	t.truthy(
+		resPromAsArray.find(
+			(line) =>
+				line.includes('http_requests_total') &&
+				line.includes('method="get"') &&
+				line.includes('status_code="204"') &&
+				line.includes('path="/sample-route"') &&
+				line.includes('1'),
+		),
+		`Prom exposition contains call to sample-route`,
 	);
-	t.true(
-		resProm.includes('http_requests_total{method="get",status_code="204",path="/by-code/:code"} 1'),
+	t.truthy(
+		resPromAsArray.find(
+			(line) =>
+				line.includes('http_requests_total') &&
+				line.includes('method="get"') &&
+				line.includes('status_code="204"') &&
+				line.includes('path="/by-code/:code"') &&
+				line.includes('1'),
+		),
 		`Prom exposition contains call with route pattern`,
 	);
-	t.true(
-		resProm.includes('version_info{version="'),
-		`Prom exposition contains version info, ${JSON.stringify(resProm)}`,
-	);
+	t.true(resProm.includes('version_info{version="'), `Prom exposition contains version info`);
 
 	// Check logs
 	stdMock.restore();
