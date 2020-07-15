@@ -30,6 +30,8 @@ export * from './validators/date-parser.validator';
 export * from './models/routing.models';
 export * from './models/routes.models';
 export * from './utils/http-client-base';
+export * from './utils/http-cargo-builder';
+export * from './utils/cargo';
 
 export { PrometheusClient };
 
@@ -93,6 +95,10 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 	if (options.enableRequestId) {
 		options.log.addFilter(requestIdFilter);
 	}
+
+	if(!(global as any).log) {
+    (global as any).log = options.log;
+  }
 
 	Container.set('logger', options.log);
 	if ((global as any).conf) {

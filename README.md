@@ -25,3 +25,9 @@ Swagger UI for API available at : /documentation
 ## starter
 
 A starter app is available here : https://github.com/neo9/n9-node-microservice-skeleton
+
+## Some utils
+
+- Unified HttpClient using [got](https://github.com/sindresorhus/got#readme)
+- Cargo to group multiple small task into a bigger one, for example, multiple http calls
+- HttpCargoBuilder a simpler way to build a cargo to group HTTP calls
