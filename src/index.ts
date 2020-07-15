@@ -96,9 +96,9 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 		options.log.addFilter(requestIdFilter);
 	}
 
-	if(!(global as any).log) {
-    (global as any).log = options.log;
-  }
+	if (!(global as any).log) {
+		(global as any).log = options.log;
+	}
 
 	Container.set('logger', options.log);
 	if ((global as any).conf) {
