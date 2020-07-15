@@ -1,8 +1,8 @@
 # n9-node-routing
 
 [![npm version](https://img.shields.io/npm/v/n9-node-routing.svg)](https://www.npmjs.com/package/n9-node-routing)
-[![Travis](https://img.shields.io/travis/n9-node-routing/master.svg)](https://travis-ci.org/n9-node-routing)
-[![Coverage](https://img.shields.io/codecov/c/github/n9-node-routing/master.svg)](https://codecov.io/gh/n9-node-routing)
+[![Travis](https://img.shields.io/travis/neo9/n9-node-routing/master.svg)](https://travis-ci.org/neo9/n9-node-routing)
+[![Coverage](https://img.shields.io/codecov/c/github/neo9/n9-node-routing/master.svg)](https://codecov.io/gh/neo9/n9-node-routing)
 
 ## Easily create express app in TypeScript with Decorators
 
