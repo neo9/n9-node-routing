@@ -21,7 +21,7 @@ export function requestIdFilter(
 	msg: string,
 	meta: any,
 ): string | { msg: any; meta: any } {
-	const formatLogInJSON: boolean = global.n9NodeRoutingData?.formatLogInJSON ?? false;
+	const formatLogInJSON: boolean = (global as any).n9NodeRoutingData?.formatLogInJSON ?? false;
 
 	const namespaceRequestId = getNamespace(RequestIdNamespaceName);
 	const requestId = namespaceRequestId?.get('request-id');

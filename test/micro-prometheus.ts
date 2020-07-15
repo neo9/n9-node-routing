@@ -11,12 +11,12 @@ const print = commons.print;
 const MICRO_FOO = join(__dirname, 'fixtures/micro-prometheus/');
 
 ava.beforeEach(() => {
-	delete global.log;
+	delete (global as any).log;
 });
 
 ava('Basic usage, create http server', async (t: Assertions) => {
 	stdMock.use({ print });
-	global.conf = {
+	(global as any).conf = {
 		name: 'my-awesome-app',
 	};
 	const { server } = await N9NodeRouting({

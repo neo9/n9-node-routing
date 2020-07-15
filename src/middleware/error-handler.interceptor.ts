@@ -21,9 +21,9 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 		error.code = code;
 
 		if (status < 500) {
-			(global.log || console).warn(code, { errString: fastSafeStringify(error) });
+			((global as any).log || console).warn(code, { errString: fastSafeStringify(error) });
 		} else {
-			(global.log || console).error(code, { errString: fastSafeStringify(error) });
+			((global as any).log || console).error(code, { errString: fastSafeStringify(error) });
 		}
 
 		response.status(status);

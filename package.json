@@ -14,8 +14,8 @@
     "lint": "tslint --project tsconfig.json --format verbose '{src,test}/**/*.ts'",
     "lint:apply": "npm run format && tslint --fix --project tsconfig.json '{src,test}/**/*.ts'",
     "lint:verbose": "tslint --fix --project tsconfig.json --format verbose '{src,test}/**/*.ts'",
-    "test": "npm run lint  && npm run build  && cp test/fixtures/micro-mock-http-responses/test.txt dist/test/fixtures/micro-mock-http-responses/test.txt && nyc ava --verbose --serial dist/test/ && nyc report --reporter=html",
-    "test:dev": "tslint --project tsconfig.json --force && npm run build  && cp test/fixtures/micro-mock-http-responses/test.txt dist/test/fixtures/micro-mock-http-responses/test.txt && nyc ava --inspect --verbose --serial dist/test/ && nyc report --reporter=html",
+    "test": "npm run lint && npm run build && export NODE_ENV=test && nyc ava --verbose --color --serial && nyc report --reporter=html",
+    "test:dev": "export NODE_ENV=test && TS_NODE_FILES=true ava --verbose --color --serial --watch",
     "pretest:no-lint": "npm run build  && cp test/fixtures/micro-mock-http-responses/test.txt dist/test/fixtures/micro-mock-http-responses/test.txt",
     "test:no-lint": "nyc ava --verbose --serial dist/test/",
     "posttest:no-lint": "nyc report --reporter=html",
@@ -85,6 +85,7 @@
     "url-join": "^4.0.0"
   },
   "devDependencies": {
+    "@ava/typescript": "^1.1.1",
     "@commitlint/cli": "^8.3.5",
     "@neo9/n9-coding-style": "^1.0.2",
     "@types/app-root-dir": "^0.1.0",
@@ -98,17 +99,29 @@
     "@types/shortid": "^0.0.29",
     "@types/std-mocks": "^1.0.0",
     "@types/url-join": "^0.8.2",
-    "ava": "^1.0.0-beta.3",
+    "ava": "^3.10.1",
     "codecov": "^3.0.0",
     "husky": "^4.2.3",
     "nodemon": "^1.17.3",
     "nyc": "^11.6.0",
     "prettier": "^1.19.1",
     "std-mocks": "^1.0.1",
+    "ts-node": "^8.6.2",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.1.0",
-    "ts-node": "^8.6.2",
     "typescript": "^3.8.3"
+  },
+  "ava": {
+    "files": [
+      "test/*"
+    ],
+    "timeout": "1m",
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
   }
 }

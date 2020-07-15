@@ -40,7 +40,7 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 	// Options default
 	const developmentEnv = process.env.NODE_ENV && process.env.NODE_ENV === 'development';
 	options.path = options.path || join(appRootDir.get(), 'src', 'modules');
-	options.log = options.log || global.log;
+	options.log = options.log || (global as any).log;
 	options.hasProxy = typeof options.hasProxy === 'boolean' ? options.hasProxy : true;
 	options.enableRequestId =
 		typeof options.enableRequestId === 'boolean' ? options.enableRequestId : true;
@@ -68,14 +68,14 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 	}
 
 	const formatLogInJSON = options.enableLogFormatJSON;
-	global.n9NodeRoutingData = {
+  (global as any).n9NodeRoutingData = {
 		formatLogInJSON,
 		options,
 	};
 
-	if (global.log) {
-		global.log = n9NodeLog(global.log.name, {
-			...global.log.options,
+	if ((global as any).log) {
+    (global as any).log = n9NodeLog((global as any).log.name, {
+			...(global as any).log.options,
 			formatJSON: formatLogInJSON,
 		});
 	}
@@ -95,8 +95,8 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 	}
 
 	Container.set('logger', options.log);
-	if (global.conf) {
-		Container.set('conf', global.conf);
+	if ((global as any).conf) {
+		Container.set('conf', (global as any).conf);
 	}
 	Container.set('N9HttpClient', new N9HttpClient());
 

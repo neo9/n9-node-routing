@@ -11,7 +11,7 @@ const print = commons.print;
 
 ava('Basic usage, check logs', async (t: Assertions) => {
 	stdMock.use({ print });
-	global.conf = {
+  (global as any).conf = {
 		someConfAttr: 'value',
 	};
 
@@ -39,14 +39,16 @@ ava('Basic usage, check logs', async (t: Assertions) => {
 	const matchLength = match.length;
 	t.true(matchLength === 1);
 	t.true(output[4].includes('GET /bar'));
-	t.deepEqual(res, global.conf, 'body response is conf');
+	t.deepEqual(res, (global as any).conf, 'body response is conf');
 	// Close server
 	await closeServer(server);
 });
 
 ava('Basic usage, check logs with empty response', async (t: Assertions) => {
-	stdMock.use({ print });
-	global.conf = {
+  const oldNodeEnv = process.env.NODE_ENV;
+  process.env.NODE_ENV = 'development';
+  stdMock.use({ print });
+  (global as any).conf = {
 		someConfAttr: 'value',
 	};
 
@@ -74,11 +76,12 @@ ava('Basic usage, check logs with empty response', async (t: Assertions) => {
 
 	// Close server
 	await closeServer(server);
+  process.env.NODE_ENV = oldNodeEnv;
 });
 
 ava('JSON output', async (t: Assertions) => {
 	stdMock.use({ print });
-	global.conf = {
+  (global as any).conf = {
 		someConfAttr: 'value',
 	};
 

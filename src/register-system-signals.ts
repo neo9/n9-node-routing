@@ -13,7 +13,6 @@ async function shutdown(
 		logger.error('shutdown-timeout');
 		process.exit(1);
 	}, shutdownOptions.timeout);
-
 	const waitDuration = shutdownOptions.waitDurationBeforeStop;
 	// For Kubernetes downscale, let the DNS some time to dereference the pod IP
 	logger.info(`Wait ${waitDuration} ms before exit`);
@@ -44,8 +43,8 @@ async function shutdown(
 				process.exit(1);
 			}
 
-			if (global.dbClient) {
-				const dbClient = global.dbClient;
+			if ((global as any).dbClient) {
+				const dbClient = (global as any).dbClient;
 				logger.info('Closing db connections');
 				if (dbClient.close) {
 					await dbClient.close();

@@ -66,7 +66,7 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 		typeof options.http.logLevel !== 'undefined'
 			? options.http.logLevel
 			: (tokens: morgan.TokenIndexer, req: express.Request, res: express.Response) => {
-					const formatLogInJSON: boolean = global.n9NodeRoutingData.formatLogInJSON;
+					const formatLogInJSON: boolean = (global as any).n9NodeRoutingData.formatLogInJSON;
 
 					if (formatLogInJSON) {
 						return JSON.stringify({
@@ -178,7 +178,7 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 			morgan(options.http.logLevel as morgan.FormatFn, {
 				stream: {
 					write: (message) => {
-						if (global.n9NodeRoutingData.formatLogInJSON) {
+						if ((global as any).n9NodeRoutingData.formatLogInJSON) {
 							try {
 								const morganDetails = JSON.parse(message);
 								options.log.info(`api call ${morganDetails.path}`, morganDetails);

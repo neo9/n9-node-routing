@@ -9,7 +9,7 @@ import commons, { closeServer } from './fixtures/commons';
 const print = commons.print;
 
 ava.beforeEach(() => {
-	delete global.log;
+	delete (global as any).log;
 });
 
 ava('Works with custom port', async (t: Assertions) => {
@@ -34,27 +34,34 @@ ava('Works with preventListen = true', async (t: Assertions) => {
 });
 
 ava('Works with custom log and should add a namespace', async (t: Assertions) => {
+	const oldNodeEnv = process.env.NODE_ENV;
+  process.env.NODE_ENV = 'development';
 	const log = n9NodeLog('custom');
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({ log });
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
-	t.true(output[0].includes('[custom:n9-node-routing] Listening on port 5000'));
+	t.true(output[0].includes('[custom:n9-node-routing] Listening on port 5000'), `output : ${JSON.stringify(output)}`);
 	// Close server
 	await closeServer(server);
+  process.env.NODE_ENV = oldNodeEnv;
 });
 
 ava('Works without options', async (t: Assertions) => {
 	stdMock.use({ print });
+	const oldNodeEnv = process.env.NODE_ENV;
+  process.env.NODE_ENV = 'development';
 	const { server } = await N9NodeRouting();
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	t.true(
 		output[0].includes('[n9-node-routing] Listening on port 5000'),
-		'[n9-node-routing] Listening on port 5000',
+		`[n9-node-routing] Listening on port 5000 output : ${JSON.stringify(output)}`,
 	);
+
 	// Close server
 	await closeServer(server);
+  process.env.NODE_ENV = oldNodeEnv;
 });
 
 ava('Get app name on /', async (t: Assertions) => {
