@@ -1,3 +1,10 @@
+# [1.22.0](https://github.com/neo9/n9-node-routing/compare/1.22.0-rc.1...1.22.0) (2020-07-16)
+
+
+### ping
+
+* Add tests on ping with db and message on failure ([9554062](https://github.com/neo9/n9-node-routing/commit/9554062445370748918ccffb5b81d10b22eb79a5))
+
 # [1.22.0-rc.1](https://github.com/neo9/n9-node-routing/compare/1.22.0-rc.0...1.22.0-rc.1) (2020-07-16)
 
 
