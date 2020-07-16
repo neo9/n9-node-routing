@@ -2,31 +2,34 @@
   "name": "n9-node-routing",
   "version": "1.22.0-rc.0",
   "description": "Library to easily start app with routing-controllers",
+  "keywords": [
+    "node",
+    "express",
+    "decorators",
+    "routing controllers",
+    "typescript",
+    "anotation"
+  ],
+  "license": "GNU",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "files": [
     "dist/src"
   ],
-  "license": "MIT",
   "scripts": {
     "build": "rimraf dist/ && tsc",
     "format": "prettier --write '{,@(src|test)/**/}*.*'",
     "lint": "tslint --project tsconfig.json --format verbose '{src,test}/**/*.ts'",
     "lint:apply": "npm run format && tslint --fix --project tsconfig.json '{src,test}/**/*.ts'",
     "lint:verbose": "tslint --fix --project tsconfig.json --format verbose '{src,test}/**/*.ts'",
-    "test": "npm run lint && npm run build && export NODE_ENV=test && nyc ava --verbose --color --serial && nyc report --reporter=html",
     "test:dev": "export NODE_ENV=test && TS_NODE_FILES=true ava --verbose --color --serial --watch",
-    "pretest:no-lint": "npm run build  && cp test/fixtures/micro-mock-http-responses/test.txt dist/test/fixtures/micro-mock-http-responses/test.txt",
-    "test:no-lint": "nyc ava --verbose --serial dist/test/",
-    "posttest:no-lint": "nyc report --reporter=html",
+    "test": "npm run lint && npm run build && export NODE_ENV=test && nyc ava --verbose --color --serial && nyc report --reporter=html",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "preversion": "npm test",
     "prepublishOnly": "npm run build",
-    "release": "export BABEL_DISABLE_CACHE=1 && release-it",
-    "release:dry": "export BABEL_DISABLE_CACHE=1 && release-it --dry-run=true",
-    "build:changelog": "conventional-changelog -i CHANGELOG.md -s -p jscs -r 0",
-    "post:release": "echo Successfully released $npm_package_version",
-    "init": "./bin/setup-git-hooks"
+    "release": "export BABEL_DISABLE_CACHE=1 && release-it --ci",
+    "release:dry": "export BABEL_DISABLE_CACHE=1 && release-it --ci --dry-run=true",
+    "post:release": "echo Successfully released $npm_package_version"
   },
   "husky": {
     "hooks": {
