@@ -4,6 +4,7 @@ import fastSafeStringify from 'fast-safe-stringify';
 import { Server } from 'http';
 import { N9NodeRouting } from './models/routing.models';
 
+// istanbul ignore next
 async function shutdown(
 	logger: N9Log,
 	shutdownOptions: N9NodeRouting.ShutdownOptions,
@@ -70,6 +71,7 @@ async function shutdown(
 	});
 }
 
+// istanbul ignore next
 export function registerShutdown(
 	logger: N9Log,
 	shutdownOptions: N9NodeRouting.ShutdownOptions,
