@@ -1,3 +1,14 @@
+# [1.22.0-rc.1](https://github.com/neo9/n9-node-routing/compare/1.22.0-rc.0...1.22.0-rc.1) (2020-07-16)
+
+
+### license
+
+* Fix license from MIT to GNU ([f7cabdc](https://github.com/neo9/n9-node-routing/commit/f7cabdc8acda66bf66b3afda2003e543c2c33913))
+
+### release
+
+* Fix tag name ([3616e4f](https://github.com/neo9/n9-node-routing/commit/3616e4f6e75b13fbdaa6035b591dcaefe5dbb692))
+
 # [1.22.0-rc.0](https://github.com/neo9/n9-node-routing/compare/1.21.0...%s) (2020-07-16)
 
 
