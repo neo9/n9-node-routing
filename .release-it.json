@@ -13,7 +13,7 @@
     "commit": true,
     "commitMessage": "release: V ${version}",
     "tag": true,
-    "tagName": "%s",
+    "tagName": "${version}",
     "tagAnnotation": "release: V ${version}",
     "push": true
   },
