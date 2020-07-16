@@ -1,3 +1,32 @@
+# [1.22.0-rc.0](https://github.com/neo9/n9-node-routing/compare/1.21.0...%s) (2020-07-16)
+
+
+### cargo
+
+* Add cargo and http cargo builder ([81dabd0](https://github.com/neo9/n9-node-routing/commit/81dabd04562e556de34573b8ba4bd64452a96245))
+
+### doc
+
+* Update readme links ([8c144b1](https://github.com/neo9/n9-node-routing/commit/8c144b1ed129416ca75039dff90ebb4a8dae66bf))
+
+### test
+
+* Ignore system signal call from code coverage ([8c16f9a](https://github.com/neo9/n9-node-routing/commit/8c16f9a73d098b306e5a70cfca53d00987d42719))
+
+### tests
+
+* Add debug info for node 10 test failure and remove pre-push hook ([69da2e0](https://github.com/neo9/n9-node-routing/commit/69da2e008af9ef9f6237ce1e562ad63bf9497029))
+* Add node 14 version test ([572cfc2](https://github.com/neo9/n9-node-routing/commit/572cfc2129aff09a6a2fec2abf0885ccd107f9a5))
+* Fix prometheus test to not depend on labels order ([717c38c](https://github.com/neo9/n9-node-routing/commit/717c38c5d4ed0c8a076da003bdab774367852bd2))
+* Fix tests ([3dde328](https://github.com/neo9/n9-node-routing/commit/3dde3280ff95a758ea8f0351fa127ca6803fc8c9))
+* Upgrade ava version ([90b20dc](https://github.com/neo9/n9-node-routing/commit/90b20dcb2cbee2ddeb71645da6634cfc38553302))
+
+### yarn
+
+* Update codecov ([0531b21](https://github.com/neo9/n9-node-routing/commit/0531b21ab3b78f1c6dac1bd68764e9cf36eb9547))
+* Upgrade release-it and some dependencies with security issues ([23dcb87](https://github.com/neo9/n9-node-routing/commit/23dcb8763735c3ebd399bf2fe621aa7d44e08d73))
+* Upgrade some dependencies with security issues ([c3dec01](https://github.com/neo9/n9-node-routing/commit/c3dec01743897273b04873ac4ad8455fc71dbe38))
+
 # Version [1.21.0](https://github.com/neo9/n9-node-routing/compare/1.20.6...1.21.0) (2020-07-01)
 
 
