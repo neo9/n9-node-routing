@@ -142,6 +142,7 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 
 	// Create HTTP server
 	let expressApp = express();
+	let prometheusServer;
 
 	// Middleware
 	expressApp.use(setRequestContext);
@@ -170,7 +171,7 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 			labelNames: ['version'],
 		}).set({ version: packageJson.version }, 1);
 
-		await PromsterServer.createServer({ port: options.prometheus.port });
+		prometheusServer = await PromsterServer.createServer({ port: options.prometheus.port });
 	}
 	// Logger middleware
 	if (options.http.logLevel) {
@@ -225,6 +226,7 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 
 	return {
 		server,
+		prometheusServer,
 		app: expressApp,
 	};
 };

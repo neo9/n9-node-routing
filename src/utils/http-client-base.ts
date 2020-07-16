@@ -24,12 +24,16 @@ export class N9HttpClient {
 
 	private static prepareErrorCodeAndStatus(e: any): { code: string; status: number } {
 		let code;
-		try {
-			const errorJson =
-				typeof e.response?.body === 'object' ? e.response?.body : JSON.parse(e.response?.body);
-			code = errorJson?.code;
-		} catch (error) {
-			code = e.code;
+		if (typeof e.response?.body === 'string') {
+			code = e.response?.body.substring(0, 500);
+		} else {
+			try {
+				const errorJson =
+					typeof e.response?.body === 'object' ? e.response?.body : JSON.parse(e.response?.body);
+				code = errorJson?.code;
+			} catch (error) {
+				code = e.code;
+			}
 		}
 		if (!code) code = e.code;
 

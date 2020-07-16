@@ -36,7 +36,7 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 			for (const db of options.http.ping.dbs) {
 				if (!(await db.isConnected.bind(db.thisArg || this)())) {
 					(global as any).log.error(`[PING] Can't connect to ${db.name}`);
-					res.status(500).send();
+					res.status(500).send(`db-${db.name}-unreachable`);
 					if (options.prometheus) {
 						signalIsNotUp();
 					}
@@ -56,7 +56,7 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 				if (options.prometheus) {
 					signalIsNotUp();
 				}
-				res.status(500).send();
+				res.status(500).send('db-unreachable');
 			} else {
 				if (options.prometheus) {
 					signalIsUp();

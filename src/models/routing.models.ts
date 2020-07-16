@@ -90,5 +90,6 @@ export namespace N9NodeRouting {
 	export interface ReturnObject {
 		app: Express;
 		server: Server;
+		prometheusServer: Server;
 	}
 }

@@ -31,3 +31,9 @@ A starter app is available here : https://github.com/neo9/n9-node-microservice-s
 - Unified HttpClient using [got](https://github.com/sindresorhus/got#readme)
 - Cargo to group multiple small task into a bigger one, for example, multiple http calls
 - HttpCargoBuilder a simpler way to build a cargo to group HTTP calls
+
+## Tests
+
+To run all test : `yarn test` \
+To run a test containing foo : `yarn test **/*foo*` \
+To debug a test containing foo : `yarn test:dev **/*foo*` it will watch your files a re-run this test each time
