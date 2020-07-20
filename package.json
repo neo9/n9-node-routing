@@ -103,7 +103,7 @@
     "@types/std-mocks": "^1.0.0",
     "@types/url-join": "^0.8.2",
     "ava": "^3.10.1",
-    "codecov": "^3.7.0",
+    "codecov": "^3.7.1",
     "conventional-changelog-cli": "^2.0.34",
     "husky": "^4.2.3",
     "mongodb-memory-server": "^6.6.1",
