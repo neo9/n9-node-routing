@@ -1,3 +1,10 @@
+# [1.23.0-alpha.2](https://github.com/neo9/n9-node-routing/compare/1.23.0-alpha.1...1.23.0-alpha.2) (2020-07-29)
+
+
+### doc
+
+* Expose function to generate documentation on build ([d62b060](https://github.com/neo9/n9-node-routing/commit/d62b060ed3914099e94470eb27be782585bc44e0))
+
 # [1.23.0-alpha.1](https://github.com/neo9/n9-node-routing/compare/1.22.0...1.23.0-alpha.1) (2020-07-29)
 
 
