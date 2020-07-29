@@ -1,3 +1,14 @@
+# [1.23.0-alpha.1](https://github.com/neo9/n9-node-routing/compare/1.22.0...1.23.0-alpha.1) (2020-07-29)
+
+
+### doc
+
+* Expose function to generate documentation on build ([6740261](https://github.com/neo9/n9-node-routing/commit/6740261cb144a0ec811b22c8944adda85e16a897))
+
+### yarn
+
+* Upgrade codecov to latest ([42d58c2](https://github.com/neo9/n9-node-routing/commit/42d58c284505a5c65f5be6daade1e7f5cfd46718))
+
 # [1.22.0](https://github.com/neo9/n9-node-routing/compare/1.22.0-rc.1...1.22.0) (2020-07-16)
 
 
