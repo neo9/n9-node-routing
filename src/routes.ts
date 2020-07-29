@@ -1,18 +1,19 @@
-import * as RCOpenApi from '@benjd90/routing-controllers-openapi';
-import { getMetadataArgsStorage } from '@flyacts/routing-controllers';
 import { N9Error } from '@neo9/n9-node-utils';
 import { signalIsNotUp, signalIsUp } from '@promster/express';
 import * as appRootDir from 'app-root-dir';
-import { getFromContainer, MetadataStorage } from 'class-validator';
-import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
 import { Express, NextFunction, Request, Response } from 'express';
-import * as oa from 'openapi3-ts';
+import * as _ from 'lodash';
 import { join } from 'path';
 import * as SwaggerUi from 'swagger-ui-express';
+import { generateDocumentationJson, getDocumentationJsonPath } from './generate-documentation-json';
 import { N9NodeRouting } from './models/routing.models';
 import * as RoutesService from './routes.service';
 
-async function def(expressApp: Express, options: N9NodeRouting.Options): Promise<void> {
+async function def(
+	expressApp: Express,
+	options: N9NodeRouting.Options,
+	env: 'development' | 'production' | string,
+): Promise<void> {
 	// Fetch application name
 	const packageJson = require(join(appRootDir.get(), 'package.json'));
 	if (!options.openapi) {
@@ -24,6 +25,11 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 	options.openapi.swaggerui =
 		options.openapi.swaggerui ||
 		Object.assign({}, options.openapi.swaggerui, { swaggerUrl: '../documentation.json' });
+	options.openapi.generateDocumentationOnTheFly = _.isBoolean(
+		options.openapi.generateDocumentationOnTheFly,
+	)
+		? options.openapi.generateDocumentationOnTheFly
+		: env === 'development';
 
 	expressApp.get('/', (req: Request, res: Response, next: NextFunction) => {
 		res.status(200).send(packageJson.name);
@@ -80,29 +86,14 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 		next();
 	});
 
-	if (options.openapi.isEnable) {
+	if (options.openapi.isEnable && env !== 'production') {
 		expressApp.get(options.openapi.jsonUrl, (req: Request, res: Response) => {
-			const baseOpenApiSpec: Partial<oa.OpenAPIObject> = {
-				info: {
-					description: packageJson.description,
-					title: packageJson.name,
-					version: packageJson.version,
-				},
-			};
-			const routesStorage = getMetadataArgsStorage();
-			const validationMetadatas = (getFromContainer(MetadataStorage) as any).validationMetadatas;
-
-			const schemas = validationMetadatasToSchemas(validationMetadatas, {
-				refPointerPrefix: '#/components/schemas',
-			});
-			const additionalProperties = Object.assign({}, { components: { schemas } }, baseOpenApiSpec);
-
-			const spec = RCOpenApi.routingControllersToSpec(
-				routesStorage as any,
-				options.http.routingController,
-				additionalProperties,
-			);
-
+			let spec: object;
+			if (options.openapi.generateDocumentationOnTheFly) {
+				spec = generateDocumentationJson(options);
+			} else {
+				spec = require(getDocumentationJsonPath(options));
+			}
 			res.header('Access-Control-Allow-Origin', '*');
 			res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 			res.json(spec);

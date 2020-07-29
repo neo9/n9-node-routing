@@ -35,6 +35,7 @@ export * from './utils/cargo';
 
 export { PrometheusClient };
 
+// tslint:disable-next-line:cyclomatic-complexity
 export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRouting.ReturnObject> => {
 	// Provides a stack trace for unhandled rejections instead of the default message string.
 	process.on('unhandledRejection', handleThrow);
@@ -109,7 +110,7 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 	// Execute all *.init.ts files in modules before app started listening on the HTTP Port
 	await initialiseModules(options.path, options.log, options.firstSequentialInitFileNames);
 	const returnObject = await startExpressApp(options);
-	await routes(returnObject.app, options);
+	await routes(returnObject.app, options, developmentEnv ? 'development' : process.env.NODE_ENV);
 
 	// Manage SIGTERM & SIGINT
 	if (options.shutdown.enableGracefulShutdown) {
