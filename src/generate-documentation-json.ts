@@ -7,8 +7,16 @@ import * as fs from 'fs';
 import * as oa from 'openapi3-ts';
 import { join } from 'path';
 import { N9NodeRouting } from './models/routing.models';
+import { applyDefaultValuesOnOptions } from './options';
+import { getEnvironment } from './utils';
 
-export function generateDocumentationJson(options: N9NodeRouting.Options): object {
+export function generateDocumentationJson(
+	options: N9NodeRouting.Options,
+	serverAlreadyStarted: boolean = true,
+): object {
+	const environment = getEnvironment();
+	applyDefaultValuesOnOptions(options, environment);
+
 	const packageJson = require(join(appRootDir.get(), 'package.json'));
 	const baseOpenApiSpec: Partial<oa.OpenAPIObject> = {
 		info: {
@@ -17,16 +25,9 @@ export function generateDocumentationJson(options: N9NodeRouting.Options): objec
 			version: packageJson.version,
 		},
 	};
-	createExpressServer({
-		defaults: {
-			// with this option, null will return 404 by default
-			nullResultCode: 404,
-			// with this option, void or Promise<void> will return 204 by default
-			undefinedResultCode: 204,
-		},
-		defaultErrorHandler: false,
-		controllers: [`${join(appRootDir.get(), 'src', 'modules')}/**/*.controller.*s`],
-	});
+	if (!serverAlreadyStarted) {
+		createExpressServer(options.http.routingController);
+	}
 
 	const routesStorage = getMetadataArgsStorage();
 	const validationMetadatas = (getFromContainer(MetadataStorage) as any).validationMetadatas;
@@ -45,13 +46,18 @@ export function generateDocumentationJson(options: N9NodeRouting.Options): objec
 }
 
 export function getDocumentationJsonPath(options: N9NodeRouting.Options): string {
-	return (options.openapi && options.openapi.jsonPath) || './documentation.json';
+	return (
+		(options.openapi && options.openapi.jsonPath) ||
+		join(appRootDir.get(), 'openapi-documentation.json')
+	);
 }
 
 export function generateDocumentationJsonToFile(options: N9NodeRouting.Options): void {
 	if (options.openapi && options.openapi.isEnable) {
 		const path = getDocumentationJsonPath(options);
-		const spec = generateDocumentationJson(options);
+		const spec = generateDocumentationJson(options, false);
+		options.log.debug(`OpenAPI documentation generated. Saving to a file...`);
 		fs.writeFileSync(path, JSON.stringify(spec, null, 2));
+		options.log.info(`OpenAPI documentation generated at : ${path}`);
 	}
 }

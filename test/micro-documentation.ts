@@ -28,3 +28,7 @@ ava('Read documentation', async (t: Assertions) => {
 	// Close server
 	await closeServer(server);
 });
+
+// TODO: add test to get 404
+// TODO: add test to check on production not accessible
+// TODO: add test generated on the fly

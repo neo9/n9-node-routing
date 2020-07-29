@@ -2,7 +2,7 @@ import { N9Error } from '@neo9/n9-node-utils';
 import { signalIsNotUp, signalIsUp } from '@promster/express';
 import * as appRootDir from 'app-root-dir';
 import { Express, NextFunction, Request, Response } from 'express';
-import * as _ from 'lodash';
+import * as fs from 'fs';
 import { join } from 'path';
 import * as SwaggerUi from 'swagger-ui-express';
 import { generateDocumentationJson, getDocumentationJsonPath } from './generate-documentation-json';
@@ -16,20 +16,6 @@ async function def(
 ): Promise<void> {
 	// Fetch application name
 	const packageJson = require(join(appRootDir.get(), 'package.json'));
-	if (!options.openapi) {
-		options.openapi = {
-			isEnable: true,
-		};
-	}
-	options.openapi.jsonUrl = options.openapi.jsonUrl || '/documentation.json';
-	options.openapi.swaggerui =
-		options.openapi.swaggerui ||
-		Object.assign({}, options.openapi.swaggerui, { swaggerUrl: '../documentation.json' });
-	options.openapi.generateDocumentationOnTheFly = _.isBoolean(
-		options.openapi.generateDocumentationOnTheFly,
-	)
-		? options.openapi.generateDocumentationOnTheFly
-		: env === 'development';
 
 	expressApp.get('/', (req: Request, res: Response, next: NextFunction) => {
 		res.status(200).send(packageJson.name);
@@ -92,7 +78,15 @@ async function def(
 			if (options.openapi.generateDocumentationOnTheFly) {
 				spec = generateDocumentationJson(options);
 			} else {
-				spec = require(getDocumentationJsonPath(options));
+				const documentationJsonPath = getDocumentationJsonPath(options);
+				if (fs.existsSync(documentationJsonPath)) {
+					spec = JSON.parse(fs.readFileSync(documentationJsonPath).toString());
+					options.log.debug(`Documentation fetched from file ${documentationJsonPath}`);
+				} else {
+					options.log.error(`Generated documentation not found from file ${documentationJsonPath}`);
+					res.status(404).json(new N9Error('generated-documentation-not-found', 404));
+					return;
+				}
 			}
 			res.header('Access-Control-Allow-Origin', '*');
 			res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
