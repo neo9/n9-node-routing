@@ -1,3 +1,15 @@
+# [1.23.0-rc.0](https://github.com/neo9/n9-node-routing/compare/1.23.0-alpha.1...1.23.0-rc.0) (2020-07-30)
+
+
+### doc
+
+* Expose function to generate documentation on build ([b297b7d](https://github.com/neo9/n9-node-routing/commit/b297b7d85c563e0652f866073d17d82460f28b41))
+* Expose function to generate documentation on build ([d62b060](https://github.com/neo9/n9-node-routing/commit/d62b060ed3914099e94470eb27be782585bc44e0))
+
+### release
+
+* V 1.23.0-alpha.2 ([aeba9c4](https://github.com/neo9/n9-node-routing/commit/aeba9c405ba121fe84950be3b1f74a4de867412c))
+
 # [1.23.0-alpha.2](https://github.com/neo9/n9-node-routing/compare/1.23.0-alpha.1...1.23.0-alpha.2) (2020-07-29)
 
 

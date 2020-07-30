@@ -1,6 +1,6 @@
 {
   "name": "n9-node-routing",
-  "version": "1.23.0-alpha.2",
+  "version": "1.23.0-rc.0",
   "description": "Library to easily start app with routing-controllers",
   "keywords": [
     "node",
@@ -129,6 +129,8 @@
     "require": [
       "ts-node/register"
     ],
-    "ignoredByWatcher": ["**/openapi-documentation.json"]
+    "ignoredByWatcher": [
+      "**/openapi-documentation.json"
+    ]
   }
 }
