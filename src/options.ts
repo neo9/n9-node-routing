@@ -4,7 +4,6 @@ import { N9Error } from '@neo9/n9-node-utils';
 import * as appRootDir from 'app-root-dir';
 import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
-import * as _ from 'lodash';
 import * as morgan from 'morgan';
 import { join } from 'path';
 import { ErrorHandler } from './middleware/error-handler.interceptor';
@@ -22,7 +21,21 @@ export function applyDefaultValuesOnOptions(
 	options.enableRequestId =
 		typeof options.enableRequestId === 'boolean' ? options.enableRequestId : true;
 
-	// Logs
+	applyLogsOptionsDefaults(options, environment);
+	applyShutdownOptionsDefaults(options);
+
+	// Prometheus metrics
+	if (options.prometheus) {
+		options.prometheus.port =
+			typeof options.prometheus.port === 'number' ? options.prometheus.port : 9101;
+		options.prometheus.accuracies = options.prometheus.accuracies || ['s'];
+	}
+
+	applyOpenApiOptionsDefaults(options, environment);
+	applyHttpOptionsDefaults(options);
+}
+
+function applyLogsOptionsDefaults(options: N9NodeRouting.Options, environment: Environment): void {
 	// If enableLogFormatJSON is provided, we use it's value.
 	// Otherwise, we activate the plain logs for development env and JSON logs for other environments
 	options.enableLogFormatJSON =
@@ -31,16 +44,22 @@ export function applyDefaultValuesOnOptions(
 			: environment !== 'development';
 	// If log if given, add a namespace
 	if (options.log) {
-		options.log = options.log.module('n9-node-routing', {
-			formatJSON: options.enableLogFormatJSON,
-		});
+		if (
+			!(options.log as any).name.endsWith('n9-node-routing') ||
+			(options.log as any).options.formatJSON !== options.enableLogFormatJSON
+		) {
+			options.log = options.log.module('n9-node-routing', {
+				formatJSON: options.enableLogFormatJSON,
+			});
+		}
 	} else {
 		options.log = n9NodeLog('n9-node-routing', {
 			formatJSON: options.enableLogFormatJSON,
 		});
 	}
+}
 
-	// Shutdown
+function applyShutdownOptionsDefaults(options: N9NodeRouting.Options): void {
 	options.shutdown = options.shutdown || {};
 	options.shutdown.enableGracefulShutdown =
 		typeof options.shutdown.enableGracefulShutdown === 'boolean'
@@ -52,31 +71,25 @@ export function applyDefaultValuesOnOptions(
 		typeof options.shutdown.waitDurationBeforeStop === 'number'
 			? options.shutdown.waitDurationBeforeStop
 			: 10_000;
+}
 
-	// Prometheus metrics
-	if (options.prometheus) {
-		options.prometheus.port =
-			typeof options.prometheus.port === 'number' ? options.prometheus.port : 9101;
-		options.prometheus.accuracies = options.prometheus.accuracies || ['s'];
-	}
-
-	// OpenAPI
+function applyOpenApiOptionsDefaults(
+	options: N9NodeRouting.Options,
+	environment: Environment,
+): void {
 	if (!options.openapi) {
-		options.openapi = {
-			isEnable: true,
-		};
+		options.openapi = {};
 	}
+	options.openapi.isEnable =
+		typeof options.openapi.isEnable === 'boolean' ? options.openapi.isEnable : true;
 	options.openapi.jsonUrl = options.openapi.jsonUrl || '/documentation.json';
 	options.openapi.swaggerui =
 		options.openapi.swaggerui ||
 		Object.assign({}, options.openapi.swaggerui, { swaggerUrl: '../documentation.json' });
-	options.openapi.generateDocumentationOnTheFly = _.isBoolean(
-		options.openapi.generateDocumentationOnTheFly,
-	)
-		? options.openapi.generateDocumentationOnTheFly
-		: environment === 'development';
-
-	applyHttpOptionsDefaults(options);
+	options.openapi.generateDocumentationOnTheFly =
+		typeof options.openapi.generateDocumentationOnTheFly === 'boolean'
+			? options.openapi.generateDocumentationOnTheFly
+			: environment === 'development';
 }
 
 function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {

@@ -128,6 +128,7 @@
     ],
     "require": [
       "ts-node/register"
-    ]
+    ],
+    "ignoredByWatcher": ["**/openapi-documentation.json"]
   }
 }

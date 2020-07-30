@@ -11,11 +11,14 @@ import { applyDefaultValuesOnOptions } from './options';
 import { getEnvironment } from './utils';
 
 export function generateDocumentationJson(
-	options: N9NodeRouting.Options,
+	n9NodeRoutingOptions: N9NodeRouting.Options,
 	serverAlreadyStarted: boolean = true,
+	defaultValuesAreAlreadySet: boolean = false,
 ): object {
-	const environment = getEnvironment();
-	applyDefaultValuesOnOptions(options, environment);
+	if (defaultValuesAreAlreadySet) {
+		const environment = getEnvironment();
+		applyDefaultValuesOnOptions(n9NodeRoutingOptions, environment);
+	}
 
 	const packageJson = require(join(appRootDir.get(), 'package.json'));
 	const baseOpenApiSpec: Partial<oa.OpenAPIObject> = {
@@ -26,7 +29,7 @@ export function generateDocumentationJson(
 		},
 	};
 	if (!serverAlreadyStarted) {
-		createExpressServer(options.http.routingController);
+		createExpressServer(n9NodeRoutingOptions.http.routingController);
 	}
 
 	const routesStorage = getMetadataArgsStorage();
@@ -38,7 +41,7 @@ export function generateDocumentationJson(
 	const additionalProperties: any = Object.assign({}, { components: { schemas } }, baseOpenApiSpec);
 	const spec = RCOpenApi.routingControllersToSpec(
 		routesStorage as any,
-		options.http.routingController,
+		n9NodeRoutingOptions.http.routingController,
 		additionalProperties,
 	);
 
@@ -52,12 +55,16 @@ export function getDocumentationJsonPath(options: N9NodeRouting.Options): string
 	);
 }
 
-export function generateDocumentationJsonToFile(options: N9NodeRouting.Options): void {
+export function generateDocumentationJsonToFile(options: N9NodeRouting.Options): string {
+	const environment = getEnvironment();
+	applyDefaultValuesOnOptions(options, environment);
+
 	if (options.openapi && options.openapi.isEnable) {
 		const path = getDocumentationJsonPath(options);
-		const spec = generateDocumentationJson(options, false);
+		const spec = generateDocumentationJson(options, false, true);
 		options.log.debug(`OpenAPI documentation generated. Saving to a file...`);
 		fs.writeFileSync(path, JSON.stringify(spec, null, 2));
 		options.log.info(`OpenAPI documentation generated at : ${path}`);
+		return path;
 	}
 }
