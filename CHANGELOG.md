@@ -1,3 +1,10 @@
+# [1.23.0-rc.1](https://github.com/neo9/n9-node-routing/compare/1.23.0-rc.0...1.23.0-rc.1) (2020-07-30)
+
+
+### yarn
+
+* Upgrade swagger-ui-express to latest ([1142edb](https://github.com/neo9/n9-node-routing/commit/1142edb14ab962dfc17d61c786d32ee9d953cf94))
+
 # [1.23.0-rc.0](https://github.com/neo9/n9-node-routing/compare/1.23.0-alpha.1...1.23.0-rc.0) (2020-07-30)
 
 
