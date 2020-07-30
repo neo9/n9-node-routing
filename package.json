@@ -24,7 +24,7 @@
     "lint:verbose": "tslint --fix --project tsconfig.json --format verbose '{src,test}/**/*.ts'",
     "test:dev": "export NODE_ENV=test && TS_NODE_FILES=true ava --verbose --color --serial --watch",
     "test": "npm run lint && npm run build && export NODE_ENV=test && nyc ava --verbose --color --serial && nyc report --reporter=html",
-    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov -f coverage.lcov",
     "preversion": "npm test",
     "prepublishOnly": "npm run build",
     "release": "export BABEL_DISABLE_CACHE=1 && release-it --ci",
