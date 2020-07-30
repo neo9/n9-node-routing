@@ -30,7 +30,7 @@ export class N9HttpClient {
 			try {
 				const errorJson =
 					typeof e.response?.body === 'object' ? e.response?.body : JSON.parse(e.response?.body);
-				code = errorJson?.code;
+				code = errorJson?.code ?? errorJson?.message;
 			} catch (error) {
 				code = e.code;
 			}

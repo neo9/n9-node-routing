@@ -1,3 +1,40 @@
+# [1.23.0-rc.1](https://github.com/neo9/n9-node-routing/compare/1.23.0-rc.0...1.23.0-rc.1) (2020-07-30)
+
+
+### yarn
+
+* Upgrade swagger-ui-express to latest ([1142edb](https://github.com/neo9/n9-node-routing/commit/1142edb14ab962dfc17d61c786d32ee9d953cf94))
+
+# [1.23.0-rc.0](https://github.com/neo9/n9-node-routing/compare/1.23.0-alpha.1...1.23.0-rc.0) (2020-07-30)
+
+
+### doc
+
+* Expose function to generate documentation on build ([b297b7d](https://github.com/neo9/n9-node-routing/commit/b297b7d85c563e0652f866073d17d82460f28b41))
+* Expose function to generate documentation on build ([d62b060](https://github.com/neo9/n9-node-routing/commit/d62b060ed3914099e94470eb27be782585bc44e0))
+
+### release
+
+* V 1.23.0-alpha.2 ([aeba9c4](https://github.com/neo9/n9-node-routing/commit/aeba9c405ba121fe84950be3b1f74a4de867412c))
+
+# [1.23.0-alpha.2](https://github.com/neo9/n9-node-routing/compare/1.23.0-alpha.1...1.23.0-alpha.2) (2020-07-29)
+
+
+### doc
+
+* Expose function to generate documentation on build ([d62b060](https://github.com/neo9/n9-node-routing/commit/d62b060ed3914099e94470eb27be782585bc44e0))
+
+# [1.23.0-alpha.1](https://github.com/neo9/n9-node-routing/compare/1.22.0...1.23.0-alpha.1) (2020-07-29)
+
+
+### doc
+
+* Expose function to generate documentation on build ([6740261](https://github.com/neo9/n9-node-routing/commit/6740261cb144a0ec811b22c8944adda85e16a897))
+
+### yarn
+
+* Upgrade codecov to latest ([42d58c2](https://github.com/neo9/n9-node-routing/commit/42d58c284505a5c65f5be6daade1e7f5cfd46718))
+
 # [1.22.0](https://github.com/neo9/n9-node-routing/compare/1.22.0-rc.1...1.22.0) (2020-07-16)
 
 

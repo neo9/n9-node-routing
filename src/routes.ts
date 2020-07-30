@@ -1,29 +1,21 @@
-import * as RCOpenApi from '@benjd90/routing-controllers-openapi';
-import { getMetadataArgsStorage } from '@flyacts/routing-controllers';
 import { N9Error } from '@neo9/n9-node-utils';
 import { signalIsNotUp, signalIsUp } from '@promster/express';
 import * as appRootDir from 'app-root-dir';
-import { getFromContainer, MetadataStorage } from 'class-validator';
-import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
 import { Express, NextFunction, Request, Response } from 'express';
-import * as oa from 'openapi3-ts';
+import * as fs from 'fs';
 import { join } from 'path';
 import * as SwaggerUi from 'swagger-ui-express';
+import { generateDocumentationJson, getDocumentationJsonPath } from './generate-documentation-json';
 import { N9NodeRouting } from './models/routing.models';
 import * as RoutesService from './routes.service';
 
-async function def(expressApp: Express, options: N9NodeRouting.Options): Promise<void> {
+async function def(
+	expressApp: Express,
+	options: N9NodeRouting.Options,
+	env: 'development' | 'production' | string,
+): Promise<void> {
 	// Fetch application name
 	const packageJson = require(join(appRootDir.get(), 'package.json'));
-	if (!options.openapi) {
-		options.openapi = {
-			isEnable: true,
-		};
-	}
-	options.openapi.jsonUrl = options.openapi.jsonUrl || '/documentation.json';
-	options.openapi.swaggerui =
-		options.openapi.swaggerui ||
-		Object.assign({}, options.openapi.swaggerui, { swaggerUrl: '../documentation.json' });
 
 	expressApp.get('/', (req: Request, res: Response, next: NextFunction) => {
 		res.status(200).send(packageJson.name);
@@ -80,29 +72,22 @@ async function def(expressApp: Express, options: N9NodeRouting.Options): Promise
 		next();
 	});
 
-	if (options.openapi.isEnable) {
+	if (options.openapi.isEnable && env !== 'production') {
 		expressApp.get(options.openapi.jsonUrl, (req: Request, res: Response) => {
-			const baseOpenApiSpec: Partial<oa.OpenAPIObject> = {
-				info: {
-					description: packageJson.description,
-					title: packageJson.name,
-					version: packageJson.version,
-				},
-			};
-			const routesStorage = getMetadataArgsStorage();
-			const validationMetadatas = (getFromContainer(MetadataStorage) as any).validationMetadatas;
-
-			const schemas = validationMetadatasToSchemas(validationMetadatas, {
-				refPointerPrefix: '#/components/schemas',
-			});
-			const additionalProperties = Object.assign({}, { components: { schemas } }, baseOpenApiSpec);
-
-			const spec = RCOpenApi.routingControllersToSpec(
-				routesStorage as any,
-				options.http.routingController,
-				additionalProperties,
-			);
-
+			let spec: object;
+			if (options.openapi.generateDocumentationOnTheFly) {
+				spec = generateDocumentationJson(options);
+			} else {
+				const documentationJsonPath = getDocumentationJsonPath(options);
+				if (fs.existsSync(documentationJsonPath)) {
+					spec = JSON.parse(fs.readFileSync(documentationJsonPath).toString());
+					options.log.debug(`Documentation fetched from file ${documentationJsonPath}`);
+				} else {
+					options.log.error(`Generated documentation not found from file ${documentationJsonPath}`);
+					res.status(404).json(new N9Error('generated-documentation-not-found', 404));
+					return;
+				}
+			}
 			res.header('Access-Control-Allow-Origin', '*');
 			res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 			res.json(spec);
