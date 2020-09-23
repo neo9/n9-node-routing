@@ -1,3 +1,17 @@
+# [1.25.0](https://github.com/neo9/n9-node-routing/compare/1.24.0...1.25.0) (2020-09-23)
+
+
+### format
+
+* Fix code formatting ([afcd5af](https://github.com/neo9/n9-node-routing/commit/afcd5af88db720e5bad8ecfea95fd256b42b28ea))
+
+### yarn
+
+* Fix code coverage upgrade regression ([7fae326](https://github.com/neo9/n9-node-routing/commit/7fae326f47ab653e44e8ea3ba68bc16bb747fb24))
+* Upgrade all dependencies except routing-controllers ([b38f147](https://github.com/neo9/n9-node-routing/commit/b38f147c7dddb3f0de90b193f7d5709941ae6649))
+* Upgrade n9-node-log and n9-mongo-client ([50d8613](https://github.com/neo9/n9-node-routing/commit/50d86137e783d95af93e90a861ae9e2b91a43b3e))
+* Upgrade node-fetch ([042d422](https://github.com/neo9/n9-node-routing/commit/042d422f7e1ebd729975027709b355c35a392928))
+
 # [1.24.0](https://github.com/neo9/n9-node-routing/compare/1.23.0-rc.1...1.24.0) (2020-07-30)
 
 # [1.23.0-rc.1](https://github.com/neo9/n9-node-routing/compare/1.23.0-rc.0...1.23.0-rc.1) (2020-07-30)
