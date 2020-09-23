@@ -136,9 +136,11 @@ ava('Call a route with HttpClient', async (t: Assertions) => {
 
 ava('Check retries of HttpClient', async (t: Assertions) => {
 	stdMock.use({ print });
-	const httpClient = new N9HttpClient(new N9Log('test', {
-	  level: 'debug'
-  }));
+	const httpClient = new N9HttpClient(
+		new N9Log('test', {
+			level: 'debug',
+		}),
+	);
 	const error = await t.throwsAsync<N9Error>(
 		async () => await httpClient.get<string>('http://localhost:1'),
 	);
@@ -231,7 +233,7 @@ ava('Use HttpClient with multiple queryParams', async (t: Assertions) => {
 		},
 	});
 
-  const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
+	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
 	let rep = await httpClient.get<{ ids: string[] }>('http://localhost:6001/by-multiple-ids', {
 		ids: [1, 2, 3],
 	});
@@ -255,7 +257,7 @@ ava('Use HttpClient to call route with response 204', async (t: Assertions) => {
 		},
 	});
 
-  const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
+	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
 	const rep = await httpClient.get<object>('http://localhost:6001/empty-response');
 	t.is(rep, undefined, 'response is undefined');
 
@@ -272,7 +274,7 @@ ava('Use HttpClient to upload a file', async (t: Assertions) => {
 		},
 	});
 
-  const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
+	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
 	let body = new FormData();
 	body.append(
 		'file1',
