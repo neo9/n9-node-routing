@@ -1,4 +1,4 @@
-(Error.prototype as any).toJSON = function(): any {
+(Error.prototype as any).toJSON = function (): any {
 	return {
 		name: this.name,
 		message: this.message,

@@ -225,7 +225,8 @@ export class N9HttpClient {
 
 	public async requestStream(
 		url: string | string[],
-		options?: Options,
+		// issue https://github.com/sindresorhus/got/issues/954#issuecomment-579468831
+		options?: Omit<Options, 'isStream' | 'responseType' | 'resolveBodyOnly'>,
 	): Promise<{ incomingMessage: IncomingMessage; responseAsStream: PassThrough }> {
 		const responseAsStream = new PassThrough();
 		const startTime = Date.now();
