@@ -136,7 +136,9 @@ ava('Call a route with HttpClient', async (t: Assertions) => {
 
 ava('Check retries of HttpClient', async (t: Assertions) => {
 	stdMock.use({ print });
-	const httpClient = new N9HttpClient(new N9Log('test'));
+	const httpClient = new N9HttpClient(new N9Log('test', {
+	  level: 'debug'
+  }));
 	const error = await t.throwsAsync<N9Error>(
 		async () => await httpClient.get<string>('http://localhost:1'),
 	);
@@ -144,8 +146,9 @@ ava('Check retries of HttpClient', async (t: Assertions) => {
 
 	t.is(error.message, 'ECONNREFUSED', 'connection refused');
 	t.is(error.status, 500);
+	t.truthy(stdout?.length, 'stdout not empty');
 	t.true(
-		stdout[stdout.length - 1].includes(
+		stdout[stdout.length - 1]?.includes(
 			`Retry call [GET http://localhost:1/] n°2 due to RequestError connect ECONNREFUSED 127.0.0.1:1`,
 		),
 		`Retry n°2 is logged by client`,
@@ -166,7 +169,7 @@ ava('Check retries of HttpClient against error controller', async (t: Assertions
 		},
 	});
 
-	const httpClient = new N9HttpClient(new N9Log('test'));
+	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
 	const error = await t.throwsAsync<N9Error>(
 		async () => await httpClient.get<string>('http://localhost:6001/503'),
 	);
@@ -208,7 +211,7 @@ ava('Use HttpClient base options', async (t: Assertions) => {
 		},
 	});
 
-	const httpClient = new N9HttpClient(new N9Log('test'), {
+	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }), {
 		headers: {
 			test: 'something',
 		},
@@ -228,7 +231,7 @@ ava('Use HttpClient with multiple queryParams', async (t: Assertions) => {
 		},
 	});
 
-	const httpClient = new N9HttpClient(new N9Log('test'));
+  const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
 	let rep = await httpClient.get<{ ids: string[] }>('http://localhost:6001/by-multiple-ids', {
 		ids: [1, 2, 3],
 	});
@@ -252,7 +255,7 @@ ava('Use HttpClient to call route with response 204', async (t: Assertions) => {
 		},
 	});
 
-	const httpClient = new N9HttpClient(new N9Log('test'));
+  const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
 	const rep = await httpClient.get<object>('http://localhost:6001/empty-response');
 	t.is(rep, undefined, 'response is undefined');
 
@@ -269,7 +272,7 @@ ava('Use HttpClient to upload a file', async (t: Assertions) => {
 		},
 	});
 
-	const httpClient = new N9HttpClient(new N9Log('test'));
+  const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
 	let body = new FormData();
 	body.append(
 		'file1',

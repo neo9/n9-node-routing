@@ -415,28 +415,28 @@
     tslint-config-airbnb "^5.11.1"
     tslint-eslint-rules "^5.4.0"
 
-"@neo9/n9-mongo-client@^0.15.0":
-  version "0.15.0"
-  resolved "https://registry.npmjs.org/@neo9/n9-mongo-client/-/n9-mongo-client-0.15.0.tgz#9ff77564009015248e93bf892643413949c4d51b"
-  integrity sha512-InQlCZ+lqAmteAe+onR7yxfcCD5Weqe5lJuA18eUL/NrOZvDdKZHOP2VP52zM9zZiLRJRQiJc1WhWvyZMJEaaw==
+"@neo9/n9-mongo-client@^0.15.1":
+  version "0.15.1"
+  resolved "https://registry.npmjs.org/@neo9/n9-mongo-client/-/n9-mongo-client-0.15.1.tgz#8c0da9ee94af2d8fe8a6aced618c991b7fa0acc3"
+  integrity sha512-Gcnts2sLFp8Sbu6bQe4uOL61enizeLIeB7Iz2BdlLRmq1uPO7qo3JafG1lLI1MnhNxlU/1K1C2hrPTyo1b4NXg==
   dependencies:
-    "@neo9/n9-node-log" "^2.6.0"
-    "@neo9/n9-node-utils" "^1.7.2"
+    "@neo9/n9-node-log" "^3.0.0"
+    "@neo9/n9-node-utils" "^1.10.0"
     class-transformer "^0.2.0"
     deep-diff "^1.0.2"
-    lodash "^4.17.19"
-    mongodb "3.5.9"
+    lodash "^4.17.20"
+    mongodb "3.6.2"
     mongodb-lock "^1.0.1"
 
-"@neo9/n9-node-log@^2.4.0", "@neo9/n9-node-log@^2.6.0":
-  version "2.6.0"
-  resolved "https://registry.npmjs.org/@neo9/n9-node-log/-/n9-node-log-2.6.0.tgz#9bbb4016c8719377b762d53efa85662a06c88207"
-  integrity sha512-MKlsd2FynXLjJe/RPFgcK+RNBAg8Ij0I51qm0rYYAxvwhhVU8DlJMcU+U7P44W9TPFLoLLl++OwOiMRitpYAgw==
+"@neo9/n9-node-log@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/@neo9/n9-node-log/-/n9-node-log-3.0.0.tgz#0dbb8711206a656e0030de69b770324da602570f"
+  integrity sha512-RLTDyeBkFp33rsZmKMgCyMWabJWsatA5hjgla0GMPYfBQWtqL+kQ3ulBiriWbhNI0VlRGjlHtiOgOn4TqbtCxw==
   dependencies:
     "@types/winston" "^2.3.6"
-    winston "^2.4.0"
+    winston "^2.4.5"
 
-"@neo9/n9-node-utils@^1.7.2", "@neo9/n9-node-utils@^1.9.0":
+"@neo9/n9-node-utils@^1.10.0", "@neo9/n9-node-utils@^1.9.0":
   version "1.10.0"
   resolved "https://registry.npmjs.org/@neo9/n9-node-utils/-/n9-node-utils-1.10.0.tgz#e61aa194ef49ca53d1a6c63a54c0a2195566379f"
   integrity sha512-uTdW9I+DMtCzZGtmlr2prShOyD5lfnCIjKeOsvmI/fYNqrgpxhrj4Cqf5+0bSxKQOrV0mPguB9n+usYOjKDeyw==
@@ -1179,14 +1179,6 @@ bintrees@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/bintrees/-/bintrees-1.0.1.tgz#0e655c9b9c2435eaab68bf4027226d2b55a34524"
   integrity sha1-DmVcm5wkNeqraL9AJyJtK1WjRSQ=
-
-bl@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.npmjs.org/bl/-/bl-2.2.0.tgz#e1a574cdf528e4053019bb800b041c0ac88da493"
-  integrity sha512-wbgvOpqopSr7uq6fJrLH8EsvYMJf9gzfo2jCsL2eTy75qXPukA4pCgHamOQkZtY5vmfVtjB+P3LNlMHW5CEZXA==
-  dependencies:
-    readable-stream "^2.3.5"
-    safe-buffer "^5.1.1"
 
 bl@^2.2.1:
   version "2.2.1"
@@ -4023,19 +4015,6 @@ mongodb-memory-server@^6.8.0:
   dependencies:
     mongodb-memory-server-core "6.8.0"
 
-mongodb@3.5.9:
-  version "3.5.9"
-  resolved "https://registry.npmjs.org/mongodb/-/mongodb-3.5.9.tgz#799b72be8110b7e71a882bb7ce0d84d05429f772"
-  integrity sha512-vXHBY1CsGYcEPoVWhwgxIBeWqP3dSu9RuRDsoLRPTITrcrgm1f0Ubu1xqF9ozMwv53agmEiZm0YGo+7WL3Nbug==
-  dependencies:
-    bl "^2.2.0"
-    bson "^1.1.4"
-    denque "^1.4.1"
-    require_optional "^1.0.1"
-    safe-buffer "^5.1.2"
-  optionalDependencies:
-    saslprep "^1.0.0"
-
 mongodb@3.6.2:
   version "3.6.2"
   resolved "https://registry.npmjs.org/mongodb/-/mongodb-3.6.2.tgz#1154a4ac107bf1375112d83a29c5cf97704e96b6"
@@ -6279,10 +6258,10 @@ windows-release@^4.0.0:
   dependencies:
     execa "^4.0.2"
 
-winston@^2.4.0:
-  version "2.4.2"
-  resolved "https://registry.npmjs.org/winston/-/winston-2.4.2.tgz#3ca01f763116fc48db61053b7544e750431f8db0"
-  integrity sha512-4S/Ad4ZfSNl8OccCLxnJmNISWcm2joa6Q0YGDxlxMzH0fgSwWsjMt+SmlNwCqdpaPg3ev1HKkMBsIiXeSUwpbA==
+winston@^2.4.5:
+  version "2.4.5"
+  resolved "https://registry.npmjs.org/winston/-/winston-2.4.5.tgz#f2e431d56154c4ea765545fc1003bd340c95b59a"
+  integrity sha512-TWoamHt5yYvsMarGlGEQE59SbJHqGsZV8/lwC+iCcGeAe0vUaOh+Lv6SYM17ouzC/a/LB1/hz/7sxFBtlu1l4A==
   dependencies:
     async "~1.0.0"
     colors "1.0.x"

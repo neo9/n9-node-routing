@@ -9,7 +9,7 @@ export default {
 };
 
 export const closeServer = async (server: Server) => {
-	return new Promise((resolve) => {
+	return await new Promise((resolve) => {
 		server.close(resolve);
 	});
 };
