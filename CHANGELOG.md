@@ -1,3 +1,11 @@
+## [1.25.1](https://github.com/neo9/n9-node-routing/compare/1.25.0...1.25.1) (2020-10-06)
+
+
+### logs
+
+* Fix logs default options transmission ([a51c5c5](https://github.com/neo9/n9-node-routing/commit/a51c5c59e84412772992a8d9a6829717312c44be))
+* Fix logs optional in options ([9870393](https://github.com/neo9/n9-node-routing/commit/987039324056487390e0ee020f212b434168b17b))
+
 # [1.25.0](https://github.com/neo9/n9-node-routing/compare/1.24.0...1.25.0) (2020-09-23)
 
 
