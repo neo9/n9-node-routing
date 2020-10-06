@@ -49,13 +49,13 @@ function applyLogsOptionsDefaults(options: N9NodeRouting.Options, environment: E
 			(options.log as any).options.formatJSON !== options.enableLogFormatJSON
 		) {
 			options.log = options.log.module('n9-node-routing', {
-				...(options.log as any).options,
+				...(options.log as any)?.options,
 				formatJSON: options.enableLogFormatJSON,
 			});
 		}
 	} else {
 		options.log = n9NodeLog('n9-node-routing', {
-			...(options.log as any).options,
+			...(options.log as any)?.options,
 			formatJSON: options.enableLogFormatJSON,
 		});
 	}
