@@ -1,5 +1,5 @@
 import { Get, JsonController, QueryParam, Res } from '@flyacts/routing-controllers';
-import { N9JsonStreamResponse, waitFor } from '@neo9/n9-node-utils';
+import { N9JSONStreamResponse, waitFor } from '@neo9/n9-node-utils';
 import { Service } from 'typedi';
 
 @Service()
@@ -8,7 +8,7 @@ export class UsersController {
 	@Get('/by-multiple-ids')
 	public async getUsersByIds(
 		@QueryParam('ids', { validate: false, type: String }) idsParam: string[] | string = [],
-	): Promise<N9JsonStreamResponse<{ _id: string }>> {
+	): Promise<N9JSONStreamResponse<{ _id: string }>> {
 		const ids: string[] = Array.from(
 			new Set(Array.isArray(idsParam) ? idsParam : [idsParam] || []),
 		);

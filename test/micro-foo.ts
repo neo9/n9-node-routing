@@ -150,7 +150,7 @@ ava('Basic usage, create http server on production', async (t: Assertions) => {
 	t.true(output[4].includes(',"path":"/foo","status":"200","durationMs":'), 'path" /foo');
 	t.true(output[5].includes(',"path":"/","status":"200","durationMs":'), 'path /');
 	t.true(output[6].includes(',"path":"/ping","status":"200","durationMs":'), 'path /ping');
-	t.true(output[7].includes('"status":404,"context":{"url":"/404"},"requestId":'), 'status 404');
+	t.true(output[7].includes('"status":404,"context":{"url":"/404"},"hostname":'), 'status 404');
 	t.true(output[7].includes('"stack":"Error: not-found'), 'Error: not-found');
 	t.true(output[8].includes(',"path":"/404","status":"404","durationMs":'), 'path /404');
 

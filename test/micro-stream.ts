@@ -1,4 +1,4 @@
-import { N9JsonStreamResponse } from '@neo9/n9-node-utils';
+import { N9JSONStreamResponse } from '@neo9/n9-node-utils';
 import ava, { Assertions } from 'ava';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
@@ -15,7 +15,7 @@ ava('Basic stream', async (t: Assertions) => {
 		http: { port: 6001 },
 	});
 
-	const res = await commons.jsonHttpClient.get<N9JsonStreamResponse<{ _id: string }>>(
+	const res = await commons.jsonHttpClient.get<N9JSONStreamResponse<{ _id: string }>>(
 		'http://localhost:6001/users',
 	);
 	t.is(res.items.length, 4, 'check length');

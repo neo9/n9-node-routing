@@ -1,4 +1,4 @@
-import { N9JsonStreamResponse } from '@neo9/n9-node-utils';
+import { N9JSONStreamResponse } from '@neo9/n9-node-utils';
 import { Container } from 'typedi';
 import { Cargo } from './cargo';
 import { N9HttpClient } from './http-client-base';
@@ -20,14 +20,14 @@ export class HttpCargoBuilder {
 		const httpClient = Container.get<N9HttpClient>('N9HttpClient');
 		cargoOptions.workerFn =
 			cargoOptions.workerFn ??
-			(async (keyValues: string[]): Promise<N9JsonStreamResponse<RESPONSE>> =>
-				await httpClient.get<N9JsonStreamResponse<RESPONSE>>(urlGetMultiple, {
+			(async (keyValues: string[]): Promise<N9JSONStreamResponse<RESPONSE>> =>
+				await httpClient.get<N9JSONStreamResponse<RESPONSE>>(urlGetMultiple, {
 					[keyName]: keyValues,
 				}));
 
 		cargoOptions.dispatchFn =
 			cargoOptions.dispatchFn ??
-			((request: string, responses: N9JsonStreamResponse<RESPONSE>): any => {
+			((request: string, responses: N9JSONStreamResponse<RESPONSE>): any => {
 				return responses.items.find((response) => response[objectKey] === request);
 			});
 

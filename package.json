@@ -58,7 +58,7 @@
     "@benjd90/routing-controllers-openapi": "^1.7.0",
     "@flyacts/routing-controllers": "^0.9.2",
     "@neo9/n9-node-log": "^3.0.0",
-    "@neo9/n9-node-utils": "^1.9.0",
+    "@neo9/n9-node-utils": "^2.0.1",
     "@promster/express": "^4.1.12",
     "@promster/server": "^4.2.13",
     "app-root-dir": "^1.0.2",
