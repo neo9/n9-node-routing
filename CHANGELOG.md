@@ -1,3 +1,10 @@
+# [1.26.0](https://github.com/neo9/n9-node-routing/compare/1.25.1...1.26.0) (2020-10-09)
+
+
+### yarn
+
+* Upgrade n9-node-utils to V 2.0.1 ([01f6ab3](https://github.com/neo9/n9-node-routing/commit/01f6ab3768bd72a6ab564c9c480e5be4e42d5c2f))
+
 ## [1.25.1](https://github.com/neo9/n9-node-routing/compare/1.25.0...1.25.1) (2020-10-06)
 
 
