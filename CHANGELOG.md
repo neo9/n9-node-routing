@@ -1,3 +1,10 @@
+## [1.26.1](https://github.com/neo9/n9-node-routing/compare/1.26.0...1.26.1) (2020-11-19)
+
+
+### http
+
+* Set http retry log to level info or warn ([1303c61](https://github.com/neo9/n9-node-routing/commit/1303c610e507205f95db7b0b9fe747dcb44037b2))
+
 # [1.26.0](https://github.com/neo9/n9-node-routing/compare/1.25.1...1.26.0) (2020-10-09)
 
 
