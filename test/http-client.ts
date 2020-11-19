@@ -151,7 +151,7 @@ ava('Check retries of HttpClient', async (t: Assertions) => {
 	t.truthy(stdout?.length, 'stdout not empty');
 	t.true(
 		stdout[stdout.length - 1]?.includes(
-			`Retry call [GET http://localhost:1/] n°2 due to RequestError connect ECONNREFUSED 127.0.0.1:1`,
+			`Retry call [GET http://localhost:1/] n°2 due to ECONNREFUSED connect ECONNREFUSED 127.0.0.1:1`,
 		),
 		`Retry n°2 is logged by client`,
 	);

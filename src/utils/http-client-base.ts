@@ -3,6 +3,7 @@ import { N9Error } from '@neo9/n9-node-utils';
 import { getNamespace } from 'continuation-local-storage';
 import fastSafeStringify from 'fast-safe-stringify';
 import got, { Method, Options } from 'got';
+import { RequestError } from 'got/dist/source/core';
 import { IncomingMessage } from 'http';
 import * as QueryString from 'query-string';
 import { PassThrough } from 'stream';
@@ -48,16 +49,27 @@ export class N9HttpClient {
 		private maxBodyLengthToLogError: number = 100,
 	) {
 		this.baseOptions = {
-			responseType: 'json',
+			responseType: 'json' as any,
 			hooks: {
 				beforeRetry: [
-					(options, error, retryCount) => {
-						logger.debug(
-							`Retry call [${options.method} ${options.url}] n°${retryCount} due to ${error.name} ${error.message}`,
-							{
-								errString: fastSafeStringify(error),
-							},
-						);
+					(options, error?: RequestError, retryCount?: number) => {
+						let level: N9Log.Level;
+						if (error?.response?.statusCode && error.response.statusCode < 500) {
+							level = 'info';
+						} else {
+							level = 'warn';
+						}
+						if (logger.isLevelEnabled(level)) {
+							logger[level](
+								`Retry call [${options.method} ${options.url}] n°${retryCount} due to ${
+									error?.code ?? error?.name
+								} ${error?.message}`,
+								{
+									errString: fastSafeStringify(error),
+									status: error?.response?.statusCode,
+								},
+							);
+						}
 					},
 				],
 			},
@@ -174,6 +186,8 @@ export class N9HttpClient {
 			const bodyJSON = fastSafeStringify(body);
 			const { code, status } = N9HttpClient.prepareErrorCodeAndStatus(e);
 			this.logger.error(`Error on [${method} ${uri}]`, {
+				uri,
+				method,
 				'status': status,
 				'response-time': responseTime,
 			});
