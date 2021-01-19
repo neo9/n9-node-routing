@@ -1,3 +1,10 @@
+# [1.27.0](https://github.com/neo9/n9-node-routing/compare/1.26.1...1.27.0) (2021-01-19)
+
+
+### upgrade
+
+* Upgrade all dep including all typestack ([a364fae](https://github.com/neo9/n9-node-routing/commit/a364fae913d88663c52885f157b13055f1dc0aad))
+
 ## [1.26.1](https://github.com/neo9/n9-node-routing/compare/1.26.0...1.26.1) (2020-11-19)
 
 
