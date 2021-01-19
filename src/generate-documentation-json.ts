@@ -1,11 +1,11 @@
-import * as RCOpenApi from '@benjd90/routing-controllers-openapi';
-import { createExpressServer, getMetadataArgsStorage } from '@flyacts/routing-controllers';
 import * as appRootDir from 'app-root-dir';
 import { getFromContainer, MetadataStorage } from 'class-validator';
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
 import * as fs from 'fs';
 import * as oa from 'openapi3-ts';
 import { join } from 'path';
+import { createExpressServer, getMetadataArgsStorage } from 'routing-controllers';
+import * as RCOpenApi from 'routing-controllers-openapi';
 import { N9NodeRouting } from './models/routing.models';
 import { applyDefaultValuesOnOptions } from './options';
 import { getEnvironment } from './utils';
@@ -33,9 +33,8 @@ export function generateDocumentationJson(
 	}
 
 	const routesStorage = getMetadataArgsStorage();
-	const validationMetadatas = (getFromContainer(MetadataStorage) as any).validationMetadatas;
 
-	const schemas = validationMetadatasToSchemas(validationMetadatas, {
+	const schemas = validationMetadatasToSchemas({
 		refPointerPrefix: '#/components/schemas',
 	});
 	const additionalProperties: any = Object.assign({}, { components: { schemas } }, baseOpenApiSpec);

@@ -1,4 +1,3 @@
-import { Action, RoutingControllersOptions } from '@flyacts/routing-controllers';
 import n9NodeLog from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import * as appRootDir from 'app-root-dir';
@@ -6,6 +5,7 @@ import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
 import * as morgan from 'morgan';
 import { join } from 'path';
+import { Action, RoutingControllersOptions } from 'routing-controllers';
 import { ErrorHandler } from './middleware/error-handler.interceptor';
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
 import { N9NodeRouting } from './models/routing.models';

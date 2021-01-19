@@ -22,8 +22,8 @@ function handleThrow(err: Error): void {
 }
 
 export * from 'class-validator';
-export { getMetadataArgsStorage } from '@flyacts/routing-controllers';
-export * from '@benjd90/routing-controllers-openapi';
+export { getMetadataArgsStorage } from 'routing-controllers';
+export * from 'routing-controllers-openapi';
 
 export * from './decorators/acl.decorator';
 export * from './validators/date-parser.validator';

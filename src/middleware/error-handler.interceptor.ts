@@ -1,7 +1,9 @@
-import { ExpressErrorMiddlewareInterface, Middleware } from '@flyacts/routing-controllers';
 import { Request, Response } from 'express';
 import fastSafeStringify from 'fast-safe-stringify';
+import { ExpressErrorMiddlewareInterface, Middleware } from 'routing-controllers';
+import { Service } from 'typedi';
 
+@Service()
 @Middleware({ type: 'after' })
 export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 	public error(error: any, request: Request, response: Response): void {

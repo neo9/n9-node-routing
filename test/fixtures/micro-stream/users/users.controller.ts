@@ -1,8 +1,7 @@
-import { Get, JsonController, Res } from '@flyacts/routing-controllers';
 import { N9JSONStream } from '@neo9/n9-node-utils';
 import { Response } from 'express';
-// @ts-ignore
-import * as streamArray from 'stream-array';
+import { Get, JsonController, Res } from 'routing-controllers';
+import streamArray = require('stream-array');
 import { Service } from 'typedi';
 
 @Service()

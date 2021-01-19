@@ -1,14 +1,6 @@
-import { OpenAPI } from '@benjd90/routing-controllers-openapi';
-import {
-	Authorized,
-	Body,
-	Get,
-	JsonController,
-	Param,
-	Post,
-	Session,
-} from '@flyacts/routing-controllers';
 import { N9Error } from '@neo9/n9-node-utils';
+import { Authorized, Body, Get, JsonController, Param, Post, Session } from 'routing-controllers';
+import { OpenAPI } from 'routing-controllers-openapi';
 import { Service } from 'typedi';
 import { Acl } from '../../../src';
 import { TokenContent } from './models/token-content.models';

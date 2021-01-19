@@ -1,4 +1,4 @@
-import { Body, JsonController, Post } from '@flyacts/routing-controllers';
+import { Body, JsonController, Post } from 'routing-controllers';
 import { Service } from 'typedi';
 
 @Service()

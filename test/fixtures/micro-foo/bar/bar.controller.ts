@@ -1,5 +1,5 @@
-import { Body, Get, JsonController, Param, Post, QueryParam } from '@flyacts/routing-controllers';
 import { N9Error } from '@neo9/n9-node-utils';
+import { Body, Get, JsonController, Param, Post, QueryParam } from 'routing-controllers';
 import { Service } from 'typedi';
 import { BodyBar } from './body-bar.models';
 

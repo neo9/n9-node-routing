@@ -1,14 +1,6 @@
-import {
-	Action,
-	RoutingControllersOptions,
-	useContainer,
-	useExpressServer,
-} from '@flyacts/routing-controllers';
-import { N9Error } from '@neo9/n9-node-utils';
 import { createMiddleware, signalIsUp } from '@promster/express';
 import * as PromsterServer from '@promster/server';
 import * as appRootDir from 'app-root-dir';
-import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
 import fastSafeStringify from 'fast-safe-stringify';
 import * as helmet from 'helmet';
@@ -16,9 +8,8 @@ import { createServer } from 'http';
 import * as morgan from 'morgan';
 import { join } from 'path';
 import * as PrometheusClient from 'prom-client';
+import { useContainer, useExpressServer } from 'routing-controllers';
 import { Container } from 'typedi';
-import { ErrorHandler } from './middleware/error-handler.interceptor';
-import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
 import { N9NodeRouting } from './models/routing.models';
 import { setRequestContext } from './requestid';
 import ErrnoException = NodeJS.ErrnoException;
@@ -120,7 +111,7 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 
 	// Listen method
 	const listen = async () => {
-		return new Promise((resolve, reject) => {
+		return new Promise<void>((resolve, reject) => {
 			server.listen(options.http.port);
 			server.on('error', (error: ErrnoException) => {
 				reject(analyzeError(error));

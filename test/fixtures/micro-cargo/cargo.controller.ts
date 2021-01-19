@@ -1,5 +1,5 @@
-import { Get, JsonController, QueryParam, Res } from '@flyacts/routing-controllers';
 import { N9JSONStreamResponse, waitFor } from '@neo9/n9-node-utils';
+import { Get, JsonController, QueryParam } from 'routing-controllers';
 import { Service } from 'typedi';
 
 @Service()

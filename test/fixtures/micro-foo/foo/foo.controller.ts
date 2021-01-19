@@ -1,4 +1,4 @@
-import { Body, Get, JsonController, Post } from '@flyacts/routing-controllers';
+import { Body, Get, JsonController, Post } from 'routing-controllers';
 import { Service } from 'typedi';
 import { Acl } from '../../../../src/decorators/acl.decorator';
 

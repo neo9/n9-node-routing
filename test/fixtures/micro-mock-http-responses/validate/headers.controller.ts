@@ -1,4 +1,4 @@
-import { Get, HeaderParam, JsonController } from '@flyacts/routing-controllers';
+import { Get, HeaderParam, JsonController } from 'routing-controllers';
 import { Service } from 'typedi';
 
 @Service()

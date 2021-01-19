@@ -1,5 +1,5 @@
-import { Get, JsonController } from '@flyacts/routing-controllers';
 import { N9Log } from '@neo9/n9-node-log';
+import { Get, JsonController } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 
 @Service()

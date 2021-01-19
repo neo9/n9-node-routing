@@ -7,7 +7,7 @@ import {
 	validateOrReject,
 	ValidationSchema,
 } from 'class-validator';
-import { ValidationMetadata } from 'class-validator/metadata/ValidationMetadata';
+import { ValidationMetadata } from 'class-validator/types/metadata/ValidationMetadata';
 import * as stdMock from 'std-mocks';
 import commons from './fixtures/commons';
 

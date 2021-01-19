@@ -1,4 +1,4 @@
-import { Authorized, Get, JsonController, Session } from '@flyacts/routing-controllers';
+import { Authorized, Get, JsonController, Session } from 'routing-controllers';
 import { Service } from 'typedi';
 
 @Service()
