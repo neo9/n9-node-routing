@@ -1,3 +1,10 @@
+## [1.27.1-rc.0](https://github.com/neo9/n9-node-routing/compare/1.27.0...1.27.1-rc.0) (2021-01-21)
+
+
+### typedi
+
+* Rollback typedi version due to incomp with class-validator ([c2953c5](https://github.com/neo9/n9-node-routing/commit/c2953c59c5b6d3687b8c8a6d39c6e4976d76466f))
+
 # [1.27.0](https://github.com/neo9/n9-node-routing/compare/1.26.1...1.27.0) (2021-01-19)
 
 
