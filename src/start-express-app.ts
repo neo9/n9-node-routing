@@ -1,6 +1,8 @@
 import { createMiddleware, signalIsUp } from '@promster/express';
 import * as PromsterServer from '@promster/server';
 import * as appRootDir from 'app-root-dir';
+import ErrnoException = NodeJS.ErrnoException;
+import * as ClassValidator from 'class-validator';
 import * as express from 'express';
 import fastSafeStringify from 'fast-safe-stringify';
 import * as helmet from 'helmet';
@@ -8,15 +10,15 @@ import { createServer } from 'http';
 import * as morgan from 'morgan';
 import { join } from 'path';
 import * as PrometheusClient from 'prom-client';
-import { useContainer, useExpressServer } from 'routing-controllers';
+import * as RoutingControllers from 'routing-controllers';
 import { Container } from 'typedi';
 import { N9NodeRouting } from './models/routing.models';
 import { setRequestContext } from './requestid';
-import ErrnoException = NodeJS.ErrnoException;
 
 export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> => {
-	// Setup @flyacts/routing-controllers to use typedi container.
-	useContainer(Container);
+	// Setup routing-controllers to use typedi container.
+	RoutingControllers.useContainer(Container);
+	ClassValidator.useContainer(Container);
 
 	// Listeners
 	const analyzeError = (error: ErrnoException) => {
@@ -103,7 +105,7 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 		await options.http.beforeRoutingControllerLaunchHook(expressApp, options.log, options);
 	}
 
-	expressApp = useExpressServer(expressApp, options.http.routingController);
+	expressApp = RoutingControllers.useExpressServer(expressApp, options.http.routingController);
 
 	if (options.http.afterRoutingControllerLaunchHook) {
 		await options.http.afterRoutingControllerLaunchHook(expressApp, options.log, options);
