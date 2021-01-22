@@ -1,37 +1,14 @@
-import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import ava, { Assertions } from 'ava';
-import { Express } from 'express';
-import { Server } from 'http';
-import { join } from 'path';
-import * as stdMock from 'std-mocks';
-// tslint:disable-next-line:import-name
-import n9NodeRouting, { N9HttpClient } from '../src';
-import commons, { closeServer } from './fixtures/commons';
+import { end, init, urlPrefix } from './fixtures/helper';
 import { User } from './fixtures/micro-users/models/users.models';
 
-async function init(): Promise<{ app: Express; server: Server; httpClient: N9HttpClient }> {
-	stdMock.use({ print: commons.print });
-	const MICRO_USERS = join(__dirname, 'fixtures/micro-users/');
-	const { app, server } = await n9NodeRouting({
-		path: MICRO_USERS,
-	});
-	const httpClient = new N9HttpClient(new N9Log('test'));
-	return { app, server, httpClient };
-}
+const microUsersFolder = 'micro-users';
 
-const urlPrefix = 'http://localhost:5000';
-
-async function end(server: Server): Promise<void> {
-	stdMock.restore();
-	stdMock.flush();
-	// Close server
-	await closeServer(server);
-}
 const context: { user?: User; session?: string } = {};
 
 ava('[USERS] POST /users => 200 with good params', async (t: Assertions) => {
-	const { server, httpClient } = await init();
+	const { server, httpClient } = await init(microUsersFolder);
 	const userCreated = await httpClient.post<User>([urlPrefix, 'users'], {
 		firstName: 'Neo',
 		lastName: 'Nine',
@@ -52,7 +29,7 @@ ava('[USERS] POST /users => 200 with good params', async (t: Assertions) => {
 });
 
 ava('[USERS] POST /users => 400 with wrong params', async (t: Assertions) => {
-	const { server, httpClient } = await init();
+	const { server, httpClient } = await init(microUsersFolder);
 	const errorThrown = await t.throwsAsync<N9Error>(
 		async () =>
 			await httpClient.post([urlPrefix, 'users'], {
@@ -68,7 +45,7 @@ ava('[USERS] POST /users => 400 with wrong params', async (t: Assertions) => {
 });
 
 ava('[USERS] POST /users => 409 with user already exists', async (t: Assertions) => {
-	const { server, httpClient } = await init();
+	const { server, httpClient } = await init(microUsersFolder);
 	const errorThrown = await t.throwsAsync<N9Error>(
 		async () =>
 			await httpClient.post([urlPrefix, 'users'], {
@@ -88,7 +65,7 @@ ava('[USERS] POST /users => 409 with user already exists', async (t: Assertions)
  ** modules/users/
  */
 ava('[USERS] GET /users/:id => 404 with user not found', async (t: Assertions) => {
-	const { server, httpClient } = await init();
+	const { server, httpClient } = await init(microUsersFolder);
 
 	const headers = { session: JSON.stringify({ userId: context.user._id }) };
 	const errorThrown = await t.throwsAsync<N9Error>(
@@ -101,7 +78,7 @@ ava('[USERS] GET /users/:id => 404 with user not found', async (t: Assertions) =
 });
 
 ava('[USERS] GET /users/:id => 200 with user found', async (t: Assertions) => {
-	const { server, httpClient } = await init();
+	const { server, httpClient } = await init(microUsersFolder);
 
 	const headers = { session: context.session };
 	const userFetched = await httpClient.get<User>(

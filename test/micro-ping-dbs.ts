@@ -1,8 +1,7 @@
-import { MongoClient, MongoUtils } from '@neo9/n9-mongo-client';
+import { MongoUtils } from '@neo9/n9-mongo-client';
 import { N9Log } from '@neo9/n9-node-log';
 import ava, { Assertions } from 'ava';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { join } from 'path';
 import { register } from 'prom-client';
 import * as stdMock from 'std-mocks';
 // tslint:disable-next-line:import-name
@@ -10,8 +9,6 @@ import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
 
 const print = commons.print;
-
-const MICRO_FOO = join(__dirname, 'fixtures/micro-foo/');
 
 ava.beforeEach(() => {
 	delete (global as any).log;
@@ -30,7 +27,7 @@ for (const prometheusOption of [{}, undefined]) {
 				},
 				// debug: true,
 			});
-			const mongoConnectionString = await mongodServer.getConnectionString();
+			const mongoConnectionString = await mongodServer.getUri();
 			(global as any).log = new N9Log('test');
 			await MongoUtils.connect(mongoConnectionString); // set global.dbClient
 
