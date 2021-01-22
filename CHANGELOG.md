@@ -1,3 +1,10 @@
+## [1.27.1-rc.1](https://github.com/neo9/n9-node-routing/compare/1.27.1-rc.0...1.27.1-rc.1) (2021-01-22)
+
+
+### yarn
+
+* Fix dependencies with new test ([37226a3](https://github.com/neo9/n9-node-routing/commit/37226a35eaf0eb663be6fc31a43176f39ea953b4))
+
 ## [1.27.1-rc.0](https://github.com/neo9/n9-node-routing/compare/1.27.0...1.27.1-rc.0) (2021-01-21)
 
 
