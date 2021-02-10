@@ -14,6 +14,16 @@ async function shutdown(
 		logger.error('shutdown-timeout');
 		process.exit(1);
 	}, shutdownOptions.timeout);
+	if (shutdownOptions.callbacksOnShutdownSignalReceived?.length) {
+		logger.info(
+			`Calling ${shutdownOptions.callbacksOnShutdownSignalReceived.length} on shutdown signal received callbacks`,
+		);
+		for (const callbackSpec of shutdownOptions.callbacksOnShutdownSignalReceived) {
+			if (callbackSpec.name) logger.info(`Calling ${callbackSpec.name}`);
+			await callbackSpec.function.bind(callbackSpec.thisArg)(logger);
+		}
+	}
+
 	const waitDuration = shutdownOptions.waitDurationBeforeStop;
 	// For Kubernetes downscale, let the DNS some time to dereference the pod IP
 	logger.info(`Wait ${waitDuration} ms before exit`);
@@ -22,6 +32,7 @@ async function shutdown(
 	if (shutdownOptions.callbacksBeforeShutdown?.length) {
 		logger.info(`Calling ${shutdownOptions.callbacksBeforeShutdown.length} callbacks`);
 		for (const callbackSpec of shutdownOptions.callbacksBeforeShutdown) {
+			if (callbackSpec.name) logger.info(`Calling ${callbackSpec.name}`);
 			await callbackSpec.function.bind(callbackSpec.thisArg)(logger);
 		}
 	}
