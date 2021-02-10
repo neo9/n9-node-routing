@@ -69,6 +69,7 @@ export namespace N9NodeRouting {
 
 	export interface ShutdownOptions {
 		callbacksBeforeShutdown?: CallbacksBeforeShutdown[];
+		callbacksOnShutdownSignalReceived?: CallbacksBeforeShutdown[];
 		waitDurationBeforeStop?: number;
 		enableGracefulShutdown?: boolean;
 		timeout?: number;
@@ -77,6 +78,7 @@ export namespace N9NodeRouting {
 	export interface CallbacksBeforeShutdown {
 		function: CallbacksBeforeShutdownFunction;
 		thisArg: any;
+		name?: string;
 	}
 
 	export type CallbacksBeforeShutdownFunction = (log: N9Log) => Promise<void>;
