@@ -185,7 +185,7 @@ export class N9HttpClient {
 			const responseTime = Date.now() - startTime;
 			const bodyJSON = fastSafeStringify(body);
 			const { code, status } = N9HttpClient.prepareErrorCodeAndStatus(e);
-			this.logger.error(`Error on [${method} ${uri}]`, {
+			this.logger.error(`Error on [${method} ${uri}] ${e.message}`, {
 				uri,
 				method,
 				'status': status,
