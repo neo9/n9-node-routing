@@ -1,3 +1,10 @@
+## [1.27.2](https://github.com/neo9/n9-node-routing/compare/1.27.1...1.27.2) (2021-03-02)
+
+
+### shutdown
+
+* Add callback on shutdown signal received and name to callbacks ([afd4934](https://github.com/neo9/n9-node-routing/commit/afd4934c07f5e39453d850a06e90b1334f457158))
+
 ## [1.27.1](https://github.com/neo9/n9-node-routing/compare/1.27.1-rc.1...1.27.1) (2021-01-22)
 
 ## [1.27.1-rc.1](https://github.com/neo9/n9-node-routing/compare/1.27.1-rc.0...1.27.1-rc.1) (2021-01-22)
