@@ -1,21 +1,23 @@
 import { createMiddleware, signalIsUp } from '@promster/express';
 import * as PromsterServer from '@promster/server';
-import * as appRootDir from 'app-root-dir';
-import ErrnoException = NodeJS.ErrnoException;
 import * as ClassValidator from 'class-validator';
 import * as express from 'express';
 import fastSafeStringify from 'fast-safe-stringify';
 import * as helmet from 'helmet';
 import { createServer } from 'http';
 import * as morgan from 'morgan';
-import { join } from 'path';
 import * as PrometheusClient from 'prom-client';
 import * as RoutingControllers from 'routing-controllers';
 import { Container } from 'typedi';
+import { PackageJson } from 'types-package-json';
 import { N9NodeRouting } from './models/routing.models';
 import { setRequestContext } from './requestid';
+import ErrnoException = NodeJS.ErrnoException;
 
-export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.ReturnObject> => {
+export async function init(
+	options: N9NodeRouting.Options,
+	packageJson: PackageJson,
+): Promise<N9NodeRouting.ReturnObject> {
 	// Setup routing-controllers to use typedi container.
 	RoutingControllers.useContainer(Container);
 	ClassValidator.useContainer(Container);
@@ -66,8 +68,6 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 				},
 			}),
 		);
-
-		const packageJson = require(join(appRootDir.get(), 'package.json'));
 
 		new PrometheusClient.Gauge({
 			name: 'version_info',
@@ -133,4 +133,4 @@ export default async (options: N9NodeRouting.Options): Promise<N9NodeRouting.Ret
 		prometheusServer,
 		app: expressApp,
 	};
-};
+}

@@ -7,6 +7,7 @@ import * as morgan from 'morgan';
 import { join } from 'path';
 import { Action, RoutingControllersOptions } from 'routing-controllers';
 import { ErrorHandler } from './middleware/error-handler.interceptor';
+import { PrometheusInterceptor } from './middleware/prometheus.interceptor';
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
 import { N9NodeRouting } from './models/routing.models';
 import { Environment } from './utils';
@@ -163,6 +164,9 @@ function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 	);
 
 	options.http.routingController.interceptors = [SessionLoaderInterceptor, ErrorHandler];
+	if (options.prometheus) {
+		options.http.routingController.interceptors.push(PrometheusInterceptor);
+	}
 	options.http.routingController.authorizationChecker = async (action: Action) => {
 		if (!action.request.headers.session) {
 			throw new N9Error('session-required', 401);

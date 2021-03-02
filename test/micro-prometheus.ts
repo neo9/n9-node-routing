@@ -8,7 +8,7 @@ import commons, { closeServer } from './fixtures/commons';
 
 const print = commons.print;
 
-const MICRO_FOO = join(__dirname, 'fixtures/micro-prometheus/');
+const APP_PATH = join(__dirname, 'fixtures/micro-prometheus/');
 
 ava.beforeEach(() => {
 	delete (global as any).log;
@@ -20,12 +20,16 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 		name: 'my-awesome-app',
 	};
 	const { server } = await N9NodeRouting({
-		path: MICRO_FOO,
+		path: APP_PATH,
 		http: {
 			port: 5000,
 		},
 		prometheus: {
 			port: 5001,
+		},
+		enableLogFormatJSON: false,
+		shutdown: {
+			waitDurationBeforeStop: 5,
 		},
 	});
 	let res = await got('http://localhost:5000/sample-route');
@@ -37,11 +41,11 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	t.is(res.body, '');
 
 	// Check /foo route added on foo/foo.init.ts
-	const resProm = await got('http://localhost:5001/', {
+	let resProm = await got('http://localhost:5001/', {
 		responseType: 'text',
 		resolveBodyOnly: true,
 	});
-	const resPromAsArray = resProm.split('\n');
+	let resPromAsArray = resProm.split('\n');
 	t.truthy(
 		resPromAsArray.find(
 			(line) =>
@@ -65,6 +69,30 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 		`Prom exposition contains call with route pattern`,
 	);
 	t.true(resProm.includes('version_info{version="'), `Prom exposition contains version info`);
+
+	const cancelableRequest = got('http://localhost:5000/a-long-route/a-code', {
+		method: 'POST',
+	});
+
+	resProm = await got('http://localhost:5001/', {
+		responseType: 'text',
+		resolveBodyOnly: true,
+	});
+	resPromAsArray = resProm.split('\n');
+
+	const prometheusMetricsForOnGoingRequests = resPromAsArray.filter((line) =>
+		line.includes('http_request_in_flight'),
+	);
+	t.is(prometheusMetricsForOnGoingRequests.length, 4, '4 lines, 2 titles, 2 for requests');
+	t.is(
+		prometheusMetricsForOnGoingRequests[0],
+		'# HELP http_request_in_flight_total A gauge of requests currently being served by the app',
+	);
+	t.is(prometheusMetricsForOnGoingRequests[1], '# TYPE http_request_in_flight_total gauge');
+	t.is(prometheusMetricsForOnGoingRequests[2], 'http_request_in_flight_total{method="GET"} 0');
+	t.is(prometheusMetricsForOnGoingRequests[3], 'http_request_in_flight_total{method="POST"} 1');
+
+	await cancelableRequest;
 
 	// Check logs
 	stdMock.restore();

@@ -1,22 +1,19 @@
 import { N9Error } from '@neo9/n9-node-utils';
 import { signalIsNotUp, signalIsUp } from '@promster/express';
-import * as appRootDir from 'app-root-dir';
 import { Express, NextFunction, Request, Response } from 'express';
 import * as fs from 'fs';
-import { join } from 'path';
 import * as SwaggerUi from 'swagger-ui-express';
+import { PackageJson } from 'types-package-json';
 import { generateDocumentationJson, getDocumentationJsonPath } from './generate-documentation-json';
 import { N9NodeRouting } from './models/routing.models';
 import * as RoutesService from './routes.service';
 
-async function def(
+export async function init(
 	expressApp: Express,
 	options: N9NodeRouting.Options,
+	packageJson: PackageJson,
 	env: 'development' | 'production' | string,
 ): Promise<void> {
-	// Fetch application name
-	const packageJson = require(join(appRootDir.get(), 'package.json'));
-
 	expressApp.get('/', (req: Request, res: Response, next: NextFunction) => {
 		res.status(200).send(packageJson.name);
 		next();
@@ -121,5 +118,3 @@ async function def(
 		next();
 	});
 }
-
-export default def;

@@ -807,6 +807,14 @@
   dependencies:
     "@types/node" "*"
 
+"@types/swagger-ui-express@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmjs.org/@types/swagger-ui-express/-/swagger-ui-express-4.1.2.tgz#cfc884904a104c3193f46f423d04ee0416be1ef4"
+  integrity sha512-t9teFTU8dKe69rX9EwL6OM2hbVquYdFM+sQ0REny4RalPlxAm+zyP04B12j4c7qEuDS6CnlwICywqWStPA3v4g==
+  dependencies:
+    "@types/express" "*"
+    "@types/serve-static" "*"
+
 "@types/tmp@^0.2.0":
   version "0.2.0"
   resolved "https://registry.npmjs.org/@types/tmp/-/tmp-0.2.0.tgz#e3f52b4d7397eaa9193592ef3fdd44dc0af4298c"
@@ -6327,6 +6335,11 @@ typedi@0.8.0:
   version "0.8.0"
   resolved "https://registry.npmjs.org/typedi/-/typedi-0.8.0.tgz#d8e203bd1d41a96e2b0a5c6295147d74b2b2d03e"
   integrity sha512-/c7Bxnm6eh5kXx2I+mTuO+2OvoWni5+rXA3PhXwVWCtJRYmz3hMok5s1AKLzoDvNAZqj/Q/acGstN0ri5aQoOA==
+
+types-package-json@^2.0.25:
+  version "2.0.25"
+  resolved "https://registry.npmjs.org/types-package-json/-/types-package-json-2.0.25.tgz#dbed6c7da7686c72cabcd3e10aad471259e81622"
+  integrity sha512-vHjRud5f6IM6LParpqRa5qfB8bNqdZJtBxMBAM6eBcwTBQpX5i11AQeKhfdtA4dI2uZ0rRdF75D+qd4rwcbOeg==
 
 typescript@^4.2.2:
   version "4.2.2"

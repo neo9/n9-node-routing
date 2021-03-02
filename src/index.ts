@@ -1,15 +1,18 @@
 import n9NodeLog from '@neo9/n9-node-log';
+import * as appRootDir from 'app-root-dir';
+import * as Path from 'path';
 import * as PrometheusClient from 'prom-client';
 // tslint:disable-next-line:no-import-side-effect
 import 'reflect-metadata';
 import { Container } from 'typedi';
+import { PackageJson } from 'types-package-json';
+import * as ExpressApp from './express-app';
 import initialiseModules from './initialise-modules';
 import { N9NodeRouting } from './models/routing.models';
 import { applyDefaultValuesOnOptions } from './options';
 import { registerShutdown } from './register-system-signals';
 import { requestIdFilter } from './requestid';
-import routes from './routes';
-import startExpressApp from './start-express-app';
+import * as Routes from './routes';
 import startModules from './start-modules';
 import { getEnvironment } from './utils';
 // tslint:disable-next-line:no-import-side-effect
@@ -70,10 +73,12 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 	}
 	Container.set('N9HttpClient', new N9HttpClient());
 
+	const packageJson: PackageJson = require(Path.join(appRootDir.get(), 'package.json'));
+
 	// Execute all *.init.ts files in modules before app started listening on the HTTP Port
 	await initialiseModules(options.path, options.log, options.firstSequentialInitFileNames);
-	const returnObject = await startExpressApp(options);
-	await routes(returnObject.app, options, environment);
+	const returnObject = await ExpressApp.init(options, packageJson);
+	await Routes.init(returnObject.app, options, packageJson, environment);
 
 	// Manage SIGTERM & SIGINT
 	if (options.shutdown.enableGracefulShutdown) {
