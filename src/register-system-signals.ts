@@ -1,8 +1,10 @@
 import { N9Log } from '@neo9/n9-node-log';
 import { waitFor } from '@neo9/n9-node-utils';
+import { signalIsNotUp } from '@promster/express';
 import fastSafeStringify from 'fast-safe-stringify';
 import { Server } from 'http';
 import { N9NodeRouting } from './models/routing.models';
+import * as Routes from './routes';
 
 // istanbul ignore next
 async function shutdown(
@@ -14,6 +16,11 @@ async function shutdown(
 		logger.error('shutdown-timeout');
 		process.exit(1);
 	}, shutdownOptions.timeout);
+
+	// Tell users to stop using the app
+	signalIsNotUp();
+	Routes.onShutdownAsked();
+
 	if (shutdownOptions.callbacksOnShutdownSignalReceived?.length) {
 		logger.info(
 			`Calling ${shutdownOptions.callbacksOnShutdownSignalReceived.length} on shutdown signal received callbacks`,

@@ -8,6 +8,12 @@ import { generateDocumentationJson, getDocumentationJsonPath } from './generate-
 import { N9NodeRouting } from './models/routing.models';
 import * as RoutesService from './routes.service';
 
+let shutdownAsked: boolean = false;
+
+export function onShutdownAsked(): void {
+	shutdownAsked = true;
+}
+
 export async function init(
 	expressApp: Express,
 	options: N9NodeRouting.Options,
@@ -21,6 +27,12 @@ export async function init(
 
 	// Monitoring route
 	expressApp.get('/ping', async (req: Request, res: Response, next: NextFunction) => {
+		if (shutdownAsked) {
+			res.status(503).send('server-shutting-down');
+			signalIsNotUp();
+			next();
+			return;
+		}
 		if (options.http.ping?.dbs) {
 			for (const db of options.http.ping.dbs) {
 				if (!(await db.isConnected.bind(db.thisArg || this)())) {
