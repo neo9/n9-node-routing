@@ -1,3 +1,10 @@
+## [1.28.1](https://github.com/neo9/n9-node-routing/compare/1.28.0...1.28.1) (2021-03-09)
+
+
+### node
+
+* Specify explicitly that node 10 is no more supported ([739746d](https://github.com/neo9/n9-node-routing/commit/739746dbc73f20dc84ac28e4370e07c2d892dcaf))
+
 # [1.28.0](https://github.com/neo9/n9-node-routing/compare/1.27.2...1.28.0) (2021-03-09)
 
 
