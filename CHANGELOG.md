@@ -1,3 +1,22 @@
+# [1.28.0](https://github.com/neo9/n9-node-routing/compare/1.27.2...1.28.0) (2021-03-09)
+
+
+### httpClient
+
+* Save error message in logs ([ceb6630](https://github.com/neo9/n9-node-routing/commit/ceb6630b020ed0dfa1db58a2a88f741d0c1deb7e))
+
+### ping
+
+* Stop answering ping on shutdown start ([dca540a](https://github.com/neo9/n9-node-routing/commit/dca540a96cba5d031f9177d9572f3dae2cd89a31))
+
+### prometheus
+
+* Add metric to track number of request in flight ([69396b8](https://github.com/neo9/n9-node-routing/commit/69396b8cd4932ac40c4907fe84d66c2410663ad0))
+
+### yarn
+
+* Upgrade most of the dependencies ([bcc17fa](https://github.com/neo9/n9-node-routing/commit/bcc17fa5015bb624413476386b12bb06d2a6a1bd))
+
 ## [1.27.2](https://github.com/neo9/n9-node-routing/compare/1.27.1...1.27.2) (2021-03-02)
 
 
