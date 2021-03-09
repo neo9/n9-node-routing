@@ -53,7 +53,7 @@
     "routing-controllers"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "dependencies": {
     "@neo9/n9-node-log": "^3.1.1",
