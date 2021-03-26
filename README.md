@@ -37,3 +37,16 @@ A starter app is available here : https://github.com/neo9/n9-node-microservice-s
 To run all test : `yarn test` \
 To run a test containing foo : `yarn test **/*foo*` \
 To debug a test containing foo : `yarn test:dev **/*foo*` it will watch your files a re-run this test each time
+
+# Sentry
+
+To use [Sentry](https://sentry.io/) you only have to ask it to n9-node-routing :
+
+- Basic usage : define the env variable `SENTRY_DSN` and it will activate it with default options.
+- Fill the sentry options with at least the `dsn`.
+
+Default enabled options are :
+
+- setting the app version in sentry release
+- set the NODE_ENV as sentry environment
+- enable tracing for ALL requests

@@ -1,10 +1,15 @@
 import { createMiddleware, signalIsUp } from '@promster/express';
 import * as PromsterServer from '@promster/server';
+import ErrnoException = NodeJS.ErrnoException;
+import * as Sentry from '@sentry/node';
+import * as Tracing from '@sentry/tracing';
+import { Integration } from '@sentry/types/dist/integration';
 import * as ClassValidator from 'class-validator';
 import * as express from 'express';
 import fastSafeStringify from 'fast-safe-stringify';
 import * as helmet from 'helmet';
 import { createServer } from 'http';
+import * as _ from 'lodash';
 import * as morgan from 'morgan';
 import * as PrometheusClient from 'prom-client';
 import * as RoutingControllers from 'routing-controllers';
@@ -12,7 +17,6 @@ import { Container } from 'typedi';
 import { PackageJson } from 'types-package-json';
 import { N9NodeRouting } from './models/routing.models';
 import { setRequestContext } from './requestid';
-import ErrnoException = NodeJS.ErrnoException;
 
 export async function init(
 	options: N9NodeRouting.Options,
@@ -49,6 +53,31 @@ export async function init(
 	// Create HTTP server
 	let expressApp = express();
 	let prometheusServer;
+
+	if (options.sentry) {
+		const initOptions: Sentry.NodeOptions = {
+			release: packageJson.version,
+			...options.sentry.initOptions,
+		};
+		if (options.sentry.additionalIntegrations?.length) {
+			initOptions.integrations = initOptions.integrations || [];
+			for (const additionalIntegration of options.sentry.additionalIntegrations) {
+				if (additionalIntegration.kind === 'tracing') {
+					(initOptions.integrations as Integration[]).push(
+						new Tracing.Integrations.Express({
+							// to trace all requests to the default router
+							app: expressApp,
+							methods: additionalIntegration.options?.methods,
+						}),
+					);
+				}
+			}
+		}
+		if (options.log.isLevelEnabled('debug')) {
+			options.log.debug(`Sentry conf`, _.omit(initOptions, 'dsn'));
+		}
+		Sentry.init(initOptions);
+	}
 
 	// Middleware
 	expressApp.use(setRequestContext);

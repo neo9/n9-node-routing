@@ -1,12 +1,24 @@
-import { Request, Response } from 'express';
+import * as Sentry from '@sentry/node';
+import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import fastSafeStringify from 'fast-safe-stringify';
 import { ExpressErrorMiddlewareInterface, Middleware } from 'routing-controllers';
-import { Service } from 'typedi';
+import { Inject, Service } from 'typedi';
+import { N9NodeRouting } from '..';
 
 @Service()
 @Middleware({ type: 'after' })
 export class ErrorHandler implements ExpressErrorMiddlewareInterface {
-	public error(error: any, request: Request, response: Response): void {
+	private readonly sentryErrorHandler: ErrorRequestHandler;
+
+	constructor(@Inject('N9NodeRoutingOptions') private n9NodeRoutingOptions: N9NodeRouting.Options) {
+		if (this.n9NodeRoutingOptions.sentry) {
+			this.sentryErrorHandler = Sentry.Handlers.errorHandler(
+				this.n9NodeRoutingOptions.sentry.errorHandlerOptions,
+			);
+		}
+	}
+
+	public error(error: any, request: Request, response: Response, next: NextFunction): void {
 		const status = error.status || error.httpCode || 500;
 		let code = 'unspecified-error';
 		if (error.code) {
@@ -26,6 +38,10 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 			((global as any).log || console).warn(code, { errString: fastSafeStringify(error) });
 		} else {
 			((global as any).log || console).error(code, { errString: fastSafeStringify(error) });
+		}
+
+		if (this.sentryErrorHandler) {
+			this.sentryErrorHandler(error, request, response, next);
 		}
 
 		response.status(status);

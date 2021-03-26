@@ -72,6 +72,7 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 		Container.set('conf', (global as any).conf);
 	}
 	Container.set('N9HttpClient', new N9HttpClient());
+	Container.set('N9NodeRoutingOptions', options);
 
 	const packageJson: PackageJson = require(Path.join(appRootDir.get(), 'package.json'));
 
