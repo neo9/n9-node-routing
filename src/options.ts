@@ -1,13 +1,17 @@
 import n9NodeLog from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
+import * as Sentry from '@sentry/node';
 import * as appRootDir from 'app-root-dir';
 import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
+import * as _ from 'lodash';
 import * as morgan from 'morgan';
 import { join } from 'path';
 import { Action, RoutingControllersOptions } from 'routing-controllers';
 import { ErrorHandler } from './middleware/error-handler.interceptor';
 import { PrometheusInterceptor } from './middleware/prometheus.interceptor';
+import { SentryRequestInterceptor } from './middleware/sentry-request.interceptor';
+import { SentryTracingInterceptor } from './middleware/sentry-tracing.interceptor';
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
 import { N9NodeRouting } from './models/routing.models';
 import { Environment } from './utils';
@@ -24,13 +28,8 @@ export function applyDefaultValuesOnOptions(
 
 	applyLogsOptionsDefaults(options, environment);
 	applyShutdownOptionsDefaults(options);
-
-	// Prometheus metrics
-	if (options.prometheus) {
-		options.prometheus.port =
-			typeof options.prometheus.port === 'number' ? options.prometheus.port : 9101;
-		options.prometheus.accuracies = options.prometheus.accuracies || ['s'];
-	}
+	applyPrometheusOptionsDefault(options);
+	applySentryOptionsDefault(options, environment);
 
 	applyOpenApiOptionsDefaults(options, environment);
 	applyHttpOptionsDefaults(options);
@@ -164,6 +163,17 @@ function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 	);
 
 	options.http.routingController.interceptors = [SessionLoaderInterceptor, ErrorHandler];
+	if (options.sentry) {
+		options.http.routingController.interceptors.push(SentryRequestInterceptor);
+		if (
+			options.sentry.additionalIntegrations?.find(
+				(additionalIntegration) => additionalIntegration.kind === 'tracing',
+			)
+		) {
+			options.log.module('sentry').info('Sentry tracing enabled');
+			options.http.routingController.interceptors.push(SentryTracingInterceptor);
+		}
+	}
 	if (options.prometheus) {
 		options.http.routingController.interceptors.push(PrometheusInterceptor);
 	}
@@ -185,4 +195,42 @@ function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 		whitelist: true,
 		forbidNonWhitelisted: true,
 	} as ValidatorOptions;
+}
+
+function applyPrometheusOptionsDefault(options: N9NodeRouting.Options): void {
+	// Prometheus metrics
+	if (options.prometheus) {
+		options.prometheus.port =
+			typeof options.prometheus.port === 'number' ? options.prometheus.port : 9101;
+		options.prometheus.accuracies = options.prometheus.accuracies || ['s'];
+	}
+}
+
+function applySentryOptionsDefault(options: N9NodeRouting.Options, environment: Environment): void {
+	if (process.env.SENTRY_DSN) {
+		_.set(options, 'sentry.initOptions.dsn', process.env.SENTRY_DSN);
+	}
+	if (options.sentry) {
+		if (!options.sentry.initOptions?.dsn) {
+			throw new N9Error('missing-sentry-dsn', 400, { options });
+		}
+		if (!options.sentry.forceCustomOptions) {
+			if (!options.sentry.initOptions.integrations) {
+				options.sentry.initOptions.integrations = [new Sentry.Integrations.Http({ tracing: true })];
+			}
+			if (!options.sentry.initOptions.environment) {
+				options.sentry.initOptions.environment = environment;
+			}
+			if (_.isNil(options.sentry.initOptions.tracesSampleRate)) {
+				options.sentry.initOptions.tracesSampleRate = 1;
+			}
+			if (!options.sentry.additionalIntegrations) {
+				options.sentry.additionalIntegrations = [
+					{
+						kind: 'tracing',
+					},
+				];
+			}
+		}
+	}
 }

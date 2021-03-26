@@ -8,12 +8,13 @@ import { join } from 'path';
 import * as stdMock from 'std-mocks';
 import { Container } from 'typedi';
 // tslint:disable-next-line:import-name
-import n9NodeRouting, { N9HttpClient } from '../../src';
+import n9NodeRouting, { N9HttpClient, N9NodeRouting } from '../../src';
 import commons, { closeServer } from './commons';
 
 export async function init(
 	folder: string,
 	startMongoDB: boolean = false,
+	options?: N9NodeRouting.Options,
 ): Promise<{ app: Express; server: Server; httpClient: N9HttpClient }> {
 	stdMock.use({ print: commons.print });
 	const MICRO_USERS = join(__dirname, `${folder}/`);
@@ -39,6 +40,7 @@ export async function init(
 
 	const { app, server } = await n9NodeRouting({
 		path: MICRO_USERS,
+		...options,
 	});
 	const httpClient = new N9HttpClient((global as any).log);
 	return { app, server, httpClient };

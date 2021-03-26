@@ -1,4 +1,6 @@
 import { N9Log } from '@neo9/n9-node-log';
+import * as Sentry from '@sentry/node';
+import { RequestHandlerOptions } from '@sentry/node/dist/handlers';
 import { Express, Request, Response } from 'express';
 import { Server } from 'http';
 import * as morgan from 'morgan';
@@ -17,6 +19,7 @@ export namespace N9NodeRouting {
 		openapi?: SwaggerOptions;
 		shutdown?: ShutdownOptions;
 		prometheus?: PrometheusOptions;
+		sentry?: SentryOptions;
 		firstSequentialInitFileNames?: string[];
 		firstSequentialStartFileNames?: string[];
 	}
@@ -89,6 +92,49 @@ export namespace N9NodeRouting {
 		getLabelValues?: (req: Request, res: Response) => { [label: string]: string };
 		accuracies?: string[];
 		skip?: (req: Request, res: Response, labels: string[]) => boolean;
+	}
+
+	export interface SentryOptions {
+		initOptions?: Sentry.NodeOptions; // dsn can be provided through env variable
+		forceCustomOptions?: boolean;
+		additionalIntegrations?: SentryIntegrationTracingOption[];
+		requestHandlerOptions?: RequestHandlerOptions;
+		errorHandlerOptions?: {
+			shouldHandleError?(error: MiddlewareError): boolean;
+		};
+	}
+
+	/**
+	 * Model of errors from Sentry
+	 */
+	export interface MiddlewareError extends Error {
+		status?: number | string;
+		statusCode?: number | string;
+		status_code?: number | string;
+		output?: {
+			statusCode?: number | string;
+		};
+	}
+
+	export interface SentryIntegrationOption {
+		kind: string;
+	}
+
+	export interface SentryIntegrationTracingOption extends SentryIntegrationOption {
+		kind: 'tracing';
+		options?: {
+			methods?: (
+				| 'all'
+				| 'get'
+				| 'head'
+				| 'post'
+				| 'put'
+				| 'delete'
+				| 'options'
+				| 'trace'
+				| 'patch'
+			)[];
+		};
 	}
 
 	export interface ReturnObject {
