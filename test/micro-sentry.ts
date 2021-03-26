@@ -43,6 +43,8 @@ ava('Init sentry and send error event', async (t: Assertions) => {
 		'bar-extendable-error',
 		'error sent to sentry is bar-extendable-error',
 	);
+	t.is(eventsSent[0].transaction, 'POST /v1/bar', 'Path is well formatted');
+	// TODO: change to `POST /:version/bar` when https://github.com/getsentry/sentry-javascript/pull/3329 will be released
 
 	const { stdout } = stdMock.flush();
 	t.truthy(
