@@ -1,3 +1,10 @@
+# [1.29.0-rc.0](https://github.com/neo9/n9-node-routing/compare/1.28.1...1.29.0-rc.0) (2021-03-26)
+
+
+### sentry
+
+* Add sentry support ([db48e0e](https://github.com/neo9/n9-node-routing/commit/db48e0e9d1f00842f0e65d91891e627fccabb144))
+
 ## [1.28.1](https://github.com/neo9/n9-node-routing/compare/1.28.0...1.28.1) (2021-03-09)
 
 
