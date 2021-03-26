@@ -1,3 +1,10 @@
+# [1.29.0-rc.1](https://github.com/neo9/n9-node-routing/compare/1.29.0-rc.0...1.29.0-rc.1) (2021-03-26)
+
+
+### sentry
+
+* Rollback Sentry client to V 5.27.6 ([cc9ecc5](https://github.com/neo9/n9-node-routing/commit/cc9ecc5869e58da6f1912b01a4529f2466b7e374))
+
 # [1.29.0-rc.0](https://github.com/neo9/n9-node-routing/compare/1.28.1...1.29.0-rc.0) (2021-03-26)
 
 
