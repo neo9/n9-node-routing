@@ -1,3 +1,18 @@
+# [1.29.0-rc.2](https://github.com/neo9/n9-node-routing/compare/1.29.0-rc.1...1.29.0-rc.2) (2021-03-30)
+
+
+### queryParams
+
+* Fix query params array support by using routing-controllers fork ([424918a](https://github.com/neo9/n9-node-routing/commit/424918ae752dc7162b96f088223ef00dc60f37ad))
+
+### sentry
+
+* Upgrade Sentry client to latest version ([7b1a995](https://github.com/neo9/n9-node-routing/commit/7b1a995a3fe3cf4bd0b22a832963eb331fcc7f98))
+
+### tests
+
+* Add tests on query params send with arrays ([b84a9cc](https://github.com/neo9/n9-node-routing/commit/b84a9cc1f68ac90d245258d96b859c22654aafb3))
+
 # [1.29.0-rc.1](https://github.com/neo9/n9-node-routing/compare/1.29.0-rc.0...1.29.0-rc.1) (2021-03-26)
 
 
