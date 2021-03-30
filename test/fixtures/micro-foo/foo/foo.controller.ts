@@ -1,6 +1,4 @@
-import { Body, Get, JsonController, Post } from 'routing-controllers';
-import { Service } from 'typedi';
-import { Acl } from '../../../../src/decorators/acl.decorator';
+import { Acl, Body, Get, JsonController, Post, Service } from '../../../../src';
 
 @Service()
 @JsonController()

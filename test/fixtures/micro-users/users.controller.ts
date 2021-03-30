@@ -1,8 +1,16 @@
 import { N9Error } from '@neo9/n9-node-utils';
-import { Authorized, Body, Get, JsonController, Param, Post, Session } from 'routing-controllers';
 import { OpenAPI } from 'routing-controllers-openapi';
-import { Service } from 'typedi';
-import { Acl } from '../../../src';
+import {
+	Acl,
+	Authorized,
+	Body,
+	Get,
+	JsonController,
+	Param,
+	Post,
+	Service,
+	Session,
+} from '../../../src';
 import { TokenContent } from './models/token-content.models';
 import { User } from './models/users.models';
 import { UsersService } from './users.service';

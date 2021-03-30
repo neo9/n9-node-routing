@@ -1,5 +1,4 @@
-import { Get, HeaderParam, JsonController } from 'routing-controllers';
-import { Service } from 'typedi';
+import { Get, HeaderParam, JsonController, Service } from '../../../../src';
 
 @Service()
 @JsonController()

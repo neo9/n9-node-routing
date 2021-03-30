@@ -1,5 +1,5 @@
-import { Authorized, Get, JsonController, Session } from 'routing-controllers';
 import { Service } from 'typedi';
+import { Authorized, Get, JsonController, Session } from '../../../../src';
 
 @Service()
 @JsonController()

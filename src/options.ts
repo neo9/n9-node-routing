@@ -1,24 +1,23 @@
+import { Action, RoutingControllersOptions } from '@benjd90/routing-controllers';
 import n9NodeLog from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import * as Sentry from '@sentry/node';
 import * as appRootDir from 'app-root-dir';
 import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
-import * as _ from 'lodash';
 import * as morgan from 'morgan';
 import { join } from 'path';
-import { Action, RoutingControllersOptions } from 'routing-controllers';
 import { ErrorHandler } from './middleware/error-handler.interceptor';
 import { PrometheusInterceptor } from './middleware/prometheus.interceptor';
 import { SentryRequestInterceptor } from './middleware/sentry-request.interceptor';
 import { SentryTracingInterceptor } from './middleware/sentry-tracing.interceptor';
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
 import { N9NodeRouting } from './models/routing.models';
-import { Environment } from './utils';
+import * as Utils from './utils';
 
 export function applyDefaultValuesOnOptions(
 	options: N9NodeRouting.Options,
-	environment: Environment,
+	environment: Utils.Environment,
 ): void {
 	options.path = options.path || join(appRootDir.get(), 'src', 'modules');
 	options.log = options.log || (global as any).log;
@@ -35,7 +34,10 @@ export function applyDefaultValuesOnOptions(
 	applyHttpOptionsDefaults(options);
 }
 
-function applyLogsOptionsDefaults(options: N9NodeRouting.Options, environment: Environment): void {
+function applyLogsOptionsDefaults(
+	options: N9NodeRouting.Options,
+	environment: Utils.Environment,
+): void {
 	// If enableLogFormatJSON is provided, we use it's value.
 	// Otherwise, we activate the plain logs for development env and JSON logs for other environments
 	options.enableLogFormatJSON =
@@ -77,7 +79,7 @@ function applyShutdownOptionsDefaults(options: N9NodeRouting.Options): void {
 
 function applyOpenApiOptionsDefaults(
 	options: N9NodeRouting.Options,
-	environment: Environment,
+	environment: Utils.Environment,
 ): void {
 	if (!options.openapi) {
 		options.openapi = {};
@@ -206,9 +208,14 @@ function applyPrometheusOptionsDefault(options: N9NodeRouting.Options): void {
 	}
 }
 
-function applySentryOptionsDefault(options: N9NodeRouting.Options, environment: Environment): void {
+function applySentryOptionsDefault(
+	options: N9NodeRouting.Options,
+	environment: Utils.Environment,
+): void {
 	if (process.env.SENTRY_DSN) {
-		_.set(options, 'sentry.initOptions.dsn', process.env.SENTRY_DSN);
+		if (!options.sentry) options.sentry = {};
+		if (!options.sentry.initOptions) options.sentry.initOptions = {};
+		options.sentry.initOptions.dsn = process.env.SENTRY_DSN;
 	}
 	if (options.sentry) {
 		if (!options.sentry.initOptions?.dsn) {
@@ -221,7 +228,7 @@ function applySentryOptionsDefault(options: N9NodeRouting.Options, environment: 
 			if (!options.sentry.initOptions.environment) {
 				options.sentry.initOptions.environment = environment;
 			}
-			if (_.isNil(options.sentry.initOptions.tracesSampleRate)) {
+			if (Utils.isNil(options.sentry.initOptions.tracesSampleRate)) {
 				options.sentry.initOptions.tracesSampleRate = 1;
 			}
 			if (!options.sentry.additionalIntegrations) {
