@@ -1,4 +1,4 @@
-import { Allow, IsEmail, IsString, MinLength } from 'class-validator';
+import { Allow, IsEmail, IsString, MinLength } from '../../../../src';
 import { BaseMongoObject } from './db.models';
 
 export class User extends BaseMongoObject {

@@ -1,7 +1,7 @@
+import { ExpressErrorMiddlewareInterface, Middleware } from '@benjd90/routing-controllers';
 import * as Sentry from '@sentry/node';
 import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import fastSafeStringify from 'fast-safe-stringify';
-import { ExpressErrorMiddlewareInterface, Middleware } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 import { N9NodeRouting } from '..';
 

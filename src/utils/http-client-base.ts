@@ -10,7 +10,7 @@ import { PassThrough } from 'stream';
 import urlJoin = require('url-join');
 import { RequestIdNamespaceName } from '../requestid';
 
-export type QueryParams =
+export type N9HttpClientQueryParams =
 	| string
 	| Record<string, string | number | boolean | string[] | number[] | boolean[]>
 	| object;
@@ -78,11 +78,11 @@ export class N9HttpClient {
 	}
 
 	/**
-	 * QueryParams samples : https://github.com/request/request/blob/master/tests/test-qs.js
+	 * N9HttpClientQueryParams samples : https://github.com/request/request/blob/master/tests/test-qs.js
 	 */
 	public async get<T>(
 		url: string | string[],
-		queryParams?: QueryParams,
+		queryParams?: N9HttpClientQueryParams,
 		headers: object = {},
 		options: Options = {},
 	): Promise<T> {
@@ -92,7 +92,7 @@ export class N9HttpClient {
 	public async post<T>(
 		url: string | string[],
 		body?: any,
-		queryParams?: QueryParams,
+		queryParams?: N9HttpClientQueryParams,
 		headers: object = {},
 		options: Options = {},
 	): Promise<T> {
@@ -102,7 +102,7 @@ export class N9HttpClient {
 	public async put<T>(
 		url: string | string[],
 		body?: any,
-		queryParams?: QueryParams,
+		queryParams?: N9HttpClientQueryParams,
 		headers: object = {},
 		options: Options = {},
 	): Promise<T> {
@@ -112,7 +112,7 @@ export class N9HttpClient {
 	public async delete<T>(
 		url: string | string[],
 		body?: any,
-		queryParams?: QueryParams,
+		queryParams?: N9HttpClientQueryParams,
 		headers: object = {},
 		options: Options = {},
 	): Promise<T> {
@@ -121,7 +121,7 @@ export class N9HttpClient {
 
 	public async options<T>(
 		url: string | string[],
-		queryParams?: QueryParams,
+		queryParams?: N9HttpClientQueryParams,
 		headers: object = {},
 		options: Options = {},
 	): Promise<T> {
@@ -131,7 +131,7 @@ export class N9HttpClient {
 	public async patch<T>(
 		url: string | string[],
 		body?: any,
-		queryParams?: QueryParams,
+		queryParams?: N9HttpClientQueryParams,
 		headers: object = {},
 		options: Options = {},
 	): Promise<T> {
@@ -140,7 +140,7 @@ export class N9HttpClient {
 
 	public async head(
 		url: string | string[],
-		queryParams?: QueryParams,
+		queryParams?: N9HttpClientQueryParams,
 		headers: object = {},
 		options: Options = {},
 	): Promise<void> {
@@ -150,7 +150,7 @@ export class N9HttpClient {
 	public async request<T>(
 		method: Method,
 		url: string | string[],
-		queryParams?: QueryParams,
+		queryParams?: N9HttpClientQueryParams,
 		headers: object = {},
 		body?: any,
 		options: Options = {},

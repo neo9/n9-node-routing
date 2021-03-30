@@ -1,6 +1,5 @@
 import { N9Log } from '@neo9/n9-node-log';
-import { Get, JsonController } from 'routing-controllers';
-import { Inject, Service } from 'typedi';
+import { Get, Inject, JsonController, Service } from '../../../../src';
 
 @Service()
 @JsonController()

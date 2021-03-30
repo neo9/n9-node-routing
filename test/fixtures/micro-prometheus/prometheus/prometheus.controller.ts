@@ -1,6 +1,5 @@
 import { waitFor } from '@neo9/n9-node-utils';
-import { Get, JsonController, Post } from 'routing-controllers';
-import { Service } from 'typedi';
+import { Get, JsonController, Post, Service } from '../../../../src';
 
 @Service()
 @JsonController()

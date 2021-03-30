@@ -1,5 +1,4 @@
-import { Get, JsonController, QueryParams } from 'routing-controllers';
-import { Service } from 'typedi';
+import { Get, JsonController, QueryParams, Service } from '../../../src';
 import { FilterQuery } from './models/filter-query.models';
 
 @Service()

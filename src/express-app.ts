@@ -1,3 +1,4 @@
+import * as RoutingControllers from '@benjd90/routing-controllers';
 import { createMiddleware, signalIsUp } from '@promster/express';
 import * as PromsterServer from '@promster/server';
 import ErrnoException = NodeJS.ErrnoException;
@@ -9,10 +10,8 @@ import * as express from 'express';
 import fastSafeStringify from 'fast-safe-stringify';
 import * as helmet from 'helmet';
 import { createServer } from 'http';
-import * as _ from 'lodash';
 import * as morgan from 'morgan';
 import * as PrometheusClient from 'prom-client';
-import * as RoutingControllers from 'routing-controllers';
 import { Container } from 'typedi';
 import { PackageJson } from 'types-package-json';
 import { N9NodeRouting } from './models/routing.models';
@@ -74,7 +73,9 @@ export async function init(
 			}
 		}
 		if (options.log.isLevelEnabled('debug')) {
-			options.log.debug(`Sentry conf`, _.omit(initOptions, 'dsn'));
+			const initOptionsCopy = { ...initOptions };
+			delete initOptionsCopy.dsn;
+			options.log.debug(`Sentry conf`, initOptionsCopy);
 		}
 		Sentry.init(initOptions);
 	}

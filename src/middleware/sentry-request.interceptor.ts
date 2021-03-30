@@ -1,6 +1,6 @@
+import { ExpressMiddlewareInterface, Middleware } from '@benjd90/routing-controllers';
 import * as Sentry from '@sentry/node';
 import { NextFunction, Request, RequestHandler, Response } from 'express';
-import { ExpressMiddlewareInterface, Middleware } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
 import { N9NodeRouting } from '..';
 

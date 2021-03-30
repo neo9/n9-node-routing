@@ -1,8 +1,7 @@
 import * as fs from 'fs';
 import * as multer from 'multer';
-import { JsonController, Post, UploadedFile } from 'routing-controllers';
 import { PassThrough } from 'stream';
-import { Service } from 'typedi';
+import { JsonController, Post, Service, UploadedFile } from '../../../../src';
 
 // to keep code clean better to extract this function into separate file
 class StorageEngine implements multer.StorageEngine {

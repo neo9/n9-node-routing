@@ -6,6 +6,29 @@
 
 ## Easily create express app in TypeScript with Decorators
 
+Example :
+
+```typescript
+import { Acl, Body, Get, JsonController, Service, Post } from 'n9-node-routing';
+
+@Service()
+@JsonController('/foo')
+export class ValidateController {
+	@Acl([{ action: 'readFoo', user: '@' }])
+	@Get('/details')
+	public async getFoo(): Promise<object> {
+		return {
+			foo: 'bar',
+		};
+	}
+
+	@Post('/')
+	public async createFoo(@Body() body: ElementRequestCreate): Promise<any> {
+		return body;
+	}
+}
+```
+
 ## Wrapper of project [routing-controllers](https://github.com/typestack/routing-controllers)
 
 1. Install all dependencies and install git hooks with husky :

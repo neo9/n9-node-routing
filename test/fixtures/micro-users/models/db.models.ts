@@ -1,5 +1,4 @@
-import { Expose } from 'class-transformer';
-import { DateParser } from '../../../../src';
+import { DateParser, Expose } from '../../../../src';
 
 export class BaseMongoObject {
 	public _id?: string;

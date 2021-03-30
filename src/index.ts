@@ -23,9 +23,14 @@ import { N9HttpClient } from './utils/http-client-base';
 function handleThrow(err: Error): void {
 	throw err;
 }
+export * from '@benjd90/routing-controllers';
 
+export { Inject, Service } from 'typedi';
+
+export { UseContainerOptions, getFromContainer, useContainer } from 'class-validator';
 export * from 'class-validator';
-export { getMetadataArgsStorage } from 'routing-controllers';
+export { Type, Transform, Exclude, Expose, classToPlain, plainToClass } from 'class-transformer';
+export { getMetadataArgsStorage } from '@benjd90/routing-controllers';
 export * from 'routing-controllers-openapi';
 
 export * from './decorators/acl.decorator';

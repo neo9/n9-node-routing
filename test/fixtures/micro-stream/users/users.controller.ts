@@ -1,8 +1,7 @@
 import { N9JSONStream } from '@neo9/n9-node-utils';
 import { Response } from 'express';
-import { Get, JsonController, Res } from 'routing-controllers';
 import streamArray = require('stream-array');
-import { Service } from 'typedi';
+import { Get, JsonController, Res, Service } from '../../../../src';
 
 @Service()
 @JsonController()

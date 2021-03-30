@@ -3,7 +3,7 @@ import { Server } from 'http';
 import { N9HttpClient } from '../../src';
 
 export default {
-	print: false,
+	print: true,
 	excludeSomeLogs: () => true,
 	jsonHttpClient: new N9HttpClient(new N9Log('tests')),
 };

@@ -1,6 +1,4 @@
-import { JsonController, Post } from 'routing-controllers';
-import { Service } from 'typedi';
-import { Acl } from '../../../../src';
+import { Acl, JsonController, Post, Service } from '../../../../src';
 
 @Service()
 @JsonController('/toto')
