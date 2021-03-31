@@ -25,7 +25,7 @@ function handleThrow(err: Error): void {
 }
 export * from '@benjd90/routing-controllers';
 
-export { Inject, Service } from 'typedi';
+export { Inject, Service, Container } from 'typedi';
 
 export { UseContainerOptions, getFromContainer, useContainer } from 'class-validator';
 export * from 'class-validator';

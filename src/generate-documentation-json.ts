@@ -6,6 +6,8 @@ import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
 import * as fs from 'fs';
 import * as oa from 'openapi3-ts';
 import { join } from 'path';
+// tslint:disable-next-line:no-import-side-effect
+import 'reflect-metadata';
 import * as RCOpenApi from 'routing-controllers-openapi';
 import { Container } from 'typedi';
 import { N9NodeRouting } from './models/routing.models';
