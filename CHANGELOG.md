@@ -1,3 +1,10 @@
+# [1.29.0-rc.5](https://github.com/neo9/n9-node-routing/compare/1.29.0-rc.4...1.29.0-rc.5) (2021-03-31)
+
+
+### export
+
+* Add export of Container from typedi ([8e384d7](https://github.com/neo9/n9-node-routing/commit/8e384d7a6f0ad574b05026476a67e845fedb21ca))
+
 # [1.29.0-rc.4](https://github.com/neo9/n9-node-routing/compare/1.29.0-rc.3...1.29.0-rc.4) (2021-03-31)
 
 
