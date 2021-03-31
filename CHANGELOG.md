@@ -1,3 +1,10 @@
+# [1.29.0-rc.3](https://github.com/neo9/n9-node-routing/compare/1.29.0-rc.2...1.29.0-rc.3) (2021-03-31)
+
+
+### sentry
+
+* Fix api documentation generation ([a1e815d](https://github.com/neo9/n9-node-routing/commit/a1e815d082406de465c38b7ed39fdb87c31d33fb))
+
 # [1.29.0-rc.2](https://github.com/neo9/n9-node-routing/compare/1.29.0-rc.1...1.29.0-rc.2) (2021-03-30)
 
 
