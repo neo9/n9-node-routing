@@ -1,5 +1,7 @@
-import { createExpressServer, getMetadataArgsStorage } from '@benjd90/routing-controllers';
+import * as RoutingControllers from '@benjd90/routing-controllers';
+import { N9Log } from '@neo9/n9-node-log';
 import * as appRootDir from 'app-root-dir';
+import * as ClassValidator from 'class-validator';
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
 import * as fs from 'fs';
 import * as oa from 'openapi3-ts';
@@ -19,6 +21,9 @@ export function generateDocumentationJson(
 		const environment = getEnvironment();
 		applyDefaultValuesOnOptions(n9NodeRoutingOptions, environment);
 	}
+	RoutingControllers.useContainer(Container);
+	ClassValidator.useContainer(Container);
+	Container.set('logger', n9NodeRoutingOptions.log || new N9Log('generate-documentation'));
 
 	const packageJson = require(join(appRootDir.get(), 'package.json'));
 	const baseOpenApiSpec: Partial<oa.OpenAPIObject> = {
@@ -30,10 +35,10 @@ export function generateDocumentationJson(
 	};
 	if (!serverAlreadyStarted) {
 		Container.set('N9NodeRoutingOptions', n9NodeRoutingOptions);
-		createExpressServer(n9NodeRoutingOptions.http.routingController);
+		RoutingControllers.createExpressServer(n9NodeRoutingOptions.http.routingController);
 	}
 
-	const routesStorage = getMetadataArgsStorage();
+	const routesStorage = RoutingControllers.getMetadataArgsStorage();
 
 	const schemas = validationMetadatasToSchemas({
 		refPointerPrefix: '#/components/schemas',
