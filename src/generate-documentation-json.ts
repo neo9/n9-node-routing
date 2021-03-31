@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import * as oa from 'openapi3-ts';
 import { join } from 'path';
 import * as RCOpenApi from 'routing-controllers-openapi';
+import { Container } from 'typedi';
 import { N9NodeRouting } from './models/routing.models';
 import { applyDefaultValuesOnOptions } from './options';
 import { getEnvironment } from './utils';
@@ -28,6 +29,7 @@ export function generateDocumentationJson(
 		},
 	};
 	if (!serverAlreadyStarted) {
+		Container.set('N9NodeRoutingOptions', n9NodeRoutingOptions);
 		createExpressServer(n9NodeRoutingOptions.http.routingController);
 	}
 
