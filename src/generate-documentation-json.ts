@@ -1,5 +1,4 @@
 import * as RoutingControllers from '@benjd90/routing-controllers';
-import { N9Log } from '@neo9/n9-node-log';
 import * as appRootDir from 'app-root-dir';
 import * as ClassValidator from 'class-validator';
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
@@ -25,7 +24,7 @@ export function generateDocumentationJson(
 	}
 	RoutingControllers.useContainer(Container);
 	ClassValidator.useContainer(Container);
-	Container.set('logger', n9NodeRoutingOptions.log || new N9Log('generate-documentation'));
+	Container.set('logger', n9NodeRoutingOptions.log);
 
 	const packageJson = require(join(appRootDir.get(), 'package.json'));
 	const baseOpenApiSpec: Partial<oa.OpenAPIObject> = {
