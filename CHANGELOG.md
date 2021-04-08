@@ -1,3 +1,10 @@
+# [1.29.0](https://github.com/neo9/n9-node-routing/compare/1.29.0-rc.5...1.29.0) (2021-04-08)
+
+
+### tests
+
+* Add more tests on body validations ([277aace](https://github.com/neo9/n9-node-routing/commit/277aace669290835280d6742e5fc13ee0b0f7415))
+
 # [1.29.0-rc.5](https://github.com/neo9/n9-node-routing/compare/1.29.0-rc.4...1.29.0-rc.5) (2021-03-31)
 
 
