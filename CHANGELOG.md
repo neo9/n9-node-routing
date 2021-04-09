@@ -1,3 +1,5 @@
+## [1.29.1](https://github.com/neo9/n9-node-routing/compare/1.29.1-rc.0...1.29.1) (2021-04-09)
+
 ## [1.29.1-rc.0](https://github.com/neo9/n9-node-routing/compare/1.29.0...1.29.1-rc.0) (2021-04-09)
 
 
