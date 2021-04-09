@@ -1568,12 +1568,13 @@ class-transformer@0.4.0:
   resolved "https://registry.npmjs.org/class-transformer/-/class-transformer-0.4.0.tgz#b52144117b423c516afb44cc1c76dbad31c2165b"
   integrity sha512-ETWD/H2TbWbKEi7m9N4Km5+cw1hNcqJSxlSYhsLsNjQzWWiZIYA1zafxpK9PwVfaZ6AqR5rrjPVUBGESm5tQUA==
 
-class-validator-jsonschema@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.npmjs.org/class-validator-jsonschema/-/class-validator-jsonschema-2.2.0.tgz#d33f8e6e579c627582729b10f387d870f5282bf7"
-  integrity sha512-tyyU5IjO7+rEwuXrXImsXz6DppYKDyT2+fG2Pz5oaHccz9Z5iMWPQFRuR9JykCX+Y9HgwC15U2h/v/2jYvCBkw==
+class-validator-jsonschema@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.npmjs.org/class-validator-jsonschema/-/class-validator-jsonschema-3.0.1.tgz#22e7ca733330663a1a2c68bc5f64355253524dd6"
+  integrity sha512-ynQ7adDhT+1VFNR7q5Q8bEZwZQxi0//81t2mlg+tf+lN711iw/XQvYY7xgyb5n9bh9mRP+VzyH00BNY9jVyVRQ==
   dependencies:
-    lodash "^4.17.20"
+    lodash.groupby "^4.6.0"
+    lodash.merge "^4.6.2"
     openapi3-ts "^2.0.0"
     reflect-metadata "^0.1.13"
     tslib "^2.0.3"
@@ -3935,6 +3936,11 @@ lodash.flattendeep@^4.4.0:
   resolved "https://registry.npmjs.org/lodash.flattendeep/-/lodash.flattendeep-4.4.0.tgz#fb030917f86a3134e5bc9bec0d69e0013ddfedb2"
   integrity sha1-+wMJF/hqMTTlvJvsDWngAT3f7bI=
 
+lodash.groupby@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.npmjs.org/lodash.groupby/-/lodash.groupby-4.6.0.tgz#0b08a1dcf68397c397855c3239783832df7403d1"
+  integrity sha1-Cwih3PaDl8OXhVwyOXg4Mt90A9E=
+
 lodash.ismatch@^4.4.0:
   version "4.4.0"
   resolved "https://registry.npmjs.org/lodash.ismatch/-/lodash.ismatch-4.4.0.tgz#756cb5150ca3ba6f11085a78849645f188f85f37"
@@ -3944,6 +3950,11 @@ lodash.memoize@4.1.2:
   version "4.1.2"
   resolved "https://registry.npmjs.org/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
   integrity sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4=
+
+lodash.merge@^4.6.2:
+  version "4.6.2"
+  resolved "https://registry.npmjs.org/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
+  integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
 
 lodash.once@4.1.1:
   version "4.1.1"
