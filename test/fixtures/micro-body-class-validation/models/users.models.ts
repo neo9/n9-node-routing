@@ -7,11 +7,12 @@ import {
 	IsNumber,
 	Matches,
 	Min,
+	Validate,
 	ValidateNested,
 	ValidatorConstraint,
 } from 'class-validator';
 import { IsString } from '../../../../src';
-import { arrayValidator } from './array-validator.models';
+import { ArrayValidator } from './array-validator.models';
 import { logValidator } from './print-validator.models';
 
 export enum UserType {
@@ -73,8 +74,8 @@ export class UserOtherDetail {
 	@Expose()
 	@IsArray()
 	@ArrayMinSize(1)
-	// @Validate(ArrayValidator, { each: true }) Don't work for now, class-validator v 0.13.1
-	@arrayValidator({ each: true })
+	@Validate(ArrayValidator, { each: true })
+	// @arrayValidator({ each: true }) // both annotation works
 	public anArray: string[] | UserFrontDetail[];
 }
 

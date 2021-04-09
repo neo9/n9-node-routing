@@ -3,11 +3,13 @@ import {
 	validateSync,
 	ValidationArguments,
 	ValidationOptions,
+	ValidatorConstraint,
 	ValidatorConstraintInterface,
 } from 'class-validator';
 import * as _ from 'lodash';
 import { UserFrontDetail } from './users.models';
 
+@ValidatorConstraint({ name: 'arrayValidator', async: false })
 export class ArrayValidator implements ValidatorConstraintInterface {
 	public validate(
 		value: string | UserFrontDetail,

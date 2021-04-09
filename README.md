@@ -39,6 +39,11 @@ export class ValidateController {
 
    `yarn test`
 
+:warning: Some [class-validator](https://github.com/typestack/class-validator) features changes between v 1.26 and 1.29 :
+
+- The "Custom validation decorators" require a new class instance and not only the class reference/name. Here [an example](./test/fixtures/micro-body-class-validation/models/array-validator.models.ts#L39).
+- The validation with schema, [here is the issue opened](https://github.com/typestack/class-validator/issues/595)
+
 ## API Documentation
 
 Documentation available as openapi 3.0 format : /documentation.json
