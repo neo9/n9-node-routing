@@ -1,3 +1,14 @@
+## [1.29.1-rc.0](https://github.com/neo9/n9-node-routing/compare/1.29.0...1.29.1-rc.0) (2021-04-09)
+
+
+### doc
+
+* Add warnings about class-validator ([9270356](https://github.com/neo9/n9-node-routing/commit/9270356ed73ffc870c030b3f0aa0a8d397b0d6b3))
+
+### yarn
+
+* Upgrade class-validator-json-schema to match class-validator version ([cece5c7](https://github.com/neo9/n9-node-routing/commit/cece5c75557d6336b6dab9cdd5bd60f7254929ef))
+
 # [1.29.0](https://github.com/neo9/n9-node-routing/compare/1.29.0-rc.5...1.29.0) (2021-04-08)
 
 
