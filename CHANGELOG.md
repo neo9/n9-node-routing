@@ -1,3 +1,10 @@
+# [1.30.0](https://github.com/neo9/n9-node-routing/compare/1.30.0-alpha.0...1.30.0) (2021-04-23)
+
+
+### apm
+
+* Add environment as app name prefix ([bbb47c5](https://github.com/neo9/n9-node-routing/commit/bbb47c5682424c35de953762e05b5a2c45ec39ed))
+
 # [1.30.0-alpha.0](https://github.com/neo9/n9-node-routing/compare/1.29.1...1.30.0-alpha.0) (2021-04-23)
 
 
