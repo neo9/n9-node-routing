@@ -158,7 +158,7 @@ export class N9HttpClient {
 		const uri = N9HttpClient.getUriFromUrlParts(url);
 
 		const namespaceRequestId = getNamespace(RequestIdNamespaceName);
-		const requestId = namespaceRequestId?.get('request-id');
+		const requestId: string | undefined = namespaceRequestId?.get('request-id');
 		const sentHeaders = { ...headers, 'x-request-id': requestId };
 		const searchParams =
 			typeof queryParams === 'string'
