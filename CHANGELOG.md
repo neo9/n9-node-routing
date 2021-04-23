@@ -1,3 +1,14 @@
+# [1.30.0-alpha.0](https://github.com/neo9/n9-node-routing/compare/1.29.1...1.30.0-alpha.0) (2021-04-23)
+
+
+### apm
+
+* Add basic newrelic support ([229de1c](https://github.com/neo9/n9-node-routing/commit/229de1cece770844b284d9e9ca800aaa56002004))
+
+### yarn
+
+* Upgrade dependencies ([6f5cb99](https://github.com/neo9/n9-node-routing/commit/6f5cb99500727d4501955c0cf0f503336f266d72))
+
 ## [1.29.1](https://github.com/neo9/n9-node-routing/compare/1.29.1-rc.0...1.29.1) (2021-04-09)
 
 ## [1.29.1-rc.0](https://github.com/neo9/n9-node-routing/compare/1.29.0...1.29.1-rc.0) (2021-04-09)
