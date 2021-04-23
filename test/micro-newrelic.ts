@@ -35,7 +35,7 @@ ava('Init newrelic and send error event', async (t: Assertions) => {
 	let { stdout } = stdMock.flush();
 	stdout = stdout.map((line) => line.toString());
 	t.truthy(
-		stdout.find((line) => line.includes('Enable NewRelic for app n9-node-routing')),
+		stdout.find((line) => line.includes('Enable NewRelic for app test-n9-node-routing')),
 		'Enable NewRelic for app n9-node-routing',
 	);
 	// can't be tested because it take several minutes to newrelic to stop
@@ -79,7 +79,7 @@ ava(
 		const { stdout } = stdMock.flush();
 		t.falsy(
 			stdout.find((line) => line.includes('Enable NewRelic for app n9-node-routing')),
-			'Enable NewRelic for app n9-node-routing',
+			'Enable NewRelic for app test-n9-node-routing',
 		);
 		// can't be tested because it take several minutes to newrelic to stop
 		// https://docs.newrelic.com/docs/apm/new-relic-apm/maintenance/disable-apm-agent/#node

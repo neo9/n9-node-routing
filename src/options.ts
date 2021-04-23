@@ -30,7 +30,7 @@ export function applyDefaultValuesOnOptions(
 	applyShutdownOptionsDefaults(options);
 	applyPrometheusOptionsDefault(options);
 	applySentryOptionsDefault(options, environment);
-	applyAPMOptionsDefault(options, appName);
+	applyAPMOptionsDefault(options, environment, appName);
 
 	applyOpenApiOptionsDefaults(options, environment);
 	applyHttpOptionsDefaults(options);
@@ -244,17 +244,21 @@ function applySentryOptionsDefault(
 	}
 }
 
-function applyAPMOptionsDefault(options: N9NodeRouting.Options, appName: string): void {
+function applyAPMOptionsDefault(
+	options: N9NodeRouting.Options,
+	environment: Utils.Environment,
+	appName: string,
+): void {
 	if (options.apm?.newRelicOptions?.licenseKey && !process.env.NEW_RELIC_LICENSE_KEY) {
 		process.env.NEW_RELIC_LICENSE_KEY = options.apm.newRelicOptions.licenseKey;
 	}
 	if (process.env.NEW_RELIC_LICENSE_KEY && process.env.NEW_RELIC_ENABLED?.trim() !== 'false') {
-		process.env.NEW_RELIC_NO_CONFIG_FILE = 'true';
-
 		if (!options.apm) options.apm = {};
 		options.apm.type = 'newRelic';
 		if (!options.apm.newRelicOptions) options.apm.newRelicOptions = {};
-		if (!options.apm.newRelicOptions.appName) options.apm.newRelicOptions.appName = appName;
+		if (!options.apm.newRelicOptions.appName) {
+			options.apm.newRelicOptions.appName = [environment, appName].join('-');
+		}
 		if (options.apm.newRelicOptions.appName && !process.env.NEW_RELIC_APP_NAME) {
 			process.env.NEW_RELIC_APP_NAME = options.apm.newRelicOptions.appName;
 		}
