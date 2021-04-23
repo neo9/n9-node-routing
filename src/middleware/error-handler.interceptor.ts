@@ -9,12 +9,16 @@ import { N9NodeRouting } from '..';
 @Middleware({ type: 'after' })
 export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 	private readonly sentryErrorHandler: ErrorRequestHandler;
+	private readonly newRelicNoticeError: (error: Error) => void;
 
 	constructor(@Inject('N9NodeRoutingOptions') private n9NodeRoutingOptions: N9NodeRouting.Options) {
 		if (this.n9NodeRoutingOptions.sentry) {
 			this.sentryErrorHandler = Sentry.Handlers.errorHandler(
 				this.n9NodeRoutingOptions.sentry.errorHandlerOptions,
 			);
+		}
+		if (this.n9NodeRoutingOptions.apm?.type === 'newRelic') {
+			this.newRelicNoticeError = require('newrelic').noticeError;
 		}
 	}
 
@@ -42,6 +46,15 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 
 		if (this.sentryErrorHandler) {
 			this.sentryErrorHandler(error, request, response, next);
+		}
+		if (this.newRelicNoticeError) {
+			try {
+				this.newRelicNoticeError(error);
+			} catch (e) {
+				((global as any).log || console).warn(`Error while sending error to newrelic`, {
+					errString: JSON.stringify(e),
+				});
+			}
 		}
 
 		response.status(status);

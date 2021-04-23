@@ -20,6 +20,7 @@ export namespace N9NodeRouting {
 		shutdown?: ShutdownOptions;
 		prometheus?: PrometheusOptions;
 		sentry?: SentryOptions;
+		apm?: APMOptions;
 		firstSequentialInitFileNames?: string[];
 		firstSequentialStartFileNames?: string[];
 	}
@@ -102,6 +103,18 @@ export namespace N9NodeRouting {
 		errorHandlerOptions?: {
 			shouldHandleError?(error: MiddlewareError): boolean;
 		};
+	}
+
+	export interface APMOptions {
+		type?: 'newRelic'; // add other later
+		// new relic doesn't allow to pass options at the runtime
+		// it's only possible through newrelic.js file or env variable
+		newRelicOptions?: NewRelicOptions;
+	}
+
+	export interface NewRelicOptions {
+		appName?: string;
+		licenseKey?: string;
 	}
 
 	/**
