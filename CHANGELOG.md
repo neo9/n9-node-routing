@@ -1,3 +1,10 @@
+## [1.30.1](https://github.com/neo9/n9-node-routing/compare/1.30.0...1.30.1) (2021-04-29)
+
+
+### apm
+
+* Add new relic env name and full error to error report ([4ff47c7](https://github.com/neo9/n9-node-routing/commit/4ff47c7ac178fe0922ad70265ba6123e5c42c25a))
+
 # [1.30.0](https://github.com/neo9/n9-node-routing/compare/1.30.0-alpha.0...1.30.0) (2021-04-23)
 
 
