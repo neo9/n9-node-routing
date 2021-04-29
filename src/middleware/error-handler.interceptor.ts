@@ -9,7 +9,10 @@ import { N9NodeRouting } from '..';
 @Middleware({ type: 'after' })
 export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 	private readonly sentryErrorHandler: ErrorRequestHandler;
-	private readonly newRelicNoticeError: (error: Error) => void;
+	private readonly newRelicNoticeError: (
+		error: Error,
+		customAttributes?: { [key: string]: string | number | boolean },
+	) => void;
 
 	constructor(@Inject('N9NodeRoutingOptions') private n9NodeRoutingOptions: N9NodeRouting.Options) {
 		if (this.n9NodeRoutingOptions.sentry) {
@@ -49,10 +52,10 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 		}
 		if (this.newRelicNoticeError) {
 			try {
-				this.newRelicNoticeError(error);
+				this.newRelicNoticeError(error, { errString: fastSafeStringify(error) });
 			} catch (e) {
 				((global as any).log || console).warn(`Error while sending error to newrelic`, {
-					errString: JSON.stringify(e),
+					errString: fastSafeStringify(e),
 				});
 			}
 		}

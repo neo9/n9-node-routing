@@ -257,7 +257,8 @@ function applyAPMOptionsDefault(
 		options.apm.type = 'newRelic';
 		if (!options.apm.newRelicOptions) options.apm.newRelicOptions = {};
 		if (!options.apm.newRelicOptions.appName) {
-			options.apm.newRelicOptions.appName = [environment, appName].join('-');
+			const env: string = process.env.NEW_RELIC_ENV_NAME || environment;
+			options.apm.newRelicOptions.appName = [env, appName].join('-');
 		}
 		if (options.apm.newRelicOptions.appName && !process.env.NEW_RELIC_APP_NAME) {
 			process.env.NEW_RELIC_APP_NAME = options.apm.newRelicOptions.appName;
