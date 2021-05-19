@@ -7,7 +7,7 @@ import 'reflect-metadata';
 import { Container } from 'typedi';
 import { PackageJson } from 'types-package-json';
 import * as ExpressApp from './express-app';
-import { initAPM } from "./init-apm";
+import { initAPM } from './init-apm';
 import initialiseModules from './initialise-modules';
 import { N9NodeRouting } from './models/routing.models';
 import { applyDefaultValuesOnOptions } from './options';
@@ -50,9 +50,9 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 	process.on('unhandledRejection', handleThrow);
 	// Options default
 	const environment = getEnvironment();
-  const packageJson: PackageJson = require(Path.join(appRootDir.get(), 'package.json'));
+	const packageJson: PackageJson = require(Path.join(appRootDir.get(), 'package.json'));
 
-  applyDefaultValuesOnOptions(options, environment, packageJson.name);
+	applyDefaultValuesOnOptions(options, environment, packageJson.name);
 
 	const formatLogInJSON = options.enableLogFormatJSON;
 	(global as any).n9NodeRoutingData = {
@@ -82,10 +82,9 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 	Container.set('N9HttpClient', new N9HttpClient());
 	Container.set('N9NodeRoutingOptions', options);
 
-
-	if(options.apm) {
-    initAPM(options.apm, options.log);
-  }
+	if (options.apm) {
+		initAPM(options.apm, options.log);
+	}
 
 	// Execute all *.init.ts files in modules before app started listening on the HTTP Port
 	await initialiseModules(options.path, options.log, options.firstSequentialInitFileNames);

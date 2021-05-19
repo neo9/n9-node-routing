@@ -3,9 +3,9 @@ import * as Async from 'async';
 
 export class Cargo<
 	RESPONSE extends object = { _id: string },
-	REQUEST extends object | string = string
+	REQUEST extends object | string = string,
 > {
-	private cargoQueue: Async.AsyncQueue<REQUEST>;
+	private cargoQueue: Async.QueueObject<REQUEST>;
 
 	/**
 	 * Return a new cargo wich can be use to automatically batch tasks executions.
@@ -43,7 +43,7 @@ export class Cargo<
 		nbMaxConcurrentWorkers: number = 2,
 		taskPerWorker: number = 200,
 	) {
-		this.cargoQueue = (Async as any).cargoQueue(
+		this.cargoQueue = Async.cargoQueue(
 			async (requests: REQUEST[]) => {
 				try {
 					const responses = await this.workerFn(requests);

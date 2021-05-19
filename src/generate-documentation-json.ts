@@ -9,7 +9,7 @@ import { join } from 'path';
 import 'reflect-metadata';
 import * as RCOpenApi from 'routing-controllers-openapi';
 import { Container } from 'typedi';
-import { PackageJson } from "types-package-json";
+import { PackageJson } from 'types-package-json';
 import { N9NodeRouting } from './models/routing.models';
 import { applyDefaultValuesOnOptions } from './options';
 import { getEnvironment } from './utils';
@@ -18,7 +18,7 @@ export function generateDocumentationJson(
 	n9NodeRoutingOptions: N9NodeRouting.Options,
 	serverAlreadyStarted: boolean = true,
 	defaultValuesAreAlreadySet: boolean = false,
-	packageJson: PackageJson = require(join(appRootDir.get(), 'package.json'))
+	packageJson: PackageJson = require(join(appRootDir.get(), 'package.json')),
 ): object {
 	if (defaultValuesAreAlreadySet) {
 		const environment = getEnvironment();
