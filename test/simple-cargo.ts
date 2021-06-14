@@ -1,17 +1,10 @@
 import { N9Error, waitFor } from '@neo9/n9-node-utils';
 import ava, { Assertions } from 'ava';
-import { getNamespace } from 'continuation-local-storage';
 import * as stdMock from 'std-mocks';
 import { Cargo } from '../src';
-import { RequestIdNamespaceName } from '../src/requestid';
 import commons from './fixtures/commons';
 
 const print = commons.print;
-
-const namespaceRequestId = getNamespace(RequestIdNamespaceName);
-namespaceRequestId.run(() => {
-	namespaceRequestId.set('requestId', 'ReQuEsTiD');
-});
 
 ava('Use a small cargo to compute data', async (t: Assertions) => {
 	stdMock.use({ print });

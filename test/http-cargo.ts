@@ -1,19 +1,11 @@
-import { N9Error } from '@neo9/n9-node-utils';
 import ava, { Assertions } from 'ava';
-import { getNamespace } from 'continuation-local-storage';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
 // tslint:disable-next-line:import-name
 import N9NodeRouting, { HttpCargoBuilder } from '../src';
-import { RequestIdNamespaceName } from '../src/requestid';
 import commons, { closeServer } from './fixtures/commons';
 
 const print = commons.print;
-
-const namespaceRequestId = getNamespace(RequestIdNamespaceName);
-namespaceRequestId.run(() => {
-	namespaceRequestId.set('requestId', 'ReQuEsTiD');
-});
 
 ava('Call a route multiple times with HttpClient and cargo', async (t: Assertions) => {
 	stdMock.use({ print });

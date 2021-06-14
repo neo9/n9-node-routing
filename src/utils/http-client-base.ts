@@ -1,14 +1,15 @@
 import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
-import { getNamespace } from 'continuation-local-storage';
+import { getNamespace } from 'cls-hooked';
 import fastSafeStringify from 'fast-safe-stringify';
 import got, { Method, Options } from 'got';
 import { RequestError } from 'got/dist/source/core';
 import { IncomingMessage } from 'http';
 import * as QueryString from 'query-string';
+import * as shortid from 'shortid';
 import { PassThrough } from 'stream';
 import urlJoin = require('url-join');
-import { RequestIdNamespaceName } from '../requestid';
+import { RequestIdKey, RequestIdNamespaceName } from '../requestid';
 
 export type N9HttpClientQueryParams =
 	| string
@@ -158,7 +159,7 @@ export class N9HttpClient {
 		const uri = N9HttpClient.getUriFromUrlParts(url);
 
 		const namespaceRequestId = getNamespace(RequestIdNamespaceName);
-		const requestId: string | undefined = namespaceRequestId?.get('request-id');
+		const requestId: string = namespaceRequestId?.get(RequestIdKey) || shortid.generate();
 		const sentHeaders = { ...headers, 'x-request-id': requestId };
 		const searchParams =
 			typeof queryParams === 'string'

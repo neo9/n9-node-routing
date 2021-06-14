@@ -1,10 +1,11 @@
-import { createNamespace, getNamespace } from 'continuation-local-storage';
+import { createNamespace, getNamespace } from 'cls-hooked';
 import { NextFunction, Request, Response } from 'express';
 import * as shortid from 'shortid';
 
 const RequestIdNamespaceName = 'requestIdNamespace';
-export { RequestIdNamespaceName };
-const requestIdNamespace = createNamespace(RequestIdNamespaceName);
+const RequestIdKey = 'request-id';
+createNamespace(RequestIdNamespaceName);
+export { RequestIdNamespaceName, RequestIdKey };
 
 function flattenWithInheritProperties(obj: object): object {
 	if (!obj) return obj;
@@ -24,7 +25,7 @@ export function requestIdFilter(
 	const formatLogInJSON: boolean = (global as any).n9NodeRoutingData?.formatLogInJSON ?? false;
 
 	const namespaceRequestId = getNamespace(RequestIdNamespaceName);
-	const requestId = namespaceRequestId?.get('request-id');
+	const requestId = namespaceRequestId?.get(RequestIdKey);
 	if (formatLogInJSON) {
 		const metaFull = flattenWithInheritProperties(meta);
 		return {
@@ -39,11 +40,13 @@ export function requestIdFilter(
 }
 
 export function setRequestContext(req: Request, res: Response, next: NextFunction): void {
-	requestIdNamespace.run(() => {
-		if (!req.headers['x-request-id']) {
-			req.headers['x-request-id'] = shortid.generate();
-		}
-		requestIdNamespace.set('request-id', req.headers['x-request-id']);
+	let requestId = req.headers['x-request-id'];
+	if (!requestId) {
+		requestId = shortid.generate();
+	}
+	const namespaceRequestId = getNamespace(RequestIdNamespaceName);
+	namespaceRequestId.run(async () => {
+		namespaceRequestId.set(RequestIdKey, requestId);
 		next();
 	});
 }
