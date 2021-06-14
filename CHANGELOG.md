@@ -1,3 +1,12 @@
+## [1.30.2](https://github.com/neo9/n9-node-routing/compare/1.30.1...1.30.2) (2021-06-14)
+
+
+### yarn
+
+* Update dependencies ([4687a6c](https://github.com/neo9/n9-node-routing/commit/4687a6cf73c24b8f6351f9b8c81315875fecb6df))
+* Update dependencies ([4e848bb](https://github.com/neo9/n9-node-routing/commit/4e848bbfa27769a9eb93a9eab5e01f95ecf842a8))
+* Update dependencies ([6a950eb](https://github.com/neo9/n9-node-routing/commit/6a950eb5913dc6bd68e740db3620395765f6f82d))
+
 ## [1.30.1](https://github.com/neo9/n9-node-routing/compare/1.30.0...1.30.1) (2021-04-29)
 
 
