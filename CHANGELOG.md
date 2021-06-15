@@ -1,3 +1,10 @@
+## [1.30.3](https://github.com/neo9/n9-node-routing/compare/1.30.2...1.30.3) (2021-06-15)
+
+
+### yarn
+
+* Replace continuation-local-storage by cls-hooked to fix n9-node-conf fs-extra compatibility ([4e3ba43](https://github.com/neo9/n9-node-routing/commit/4e3ba43fbf11c76850944e6f1dd165f926d6cb8e))
+
 ## [1.30.2](https://github.com/neo9/n9-node-routing/compare/1.30.1...1.30.2) (2021-06-14)
 
 
