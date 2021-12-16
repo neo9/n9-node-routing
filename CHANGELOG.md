@@ -1,3 +1,15 @@
+# [1.31.0](https://github.com/neo9/n9-node-routing/compare/1.30.3...1.31.0) (2021-12-16)
+
+
+### transformer
+
+* Add plain to class default value support to class-transformer default options ([e8976b7](https://github.com/neo9/n9-node-routing/commit/e8976b7ee4f0fe233209ff5a1ad2dca1b091fda1))
+
+### yarn
+
+* Fix security issue and dependencies for dependencies urijs tar ([11e829f](https://github.com/neo9/n9-node-routing/commit/11e829ffb75ae15e4c1d11c17c91d95f493843e2))
+* Fix security issue by upgrading dependency color-string ([22453d0](https://github.com/neo9/n9-node-routing/commit/22453d0a5942d232598417e2717143091c0b2d09))
+
 ## [1.30.3](https://github.com/neo9/n9-node-routing/compare/1.30.2...1.30.3) (2021-06-15)
 
 

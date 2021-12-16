@@ -1,6 +1,6 @@
 {
   "name": "n9-node-routing",
-  "version": "1.30.3",
+  "version": "1.31.0",
   "description": "Library to easily start app with routing-controllers",
   "keywords": [
     "node",
