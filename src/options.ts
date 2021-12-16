@@ -109,6 +109,9 @@ function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 		},
 		defaultErrorHandler: false,
 		controllers: [`${options.path}/**/*.controller.*s`],
+		plainToClassTransformOptions: {
+			exposeDefaultValues: true,
+		},
 	};
 
 	// Configure morgan
