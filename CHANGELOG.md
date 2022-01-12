@@ -1,3 +1,15 @@
+# [1.32.0](https://github.com/neo9/n9-node-routing/compare/1.31.0...1.32.0) (2022-01-12)
+
+
+### build
+
+* Fix github-actions branch ([3b13410](https://github.com/neo9/n9-node-routing/commit/3b13410f6613132b5de548c302eeff57d7a08364))
+* Use github-actions for build instead of travis ([b729431](https://github.com/neo9/n9-node-routing/commit/b729431387d81444c58f295945a18f2804f14280))
+
+### yarn
+
+* Upgrade n9-coding-style to v 3.0.0 ([7f21309](https://github.com/neo9/n9-node-routing/commit/7f21309ad301bd568d903b217e80409706b8ac4b))
+
 # [1.31.0](https://github.com/neo9/n9-node-routing/compare/1.30.3...1.31.0) (2021-12-16)
 
 
