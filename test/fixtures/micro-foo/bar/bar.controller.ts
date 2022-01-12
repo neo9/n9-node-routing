@@ -1,5 +1,6 @@
 import { N9Error } from '@neo9/n9-node-utils';
 import { Service } from 'typedi';
+
 import { Body, Get, JsonController, Param, Post, QueryParam } from '../../../../src';
 import { BodyBar } from './body-bar.models';
 
@@ -7,11 +8,12 @@ import { BodyBar } from './body-bar.models';
 @JsonController()
 export class ValidateController {
 	@Post('/:version/bar')
-	public async bar(
+	public bar(
 		@Param('version') version: string,
 		@QueryParam('error') queryError: boolean,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		@Body() body: BodyBar,
-	): Promise<any> {
+	): any {
 		if (queryError) {
 			if (version === 'v1') {
 				throw new N9Error('bar-error');
@@ -25,7 +27,7 @@ export class ValidateController {
 	}
 
 	@Get('/bar-fail')
-	public async barFail(): Promise<any> {
+	public barFail(): any {
 		throw new Error();
 	}
 }

@@ -1,14 +1,15 @@
 import { MongoClient } from '@neo9/n9-mongo-client';
 import * as crypto from 'crypto';
-import { Cursor, FilterQuery } from 'mongodb';
+import type { Cursor, FilterQuery } from 'mongodb';
 import { Service } from 'typedi';
+
 import { UserDetails, UserEntity, UserListItem, UserRequestCreate } from './users.models';
 
 @Service()
 export class UsersService {
-	private static async hashPassword(password: string): Promise<string> {
+	private static hashPassword(password: string): string {
 		const hasher = crypto.createHash('sha256');
-		await hasher.update(password);
+		hasher.update(password);
 		return hasher.digest('hex');
 	}
 
@@ -38,7 +39,7 @@ export class UsersService {
 
 	public async create(user: UserRequestCreate, creatorUserId: string): Promise<UserDetails> {
 		// Hash password
-		user.password = await UsersService.hashPassword(user.password);
+		user.password = UsersService.hashPassword(user.password);
 		// Save to database
 		return await this.mongoClient.insertOne(user, creatorUserId);
 	}

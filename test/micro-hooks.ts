@@ -4,11 +4,12 @@ import * as bodyParser from 'body-parser';
 import { Express } from 'express';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
+
 // tslint:disable-next-line:import-name
 import N9NodeRouting, { N9HttpClient } from '../src';
 import commons, { closeServer } from './fixtures/commons';
 
-const MICRO_HOOKS = join(__dirname, 'fixtures/micro-hooks/');
+const microHooks = join(__dirname, 'fixtures/micro-hooks/');
 
 ava('Call new route (imagine a proxy)', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
@@ -17,10 +18,10 @@ ava('Call new route (imagine a proxy)', async (t: Assertions) => {
 		path: '/opt/null',
 		http: {
 			port: 6001,
-			beforeRoutingControllerLaunchHook: async (expressApp: Express, log: N9Log) => {
+			beforeRoutingControllerLaunchHook: (expressApp: Express, log: N9Log) => {
 				log.info('beforeRoutingControllerLaunchHook');
 			},
-			afterRoutingControllerLaunchHook: async (expressApp, log) => {
+			afterRoutingControllerLaunchHook: (expressApp, log) => {
 				log.info('afterRoutingControllerLaunchHook');
 			},
 		},
@@ -53,7 +54,7 @@ ava('Limit max payload size reached for bodyparser', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({
 		hasProxy: true, // tell n9NodeRouting to parse `session` header
-		path: MICRO_HOOKS,
+		path: microHooks,
 		http: {
 			port: 6001,
 		},
@@ -81,10 +82,10 @@ ava('Increase max payload size to bodyparser', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({
 		hasProxy: true, // tell n9NodeRouting to parse `session` header
-		path: MICRO_HOOKS,
+		path: microHooks,
 		http: {
 			port: 6001,
-			beforeRoutingControllerLaunchHook: async (expressApp: Express) => {
+			beforeRoutingControllerLaunchHook: (expressApp: Express) => {
 				expressApp.use(bodyParser.json({ limit: '1024kb' }));
 			},
 		},

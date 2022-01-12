@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+
 import { Exclude, Expose, IsInt, IsOptional, Max, Min, Transform } from '../../../../src';
 
 @Exclude()

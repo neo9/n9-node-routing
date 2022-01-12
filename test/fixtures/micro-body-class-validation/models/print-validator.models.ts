@@ -1,7 +1,7 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 
 export function logValidator(validationOptions?: ValidationOptions): any {
-	return (object: object, propertyName: string) => {
+	return (object: object, propertyName: string): void => {
 		registerDecorator({
 			propertyName,
 			name: 'logValidator',
@@ -10,7 +10,7 @@ export function logValidator(validationOptions?: ValidationOptions): any {
 			options: validationOptions,
 			validator: {
 				validate(value: any): boolean {
-					// tslint:disable-next-line:no-console
+					// eslint-disable-next-line no-console
 					console.log(
 						`Log Validator, propertyName : ${propertyName}, value : ${JSON.stringify(value)}`,
 					);

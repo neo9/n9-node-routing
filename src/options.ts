@@ -7,6 +7,7 @@ import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
 import * as morgan from 'morgan';
 import { join } from 'path';
+
 import { ErrorHandler } from './middleware/error-handler.interceptor';
 import { PrometheusInterceptor } from './middleware/prometheus.interceptor';
 import { SentryRequestInterceptor } from './middleware/sentry-request.interceptor';
@@ -14,27 +15,6 @@ import { SentryTracingInterceptor } from './middleware/sentry-tracing.intercepto
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
 import { N9NodeRouting } from './models/routing.models';
 import * as Utils from './utils';
-
-export function applyDefaultValuesOnOptions(
-	options: N9NodeRouting.Options,
-	environment: Utils.Environment,
-	appName: string,
-): void {
-	options.path = options.path || join(appRootDir.get(), 'src', 'modules');
-	options.log = options.log || (global as any).log;
-	options.hasProxy = typeof options.hasProxy === 'boolean' ? options.hasProxy : true;
-	options.enableRequestId =
-		typeof options.enableRequestId === 'boolean' ? options.enableRequestId : true;
-
-	applyLogsOptionsDefaults(options, environment);
-	applyShutdownOptionsDefaults(options);
-	applyPrometheusOptionsDefault(options);
-	applySentryOptionsDefault(options, environment);
-	applyAPMOptionsDefault(options, environment, appName);
-
-	applyOpenApiOptionsDefaults(options, environment);
-	applyHttpOptionsDefaults(options);
-}
 
 function applyLogsOptionsDefaults(
 	options: N9NodeRouting.Options,
@@ -89,9 +69,10 @@ function applyOpenApiOptionsDefaults(
 	options.openapi.isEnable =
 		typeof options.openapi.isEnable === 'boolean' ? options.openapi.isEnable : true;
 	options.openapi.jsonUrl = options.openapi.jsonUrl || '/documentation.json';
-	options.openapi.swaggerui =
-		options.openapi.swaggerui ||
-		Object.assign({}, options.openapi.swaggerui, { swaggerUrl: '../documentation.json' });
+	options.openapi.swaggerui = options.openapi.swaggerui || {
+		...options.openapi.swaggerui,
+		swaggerUrl: '../documentation.json',
+	};
 	options.openapi.generateDocumentationOnTheFly =
 		typeof options.openapi.generateDocumentationOnTheFly === 'boolean'
 			? options.openapi.generateDocumentationOnTheFly
@@ -140,13 +121,15 @@ function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 	options.http.logLevel =
 		typeof options.http.logLevel !== 'undefined'
 			? options.http.logLevel
-			: (tokens: morgan.TokenIndexer, req: express.Request, res: express.Response) => {
+			: (tokens: morgan.TokenIndexer, req: express.Request, res: express.Response): string => {
 					const formatLogInJSON: boolean = (global as any).n9NodeRoutingData.formatLogInJSON;
 
 					if (formatLogInJSON) {
 						return JSON.stringify({
 							'method': tokens.method(req, res),
-							'request-id': options.enableRequestId ? `(${req.headers['x-request-id']})` : '',
+							'request-id': options.enableRequestId
+								? `(${req.headers['x-request-id'] as string})`
+								: '',
 							'path': tokens.url(req, res),
 							'status': tokens.status(req, res),
 							'durationMs': Number.parseFloat(tokens['response-time'](req, res)),
@@ -163,11 +146,10 @@ function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 						tokens.res(req, res, 'content-length'),
 					].join(' ');
 			  };
-	options.http.routingController = Object.assign(
-		{},
-		defaultRoutingControllerOptions,
-		options.http.routingController,
-	);
+	options.http.routingController = {
+		...defaultRoutingControllerOptions,
+		...options.http.routingController,
+	};
 
 	options.http.routingController.interceptors = [SessionLoaderInterceptor, ErrorHandler];
 	if (options.sentry) {
@@ -184,7 +166,10 @@ function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 	if (options.prometheus) {
 		options.http.routingController.interceptors.push(PrometheusInterceptor);
 	}
-	options.http.routingController.authorizationChecker = async (action: Action) => {
+	options.http.routingController.authorizationChecker = async (
+		action: Action,
+		// eslint-disable-next-line @typescript-eslint/require-await
+	): Promise<boolean> => {
 		if (!action.request.headers.session) {
 			throw new N9Error('session-required', 401);
 		}
@@ -267,4 +252,25 @@ function applyAPMOptionsDefault(
 			process.env.NEW_RELIC_APP_NAME = options.apm.newRelicOptions.appName;
 		}
 	}
+}
+
+export function applyDefaultValuesOnOptions(
+	options: N9NodeRouting.Options,
+	environment: Utils.Environment,
+	appName: string,
+): void {
+	options.path = options.path || join(appRootDir.get(), 'src', 'modules');
+	options.log = options.log || (global as any).log;
+	options.hasProxy = typeof options.hasProxy === 'boolean' ? options.hasProxy : true;
+	options.enableRequestId =
+		typeof options.enableRequestId === 'boolean' ? options.enableRequestId : true;
+
+	applyLogsOptionsDefaults(options, environment);
+	applyShutdownOptionsDefaults(options);
+	applyPrometheusOptionsDefault(options);
+	applySentryOptionsDefault(options, environment);
+	applyAPMOptionsDefault(options, environment, appName);
+
+	applyOpenApiOptionsDefaults(options, environment);
+	applyHttpOptionsDefaults(options);
 }

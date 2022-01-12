@@ -2,13 +2,14 @@ import { N9Error } from '@neo9/n9-node-utils';
 import ava, { Assertions } from 'ava';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
+
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
 
 const print = commons.print;
 
-const MICRO_FOO = join(__dirname, 'fixtures/micro-foo/');
+const microFoo = join(__dirname, 'fixtures/micro-foo/');
 
 ava.beforeEach(() => {
 	delete (global as any).log;
@@ -19,7 +20,7 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	process.env.NODE_ENV = 'development';
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
-		path: MICRO_FOO,
+		path: microFoo,
 	});
 	// Check /foo route added on foo/foo.init.ts
 	let res: any = await commons.jsonHttpClient.get<{ foo: string }>('http://localhost:5000/foo');
@@ -86,7 +87,7 @@ ava('Basic usage, create http server on production', async (t: Assertions) => {
 	stdMock.use({ print });
 	process.env.NODE_ENV = 'production';
 	const { server } = await N9NodeRouting({
-		path: MICRO_FOO,
+		path: microFoo,
 	});
 	// Check /foo route added on foo/foo.init.ts
 	let res: any = await commons.jsonHttpClient.get('http://localhost:5000/foo');
@@ -162,7 +163,7 @@ ava('Basic usage, create http server on production', async (t: Assertions) => {
 ava('Check /routes', async (t) => {
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
-		path: MICRO_FOO,
+		path: microFoo,
 		http: { port: 5575 },
 	});
 
@@ -186,7 +187,7 @@ ava('Check /routes', async (t) => {
 ava('Call routes (versionning)', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({
-		path: MICRO_FOO,
+		path: microFoo,
 		http: { port: 5559 },
 	});
 	let res = await commons.jsonHttpClient.post<any>('http://localhost:5559/v1/bar');
@@ -225,7 +226,7 @@ ava('Call routes (versionning)', async (t: Assertions) => {
 ava('Call routes with error in development (error key)', async (t: Assertions) => {
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
-		path: MICRO_FOO,
+		path: microFoo,
 		http: { port: 5587 },
 	});
 	// Call error with no message
@@ -252,7 +253,7 @@ ava('Call routes with error in production (no leak)', async (t: Assertions) => {
 	process.env.NODE_ENV = 'production';
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
-		path: MICRO_FOO,
+		path: microFoo,
 		http: { port: 5587 },
 	});
 

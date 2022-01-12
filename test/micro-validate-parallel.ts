@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 import { ValidationMetadata } from 'class-validator/types/metadata/ValidationMetadata';
 import * as stdMock from 'std-mocks';
+
 import commons from './fixtures/commons';
 
 const userValidationSchemas: ValidationSchema[] = [
@@ -100,16 +101,16 @@ async function testValidation(index: number): Promise<void> {
 	}
 }
 
-ava('[VALIDATE-PARALLEL] Check validation with multiple schemas', async (t: Assertions) => {
+ava('[VALIDATE-PARALLEL] Check validation with multiple schemas', (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 
 	// Serial exec
 	for (let i = 0; i < userValidationSchemas.length; i += 1) {
-		await t.notThrows(async () => await testValidation(i), `Validation ok for index : ${i}`);
+		t.notThrows(async () => await testValidation(i), `Validation ok for index : ${i}`);
 	}
 
 	// Parallel exec
-	await t.notThrows(
+	t.notThrows(
 		async () =>
 			await Promise.all(userValidationSchemas.map(async (v, i) => await testValidation(i))),
 		'Validation parallel is OK',

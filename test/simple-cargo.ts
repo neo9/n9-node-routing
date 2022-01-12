@@ -1,6 +1,7 @@
 import { N9Error, waitFor } from '@neo9/n9-node-utils';
 import ava, { Assertions } from 'ava';
 import * as stdMock from 'std-mocks';
+
 import { Cargo } from '../src';
 import commons from './fixtures/commons';
 
@@ -78,6 +79,7 @@ ava('Simple cargo with error inside worker', async (t: Assertions) => {
 	stdMock.use({ print });
 	const cargo = new Cargo<{ v: number; newV: number }, { v: number }>(
 		'simple-fct-cargo',
+		// eslint-disable-next-line @typescript-eslint/require-await
 		async () => {
 			throw new N9Error('an-error', 500, {});
 		},
@@ -119,7 +121,7 @@ ava('Simple cargo with error inside dispatch', async (t: Assertions) => {
 			await waitFor(10); // add some delay to simulate async operation
 			return requests.map((req) => ({ v: req.v, newV: req.v * 2 }));
 		},
-		() => {
+		(): { v: number; newV: number } => {
 			throw new N9Error('an-error', 500, {});
 		},
 		false,

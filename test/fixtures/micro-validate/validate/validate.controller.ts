@@ -1,5 +1,6 @@
 import { N9Error } from '@neo9/n9-node-utils';
 import { Service } from 'typedi';
+
 import { Body, JsonController, Post } from '../../../../src';
 import { Message } from './messages.models';
 import { User } from './users.models';
@@ -8,19 +9,19 @@ import { User } from './users.models';
 @JsonController()
 export class ValidateController {
 	@Post('/validate')
-	public async validate(@Body() user: User): Promise<any> {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	public validate(@Body() user: User): any {
 		return { ok: true };
 	}
 
 	@Post('/validate-allow-all')
-	public async validateOk(
-		@Body({ validate: { forbidNonWhitelisted: false } }) user: User,
-	): Promise<any> {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	public validateOk(@Body({ validate: { forbidNonWhitelisted: false } }) user: User): any {
 		return { ok: true };
 	}
 
 	@Post('/parse-date')
-	public async parseDate(@Body() message: Message): Promise<any> {
+	public parseDate(@Body() message: Message): any {
 		// istanbul ignore next
 		if (message.date instanceof Date) {
 			return { ok: true };

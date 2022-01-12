@@ -1,5 +1,6 @@
 import { N9Error } from '@neo9/n9-node-utils';
 import ava, { Assertions } from 'ava';
+
 import { end, init, urlPrefix } from './fixtures/helper';
 import {
 	User,

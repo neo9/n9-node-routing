@@ -1,7 +1,7 @@
-// tslint:disable:ordered-imports
-import { end, init, get, post, logErrorForHuman } from './fixtures/helper';
-import { N9JSONStreamResponse } from '@neo9/n9-node-utils';
+import { N9Error, N9JSONStreamResponse } from '@neo9/n9-node-utils';
 import ava, { ExecutionContext } from 'ava';
+
+import { end, get, init, logErrorForHuman, post } from './fixtures/helper';
 import { UserDetails, UserListItem } from './fixtures/micro-users2/users.models';
 
 const context: any = {};
@@ -15,7 +15,7 @@ ava.before('Start API', async () => {
 });
 
 ava('POST /users => 200 with good params', async (t: ExecutionContext) => {
-	const { body, err } = await post<UserDetails>('/users', {
+	const { body, err }: { body: UserDetails; err: N9Error } = await post<UserDetails>('/users', {
 		firstName: 'Neo',
 		lastName: 'Nine',
 		email: 'neo@neo9.fr',

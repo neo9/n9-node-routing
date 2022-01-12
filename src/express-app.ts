@@ -1,10 +1,9 @@
 import * as RoutingControllers from '@benjd90/routing-controllers';
 import { createMiddleware, signalIsUp } from '@promster/express';
 import * as PromsterServer from '@promster/server';
-import ErrnoException = NodeJS.ErrnoException;
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
-import { Integration } from '@sentry/types/dist/integration';
+import type { Integration } from '@sentry/types/dist/integration';
 import * as ClassValidator from 'class-validator';
 import * as express from 'express';
 import fastSafeStringify from 'fast-safe-stringify';
@@ -13,7 +12,8 @@ import { createServer } from 'http';
 import * as morgan from 'morgan';
 import * as PrometheusClient from 'prom-client';
 import { Container } from 'typedi';
-import { PackageJson } from 'types-package-json';
+import type { PackageJson } from 'types-package-json';
+import ErrnoException = NodeJS.ErrnoException;
 import { N9NodeRouting } from './models/routing.models';
 import { setRequestContext } from './requestid';
 
@@ -26,7 +26,7 @@ export async function init(
 	ClassValidator.useContainer(Container);
 
 	// Listeners
-	const analyzeError = (error: ErrnoException) => {
+	const analyzeError = (error: ErrnoException): ErrnoException => {
 		/* istanbul ignore if */
 		if (error.syscall !== 'listen') {
 			return error;
@@ -42,7 +42,7 @@ export async function init(
 				return error;
 		}
 	};
-	const onListening = () => {
+	const onListening = (): void => {
 		options.log.info(`Listening on port ${options.http.port}`);
 		if (options.prometheus) {
 			signalIsUp();
@@ -142,7 +142,7 @@ export async function init(
 	}
 
 	// Listen method
-	const listen = async () => {
+	const listen = async (): Promise<void> => {
 		return new Promise<void>((resolve, reject) => {
 			server.listen(options.http.port);
 			server.on('error', (error: ErrnoException) => {

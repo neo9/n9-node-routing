@@ -4,7 +4,7 @@ import { Get, JsonController, Service } from '../../../../src';
 @JsonController()
 export class ErrorsController {
 	@Get('/empty-response')
-	public async emptyResponse(): Promise<any> {
+	public emptyResponse(): any {
 		return;
 	}
 }

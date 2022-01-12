@@ -1,14 +1,12 @@
 import { N9Error } from '@neo9/n9-node-utils';
+
 import { Get, JsonController, Param, Post, QueryParam, Service } from '../../../../src';
 
 @Service()
 @JsonController()
 export class ValidateController {
 	@Post('/:version/bar')
-	public async bar(
-		@Param('version') version: string,
-		@QueryParam('error') queryError: boolean,
-	): Promise<any> {
+	public bar(@Param('version') version: string, @QueryParam('error') queryError: boolean): any {
 		if (queryError) {
 			throw new N9Error('bar-extendable-error', 505, {
 				test: true,
@@ -19,7 +17,7 @@ export class ValidateController {
 	}
 
 	@Get('/bar-fail')
-	public async barFail(): Promise<any> {
+	public barFail(): void {
 		throw new Error();
 	}
 }

@@ -2,7 +2,9 @@ import { createNamespace, getNamespace } from 'cls-hooked';
 import { NextFunction, Request, Response } from 'express';
 import * as shortid from 'shortid';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const RequestIdNamespaceName = 'requestIdNamespace';
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const RequestIdKey = 'request-id';
 createNamespace(RequestIdNamespaceName);
 export { RequestIdNamespaceName, RequestIdKey };
@@ -12,6 +14,7 @@ function flattenWithInheritProperties(obj: object): object {
 
 	const result = Object.create(obj);
 	Object.getOwnPropertyNames(obj).forEach((key) => {
+		// eslint-disable-next-line no-self-assign
 		result[key] = result[key];
 	});
 	return result;
@@ -45,7 +48,7 @@ export function setRequestContext(req: Request, res: Response, next: NextFunctio
 		requestId = shortid.generate();
 	}
 	const namespaceRequestId = getNamespace(RequestIdNamespaceName);
-	namespaceRequestId.run(async () => {
+	namespaceRequestId.run(() => {
 		namespaceRequestId.set(RequestIdKey, requestId);
 		next();
 	});

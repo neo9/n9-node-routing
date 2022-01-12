@@ -1,11 +1,13 @@
+import 'reflect-metadata';
+import './utils/error-to-json';
+
 import n9NodeLog from '@neo9/n9-node-log';
 import * as appRootDir from 'app-root-dir';
 import * as Path from 'path';
 import * as PrometheusClient from 'prom-client';
-// tslint:disable-next-line:no-import-side-effect
-import 'reflect-metadata';
 import { Container } from 'typedi';
-import { PackageJson } from 'types-package-json';
+import type { PackageJson } from 'types-package-json';
+
 import * as ExpressApp from './express-app';
 import { initAPM } from './init-apm';
 import initialiseModules from './initialise-modules';
@@ -16,8 +18,6 @@ import { requestIdFilter } from './requestid';
 import * as Routes from './routes';
 import startModules from './start-modules';
 import { getEnvironment } from './utils';
-// tslint:disable-next-line:no-import-side-effect
-import './utils/error-to-json';
 import { N9HttpClient } from './utils/http-client-base';
 
 /* istanbul ignore next */
@@ -50,6 +50,7 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 	process.on('unhandledRejection', handleThrow);
 	// Options default
 	const environment = getEnvironment();
+	// eslint-disable-next-line @typescript-eslint/no-var-requires,global-require,import/no-dynamic-require
 	const packageJson: PackageJson = require(Path.join(appRootDir.get(), 'package.json'));
 
 	applyDefaultValuesOnOptions(options, environment, packageJson.name);
@@ -89,7 +90,7 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 	// Execute all *.init.ts files in modules before app started listening on the HTTP Port
 	await initialiseModules(options.path, options.log, options.firstSequentialInitFileNames);
 	const returnObject = await ExpressApp.init(options, packageJson);
-	await Routes.init(returnObject.app, options, packageJson, environment);
+	Routes.init(returnObject.app, options, packageJson, environment);
 
 	// Manage SIGTERM & SIGINT
 	if (options.shutdown.enableGracefulShutdown) {

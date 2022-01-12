@@ -4,9 +4,9 @@ import { Get, JsonController, QueryParam, Service } from '../../../../src';
 @JsonController()
 export class ErrorsController {
 	@Get('/by-multiple-ids')
-	public async byMultipleIds(
+	public byMultipleIds(
 		@QueryParam('ids', { validate: false, type: String }) idsParam: string[] | string = [],
-	): Promise<any> {
+	): any {
 		const ids: string[] = Array.isArray(idsParam) ? idsParam : [idsParam] || [];
 		return { ids };
 	}

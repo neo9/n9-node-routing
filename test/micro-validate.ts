@@ -2,17 +2,17 @@ import { N9Error } from '@neo9/n9-node-utils';
 import ava, { Assertions } from 'ava';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
-// tslint:disable-next-line:import-name
-import N9NodeRouting from '../src';
+
+import src, { N9NodeRouting } from '../src';
 import commons, { closeServer } from './fixtures/commons';
 
-const MICRO_VALIDATE = join(__dirname, 'fixtures/micro-validate/');
+const microValidate = join(__dirname, 'fixtures/micro-validate/');
 
 ava('Check allowUnkown', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 
-	const { server } = await N9NodeRouting({
-		path: MICRO_VALIDATE,
+	const { server }: N9NodeRouting.ReturnObject = await src({
+		path: microValidate,
 		http: { port: 5585 },
 	});
 	// Should not allow others keys
@@ -35,7 +35,7 @@ ava('Check allowUnkown', async (t: Assertions) => {
 	t.true(res.ok);
 
 	// Should allow others keys
-	res = await await commons.jsonHttpClient.post<{ ok: boolean }>(
+	res = await commons.jsonHttpClient.post<{ ok: boolean }>(
 		'http://localhost:5585/validate-allow-all',
 		{
 			bad: true,
@@ -53,8 +53,8 @@ ava('Check allowUnkown', async (t: Assertions) => {
 ava('Check date parsing', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 
-	const { server } = await N9NodeRouting({
-		path: MICRO_VALIDATE,
+	const { server } = await src({
+		path: microValidate,
 		http: { port: 5585 },
 	});
 	// Should not allow others keys
@@ -78,7 +78,7 @@ ava('Check date parsing', async (t: Assertions) => {
 	t.true(res.ok);
 
 	// Should allow others keys
-	res = await await commons.jsonHttpClient.post<{ ok: boolean }>(
+	res = await commons.jsonHttpClient.post<{ ok: boolean }>(
 		'http://localhost:5585/validate-allow-all',
 		{
 			bad: true,
@@ -88,13 +88,10 @@ ava('Check date parsing', async (t: Assertions) => {
 	t.true(res.ok);
 
 	// Should return { ok: true }
-	res = await await commons.jsonHttpClient.post<{ ok: boolean }>(
-		'http://localhost:5585/parse-date',
-		{
-			date: '2018-01-03',
-			body: 'A message body sample',
-		},
-	);
+	res = await commons.jsonHttpClient.post<{ ok: boolean }>('http://localhost:5585/parse-date', {
+		date: '2018-01-03',
+		body: 'A message body sample',
+	});
 	t.deepEqual(res, { ok: true });
 
 	// Check logs

@@ -70,7 +70,7 @@ export class Cargo<
 		}
 	}
 
-	public get(request: REQUEST): Promise<RESPONSE> {
+	public async get(request: REQUEST): Promise<RESPONSE> {
 		return new Promise((resolve, reject) => {
 			/**
 			 * we use callback method since the push method doesn't work with promises

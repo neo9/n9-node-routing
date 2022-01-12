@@ -1,10 +1,5 @@
 import { DateParser, Expose } from '../../../../src';
 
-export class BaseMongoObject {
-	public _id?: string;
-	public objectInfos?: BaseMongoObjectInfos;
-}
-
 export class BaseMongoObjectInfosUpdate {
 	@Expose()
 	public userId: string;
@@ -22,4 +17,9 @@ export class BaseMongoObjectInfos {
 
 	@Expose()
 	public lastUpdate?: BaseMongoObjectInfosUpdate;
+}
+
+export class BaseMongoObject {
+	public _id?: string;
+	public objectInfos?: BaseMongoObjectInfos;
 }

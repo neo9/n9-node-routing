@@ -2,6 +2,7 @@ import n9NodeLog from '@neo9/n9-node-log';
 import ava, { Assertions } from 'ava';
 import got from 'got';
 import * as stdMock from 'std-mocks';
+
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';

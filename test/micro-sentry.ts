@@ -3,6 +3,7 @@ import { N9Error, waitFor } from '@neo9/n9-node-utils';
 import * as Sentry from '@sentry/node';
 import ava, { Assertions } from 'ava';
 import * as stdMock from 'std-mocks';
+
 import { end, init, urlPrefix } from './fixtures/helper';
 
 ava.beforeEach(() => {
@@ -16,7 +17,7 @@ ava('Init sentry and send error event', async (t: Assertions) => {
 			initOptions: {
 				dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0',
 				debug: true,
-				beforeSend: (event: Sentry.Event, hint?: Sentry.EventHint) => {
+				beforeSend: (event: Sentry.Event) => {
 					eventsSent.push(event);
 					return event;
 				},

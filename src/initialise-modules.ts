@@ -2,11 +2,11 @@ import { N9Log } from '@neo9/n9-node-log';
 import * as glob from 'glob-promise';
 import { join } from 'path';
 
-export default async function (
+export default async (
 	path: string,
 	log: N9Log,
 	firstSequentialInitFileNames?: string[],
-): Promise<any> {
+): Promise<any> => {
 	const initFiles: string[] = await glob('**/*.init.+(ts|js)', { cwd: path });
 
 	if (firstSequentialInitFileNames) {
@@ -15,6 +15,7 @@ export default async function (
 				initFile.includes(firstSequentialInitFileName),
 			);
 			if (matchingInitFileIndex !== -1) {
+				// eslint-disable-next-line @typescript-eslint/no-var-requires,global-require,import/no-dynamic-require
 				let module = require(join(path, initFiles[matchingInitFileIndex]));
 				module = module.default ? module.default : module;
 				await module(log);
@@ -28,9 +29,10 @@ export default async function (
 			const moduleName = file.split('/').slice(-2)[0];
 			log.info(`Init module ${moduleName}`);
 
+			// eslint-disable-next-line @typescript-eslint/no-var-requires,global-require,import/no-dynamic-require
 			let module = require(join(path, file));
 			module = module.default ? module.default : module;
 			return module(log);
 		}),
 	);
-}
+};

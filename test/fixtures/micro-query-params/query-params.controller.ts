@@ -5,7 +5,7 @@ import { FilterQuery } from './models/filter-query.models';
 @JsonController('/test')
 export class QueryParamsController {
 	@Get('/')
-	public async getUserById(@QueryParams() o: FilterQuery): Promise<FilterQuery> {
+	public getUserById(@QueryParams() o: FilterQuery): FilterQuery {
 		return o;
 	}
 }

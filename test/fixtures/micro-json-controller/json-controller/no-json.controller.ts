@@ -5,7 +5,7 @@ import { Acl, JsonController, Post, Service } from '../../../../src';
 export class ValidateController {
 	@Acl([{ action: 'createFoo', user: '@' }])
 	@Post('/no-controller')
-	public async createFoo(): Promise<void> {
+	public createFoo(): void {
 		return;
 	}
 }

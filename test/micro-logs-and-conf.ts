@@ -2,11 +2,12 @@ import ava, { Assertions } from 'ava';
 import got from 'got';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
+
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
 
-const MICRO_LOGS = join(__dirname, 'fixtures/micro-logs/');
+const microLogs = join(__dirname, 'fixtures/micro-logs/');
 const print = commons.print;
 
 ava('Basic usage, check logs', async (t: Assertions) => {
@@ -16,7 +17,7 @@ ava('Basic usage, check logs', async (t: Assertions) => {
 	};
 
 	const { server } = await N9NodeRouting({
-		path: MICRO_LOGS,
+		path: microLogs,
 		enableLogFormatJSON: false,
 	});
 	// Check /foo route added on foo/foo.init.ts
@@ -34,7 +35,7 @@ ava('Basic usage, check logs', async (t: Assertions) => {
 	t.true(output[3].includes('] ('), 'contains request id');
 	t.true(output[3].includes(')'), 'contains request id 2');
 	t.true(output[4].includes('] ('));
-	const match = output[4].match(/\([a-zA-Z0-9_\-]{7,14}\)/g);
+	const match = output[4].match(/\([a-zA-Z0-9_-]{7,14}\)/g);
 	t.truthy(match, 'should match one');
 	const matchLength = match.length;
 	t.true(matchLength === 1);
@@ -56,7 +57,7 @@ ava('Basic usage, check logs with empty response', async (t: Assertions) => {
 		http: {
 			port: 5002,
 		},
-		path: MICRO_LOGS,
+		path: microLogs,
 	});
 	// Check /foo route added on foo/foo.init.ts
 	const res = await got('http://localhost:5002/empty');
@@ -71,7 +72,7 @@ ava('Basic usage, check logs with empty response', async (t: Assertions) => {
 	t.true(output[1].includes('Hello bar.init'), 'Hello bar.init');
 	t.true(output[2].includes('Listening on port 5002'), 'Listening on port 5002');
 	t.true(output[3].includes('] ('));
-	t.truthy(output[3].match(/\([a-zA-Z0-9_\-]{7,14}\)/g));
+	t.truthy(output[3].match(/\([a-zA-Z0-9_-]{7,14}\)/g));
 	t.true(output[3].includes('GET /empty'), 'GET /empty');
 
 	// Close server
@@ -86,7 +87,7 @@ ava('JSON output', async (t: Assertions) => {
 	};
 
 	const { server } = await N9NodeRouting({
-		path: MICRO_LOGS,
+		path: microLogs,
 		enableLogFormatJSON: true,
 	});
 

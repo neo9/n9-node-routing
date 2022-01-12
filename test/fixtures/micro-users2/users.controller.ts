@@ -1,6 +1,7 @@
 import { N9Log } from '@neo9/n9-node-log';
 import { N9Error, N9JSONStream } from '@neo9/n9-node-utils';
 import { Response } from 'express';
+
 import {
 	Acl,
 	Authorized,
@@ -80,10 +81,10 @@ export class UsersController {
 
 	@Get('/')
 	public async getUsers(
-		@QueryParam('page') page: number = 0,
-		// @QueryParam('size') size: number = 10,
 		@QueryParams() qp: SizeValidation,
 		@Res() res: Response,
+		@QueryParam('page') page: number = 0,
+		// @QueryParam('size') size: number = 10,
 	): Promise<N9JSONStream<UserListItem>> {
 		const users = await this.usersService.find({}, page, qp.size);
 		return users.pipe(

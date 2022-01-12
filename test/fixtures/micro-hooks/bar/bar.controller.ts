@@ -4,7 +4,7 @@ import { Body, JsonController, Post, Service } from '../../../../src';
 @JsonController()
 export class BarController {
 	@Post('/bar')
-	public async bar(@Body() body: any): Promise<any> {
+	public bar(@Body() body: any): any {
 		return body;
 	}
 }

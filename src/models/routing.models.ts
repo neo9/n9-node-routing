@@ -6,7 +6,8 @@ import { Express, Request, Response } from 'express';
 import { Server } from 'http';
 import * as morgan from 'morgan';
 
-// tslint:disable-next-line:no-namespace
+/* eslint-disable no-use-before-define */
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace N9NodeRouting {
 	export interface Options {
 		hasProxy?: boolean;
@@ -37,12 +38,12 @@ export namespace N9NodeRouting {
 			app: Express,
 			log: N9Log,
 			options: Options,
-		) => Promise<void>;
+		) => Promise<void> | void;
 		afterRoutingControllerLaunchHook?: (
 			app: Express,
 			log: N9Log,
 			options: Options,
-		) => Promise<void>;
+		) => Promise<void> | void;
 	}
 
 	export interface PingDb {
@@ -123,6 +124,7 @@ export namespace N9NodeRouting {
 	export interface MiddlewareError extends Error {
 		status?: number | string;
 		statusCode?: number | string;
+		// eslint-disable-next-line @typescript-eslint/naming-convention
 		status_code?: number | string;
 		output?: {
 			statusCode?: number | string;

@@ -7,6 +7,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
 import { Container } from 'typedi';
+
 // tslint:disable-next-line:import-name
 import n9NodeRouting, { N9HttpClient, N9NodeRouting } from '../../src';
 import commons, { closeServer } from './commons';
@@ -17,7 +18,7 @@ export async function init(
 	options?: N9NodeRouting.Options,
 ): Promise<{ app: Express; server: Server; httpClient: N9HttpClient }> {
 	stdMock.use({ print: commons.print });
-	const MICRO_USERS = join(__dirname, `${folder}/`);
+	const microUsers = join(__dirname, `${folder}/`);
 	(global as any).log = new N9Log('test');
 
 	// Set env to 'test'
@@ -39,7 +40,7 @@ export async function init(
 	}
 
 	const { app, server } = await n9NodeRouting({
-		path: MICRO_USERS,
+		path: microUsers,
 		...options,
 	});
 	const httpClient = new N9HttpClient((global as any).log);
@@ -53,6 +54,34 @@ export async function end(server: Server): Promise<void> {
 	stdMock.flush();
 	// Close server
 	await closeServer(server);
+}
+
+function getHttpClient(responseType: 'text' | 'json'): N9HttpClient {
+	return new N9HttpClient((global as any).log ?? new N9Log('test'), { responseType });
+}
+
+function concatBasePath(path: string = '/'): string {
+	return `${urlPrefix}${join('/', path)}`;
+}
+
+async function wrapLogs<T>(
+	apiCall: Promise<T>,
+): Promise<{ body: T; err: N9Error; stdout: string[]; stderr: string[] }> {
+	// Store logs output
+	stdMock.use({ print: commons.print });
+	// Call API & check response
+	let body = null;
+	let err = null;
+	try {
+		body = await apiCall;
+	} catch (error) {
+		err = error;
+	}
+	// Get logs ouput & check logs
+	const { stdout, stderr } = stdMock.flush();
+	// Restore logs output
+	stdMock.restore();
+	return { body, err, stdout, stderr };
 }
 
 export async function get<T extends string | object = object>(
@@ -95,27 +124,7 @@ export async function put<T>(
 	stderr: string[];
 }> {
 	const httpClient = getHttpClient('json');
-	return await wrapLogs<T>(httpClient.put<T>(concatBasePath(path)));
-}
-
-async function wrapLogs<T>(
-	apiCall: Promise<T>,
-): Promise<{ body: T; err: N9Error; stdout: string[]; stderr: string[] }> {
-	// Store logs output
-	stdMock.use({ print: commons.print });
-	// Call API & check response
-	let body = null;
-	let err = null;
-	try {
-		body = await apiCall;
-	} catch (error) {
-		err = error;
-	}
-	// Get logs ouput & check logs
-	const { stdout, stderr } = stdMock.flush();
-	// Restore logs output
-	stdMock.restore();
-	return { body, err, stdout, stderr };
+	return await wrapLogs<T>(httpClient.put<T>(concatBasePath(path), body));
 }
 
 export function logErrorForHuman(err: Error): void {
@@ -124,12 +133,4 @@ export function logErrorForHuman(err: Error): void {
 		.module('local', { formatJSON: false })
 		.error(`Error `, JSON.stringify(err, null, 2));
 	stdMock.restore();
-}
-
-function getHttpClient(responseType: 'text' | 'json'): N9HttpClient {
-	return new N9HttpClient((global as any).log ?? new N9Log('test'), { responseType });
-}
-
-function concatBasePath(path: string = '/'): string {
-	return `${urlPrefix}${join('/', path)}`;
 }

@@ -1,5 +1,6 @@
 import { N9Error } from '@neo9/n9-node-utils';
 import { OpenAPI } from 'routing-controllers-openapi';
+
 import {
 	Acl,
 	Authorized,
@@ -40,7 +41,7 @@ export class UsersController {
 		// sanitize email to lowercase
 		user.email = user.email.toLowerCase();
 		// Check if user by email already exists
-		const userExists = !!(await this.usersService.getByEmail(user.email));
+		const userExists = !!this.usersService.getByEmail(user.email);
 
 		if (userExists) {
 			throw new N9Error('user-already-exists', 409);
@@ -59,9 +60,9 @@ export class UsersController {
 
 	@Authorized()
 	@Get('/:id')
-	public async getUserById(@Param('id') userId: string): Promise<User> {
+	public getUserById(@Param('id') userId: string): User {
 		// Check if user exists
-		const user = await this.usersService.getById(userId);
+		const user = this.usersService.getById(userId);
 		if (!user) {
 			throw new N9Error('user-not-found', 404);
 		}

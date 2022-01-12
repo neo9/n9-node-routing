@@ -1,5 +1,6 @@
 import { BaseMongoObject } from '@neo9/n9-mongo-client/dist/src/models';
 import { Exclude, Expose } from 'class-transformer';
+
 import { Allow, IsEmail, IsString, MinLength } from '../../../src';
 
 export class UserRequestCreate {

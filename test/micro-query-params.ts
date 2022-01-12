@@ -1,10 +1,11 @@
 // tslint:disable:ordered-imports
-import { end, init, get, logErrorForHuman } from './fixtures/helper';
 import ava, { ExecutionContext } from 'ava';
-import * as QueryString from 'query-string';
-import { FilterQuery } from './fixtures/micro-query-params/models/filter-query.models';
 import * as _ from 'lodash';
 import * as moment from 'moment';
+import * as QueryString from 'query-string';
+
+import { end, get, init, logErrorForHuman } from './fixtures/helper';
+import { FilterQuery } from './fixtures/micro-query-params/models/filter-query.models';
 
 const context: any = {};
 

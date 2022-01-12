@@ -1,17 +1,18 @@
 import ava, { Assertions } from 'ava';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
+
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
 
-const MICRO_DEFAULT_VALUES = join(__dirname, 'fixtures/micro-default-values/');
+const microDefaultValues = join(__dirname, 'fixtures/micro-default-values/');
 
 ava('Check default values are set', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 
 	const { server } = await N9NodeRouting({
-		path: MICRO_DEFAULT_VALUES,
+		path: microDefaultValues,
 		http: { port: 5585 },
 		enableLogFormatJSON: false,
 	});

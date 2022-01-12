@@ -5,13 +5,13 @@ import { Acl, Body, Get, JsonController, Post, Service } from '../../../../src';
 export class ValidateController {
 	@Post('/foo')
 	@Post('/v1/fou')
-	public async createFoo(@Body() body: any): Promise<any> {
+	public createFoo(@Body() body: any): any {
 		return body;
 	}
 
 	@Acl([{ action: 'readFoo', user: '@' }])
 	@Get('/foo')
-	public async getFoo(): Promise<object> {
+	public getFoo(): object {
 		return {
 			foo: 'bar',
 		};

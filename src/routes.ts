@@ -3,23 +3,24 @@ import { signalIsNotUp, signalIsUp } from '@promster/express';
 import { Express, NextFunction, Request, Response } from 'express';
 import * as fs from 'fs';
 import * as SwaggerUi from 'swagger-ui-express';
-import { PackageJson } from 'types-package-json';
+import type { PackageJson } from 'types-package-json';
+
 import { generateDocumentationJson, getDocumentationJsonPath } from './generate-documentation-json';
 import { N9NodeRouting } from './models/routing.models';
 import * as RoutesService from './routes.service';
 
-let shutdownAsked: boolean = false;
+let shutdownAsked = false;
 
 export function onShutdownAsked(): void {
 	shutdownAsked = true;
 }
 
-export async function init(
+export function init(
 	expressApp: Express,
 	options: N9NodeRouting.Options,
 	packageJson: PackageJson,
 	env: 'development' | 'production' | string,
-): Promise<void> {
+): void {
 	expressApp.get('/', (req: Request, res: Response, next: NextFunction) => {
 		res.status(200).send(packageJson.name);
 		next();
@@ -35,6 +36,7 @@ export async function init(
 		}
 		if (options.http.ping?.dbs) {
 			for (const db of options.http.ping.dbs) {
+				// eslint-disable-next-line @typescript-eslint/no-invalid-this
 				if (!(await db.isConnected.bind(db.thisArg || this)())) {
 					(global as any).log.error(`[PING] Can't connect to ${db.name}`);
 					res.status(500).send(`db-${db.name}-unreachable`);

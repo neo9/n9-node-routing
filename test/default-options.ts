@@ -2,19 +2,20 @@ import ava, { Assertions } from 'ava';
 import * as _ from 'lodash';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
+
 import { N9NodeRouting } from '../src';
 import { applyDefaultValuesOnOptions } from '../src/options';
 import { getEnvironment } from '../src/utils';
 import commons from './fixtures/commons';
 
-const MICRO_VALIDATE = join(__dirname, 'fixtures/micro-validate/');
+const microValidate = join(__dirname, 'fixtures/micro-validate/');
 
-ava('Read documentation', async (t: Assertions) => {
+ava('Read documentation', (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const environment = getEnvironment();
 
 	const initOptions: N9NodeRouting.Options = {
-		path: MICRO_VALIDATE,
+		path: microValidate,
 	};
 
 	const optionsWithDefault: N9NodeRouting.Options = _.cloneDeep(initOptions);

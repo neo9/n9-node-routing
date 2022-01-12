@@ -1,15 +1,17 @@
+// tslint:disable-next-line:no-import-side-effect
+import 'reflect-metadata';
+
 import * as RoutingControllers from '@benjd90/routing-controllers';
 import * as appRootDir from 'app-root-dir';
 import * as ClassValidator from 'class-validator';
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
 import * as fs from 'fs';
-import * as oa from 'openapi3-ts';
+import type * as oa from 'openapi3-ts';
 import { join } from 'path';
-// tslint:disable-next-line:no-import-side-effect
-import 'reflect-metadata';
 import * as RCOpenApi from 'routing-controllers-openapi';
 import { Container } from 'typedi';
-import { PackageJson } from 'types-package-json';
+import type { PackageJson } from 'types-package-json';
+
 import { N9NodeRouting } from './models/routing.models';
 import { applyDefaultValuesOnOptions } from './options';
 import { getEnvironment } from './utils';
@@ -18,6 +20,7 @@ export function generateDocumentationJson(
 	n9NodeRoutingOptions: N9NodeRouting.Options,
 	serverAlreadyStarted: boolean = true,
 	defaultValuesAreAlreadySet: boolean = false,
+	// eslint-disable-next-line global-require,import/no-dynamic-require
 	packageJson: PackageJson = require(join(appRootDir.get(), 'package.json')),
 ): object {
 	if (defaultValuesAreAlreadySet) {
@@ -45,7 +48,7 @@ export function generateDocumentationJson(
 	const schemas = validationMetadatasToSchemas({
 		refPointerPrefix: '#/components/schemas',
 	});
-	const additionalProperties: any = Object.assign({}, { components: { schemas } }, baseOpenApiSpec);
+	const additionalProperties: any = { components: { schemas }, ...baseOpenApiSpec };
 	const spec = RCOpenApi.routingControllersToSpec(
 		routesStorage as any,
 		n9NodeRoutingOptions.http.routingController,
@@ -63,6 +66,7 @@ export function getDocumentationJsonPath(options: N9NodeRouting.Options): string
 }
 
 export function generateDocumentationJsonToFile(options: N9NodeRouting.Options): string {
+	// eslint-disable-next-line @typescript-eslint/no-var-requires,global-require,import/no-dynamic-require
 	const packageJson = require(join(appRootDir.get(), 'package.json'));
 	const environment = getEnvironment();
 	applyDefaultValuesOnOptions(options, environment, packageJson.name);

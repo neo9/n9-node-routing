@@ -2,19 +2,20 @@ import { N9Error } from '@neo9/n9-node-utils';
 import ava, { Assertions } from 'ava';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
+
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
 
 const print = commons.print;
-const MICRO_AUTH = join(__dirname, 'fixtures/micro-auth-proxy/');
+const microAuth = join(__dirname, 'fixtures/micro-auth-proxy/');
 
 ava('Call session route (req.headers.session)', async (t: Assertions) => {
 	stdMock.use({ print });
 
 	const { server } = await N9NodeRouting({
 		hasProxy: true, // tell n9NodeRouting to parse `session` header
-		path: MICRO_AUTH,
+		path: microAuth,
 		http: { port: 6001 },
 	});
 	/*

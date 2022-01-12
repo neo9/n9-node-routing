@@ -4,6 +4,7 @@ import ava, { Assertions } from 'ava';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { register } from 'prom-client';
 import * as stdMock from 'std-mocks';
+
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';

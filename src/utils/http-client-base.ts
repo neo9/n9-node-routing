@@ -53,7 +53,7 @@ export class N9HttpClient {
 			responseType: 'json' as any,
 			hooks: {
 				beforeRetry: [
-					(options, error?: RequestError, retryCount?: number) => {
+					(options, error?: RequestError, retryCount?: number): void => {
 						let level: N9Log.Level;
 						if (error?.response?.statusCode && error.response.statusCode < 500) {
 							level = 'info';
@@ -62,7 +62,7 @@ export class N9HttpClient {
 						}
 						if (logger.isLevelEnabled(level)) {
 							logger[level](
-								`Retry call [${options.method} ${options.url}] n°${retryCount} due to ${
+								`Retry call [${options.method} ${options.url?.toString()}] n°${retryCount} due to ${
 									error?.code ?? error?.name
 								} ${error?.message}`,
 								{
@@ -189,7 +189,7 @@ export class N9HttpClient {
 			this.logger.error(`Error on [${method} ${uri}] ${e.message}`, {
 				uri,
 				method,
-				'status': status,
+				status,
 				'response-time': responseTime,
 			});
 
@@ -246,7 +246,7 @@ export class N9HttpClient {
 		const responseAsStream = new PassThrough();
 		const startTime = Date.now();
 		const uri = N9HttpClient.getUriFromUrlParts(url);
-		const requestResponse = await got.stream(uri, options);
+		const requestResponse = got.stream(uri, options);
 		requestResponse.pipe(responseAsStream);
 
 		let incomingMessage: IncomingMessage;

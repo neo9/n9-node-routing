@@ -19,9 +19,9 @@
   "scripts": {
     "build": "rimraf dist/ && tsc",
     "format": "prettier --write '{,@(src|test)/**/}*.*'",
-    "lint": "tslint --project tsconfig.json --format verbose '{src,test}/**/*.ts'",
-    "lint:apply": "npm run format && tslint --fix --project tsconfig.json '{src,test}/**/*.ts'",
-    "lint:verbose": "tslint --fix --project tsconfig.json --format verbose '{src,test}/**/*.ts'",
+    "lint": "eslint --config .eslintrc.yaml '{src,test}/**/*.ts'",
+    "lint:apply": "npm run format && eslint --fix --config .eslintrc.yaml '{src,test}/**/*.ts'",
+    "lint:verbose": "eslint --fix --config .eslintrc.yaml '{src,test}/**/*.ts' --format unix '{src,test}/**/*.ts'",
     "test:debug": "export NODE_ENV=test && TS_NODE_FILES=true ava debug --verbose --color --serial --host 0.0.0.0 --port 9230 --break",
     "test:dev": "export NODE_ENV=test && TS_NODE_FILES=true ava --verbose --color --serial --watch",
     "test": "npm run lint && npm run build && export NODE_ENV=test && nyc ava --verbose --color --serial && nyc report --reporter=html",
@@ -97,7 +97,7 @@
   "devDependencies": {
     "@ava/typescript": "^1.1.1",
     "@commitlint/cli": "^12.1.4",
-    "@neo9/n9-coding-style": "^2.0.0",
+    "@neo9/n9-coding-style": "^3.0.0",
     "@neo9/n9-mongo-client": "^0.22.0",
     "@release-it/conventional-changelog": "^3.0.1",
     "@types/app-root-dir": "^0.1.0",
@@ -128,9 +128,6 @@
     "release-it": "^14.9.0",
     "std-mocks": "^1.0.1",
     "ts-node": "^10.0.0",
-    "tslint": "^6.1.3",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.3.0",
     "types-package-json": "^2.0.39",
     "typescript": "^4.3.2"
   },

@@ -3,7 +3,23 @@ import * as Sentry from '@sentry/node';
 import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import fastSafeStringify from 'fast-safe-stringify';
 import { Inject, Service } from 'typedi';
+
 import { N9NodeRouting } from '..';
+
+function removeProps(obj: object, keys: string[]): void {
+	if (!obj) return;
+
+	if (obj instanceof Array) {
+		obj.forEach((item) => {
+			removeProps(item, keys);
+		});
+	} else if (typeof obj === 'object') {
+		Object.getOwnPropertyNames(obj).forEach((key) => {
+			if (keys.includes(key)) delete obj[key];
+			else removeProps(obj[key], keys);
+		});
+	}
+}
 
 @Service()
 @Middleware({ type: 'after' })
@@ -21,6 +37,7 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 			);
 		}
 		if (this.n9NodeRoutingOptions.apm?.type === 'newRelic') {
+			// eslint-disable-next-line @typescript-eslint/no-var-requires,global-require
 			this.newRelicNoticeError = require('newrelic').noticeError;
 		}
 	}
@@ -65,21 +82,6 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 			code,
 			status,
 			context,
-		});
-	}
-}
-
-function removeProps(obj: object, keys: string[]): void {
-	if (!obj) return;
-
-	if (obj instanceof Array) {
-		obj.forEach((item) => {
-			removeProps(item, keys);
-		});
-	} else if (typeof obj === 'object') {
-		Object.getOwnPropertyNames(obj).forEach((key) => {
-			if (keys.includes(key)) delete obj[key];
-			else removeProps(obj[key], keys);
 		});
 	}
 }

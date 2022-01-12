@@ -5,6 +5,7 @@ import * as FormData from 'form-data';
 import * as fs from 'fs';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
+
 // tslint:disable-next-line:import-name
 import N9NodeRouting, { N9HttpClient } from '../src';
 import commons, { closeServer } from './fixtures/commons';
@@ -49,24 +50,24 @@ ava('Call a route with HttpClient', async (t: Assertions) => {
 	);
 	t.is(error.message, 'not-found', 'post not-found');
 
-	error = (await t.throwsAsync<N9Error>(
+	error = await t.throwsAsync<N9Error>(
 		async () => await httpClient.put<string>('http://localhost:6001/ping'),
-	)) as N9Error;
+	);
 	t.is(error.message, 'not-found', 'put not-found');
 
-	error = (await t.throwsAsync<N9Error>(
+	error = await t.throwsAsync<N9Error>(
 		async () => await httpClient.delete<string>('http://localhost:6001/ping'),
-	)) as N9Error;
+	);
 	t.is(error.message, 'not-found', 'delete not-found');
 
-	error = (await t.throwsAsync<N9Error>(
+	error = await t.throwsAsync<N9Error>(
 		async () => await httpClient.options<string>('http://localhost:6001/ping'),
-	)) as N9Error;
+	);
 	t.is(error.message, 'not-found', 'options not-found');
 
-	error = (await t.throwsAsync<N9Error>(
+	error = await t.throwsAsync<N9Error>(
 		async () => await httpClient.patch<string>('http://localhost:6001/ping'),
-	)) as N9Error;
+	);
 	t.is(error.message, 'not-found', 'patch not-found');
 
 	error = await t.throwsAsync<N9Error>(
@@ -79,12 +80,12 @@ ava('Call a route with HttpClient', async (t: Assertions) => {
 	);
 	t.is(error.status, 404, 'request stream not-found');
 
-	error = (await t.throwsAsync<N9Error>(
+	error = await t.throwsAsync<N9Error>(
 		async () =>
 			await httpClient.raw<string>('http://localhost:6001/ping', {
 				method: 'post',
 			}),
-	)) as N9Error;
+	);
 	t.is(error.message, 'not-found', 'raw not-found');
 
 	error = await t.throwsAsync<N9Error>(

@@ -3,6 +3,7 @@ import { Express } from 'express';
 import { Server } from 'http';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
+
 // tslint:disable-next-line:import-name
 import n9NodeRouting, { N9NodeRouting } from '../src';
 import commons, { closeServer } from './fixtures/commons';
@@ -11,9 +12,9 @@ async function init(
 	options?: Partial<N9NodeRouting.Options>,
 ): Promise<{ app: Express; server: Server }> {
 	stdMock.use({ print: commons.print });
-	const MICRO_LIFECYCLE_HOOKS = join(__dirname, 'fixtures/micro-lifecycle-hooks/');
+	const microLifecycleHooks = join(__dirname, 'fixtures/micro-lifecycle-hooks/');
 	return await n9NodeRouting({
-		path: MICRO_LIFECYCLE_HOOKS,
+		path: microLifecycleHooks,
 		...options,
 	});
 }

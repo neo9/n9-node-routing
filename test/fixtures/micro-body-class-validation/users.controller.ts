@@ -5,7 +5,8 @@ import { User } from './models/users.models';
 @JsonController('/users')
 export class UsersController {
 	@Post()
-	public async createUser(@Body() user: User<any>): Promise<void> {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	public createUser(@Body() user: User<any>): void {
 		return;
 	}
 }

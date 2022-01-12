@@ -7,14 +7,12 @@ import {
 	ValidatorConstraintInterface,
 } from 'class-validator';
 import * as _ from 'lodash';
+
 import { UserFrontDetail } from './users.models';
 
 @ValidatorConstraint({ name: 'arrayValidator', async: false })
 export class ArrayValidator implements ValidatorConstraintInterface {
-	public validate(
-		value: string | UserFrontDetail,
-		validationArguments?: ValidationArguments,
-	): boolean {
+	public validate(value: string | UserFrontDetail): boolean {
 		if (_.isString(value)) return true;
 		if (value instanceof UserFrontDetail) {
 			const errors = validateSync(value);
@@ -29,7 +27,7 @@ export class ArrayValidator implements ValidatorConstraintInterface {
 	}
 }
 export function arrayValidator(validationOptions?: ValidationOptions): any {
-	return (object: object, propertyName: string) => {
+	return (object: object, propertyName: string): void => {
 		registerDecorator({
 			propertyName,
 			name: 'arrayValidator',

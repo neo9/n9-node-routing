@@ -4,7 +4,8 @@ import { Get, HeaderParam, JsonController, Service } from '../../../../src';
 @JsonController()
 export class ErrorsController {
 	@Get('/requires-header')
-	public async getError500(@HeaderParam('test', { required: true }) p: string): Promise<any> {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	public getError500(@HeaderParam('test', { required: true }) p: string): any {
 		return { ok: true };
 	}
 }

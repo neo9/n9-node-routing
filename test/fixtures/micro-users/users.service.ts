@@ -1,13 +1,14 @@
 import * as crypto from 'crypto';
 import { Service } from 'typedi';
+
 import { MockDbClientService } from './mock-db-client.service';
 import { User } from './models/users.models';
 
 @Service()
 export class UsersService {
-	private static async hashPassword(password: string): Promise<string> {
+	private static hashPassword(password: string): string {
 		const hasher = crypto.createHash('sha256');
-		await hasher.update(password);
+		hasher.update(password);
 		return hasher.digest('hex');
 	}
 	private mongoClient: MockDbClientService<User>;
@@ -16,17 +17,17 @@ export class UsersService {
 		this.mongoClient = new MockDbClientService();
 	}
 
-	public async getById(userId: string): Promise<User> {
-		return await this.mongoClient.findOneById(userId);
+	public getById(userId: string): User {
+		return this.mongoClient.findOneById(userId);
 	}
 
-	public async getByEmail(email: string): Promise<User> {
-		return await this.mongoClient.findOneByKey(email, 'email');
+	public getByEmail(email: string): User {
+		return this.mongoClient.findOneByKey(email, 'email');
 	}
 
 	public async create(user: User, creatorUserId: string): Promise<User> {
 		// Hash password
-		user.password = await UsersService.hashPassword(user.password);
+		user.password = UsersService.hashPassword(user.password);
 		// Add date creation
 		user.createdAt = new Date();
 		// Save to database

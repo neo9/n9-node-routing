@@ -1,0 +1,2 @@
+extends:
+  - './node_modules/@neo9/n9-coding-style/.eslintrc.yaml'

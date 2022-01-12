@@ -2,13 +2,14 @@ import ava, { Assertions } from 'ava';
 import got from 'got';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
+
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
 
 const print = commons.print;
 
-const APP_PATH = join(__dirname, 'fixtures/micro-prometheus/');
+const appPath = join(__dirname, 'fixtures/micro-prometheus/');
 
 ava.beforeEach(() => {
 	delete (global as any).log;
@@ -20,7 +21,7 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 		name: 'my-awesome-app',
 	};
 	const { server } = await N9NodeRouting({
-		path: APP_PATH,
+		path: appPath,
 		http: {
 			port: 5000,
 		},

@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as multer from 'multer';
 import { PassThrough } from 'stream';
+
 import { JsonController, Post, Service, UploadedFile } from '../../../../src';
 
 // to keep code clean better to extract this function into separate file
@@ -14,7 +15,7 @@ class StorageEngine implements multer.StorageEngine {
 	}
 }
 
-const fileUploadOptions = () => ({
+const fileUploadOptions = (): { storage: StorageEngine } => ({
 	storage: new StorageEngine(),
 });
 
@@ -33,7 +34,11 @@ export class ErrorsController {
 		let size = 0;
 
 		return await new Promise((resolve, reject) => {
-			file.stream.on('data', (chunk) => (size += chunk.length)).pipe(outStream);
+			file.stream
+				.on('data', (chunk) => {
+					size += chunk.length;
+				})
+				.pipe(outStream);
 			outStream.on('error', reject).on('finish', () => {
 				resolve({
 					size,
@@ -55,7 +60,11 @@ export class ErrorsController {
 		let size = 0;
 
 		await new Promise((resolve, reject) => {
-			file.stream.on('data', (chunk) => (size += chunk.length)).pipe(outStream);
+			file.stream
+				.on('data', (chunk) => {
+					size += chunk.length;
+				})
+				.pipe(outStream);
 			outStream.on('error', reject).on('finish', () => {
 				resolve({
 					size,
