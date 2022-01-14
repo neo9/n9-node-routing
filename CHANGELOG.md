@@ -1,3 +1,10 @@
+# [1.33.0](https://github.com/neo9/n9-node-routing/compare/1.32.0...1.33.0) (2022-01-14)
+
+
+### yarn
+
+* Export n9-node-log and n9-node-conf dependencies ([f6611cb](https://github.com/neo9/n9-node-routing/commit/f6611cbc72b796515109dcdb22b48db5a7ea3435))
+
 # [1.32.0](https://github.com/neo9/n9-node-routing/compare/1.31.0...1.32.0) (2022-01-12)
 
 
