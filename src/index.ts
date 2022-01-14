@@ -33,6 +33,8 @@ export * from 'class-validator';
 export { Type, Transform, Exclude, Expose, classToPlain, plainToClass } from 'class-transformer';
 export { getMetadataArgsStorage } from '@benjd90/routing-controllers';
 export * from 'routing-controllers-openapi';
+export * from '@neo9/n9-node-utils'; // allow users to use n9-node-utils without importing it specifically
+export { N9Log } from '@neo9/n9-node-log';
 
 export * from './decorators/acl.decorator';
 export * from './validators/date-parser.validator';

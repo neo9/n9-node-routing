@@ -1,7 +1,13 @@
-import { QueryParams } from '@benjd90/routing-controllers';
-import { N9Log } from '@neo9/n9-node-log';
-
-import { Body, HeaderParams, Inject, JsonController, Post, Service } from '../../../../src';
+import {
+	Body,
+	HeaderParams,
+	Inject,
+	JsonController,
+	N9Log,
+	Post,
+	QueryParams,
+	Service,
+} from '../../../../src';
 import { BodyModel } from './body.model';
 import { HeadersModel } from './headers.model';
 import { QueryParamsModel } from './query-params.model';

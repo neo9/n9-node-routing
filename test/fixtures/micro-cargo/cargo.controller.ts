@@ -1,7 +1,6 @@
-import { N9JSONStreamResponse, waitFor } from '@neo9/n9-node-utils';
 import { Service } from 'typedi';
 
-import { Get, JsonController, QueryParam } from '../../../src';
+import { Get, JsonController, N9JSONStreamResponse, QueryParam, waitFor } from '../../../src';
 
 @Service()
 @JsonController('/users')
