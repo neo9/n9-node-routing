@@ -1,3 +1,18 @@
+
+
+# [1.34.0](https://github.com/neo9/n9-node-routing/compare/1.33.0...1.34.0) (2022-04-27)
+
+
+### lint
+
+* Fix types in tests and upgrade n9-coding-style ([c15b221](https://github.com/neo9/n9-node-routing/commit/c15b221ea4fbfe084306f2440b0bfa0c1adcd550))
+
+### yarn
+
+* Upgrade dependencies ([26fcdd5](https://github.com/neo9/n9-node-routing/commit/26fcdd5fef7c65c4ccc323cac2697e76c5e2fbf7))
+* Upgrade dependencies including newrelic ([d261d69](https://github.com/neo9/n9-node-routing/commit/d261d6933c486d778d17f7d5d6781e4f006ca9cd))
+* Upgrade n9-node-log to V 4.0.0 ([227deee](https://github.com/neo9/n9-node-routing/commit/227deee132771dc6cd074d485012e9e332f454d6))
+
 # [1.33.0](https://github.com/neo9/n9-node-routing/compare/1.32.0...1.33.0) (2022-01-14)
 
 
@@ -1065,6 +1080,3 @@
 ### versions
 
 * Add release command ([f9a2b37](https://github.com/neo9/n9-node-routing/commit/f9a2b37)) (Benjamin Daniel)
-
-
-
