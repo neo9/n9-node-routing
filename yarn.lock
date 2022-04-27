@@ -549,10 +549,10 @@
   resolved "https://registry.npmjs.org/@istanbuljs/schema/-/schema-0.1.2.tgz#26520bf09abe4a5644cd5414e37125a8954241dd"
   integrity sha512-tsAQNx32a8CoFhjhijUIhI4kccIAgmGhy8LZMZgGfmXcpMbPRUqn5LWmgRttILi6yeGmBJd2xsPkFMs0PzgPCw==
 
-"@neo9/n9-coding-style@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.npmjs.org/@neo9/n9-coding-style/-/n9-coding-style-3.0.0.tgz#c89a00c6087aeb399edc29644da8945c91994c6e"
-  integrity sha512-hMLD+g+TLlCIkJ3GJyrvbNh+68bewceuKBV74i6bH7ldzGVnPhCmtfQS9dbL5B+Vpa1QncTnmP1PbJCDiGhXrw==
+"@neo9/n9-coding-style@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.npmjs.org/@neo9/n9-coding-style/-/n9-coding-style-3.0.1.tgz#2873d4becc29572ff3cf40f5d6b6a86623e70bd8"
+  integrity sha512-qfpvIzvP0RCbJfGYZ1FCpm7dcvTB1gDD/CW/bNk9dtwmnb3PKi2dRQ3As+XTA3IAVmagDwSJCLviXW8SVUs51g==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^5.9.0"
     "@typescript-eslint/parser" "^5.9.0"

@@ -86,7 +86,7 @@ export class UsersController {
 		@QueryParam('page') page: number = 0,
 		// @QueryParam('size') size: number = 10,
 	): Promise<N9JSONStream<UserListItem>> {
-		const users = await this.usersService.find({}, page, qp.size);
+		const users = this.usersService.find({}, page, qp.size);
 		return users.pipe(
 			new N9JSONStream({
 				res,

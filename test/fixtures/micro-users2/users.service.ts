@@ -29,12 +29,8 @@ export class UsersService {
 		return await this.mongoClient.existsByKey(email, 'email');
 	}
 
-	public async find(
-		query: FilterQuery<UserEntity>,
-		page: number,
-		size: number,
-	): Promise<Cursor<UserListItem>> {
-		return await this.mongoClient.find(query, page, size);
+	public find(query: FilterQuery<UserEntity>, page: number, size: number): Cursor<UserListItem> {
+		return this.mongoClient.find(query, page, size);
 	}
 
 	public async create(user: UserRequestCreate, creatorUserId: string): Promise<UserDetails> {
