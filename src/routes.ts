@@ -115,10 +115,10 @@ export function init(
 	expressApp.use((req: Request, res: Response, next: NextFunction) => {
 		if (!res.headersSent) {
 			const err = new N9Error('not-found', 404, { url: req.url });
-			options.log.warn(err as any);
+			options.log.warn(err.message, err);
 			let error;
 
-			if (!expressApp.get('env') || ['development', 'test'].indexOf(expressApp.get('env')) !== -1) {
+			if (!expressApp.get('env') || ['development', 'test'].includes(expressApp.get('env'))) {
 				error = err;
 			}
 

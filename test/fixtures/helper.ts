@@ -1,7 +1,8 @@
 import { MongoUtils } from '@neo9/n9-mongo-client';
 import { N9Log } from '@neo9/n9-node-log';
-import { N9Error } from '@neo9/n9-node-utils';
+import { N9Error, waitFor } from '@neo9/n9-node-utils';
 import { Express } from 'express';
+import * as fs from 'fs-extra';
 import { Server } from 'http';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { join } from 'path';
@@ -129,8 +130,51 @@ export async function put<T>(
 
 export function logErrorForHuman(err: Error): void {
 	stdMock.use({ print: commons.print });
-	((global as any).log as N9Log)
-		.module('local', { formatJSON: false })
-		.error(`Error `, JSON.stringify(err, null, 2));
+	((global as any).log as N9Log).module('local', { formatJSON: false }).error(`Error `, err);
 	stdMock.restore();
+}
+
+export async function getLogsFromFile(
+	filePath: string,
+	expectingEmptyFile: boolean = false,
+): Promise<string[]> {
+	process.stdout.write(`Waiting for logs to be treated ...\n`);
+
+	if (expectingEmptyFile) {
+		await waitFor(3_000);
+	} else {
+		const maxTry = 50;
+		for (let tryNb = 0; tryNb < maxTry; tryNb += 1) {
+			const fileContent = await fs.readFile(filePath);
+			if (fileContent.length > 0) {
+				await waitFor(100);
+				break;
+			}
+			await waitFor(100);
+		}
+	}
+
+	const output = (await fs.readFile(filePath))
+		.toString()
+		.split('\n')
+		.filter((line) => !!line)
+		.filter(commons.excludeSomeLogs);
+
+	if (commons.print) {
+		for (const outputLine of output) {
+			process.stdout.write(`${outputLine}\n`);
+		}
+	}
+
+	return output;
+}
+
+export function parseJSONLogAndRemoveTime(logLine: string): object & {
+	level: string;
+	message: string;
+	label: string;
+} {
+	const line = JSON.parse(logLine);
+	delete line.timestamp;
+	return line;
 }

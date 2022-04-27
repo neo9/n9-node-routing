@@ -34,12 +34,14 @@ function applyLogsOptionsDefaults(
 		) {
 			options.log = options.log.module('n9-node-routing', {
 				...(options.log as any)?.options,
+				...options.logOptions,
 				formatJSON: options.enableLogFormatJSON,
 			});
 		}
 	} else {
 		options.log = n9NodeLog('n9-node-routing', {
 			...(options.log as any)?.options,
+			...options.logOptions,
 			formatJSON: options.enableLogFormatJSON,
 		});
 	}

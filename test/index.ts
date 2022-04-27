@@ -2,10 +2,12 @@ import n9NodeLog from '@neo9/n9-node-log';
 import ava, { Assertions } from 'ava';
 import got from 'got';
 import * as stdMock from 'std-mocks';
+import * as tmp from 'tmp-promise';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
+import { getLogsFromFile } from './fixtures/helper';
 
 const print = commons.print;
 
@@ -37,11 +39,11 @@ ava('Works with preventListen = true', async (t: Assertions) => {
 ava('Works with custom log and should add a namespace', async (t: Assertions) => {
 	const oldNodeEnv = process.env.NODE_ENV;
 	process.env.NODE_ENV = 'development';
-	const log = n9NodeLog('custom');
-	stdMock.use({ print });
+	const file = await tmp.file();
+	const log = n9NodeLog('custom', { developmentOutputFilePath: file.path });
+
 	const { server } = await N9NodeRouting({ log });
-	stdMock.restore();
-	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
+	const output = await getLogsFromFile(file.path);
 	t.true(
 		output[0].includes('[custom:n9-node-routing] Listening on port 5000'),
 		`output : ${JSON.stringify(output)}`,
@@ -52,16 +54,36 @@ ava('Works with custom log and should add a namespace', async (t: Assertions) =>
 });
 
 ava('Works without options', async (t: Assertions) => {
-	stdMock.use({ print });
+	const file = await tmp.file();
 	const oldNodeEnv = process.env.NODE_ENV;
 	process.env.NODE_ENV = 'development';
-	const { server } = await N9NodeRouting();
-	stdMock.restore();
-	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
+	const { server } = await N9NodeRouting({ logOptions: { developmentOutputFilePath: file.path } });
+	const output = await getLogsFromFile(file.path);
 	t.true(
 		output[0].includes('[n9-node-routing] Listening on port 5000'),
 		`[n9-node-routing] Listening on port 5000 output : ${JSON.stringify(output)}`,
 	);
+
+	// Close server
+	await closeServer(server);
+	process.env.NODE_ENV = oldNodeEnv;
+});
+
+ava('Works without options in production', async (t: Assertions) => {
+	stdMock.use({ print });
+	const oldNodeEnv = process.env.NODE_ENV;
+	process.env.NODE_ENV = 'production';
+	const { server } = await N9NodeRouting();
+	stdMock.restore();
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
+	const line0 = JSON.parse(output[0]);
+	delete line0.timestamp;
+
+	t.deepEqual(line0, {
+		label: 'n9-node-routing',
+		level: 'info',
+		message: 'Listening on port 5000',
+	});
 
 	// Close server
 	await closeServer(server);

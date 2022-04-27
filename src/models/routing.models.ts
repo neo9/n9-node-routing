@@ -15,6 +15,7 @@ export namespace N9NodeRouting {
 		enableLogFormatJSON?: boolean;
 		path?: string;
 		log?: N9Log;
+		logOptions?: N9Log.Options;
 		http?: HttpOptions;
 		jwt?: JWTOptions;
 		openapi?: SwaggerOptions;

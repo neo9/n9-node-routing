@@ -2,10 +2,12 @@ import { N9Error } from '@neo9/n9-node-utils';
 import ava, { Assertions } from 'ava';
 import { join } from 'path';
 import * as stdMock from 'std-mocks';
+import * as tmp from 'tmp-promise';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { closeServer } from './fixtures/commons';
+import { getLogsFromFile, parseJSONLogAndRemoveTime } from './fixtures/helper';
 
 const print = commons.print;
 
@@ -18,9 +20,10 @@ ava.beforeEach(() => {
 ava('Basic usage, create http server', async (t: Assertions) => {
 	const oldNodeEnv = process.env.NODE_ENV;
 	process.env.NODE_ENV = 'development';
-	stdMock.use({ print });
+	const file = await tmp.file();
 	const { server } = await N9NodeRouting({
 		path: microFoo,
+		logOptions: { developmentOutputFilePath: file.path },
 	});
 	// Check /foo route added on foo/foo.init.ts
 	let res: any = await commons.jsonHttpClient.get<{ foo: string }>('http://localhost:5000/foo');
@@ -63,8 +66,7 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	t.is(res.context?.srcError?.context?.url, '/404', '/404');
 
 	// Check logs
-	stdMock.restore();
-	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
+	const output = await getLogsFromFile(file.path);
 
 	// Logs on stdout
 	t.true(output[0].includes('Init module bar'), 'Init module bar');
@@ -75,8 +77,17 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	t.true(output[5].includes('GET /'), 'GET /');
 	t.true(output[6].includes('GET /ping'), 'GET /ping');
 	t.true(output[7].includes('GET /version'), 'GET /version');
-	t.true(output[8].includes('Error: not-found'), 'Error: not-found');
-	t.true(output[9].includes('GET /404'), 'GET /404');
+	t.true(output[8].includes('not-found'), `not-found ${output[8]}`);
+	t.true(output[9].includes('  err: {'), `Error details on multi-lines ${output[9]}`);
+	t.true(output[10].includes('"type": "N9Error",'), `Error details on multi-lines ${output[10]}`);
+	t.true(
+		output[11].includes('"message": "not-found",'),
+		`Error details on multi-lines ${output[11]}`,
+	);
+	t.true(output[12].includes('"stack":'), `Error details on multi-lines ${output[12]}`);
+	t.true(output[13].includes('Error: not-found'), `Error details on multi-lines ${output[13]}`);
+
+	t.true(output[output.length - 1].includes('GET /404'), `GET /404 ${output[output.length - 1]}`);
 
 	// Close server
 	await closeServer(server);
@@ -124,28 +135,24 @@ ava('Basic usage, create http server on production', async (t: Assertions) => {
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 
 	// Logs on stdout
-	t.true(
-		output[0].includes(
-			`{"level":"info","message":"Init module bar","label":"n9-node-routing","timestamp":`,
-		),
+	t.deepEqual(
+		parseJSONLogAndRemoveTime(output[0]),
+		{ level: 'info', message: 'Init module bar', label: 'n9-node-routing' },
 		`Init module bar`,
 	);
-	t.true(
-		output[1].includes(
-			`{"level":"info","message":"Init module foo","label":"n9-node-routing","timestamp":`,
-		),
+	t.deepEqual(
+		parseJSONLogAndRemoveTime(output[1]),
+		{ level: 'info', message: 'Init module foo', label: 'n9-node-routing' },
 		`Init module foo`,
 	);
-	t.true(
-		output[2].includes(
-			`{"level":"info","message":"Hello foo.init","label":"n9-node-routing","timestamp":`,
-		),
+	t.deepEqual(
+		parseJSONLogAndRemoveTime(output[2]),
+		{ level: 'info', message: 'Hello foo.init', label: 'n9-node-routing' },
 		`Hello foo.init`,
 	);
-	t.true(
-		output[3].includes(
-			'{"level":"info","message":"Listening on port 5000","label":"n9-node-routing","timestamp":',
-		),
+	t.deepEqual(
+		parseJSONLogAndRemoveTime(output[3]),
+		{ level: 'info', message: 'Listening on port 5000', label: 'n9-node-routing' },
 		'Listening on port 5000',
 	);
 	t.true(output[4].includes(',"path":"/foo","status":"200","durationMs":'), 'path" /foo');

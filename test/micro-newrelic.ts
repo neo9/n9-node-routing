@@ -1,8 +1,8 @@
 import { N9Error } from '@neo9/n9-node-utils';
 import ava, { Assertions } from 'ava';
-import * as stdMock from 'std-mocks';
+import * as tmp from 'tmp-promise';
 
-import { end, init, urlPrefix } from './fixtures/helper';
+import { end, getLogsFromFile, init, urlPrefix } from './fixtures/helper';
 
 ava.beforeEach(() => {
 	delete (global as any).log;
@@ -13,9 +13,12 @@ ava('Init newrelic and send error event', async (t: Assertions) => {
 	// process.env.NEW_RELIC_LOG_LEVEL = 'debug';
 	// process.env.NEW_RELIC_LOG = 'stdout';
 	// process.env.NEW_RELIC_EXPLAIN_THRESHOLD = '1';
-
+	const file = await tmp.file();
 	const { server, httpClient } = await init('micro-newrelic', false, {
 		enableLogFormatJSON: false,
+		logOptions: {
+			developmentOutputFilePath: file.path,
+		},
 		apm: {
 			newRelicOptions: {
 				licenseKey: 'fake-license-key',
@@ -33,10 +36,9 @@ ava('Init newrelic and send error event', async (t: Assertions) => {
 	t.is(err.status, 505);
 	t.is(err.message, 'bar-extendable-error');
 
-	let { stdout } = stdMock.flush();
-	stdout = stdout.map((line) => line.toString());
+	const output = await getLogsFromFile(file.path);
 	t.truthy(
-		stdout.find((line) => line.includes('Enable NewRelic for app test-n9-node-routing')),
+		output.find((line) => line.includes('Enable NewRelic for app test-n9-node-routing')),
 		'Enable NewRelic for app n9-node-routing',
 	);
 	// can't be tested because it take several minutes to newrelic to stop
@@ -73,13 +75,16 @@ ava(
 		// process.env.NEW_RELIC_LOG_LEVEL = 'debug';
 		// process.env.NEW_RELIC_LOG = 'stdout';
 		// process.env.NEW_RELIC_EXPLAIN_THRESHOLD = '1';
-
+		const file = await tmp.file();
 		const { server } = await init('micro-newrelic', false, {
 			enableLogFormatJSON: false,
+			logOptions: {
+				developmentOutputFilePath: file.path,
+			},
 		});
-		const { stdout } = stdMock.flush();
+		const output = await getLogsFromFile(file.path);
 		t.falsy(
-			stdout.find((line) => line.includes('Enable NewRelic for app n9-node-routing')),
+			output.find((line) => line.includes('Enable NewRelic for app n9-node-routing')),
 			'Enable NewRelic for app test-n9-node-routing',
 		);
 		// can't be tested because it take several minutes to newrelic to stop
