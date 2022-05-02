@@ -1,5 +1,12 @@
 
 
+## [1.34.1](https://github.com/neo9/n9-node-routing/compare/1.34.0...1.34.1) (2022-05-02)
+
+
+### yarn
+
+* Upgrade n9-node-log to v 4.0.1 to avoid wasm out of memory ([7f5bd7e](https://github.com/neo9/n9-node-routing/commit/7f5bd7ee4712ef029a0b68e84fcbfab0ed9a0e22))
+
 # [1.34.0](https://github.com/neo9/n9-node-routing/compare/1.33.0...1.34.0) (2022-04-27)
 
 
