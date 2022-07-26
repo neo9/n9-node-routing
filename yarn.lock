@@ -592,6 +592,11 @@
   resolved "https://registry.npmjs.org/@neo9/n9-node-utils/-/n9-node-utils-2.1.0.tgz#869dbcfa627677633d98b3733db850582b179a96"
   integrity sha512-/VzaOWl/FM5QYm6usckBgKlN1uIBERiKyWAhQ1A4rm9zam4VzOFLMyqoX7jUou+eEZO9dlgCH/knvZek20iimQ==
 
+"@neo9/n9-node-utils@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.npmjs.org/@neo9/n9-node-utils/-/n9-node-utils-2.2.1.tgz#1f79db395ee2515377dec5c6bb48dd8f9c6b826c"
+  integrity sha512-A3gJgr+dfXkZVgs1CyMzeXJ2IK22YAAZy5nQNrTGSqLW5zRcInaOt1l0zfKrsMoKFbbQWkKsV/copSERXZBgTg==
+
 "@newrelic/aws-sdk@^4.1.1":
   version "4.1.2"
   resolved "https://registry.npmjs.org/@newrelic/aws-sdk/-/aws-sdk-4.1.2.tgz#6548bbe408542cd9ee2999319dc14c11e37e4a95"

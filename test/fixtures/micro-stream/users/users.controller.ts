@@ -11,7 +11,7 @@ export class UsersController {
 		const items = [{ _id: 'a' }, { _id: 'b' }, { _id: 'c' }, { _id: 'd' }];
 
 		return streamArray(items).pipe(
-			new N9JSONStream({
+			new N9JSONStream<{ _id: string }, { lastUpdate: Date }>({
 				total: 5,
 				metaData: {
 					lastUpdate: new Date(),
