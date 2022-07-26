@@ -1,5 +1,12 @@
 
 
+## [1.34.2](https://github.com/neo9/n9-node-routing/compare/1.34.1...1.34.2) (2022-07-26)
+
+
+### yarn
+
+* Upgrade n9-node-utils to v 2.2.1 to get json-stream metadata type ([be9c5a7](https://github.com/neo9/n9-node-routing/commit/be9c5a79e960d14cbc712c2ea1240b270cf510b9))
+
 ## [1.34.1](https://github.com/neo9/n9-node-routing/compare/1.34.0...1.34.1) (2022-05-02)
 
 
