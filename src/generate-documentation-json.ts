@@ -46,7 +46,7 @@ export function generateDocumentationJson(
 	const routesStorage = RoutingControllers.getMetadataArgsStorage();
 
 	const schemas = validationMetadatasToSchemas({
-		refPointerPrefix: '#/components/schemas',
+		refPointerPrefix: '#/components/schemas/',
 	});
 	const additionalProperties: any = { components: { schemas }, ...baseOpenApiSpec };
 	const spec = RCOpenApi.routingControllersToSpec(
