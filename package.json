@@ -17,6 +17,7 @@
     "dist/src"
   ],
   "scripts": {
+    "dev": "rimraf dist/ && tsc --watch",
     "build": "rimraf dist/ && tsc",
     "format": "prettier --write '{,@(src|test)/**/}*.*'",
     "lint": "eslint --config .eslintrc.yaml '{src,test}/**/*.ts'",

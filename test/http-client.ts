@@ -301,3 +301,23 @@ ava('Use HttpClient to upload a file', async (t: Assertions) => {
 
 	await closeServer(server);
 });
+
+ava('Use HttpClient to call route with numeric error code', async (t: Assertions) => {
+	stdMock.use({ print });
+	const { server } = await N9NodeRouting({
+		hasProxy: true, // tell N9NodeRouting to parse `session` header
+		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
+		http: {
+			port: 6001,
+		},
+	});
+
+	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
+
+	const error = await t.throwsAsync<N9Error>(
+		async () => await httpClient.get<string>('http://localhost:6001/numeric-error-code'),
+	);
+	t.is(error.message, '500', 'error code is not numerical');
+
+	await closeServer(server);
+});
