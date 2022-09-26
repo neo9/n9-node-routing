@@ -193,7 +193,7 @@ export class N9HttpClient {
 				'response-time': responseTime,
 			});
 
-			throw new N9Error(code, status, {
+			throw new N9Error(code.toString(), status, {
 				uri,
 				method,
 				queryParams,
@@ -229,7 +229,7 @@ export class N9HttpClient {
 				'response-time': responseTime,
 			});
 
-			throw new N9Error(code, status, {
+			throw new N9Error(code.toString(), status, {
 				uri,
 				options: fastSafeStringify(options),
 				error: e,
@@ -290,7 +290,7 @@ export class N9HttpClient {
 			});
 			const { code, status } = N9HttpClient.prepareErrorCodeAndStatus(e);
 
-			throw new N9Error(code || 'unknown-error', status, {
+			throw new N9Error(code?.toString() || 'unknown-error', status, {
 				uri,
 				method: options?.method,
 				code: e.code || code,
