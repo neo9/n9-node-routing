@@ -1,5 +1,13 @@
 
 
+## [1.34.3](https://github.com/neo9/n9-node-routing/compare/1.34.2...1.34.3) (2022-09-27)
+
+
+### fix
+
+* Path to types schema is now correct ([6975bc8](https://github.com/neo9/n9-node-routing/commit/6975bc801c0fc935900e29ab9e25189e19fe3d75))
+* Stringify code to avoid type error ([ee90423](https://github.com/neo9/n9-node-routing/commit/ee90423a8ab6e8f9c55cb7bd16fd8ecd663b576e))
+
 ## [1.34.2](https://github.com/neo9/n9-node-routing/compare/1.34.1...1.34.2) (2022-07-26)
 
 
