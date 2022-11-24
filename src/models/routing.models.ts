@@ -1,10 +1,13 @@
 import { RoutingControllersOptions } from '@benjd90/routing-controllers';
+import { N9ConfOptions } from '@neo9/n9-node-conf';
 import { N9Log } from '@neo9/n9-node-log';
 import * as Sentry from '@sentry/node';
 import { RequestHandlerOptions } from '@sentry/node/dist/handlers';
 import { Express, Request, Response } from 'express';
 import { Server } from 'http';
 import * as morgan from 'morgan';
+
+import { ClassType } from './class-type.models';
 
 /* eslint-disable no-use-before-define */
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -14,6 +17,7 @@ export namespace N9NodeRouting {
 		enableRequestId?: boolean;
 		enableLogFormatJSON?: boolean;
 		path?: string;
+		conf?: ConfOptions;
 		log?: N9Log;
 		logOptions?: N9Log.Options;
 		http?: HttpOptions;
@@ -25,6 +29,17 @@ export namespace N9NodeRouting {
 		apm?: APMOptions;
 		firstSequentialInitFileNames?: string[];
 		firstSequentialStartFileNames?: string[];
+	}
+
+	export interface ConfOptions {
+		n9NodeConf?: N9ConfOptions;
+		validation?: ConfValidationOptions;
+	}
+
+	export interface ConfValidationOptions {
+		isEnabled?: boolean;
+		classType?: ClassType<unknown>;
+		formatWhitelistErrors?: boolean;
 	}
 
 	export interface HttpOptions {
