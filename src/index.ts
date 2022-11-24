@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import './utils/error-to-json';
 
+import n9NodeConf from '@neo9/n9-node-conf';
 import n9NodeLog from '@neo9/n9-node-log';
 import * as appRootDir from 'app-root-dir';
 import * as Path from 'path';
@@ -10,6 +11,7 @@ import type { PackageJson } from 'types-package-json';
 
 import * as ExpressApp from './express-app';
 import { initAPM } from './init-apm';
+import { validateConf } from './init-conf';
 import initialiseModules from './initialise-modules';
 import { N9NodeRouting } from './models/routing.models';
 import { applyDefaultValuesOnOptions } from './options';
@@ -79,9 +81,13 @@ export default async (options: N9NodeRouting.Options = {}): Promise<N9NodeRoutin
 	}
 
 	Container.set('logger', options.log);
-	if ((global as any).conf) {
-		Container.set('conf', (global as any).conf);
-	}
+
+	// Load project conf & set as global
+	const conf = n9NodeConf(options.conf.n9NodeConf);
+	await validateConf(conf, options.conf.validation, global.log);
+	global.conf = conf;
+
+	Container.set('conf', conf);
 	Container.set('N9HttpClient', new N9HttpClient());
 	Container.set('N9NodeRoutingOptions', options);
 
