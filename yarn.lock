@@ -579,6 +579,17 @@
     mingo-fork-no-hash "^3.1.1"
     mongodb "3.6.6"
 
+"@neo9/n9-node-conf@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.npmjs.org/@neo9/n9-node-conf/-/n9-node-conf-1.4.1.tgz#8c187f770d42d26acaf93990e6f466206eb7f5fb"
+  integrity sha512-GmLdZT75E3vcBZvDPbmQWVHa4BXkhBg4TzIZo4fGpT5Nx0KgWhn+mh7th+m9dAUwy6hrur1RhOtkrzMKYsHzPw==
+  dependencies:
+    app-root-dir "^1.0.2"
+    debug "^4.3.1"
+    fs-extra "^10.0.0"
+    js-yaml "^4.1.0"
+    lodash "^4.17.21"
+
 "@neo9/n9-node-log@^4.0.1":
   version "4.0.1"
   resolved "https://registry.npmjs.org/@neo9/n9-node-log/-/n9-node-log-4.0.1.tgz#4d3c88095500ea900441af3269afe342c46b747b"
