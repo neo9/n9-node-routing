@@ -1,4 +1,5 @@
 import * as RoutingControllers from '@benjd90/routing-controllers';
+import { N9Log } from '@neo9/n9-node-log';
 import { createMiddleware, signalIsUp } from '@promster/express';
 import * as PromsterServer from '@promster/server';
 import * as Sentry from '@sentry/node';
@@ -20,6 +21,8 @@ import { setRequestContext } from './requestid';
 export async function init(
 	options: N9NodeRouting.Options,
 	packageJson: PackageJson,
+	log: N9Log,
+	conf: unknown,
 ): Promise<N9NodeRouting.ReturnObject> {
 	// Setup routing-controllers to use typedi container.
 	RoutingControllers.useContainer(Container);
@@ -113,7 +116,8 @@ export async function init(
 			morgan(options.http.logLevel as morgan.FormatFn, {
 				stream: {
 					write: (message) => {
-						if ((global as any).n9NodeRoutingData.formatLogInJSON) {
+						// TODO: use n9Log getter
+						if ((options.log as any).options.formatJSON) {
 							try {
 								const morganDetails = JSON.parse(message);
 								options.log.info(`api call ${morganDetails.path}`, morganDetails);
@@ -132,13 +136,13 @@ export async function init(
 	const server = createServer(expressApp);
 
 	if (options.http.beforeRoutingControllerLaunchHook) {
-		await options.http.beforeRoutingControllerLaunchHook(expressApp, options.log, options);
+		await options.http.beforeRoutingControllerLaunchHook(expressApp, log, options, conf);
 	}
 
 	expressApp = RoutingControllers.useExpressServer(expressApp, options.http.routingController);
 
 	if (options.http.afterRoutingControllerLaunchHook) {
-		await options.http.afterRoutingControllerLaunchHook(expressApp, options.log, options);
+		await options.http.afterRoutingControllerLaunchHook(expressApp, log, options, conf);
 	}
 
 	// Listen method

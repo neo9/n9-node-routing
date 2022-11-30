@@ -4,7 +4,7 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting, { HttpCargoBuilder } from '../src';
-import commons, { closeServer } from './fixtures/commons';
+import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
 
 const print = commons.print;
 
@@ -15,6 +15,7 @@ ava('Call a route multiple times with HttpClient and cargo', async (t: Assertion
 		http: {
 			port: 6001,
 		},
+		conf: defaultConfOptions,
 	});
 	const cargo = HttpCargoBuilder.BUILD<{ _id: string }>(
 		{
@@ -28,7 +29,7 @@ ava('Call a route multiple times with HttpClient and cargo', async (t: Assertion
 
 	t.deepEqual<{ _id: string }>(responseForSingleCall, { _id: '1' }, 'id1 fetch first object');
 	let output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
-	t.true(output[1].includes('/users/by-multiple-ids?ids=1'), 'Server received one call');
+	t.true(output[4].includes('/users/by-multiple-ids?ids=1'), 'Server received one call');
 
 	const [id1, id2, id3, id4, id5, id6] = await Promise.all([
 		cargo.get('1'),
@@ -65,6 +66,7 @@ ava('Call a route multiple times with cargo, one item is not found', async (t: A
 		http: {
 			port: 6001,
 		},
+		conf: defaultConfOptions,
 	});
 	const cargo = HttpCargoBuilder.BUILD<{ _id: string }>(
 		{
@@ -110,6 +112,7 @@ ava(
 			http: {
 				port: 6001,
 			},
+			conf: defaultConfOptions,
 		});
 		const cargo = HttpCargoBuilder.BUILD<{ _id: string }>(
 			{

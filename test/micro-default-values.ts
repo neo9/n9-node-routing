@@ -4,7 +4,7 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import commons, { closeServer } from './fixtures/commons';
+import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
 
 const microDefaultValues = join(__dirname, 'fixtures/micro-default-values/');
 
@@ -15,6 +15,7 @@ ava('Check default values are set', async (t: Assertions) => {
 		path: microDefaultValues,
 		http: { port: 5585 },
 		enableLogFormatJSON: false,
+		conf: defaultConfOptions,
 	});
 
 	const paramsReceived: any = await commons.jsonHttpClient.post(

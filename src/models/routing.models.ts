@@ -1,8 +1,9 @@
 import { RoutingControllersOptions } from '@benjd90/routing-controllers';
-import { N9ConfOptions } from '@neo9/n9-node-conf';
+import { N9ConfBaseConf, N9ConfOptions } from '@neo9/n9-node-conf';
 import { N9Log } from '@neo9/n9-node-log';
 import * as Sentry from '@sentry/node';
 import { RequestHandlerOptions } from '@sentry/node/dist/handlers';
+import { IsBoolean, IsIn, IsInstance, IsOptional, IsString } from 'class-validator';
 import { Express, Request, Response } from 'express';
 import { Server } from 'http';
 import * as morgan from 'morgan';
@@ -31,15 +32,35 @@ export namespace N9NodeRouting {
 		firstSequentialStartFileNames?: string[];
 	}
 
-	export interface ConfOptions {
+	export interface ConfOptions<ConfType extends N9NodeRoutingConf = N9NodeRoutingConf> {
 		n9NodeConf?: N9ConfOptions;
-		validation?: ConfValidationOptions;
+		validation?: ConfValidationOptions<ConfType>;
 	}
 
-	export interface ConfValidationOptions {
+	export interface ConfValidationOptions<ConfType extends N9NodeRoutingConf = N9NodeRoutingConf> {
 		isEnabled?: boolean;
-		classType?: ClassType<unknown>;
+		classType?: ClassType<ConfType>;
+		formatValidationErrors?: boolean;
 		formatWhitelistErrors?: boolean;
+	}
+
+	export class N9NodeRoutingConf implements N9ConfBaseConf {
+		@IsOptional()
+		@IsString()
+		env?: string;
+
+		@IsOptional()
+		@IsString()
+		name?: string;
+
+		@IsOptional()
+		@IsString()
+		version?: string;
+
+		// todo
+		@IsOptional()
+		// @ValidateNested(Options)
+		n9NodeRoutingOptions?: Options;
 	}
 
 	export interface HttpOptions {
@@ -54,11 +75,13 @@ export namespace N9NodeRouting {
 			app: Express,
 			log: N9Log,
 			options: Options,
+			conf: unknown,
 		) => Promise<void> | void;
 		afterRoutingControllerLaunchHook?: (
 			app: Express,
 			log: N9Log,
 			options: Options,
+			conf: unknown,
 		) => Promise<void> | void;
 	}
 
@@ -172,5 +195,27 @@ export namespace N9NodeRouting {
 		app: Express;
 		server: Server;
 		prometheusServer: Server;
+	}
+
+	export class N9LogOptions implements N9Log.Options {
+		@IsOptional()
+		@IsIn(['silent', 'error', 'warn', 'info', 'debug', 'trace'])
+		level?: N9Log.Level;
+
+		@IsOptional()
+		@IsBoolean()
+		console?: boolean;
+
+		@IsOptional()
+		@IsBoolean()
+		formatJSON?: boolean;
+
+		@IsOptional()
+		@IsString()
+		developmentOutputFilePath?: string;
+
+		@IsOptional()
+		@IsInstance(Function, { each: true })
+		filters?: N9Log.Filter[];
 	}
 }
