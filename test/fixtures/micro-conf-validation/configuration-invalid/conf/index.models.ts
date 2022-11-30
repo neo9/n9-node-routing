@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsIn, IsNumber, IsOptional, IsString } from 'class-validator';
 
 // TODO: remove when n9-node-conf interfaces will be transformed in class
 export class N9ConfBaseConf {
@@ -18,5 +18,6 @@ export class Conf extends N9ConfBaseConf {
 	foo?: string;
 
 	@IsNumber()
+	@IsIn([1, 2])
 	bar?: number;
 }

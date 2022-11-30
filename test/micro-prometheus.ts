@@ -5,7 +5,7 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import commons, { closeServer } from './fixtures/commons';
+import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
 
 const print = commons.print;
 
@@ -32,6 +32,7 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 		shutdown: {
 			waitDurationBeforeStop: 5,
 		},
+		conf: defaultConfOptions,
 	});
 	let res = await got('http://localhost:5000/sample-route');
 	t.is(res.statusCode, 204);

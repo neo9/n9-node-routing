@@ -4,7 +4,7 @@ import { join } from 'path';
 import * as stdMock from 'std-mocks';
 
 import src, { N9NodeRouting } from '../src';
-import commons, { closeServer } from './fixtures/commons';
+import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
 
 const microValidate = join(__dirname, 'fixtures/micro-validate/');
 
@@ -14,6 +14,7 @@ ava('Check allowUnkown', async (t: Assertions) => {
 	const { server }: N9NodeRouting.ReturnObject = await src({
 		path: microValidate,
 		http: { port: 5585 },
+		conf: defaultConfOptions,
 	});
 	// Should not allow others keys
 	const err = await t.throwsAsync<N9Error>(async () =>
@@ -56,6 +57,7 @@ ava('Check date parsing', async (t: Assertions) => {
 	const { server } = await src({
 		path: microValidate,
 		http: { port: 5585 },
+		conf: defaultConfOptions,
 	});
 	// Should not allow others keys
 	const err = await t.throwsAsync<N9Error>(

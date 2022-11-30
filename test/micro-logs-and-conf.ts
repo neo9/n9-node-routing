@@ -6,7 +6,7 @@ import * as tmp from 'tmp-promise';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import commons, { closeServer } from './fixtures/commons';
+import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
 import { getLogsFromFile } from './fixtures/helper';
 
 const microLogs = join(__dirname, 'fixtures/micro-logs/');
@@ -22,6 +22,7 @@ ava('Basic usage, check logs', async (t: Assertions) => {
 		path: microLogs,
 		enableLogFormatJSON: false,
 		logOptions: { developmentOutputFilePath: file.path },
+		conf: defaultConfOptions,
 	});
 	// Check /foo route added on foo/foo.init.ts
 	const res = await commons.jsonHttpClient.get('http://localhost:5000/bar');
@@ -29,23 +30,23 @@ ava('Basic usage, check logs', async (t: Assertions) => {
 	// Check logs
 	const output = await getLogsFromFile(file.path);
 
-	t.is(output.length, 6, 'output length');
+	t.is(output.length, 9, 'output length');
 	t.true(
 		output[0].includes('It is recommended to use JSON format outside development environment'),
 		'Warn n9--node-log',
 	);
-	t.true(output[1].includes('Init module bar'), 'Init module bar');
-	t.true(output[2].includes('Hello bar.init'), 'Hello bar.init');
-	t.true(output[3].includes('Listening on port 5000'), 'Listening on port 5000');
-	t.true(output[4].includes('message in controller'), 'message in controller');
-	t.true(output[4].includes('] ('), 'contains request id');
-	t.true(output[4].includes(')'), 'contains request id 2');
-	t.true(output[5].includes('] ('));
-	const match = output[5].match(/\([a-zA-Z0-9_-]{7,14}\)/g);
+	t.true(output[3].includes('Init module bar'), 'Init module bar');
+	t.true(output[4].includes('Hello bar.init'), 'Hello bar.init');
+	t.true(output[5].includes('Listening on port 5000'), 'Listening on port 5000');
+	t.true(output[7].includes('message in controller'), 'message in controller');
+	t.true(output[7].includes('] ('), 'contains request id');
+	t.true(output[7].includes(')'), 'contains request id 2');
+	t.true(output[8].includes('] ('));
+	const match = output[8].match(/\([a-zA-Z0-9_-]{7,14}\)/g);
 	t.truthy(match, 'should match one');
 	const matchLength = match.length;
 	t.true(matchLength === 1);
-	t.true(output[5].includes('GET /bar'));
+	t.true(output[8].includes('GET /bar'));
 	t.deepEqual(res, (global as any).conf, 'body response is conf');
 	// Close server
 	await closeServer(server);
@@ -66,6 +67,7 @@ ava('Basic usage, check logs with empty response', async (t: Assertions) => {
 		},
 		path: microLogs,
 		logOptions: { developmentOutputFilePath: file.path },
+		conf: defaultConfOptions,
 	});
 	// Check /foo route added on foo/foo.init.ts
 	const res = await got('http://localhost:5002/empty');
@@ -74,13 +76,13 @@ ava('Basic usage, check logs with empty response', async (t: Assertions) => {
 	// Check logs
 	const output = await getLogsFromFile(file.path);
 
-	t.is(output.length, 4, 'check nb logs');
-	t.true(output[0].includes('Init module bar'), 'Init module bar');
-	t.true(output[1].includes('Hello bar.init'), 'Hello bar.init');
-	t.true(output[2].includes('Listening on port 5002'), 'Listening on port 5002');
-	t.true(output[3].includes('] ('));
-	t.truthy(output[3].match(/\([a-zA-Z0-9_-]{7,14}\)/g));
-	t.true(output[3].includes('GET /empty'), 'GET /empty');
+	t.is(output.length, 7, 'check nb logs');
+	t.true(output[2].includes('Init module bar'), 'Init module bar');
+	t.true(output[3].includes('Hello bar.init'), 'Hello bar.init');
+	t.true(output[4].includes('Listening on port 5002'), 'Listening on port 5002');
+	t.true(output[6].includes('] ('));
+	t.truthy(output[6].match(/\([a-zA-Z0-9_-]{7,14}\)/g));
+	t.true(output[6].includes('GET /empty'), 'GET /empty');
 
 	// Close server
 	await closeServer(server);
@@ -96,6 +98,7 @@ ava('JSON output', async (t: Assertions) => {
 	const { server } = await N9NodeRouting({
 		path: microLogs,
 		enableLogFormatJSON: true,
+		conf: defaultConfOptions,
 	});
 
 	// Check /foo route added on foo/foo.init.ts
@@ -106,7 +109,7 @@ ava('JSON output', async (t: Assertions) => {
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 
-	const lineChecked = output[3];
+	const lineChecked = output[6];
 	t.truthy(lineChecked);
 	t.truthy(lineChecked.match(/"method":"GET"/g), 'GET /bar 1');
 	t.truthy(lineChecked.match(/"path":"\/bar"/g), 'GET /bar 2');

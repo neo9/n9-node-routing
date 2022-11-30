@@ -6,7 +6,7 @@ import * as tmp from 'tmp-promise';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import commons, { closeServer } from './fixtures/commons';
+import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
 import { getLogsFromFile, parseJSONLogAndRemoveTime } from './fixtures/helper';
 
 const print = commons.print;
@@ -24,6 +24,7 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	const { server } = await N9NodeRouting({
 		path: microFoo,
 		logOptions: { developmentOutputFilePath: file.path },
+		conf: defaultConfOptions,
 	});
 	// Check /foo route added on foo/foo.init.ts
 	let res: any = await commons.jsonHttpClient.get<{ foo: string }>('http://localhost:5000/foo');
@@ -69,23 +70,25 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	const output = await getLogsFromFile(file.path);
 
 	// Logs on stdout
-	t.true(output[0].includes('Init module bar'), 'Init module bar');
-	t.true(output[1].includes('Init module foo'), 'Init module foo');
-	t.true(output[2].includes('Hello foo.init'), 'Hello foo.init');
-	t.true(output[3].includes('Listening on port 5000'), 'Listening on port 5000');
-	t.true(output[4].includes('GET /foo'), 'GET /foo');
-	t.true(output[5].includes('GET /'), 'GET /');
-	t.true(output[6].includes('GET /ping'), 'GET /ping');
-	t.true(output[7].includes('GET /version'), 'GET /version');
-	t.true(output[8].includes('not-found'), `not-found ${output[8]}`);
-	t.true(output[9].includes('  err: {'), `Error details on multi-lines ${output[9]}`);
-	t.true(output[10].includes('"type": "N9Error",'), `Error details on multi-lines ${output[10]}`);
+	t.true(output[0].includes('Conf loaded: development'));
+	t.true(output[1].includes('Configuration validation is disabled'));
+	t.true(output[2].includes('Init module bar'), 'Init module bar');
+	t.true(output[3].includes('Init module foo'), 'Init module foo');
+	t.true(output[4].includes('Hello foo.init'), 'Hello foo.init');
+	t.true(output[5].includes('Listening on port 5000'), 'Listening on port 5000');
+	t.true(output[7].includes('GET /foo'), 'GET /foo');
+	t.true(output[8].includes('GET /'), 'GET /');
+	t.true(output[9].includes('GET /ping'), 'GET /ping');
+	t.true(output[10].includes('GET /version'), 'GET /version');
+	t.true(output[11].includes('not-found'), `not-found ${output[8]}`);
+	t.true(output[12].includes('  err: {'), `Error details on multi-lines ${output[9]}`);
+	t.true(output[13].includes('"type": "N9Error",'), `Error details on multi-lines ${output[10]}`);
 	t.true(
-		output[11].includes('"message": "not-found",'),
+		output[14].includes('"message": "not-found",'),
 		`Error details on multi-lines ${output[11]}`,
 	);
-	t.true(output[12].includes('"stack":'), `Error details on multi-lines ${output[12]}`);
-	t.true(output[13].includes('Error: not-found'), `Error details on multi-lines ${output[13]}`);
+	t.true(output[15].includes('"stack":'), `Error details on multi-lines ${output[12]}`);
+	t.true(output[16].includes('Error: not-found'), `Error details on multi-lines ${output[13]}`);
 
 	t.true(output[output.length - 1].includes('GET /404'), `GET /404 ${output[output.length - 1]}`);
 
@@ -99,6 +102,7 @@ ava('Basic usage, create http server on production', async (t: Assertions) => {
 	process.env.NODE_ENV = 'production';
 	const { server } = await N9NodeRouting({
 		path: microFoo,
+		conf: defaultConfOptions,
 	});
 	// Check /foo route added on foo/foo.init.ts
 	let res: any = await commons.jsonHttpClient.get('http://localhost:5000/foo');
@@ -136,31 +140,31 @@ ava('Basic usage, create http server on production', async (t: Assertions) => {
 
 	// Logs on stdout
 	t.deepEqual(
-		parseJSONLogAndRemoveTime(output[0]),
+		parseJSONLogAndRemoveTime(output[2]),
 		{ level: 'info', message: 'Init module bar', label: 'n9-node-routing' },
 		`Init module bar`,
 	);
 	t.deepEqual(
-		parseJSONLogAndRemoveTime(output[1]),
+		parseJSONLogAndRemoveTime(output[3]),
 		{ level: 'info', message: 'Init module foo', label: 'n9-node-routing' },
 		`Init module foo`,
 	);
 	t.deepEqual(
-		parseJSONLogAndRemoveTime(output[2]),
+		parseJSONLogAndRemoveTime(output[4]),
 		{ level: 'info', message: 'Hello foo.init', label: 'n9-node-routing' },
 		`Hello foo.init`,
 	);
 	t.deepEqual(
-		parseJSONLogAndRemoveTime(output[3]),
+		parseJSONLogAndRemoveTime(output[5]),
 		{ level: 'info', message: 'Listening on port 5000', label: 'n9-node-routing' },
 		'Listening on port 5000',
 	);
-	t.true(output[4].includes(',"path":"/foo","status":"200","durationMs":'), 'path" /foo');
-	t.true(output[5].includes(',"path":"/","status":"200","durationMs":'), 'path /');
-	t.true(output[6].includes(',"path":"/ping","status":"200","durationMs":'), 'path /ping');
-	t.true(output[7].includes('"status":404,"context":{"url":"/404"},"hostname":'), 'status 404');
-	t.true(output[7].includes('"stack":"Error: not-found'), 'Error: not-found');
-	t.true(output[8].includes(',"path":"/404","status":"404","durationMs":'), 'path /404');
+	t.true(output[7].includes(',"path":"/foo","status":"200","durationMs":'), 'path" /foo');
+	t.true(output[8].includes(',"path":"/","status":"200","durationMs":'), 'path /');
+	t.true(output[9].includes(',"path":"/ping","status":"200","durationMs":'), 'path /ping');
+	t.true(output[10].includes('"status":404,"context":{"url":"/404"},"hostname":'), 'status 404');
+	t.true(output[10].includes('"stack":"Error: not-found'), 'Error: not-found');
+	t.true(output[11].includes(',"path":"/404","status":"404","durationMs":'), 'path /404');
 
 	// Close server
 	await closeServer(server);
@@ -172,6 +176,7 @@ ava('Check /routes', async (t) => {
 	const { server } = await N9NodeRouting({
 		path: microFoo,
 		http: { port: 5575 },
+		conf: defaultConfOptions,
 	});
 
 	// Check acl on routes
@@ -196,6 +201,7 @@ ava('Call routes (versionning)', async (t: Assertions) => {
 	const { server } = await N9NodeRouting({
 		path: microFoo,
 		http: { port: 5559 },
+		conf: defaultConfOptions,
 	});
 	let res = await commons.jsonHttpClient.post<any>('http://localhost:5559/v1/bar');
 	t.is(res.bar, 'foo');
@@ -235,6 +241,7 @@ ava('Call routes with error in development (error key)', async (t: Assertions) =
 	const { server } = await N9NodeRouting({
 		path: microFoo,
 		http: { port: 5587 },
+		conf: defaultConfOptions,
 	});
 	// Call error with no message
 	const err = await t.throwsAsync<N9Error>(async () =>
@@ -262,6 +269,7 @@ ava('Call routes with error in production (no leak)', async (t: Assertions) => {
 	const { server } = await N9NodeRouting({
 		path: microFoo,
 		http: { port: 5587 },
+		conf: defaultConfOptions,
 	});
 
 	// Call special route which fails

@@ -19,9 +19,9 @@ ava('Read documentation', (t: Assertions) => {
 	};
 
 	const optionsWithDefault: N9NodeRouting.Options = _.cloneDeep(initOptions);
-	applyDefaultValuesOnOptions(optionsWithDefault, environment, 'fake-ap-name');
+	applyDefaultValuesOnOptions(optionsWithDefault, environment, 'fake-app-name');
 	const optionsWithDefault2: N9NodeRouting.Options = _.cloneDeep(optionsWithDefault);
-	applyDefaultValuesOnOptions(optionsWithDefault2, environment, 'fake-ap-name');
+	applyDefaultValuesOnOptions(optionsWithDefault2, environment, 'fake-app-name');
 
 	// Check logs
 	stdMock.restore();

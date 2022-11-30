@@ -8,7 +8,7 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting, { N9HttpClient } from '../src';
-import commons, { closeServer } from './fixtures/commons';
+import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
 
 const print = commons.print;
 
@@ -20,6 +20,7 @@ ava('Call a route with HttpClient', async (t: Assertions) => {
 		http: {
 			port: 6001,
 		},
+		conf: defaultConfOptions,
 	});
 	stdMock.flush();
 
@@ -163,6 +164,7 @@ ava('Check retries of HttpClient against error controller', async (t: Assertions
 		http: {
 			port: 6001,
 		},
+		conf: defaultConfOptions,
 	});
 
 	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
@@ -179,13 +181,13 @@ ava('Check retries of HttpClient against error controller', async (t: Assertions
 		`Count 3 calls, 1 + 2 retries`,
 	);
 	t.true(
-		stdout[2].includes(
+		stdout[5].includes(
 			`Retry call [GET http://localhost:6001/503] n°1 due to HTTPError Response code 503 (Service Unavailable)`,
 		),
 		`Retry n°1 is logged by client`,
 	);
 	t.true(
-		stdout[4].includes(
+		stdout[7].includes(
 			`Retry call [GET http://localhost:6001/503] n°2 due to HTTPError Response code 503 (Service Unavailable)`,
 		),
 		`Retry n°2 is logged by client`,
@@ -205,6 +207,7 @@ ava('Use HttpClient base options', async (t: Assertions) => {
 		http: {
 			port: 6001,
 		},
+		conf: defaultConfOptions,
 	});
 
 	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }), {
@@ -225,6 +228,7 @@ ava('Use HttpClient with multiple queryParams', async (t: Assertions) => {
 		http: {
 			port: 6001,
 		},
+		conf: defaultConfOptions,
 	});
 
 	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
@@ -249,6 +253,7 @@ ava('Use HttpClient to call route with response 204', async (t: Assertions) => {
 		http: {
 			port: 6001,
 		},
+		conf: defaultConfOptions,
 	});
 
 	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
@@ -266,6 +271,7 @@ ava('Use HttpClient to upload a file', async (t: Assertions) => {
 		http: {
 			port: 6001,
 		},
+		conf: defaultConfOptions,
 	});
 
 	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
@@ -310,6 +316,7 @@ ava('Use HttpClient to call route with numeric error code', async (t: Assertions
 		http: {
 			port: 6001,
 		},
+		conf: defaultConfOptions,
 	});
 
 	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));

@@ -30,6 +30,29 @@ function formatWhitelistErrors(
 	return formattedWhitelistErrors;
 }
 
+function formatValidationErrors(
+	validationErrors: ValidationError[],
+	prefix: string,
+): [key: string, message: string[]][] {
+	const formattedErrors: [key: string, message: string[]][] = [];
+	for (const validationError of validationErrors) {
+		const computedPrefix = prefix
+			? `${prefix}.${validationError.property}`
+			: validationError.property;
+		if (validationError?.constraints) {
+			const formattedError: [key: string, message: string[]] = [computedPrefix, []];
+			for (const key of Object.keys(validationError.constraints)) {
+				formattedError[1].push(`${key}: ${validationError.constraints[key]}`);
+			}
+			formattedErrors.push(formattedError);
+		}
+		if (validationError.children) {
+			formattedErrors.push(...formatValidationErrors(validationError.children, computedPrefix));
+		}
+	}
+	return formattedErrors;
+}
+
 function assertClassTypeIsGiven(validationOptions: ConfValidationOptions): void {
 	if (validationOptions.isEnabled && !validationOptions.classType) {
 		throw new N9Error(
@@ -41,10 +64,29 @@ function assertClassTypeIsGiven(validationOptions: ConfValidationOptions): void 
 	}
 }
 
-function handleValidationErrors(validationErrors: ValidationError[]): void {
-	if (validationErrors.length) {
+function handleValidationErrors(
+	validationErrors: ValidationError[],
+	logger: N9Log,
+	options: ConfValidationOptions,
+): void {
+	const noError = validationErrors.length === 0;
+	if (noError) return;
+
+	if (!options.formatValidationErrors) {
+		logger.error('Configuration is not valid', { validationErrors });
 		throw new N9Error('Configuration is not valid', 500, { validationErrors });
 	}
+
+	logger.error('Configuration is not valid: ');
+	const validationErrorsFormatted = formatValidationErrors(validationErrors, undefined);
+	for (const validationError of validationErrorsFormatted) {
+		const attributePath = validationError[0];
+		const errorList = validationError[1];
+		for (const error of errorList) {
+			logger.error(`Attribute ${attributePath} is not valid - ${error}`);
+		}
+	}
+	throw new N9Error('Configuration is not valid', 500, { validationErrors });
 }
 
 function handleWhitelistErrors(
@@ -52,12 +94,20 @@ function handleWhitelistErrors(
 	logger: N9Log,
 	options: ConfValidationOptions,
 ): void {
-	if (whitelistErrors.length) {
+	const noError = whitelistErrors.length === 0;
+	if (noError) return;
+
+	if (!options.formatWhitelistErrors) {
 		logger.warn('Configuration contains unexpected attributes / Please remove those attributes', {
-			warnings: options.formatWhitelistErrors
-				? formatWhitelistErrors(whitelistErrors, undefined)
-				: whitelistErrors,
+			warnings: whitelistErrors,
 		});
+	}
+
+	logger.warn('Configuration contains unexpected attributes:');
+	const whitelistErrorsFormatted = formatWhitelistErrors(whitelistErrors, undefined);
+	for (const whitelistError of whitelistErrorsFormatted) {
+		const attributePath = whitelistError[0];
+		logger.warn(`Please remove attribute '${attributePath}' from the configuration`);
 	}
 }
 
@@ -78,7 +128,7 @@ export async function validateConf(
 	const confInstance = plainToClass(validationOptions.classType, conf);
 
 	const validationErrors = await validate(confInstance as object);
-	handleValidationErrors(validationErrors);
+	handleValidationErrors(validationErrors, logger, validationOptions);
 
 	const whitelistErrors = await validate(confInstance as object, {
 		whitelist: true,
