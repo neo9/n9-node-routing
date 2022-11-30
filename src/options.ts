@@ -5,6 +5,7 @@ import * as Sentry from '@sentry/node';
 import * as appRootDir from 'app-root-dir';
 import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
+import * as _ from 'lodash';
 import * as morgan from 'morgan';
 import { join } from 'path';
 
@@ -18,6 +19,7 @@ import * as Utils from './utils';
 
 function applyLogsOptionsDefaults(
 	options: N9NodeRouting.Options,
+	appName: string,
 	environment: Utils.Environment,
 ): void {
 	// If enableLogFormatJSON is provided, we use it's value.
@@ -26,21 +28,9 @@ function applyLogsOptionsDefaults(
 		typeof options.enableLogFormatJSON === 'boolean'
 			? options.enableLogFormatJSON
 			: environment !== 'development';
-	// If log if given, add a namespace
-	if (options.log) {
-		if (
-			!(options.log as any).name.endsWith('n9-node-routing') ||
-			(options.log as any).options.formatJSON !== options.enableLogFormatJSON
-		) {
-			options.log = options.log.module('n9-node-routing', {
-				...(options.log as any)?.options,
-				...options.logOptions,
-				formatJSON: options.enableLogFormatJSON,
-			});
-		}
-	} else {
-		options.log = n9NodeLog('n9-node-routing', {
-			...(options.log as any)?.options,
+
+	if (!options.log) {
+		options.log = n9NodeLog(appName, {
 			...options.logOptions,
 			formatJSON: options.enableLogFormatJSON,
 		});
@@ -124,7 +114,7 @@ function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 		typeof options.http.logLevel !== 'undefined'
 			? options.http.logLevel
 			: (tokens: morgan.TokenIndexer, req: express.Request, res: express.Response): string => {
-					const formatLogInJSON: boolean = (global as any).n9NodeRoutingData.formatLogInJSON;
+					const formatLogInJSON: boolean = options.enableLogFormatJSON;
 
 					if (formatLogInJSON) {
 						return JSON.stringify({
@@ -256,18 +246,33 @@ function applyAPMOptionsDefault(
 	}
 }
 
+export function applyConfOptionsDefaults(options: N9NodeRouting.Options): void {
+	const defaultOptions: N9NodeRouting.ConfOptions = {
+		n9NodeConf: {
+			path: join(appRootDir.get(), 'src', 'conf'),
+		},
+		validation: {
+			isEnabled: false,
+			formatValidationErrors: true,
+			formatWhitelistErrors: true,
+		},
+	};
+
+	options.conf = _.merge(defaultOptions, options.conf);
+}
+
 export function applyDefaultValuesOnOptions(
 	options: N9NodeRouting.Options,
 	environment: Utils.Environment,
 	appName: string,
 ): void {
 	options.path = options.path || join(appRootDir.get(), 'src', 'modules');
-	options.log = options.log || (global as any).log;
 	options.hasProxy = typeof options.hasProxy === 'boolean' ? options.hasProxy : true;
 	options.enableRequestId =
 		typeof options.enableRequestId === 'boolean' ? options.enableRequestId : true;
 
-	applyLogsOptionsDefaults(options, environment);
+	applyConfOptionsDefaults(options);
+	applyLogsOptionsDefaults(options, appName, environment);
 	applyShutdownOptionsDefaults(options);
 	applyPrometheusOptionsDefault(options);
 	applySentryOptionsDefault(options, environment);
@@ -275,4 +280,11 @@ export function applyDefaultValuesOnOptions(
 
 	applyOpenApiOptionsDefaults(options, environment);
 	applyHttpOptionsDefaults(options);
+}
+
+export function mergeOptionsAndConf(
+	options: N9NodeRouting.Options,
+	conf: N9NodeRouting.Options,
+): N9NodeRouting.Options {
+	return _.merge(options, conf);
 }

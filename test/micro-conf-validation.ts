@@ -14,7 +14,7 @@ const microConfValidation = join(__dirname, 'fixtures/micro-conf-validation/');
 
 ava.beforeEach(() => {
 	delete (global as any).log;
-	delete global.conf;
+	delete (global as any).conf;
 });
 
 ava('Should be a valid configuration', async (t: Assertions) => {
@@ -39,15 +39,15 @@ ava('Should be a valid configuration', async (t: Assertions) => {
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output[0].includes('Checking configuration'));
-	t.true(output[1].includes('Configuration is valid'));
-	t.true(output[2].includes('Listening on port'));
-	t.true(output.length === 3);
+	t.true(output[1].includes('Checking configuration'));
+	t.true(output[2].includes('Configuration is valid'));
+	t.true(output[3].includes('Listening on port'));
+	t.true(output.length === 5);
 
 	await closeServer(server);
 });
 
-ava('Should not be a valid configuration', async (t: Assertions) => {
+ava('Should not be a valid configuration (not formatted)', async (t: Assertions) => {
 	process.env.NODE_ENV = 'development';
 	const file = await tmp.file();
 	const microPath = `${microConfValidation}/configuration-invalid`;
@@ -63,7 +63,8 @@ ava('Should not be a valid configuration', async (t: Assertions) => {
 				validation: {
 					isEnabled: true,
 					classType: InvalidConf,
-					formatWhitelistErrors: true,
+					formatValidationErrors: false,
+					formatWhitelistErrors: false,
 				},
 			},
 		}),
@@ -71,12 +72,48 @@ ava('Should not be a valid configuration', async (t: Assertions) => {
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output[0].includes('Checking configuration'));
+	t.true(output[0].includes('Conf loaded: development'));
+	t.true(output[1].includes('Checking configuration'));
 	t.true(errors.message === 'Configuration is not valid');
 	t.true(errors.context.validationErrors[0].constraints.isNumber.includes('bar must be a number'));
 });
 
-ava('Should be a valid configuration with whitelist errors', async (t: Assertions) => {
+ava('Should not be a valid configuration (formatted)', async (t: Assertions) => {
+	process.env.NODE_ENV = 'development';
+	const file = await tmp.file();
+	const microPath = `${microConfValidation}/configuration-invalid`;
+
+	const errors: N9Error = await t.throwsAsync(
+		N9NodeRouting({
+			path: microPath,
+			logOptions: { developmentOutputFilePath: file.path },
+			conf: {
+				n9NodeConf: {
+					path: `${microPath}/conf`,
+				},
+				validation: {
+					isEnabled: true,
+					classType: InvalidConf,
+					formatValidationErrors: true,
+					formatWhitelistErrors: false,
+				},
+			},
+		}),
+	);
+
+	const output = await getLogsFromFile(file.path);
+
+	t.true(output[0].includes('Conf loaded: development'));
+	t.true(output[1].includes('Checking configuration'));
+	t.true(output[2].includes('Configuration is not valid:'));
+	t.true(output[3].includes('Attribute bar is not valid - isIn'));
+	t.true(output[4].includes('Attribute bar is not valid - isNumber'));
+
+	t.true(errors.message === 'Configuration is not valid');
+	t.true(errors.context.validationErrors[0].constraints.isNumber.includes('bar must be a number'));
+});
+
+ava('Should be a valid configuration with whitelist errors (formatted)', async (t: Assertions) => {
 	process.env.NODE_ENV = 'development';
 	const file = await tmp.file();
 	const microPath = `${microConfValidation}/configuration-valid-with-additional-attributes`;
@@ -98,10 +135,13 @@ ava('Should be a valid configuration with whitelist errors', async (t: Assertion
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output[0].includes('Checking configuration'));
-	t.true(output[1].includes('Configuration contains unexpected attributes'));
-	t.true(output[2].includes('Configuration is valid'));
-	t.true(output[3].includes('Listening on port'));
+	t.true(output[1].includes('Checking configuration'));
+	t.true(output[2].includes('Configuration contains unexpected attributes'));
+	t.true(output[3].includes("Please remove attribute 'env'"));
+	t.true(output[4].includes("Please remove attribute 'name'"));
+	t.true(output[5].includes("Please remove attribute 'version'"));
+	t.true(output[6].includes('Configuration is valid'));
+	t.true(output[7].includes('Listening on port'));
 
 	await closeServer(server);
 });
@@ -123,8 +163,8 @@ ava('Should not proceed any validation - no validation options given', async (t:
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output[0].includes('Configuration validation is disabled'));
-	t.true(output[1].includes('Listening on port'));
+	t.true(output[1].includes('Configuration validation is disabled'));
+	t.true(output[2].includes('Listening on port'));
 
 	await closeServer(server);
 });
@@ -150,8 +190,8 @@ ava('Should not proceed any validation - validation is disabled', async (t: Asse
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output[0].includes('Configuration validation is disabled'));
-	t.true(output[1].includes('Listening on port'));
+	t.true(output[1].includes('Configuration validation is disabled'));
+	t.true(output[2].includes('Listening on port'));
 
 	await closeServer(server);
 });
