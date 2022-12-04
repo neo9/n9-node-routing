@@ -1,7 +1,7 @@
 import { N9Log } from '@neo9/n9-node-log';
 import * as express from 'express';
 
-import { N9NodeRouting } from './models/routing.models';
+import * as N9NodeRouting from './models/routing';
 
 export function initAPM(options: N9NodeRouting.APMOptions, log: N9Log): void {
 	if (options.type === 'newRelic') {

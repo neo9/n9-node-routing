@@ -60,15 +60,15 @@
   "dependencies": {
     "@benjd90/routing-controllers": "^0.9.2",
     "@neo9/n9-node-conf": "^1.4.1",
-    "@neo9/n9-node-log": "^4.0.1",
+    "@neo9/n9-node-log": "4.1.0",
     "@neo9/n9-node-utils": "^2.2.1",
     "@promster/express": "^5.0.3",
     "@promster/server": "^6.0.2",
     "@sentry/node": "6.7.0",
     "@sentry/tracing": "6.7.0",
     "@types/cls-hooked": "^4.3.3",
-    "@types/node": "15.3.0",
     "@types/lodash": "^4.14.170",
+    "@types/node": "15.3.0",
     "app-root-dir": "^1.0.2",
     "async": "^3.2.0",
     "body-parser": "^1.17.2",
@@ -83,8 +83,8 @@
     "glob-promise": "^4.2.0",
     "got": "^11.8.2",
     "helmet": "^4.6.0",
-    "moment": "^2.29.1",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "morgan": "1.10.0",
     "multer": "^1.4.2",
     "newrelic": "^8.10.0",
@@ -138,14 +138,15 @@
   },
   "ava": {
     "files": [
-      "test/*"
+      "test/**/*.test.ts"
     ],
     "timeout": "1m",
     "extensions": [
       "ts"
     ],
     "require": [
-      "ts-node/register"
+      "ts-node/register",
+      "reflect-metadata"
     ],
     "ignoredByWatcher": [
       "**/openapi-documentation.json"

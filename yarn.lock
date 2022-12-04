@@ -590,6 +590,14 @@
     js-yaml "^4.1.0"
     lodash "^4.17.21"
 
+"@neo9/n9-node-log@4.1.0":
+  version "4.1.0"
+  resolved "https://registry.npmjs.org/@neo9/n9-node-log/-/n9-node-log-4.1.0.tgz#9392c2c3e08c04775b46a0546d42caf857287486"
+  integrity sha512-rmiHtSFnVElEZruaYBBbBtMNQ9zAeu1X6zIOuAsFIarQ1bG06lN8bxpZVLafhRINLZI8DEXzoEBBmT5CP11YLg==
+  dependencies:
+    pino "^7.11.0"
+    pino-pretty "^7.6.1"
+
 "@neo9/n9-node-log@^4.0.1":
   version "4.0.1"
   resolved "https://registry.npmjs.org/@neo9/n9-node-log/-/n9-node-log-4.0.1.tgz#4d3c88095500ea900441af3269afe342c46b747b"

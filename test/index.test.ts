@@ -74,27 +74,26 @@ ava('Works without options (except conf for tests)', async (t: Assertions) => {
 	process.env.NODE_ENV = oldNodeEnv;
 });
 
-// TODO Demander à benjamin
-// ava('Works without options in production (except conf for test purpose)', async (t: Assertions) => {
-// 	stdMock.use({ print });
-// 	const oldNodeEnv = process.env.NODE_ENV;
-// 	process.env.NODE_ENV = 'production';
-// 	const { server } = await N9NodeRouting({ conf: defaultConfOptions });
-// 	stdMock.restore();
-// 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
-// 	const line0 = JSON.parse(output[0]);
-// 	delete line0.timestamp;
-//
-// 	t.deepEqual(line0, {
-// 		label: 'n9-node-routing',
-// 		level: 'info',
-// 		message: 'Listening on port 5000',
-// 	});
-//
-// 	// Close server
-// 	await closeServer(server);
-// 	process.env.NODE_ENV = oldNodeEnv;
-// });
+ava('Works without options in production (except conf for test purpose)', async (t: Assertions) => {
+	stdMock.use({ print });
+	const oldNodeEnv = process.env.NODE_ENV;
+	process.env.NODE_ENV = 'production';
+	const { server } = await N9NodeRouting({ conf: defaultConfOptions });
+	stdMock.restore();
+	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
+	const line2 = JSON.parse(output[2]);
+	delete line2.timestamp;
+
+	t.deepEqual(line2, {
+		label: 'n9-node-routing',
+		level: 'info',
+		message: 'Listening on port 5000',
+	});
+
+	// Close server
+	await closeServer(server);
+	process.env.NODE_ENV = oldNodeEnv;
+});
 
 ava('Get app name on /', async (t: Assertions) => {
 	stdMock.use({ print });
@@ -172,4 +171,13 @@ ava('Fails with PORT not in common range', async (t: Assertions) => {
 	t.true(err.message.includes('ort should be'));
 	stdMock.restore();
 	stdMock.flush();
+});
+
+ava('Should work without options using default loading conf options', async (t: Assertions) => {
+	// throw an error because there is no conf in n9NodeRouting
+	const error = await t.throwsAsync(N9NodeRouting());
+
+	t.true(!!error);
+	t.true(error.message.includes('Could not load config file'));
+	t.true(error.message.includes('src/conf/application'));
 });

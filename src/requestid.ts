@@ -10,8 +10,7 @@ createNamespace(RequestIdNamespaceName);
 export { RequestIdNamespaceName, RequestIdKey };
 
 export function requestIdFilter(logObject: object & { message: string; level: string }): object {
-	// TODO: use n9log getter
-	const formatLogInJSON: boolean = (global as any).log.options.formatJSON ?? false;
+	const formatLogInJSON: boolean = (global as any).log.formatJSON ?? false;
 	const message = logObject.message;
 
 	const namespaceRequestId = getNamespace(RequestIdNamespaceName);

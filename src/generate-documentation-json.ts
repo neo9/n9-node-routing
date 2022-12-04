@@ -12,7 +12,7 @@ import * as RCOpenApi from 'routing-controllers-openapi';
 import { Container } from 'typedi';
 import type { PackageJson } from 'types-package-json';
 
-import { N9NodeRouting } from './models/routing.models';
+import * as N9NodeRouting from './models/routing';
 import { applyDefaultValuesOnOptions } from './options';
 import { getEnvironment } from './utils';
 

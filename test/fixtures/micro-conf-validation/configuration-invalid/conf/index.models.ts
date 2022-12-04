@@ -1,18 +1,14 @@
-import { IsIn, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsIn, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 
-// TODO: remove when n9-node-conf interfaces will be transformed in class
-export class N9ConfBaseConf {
-	@IsOptional()
-	env?: string;
+import { N9NodeRouting } from '../../../../../src';
 
-	@IsOptional()
-	name?: string;
-
-	@IsOptional()
-	version?: string;
+class Baz {
+	@IsString()
+	qux: string;
 }
 
-export class Conf extends N9ConfBaseConf {
+export class Conf extends N9NodeRouting.N9NodeRoutingBaseConf {
 	@IsOptional()
 	@IsString()
 	foo?: string;
@@ -20,4 +16,8 @@ export class Conf extends N9ConfBaseConf {
 	@IsNumber()
 	@IsIn([1, 2])
 	bar?: number;
+
+	@ValidateNested()
+	@Type(() => Baz)
+	baz?: Baz;
 }

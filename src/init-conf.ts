@@ -3,7 +3,7 @@ import { N9Error } from '@neo9/n9-node-utils';
 import { plainToClass } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
 
-import { N9NodeRouting } from './models/routing.models';
+import * as N9NodeRouting from './models/routing';
 import ConfValidationOptions = N9NodeRouting.ConfValidationOptions;
 
 function formatWhitelistErrors(
@@ -15,10 +15,10 @@ function formatWhitelistErrors(
 		const computedPrefix = prefix
 			? `${prefix}.${validationError.property}`
 			: validationError.property;
-		if (validationError?.constraints?.whitelistValidation) {
+		if (validationError.constraints?.whitelistValidation) {
 			formattedWhitelistErrors.push([
 				computedPrefix,
-				validationError?.constraints?.whitelistValidation,
+				validationError.constraints.whitelistValidation,
 			]);
 		}
 		if (validationError.children) {
@@ -39,7 +39,7 @@ function formatValidationErrors(
 		const computedPrefix = prefix
 			? `${prefix}.${validationError.property}`
 			: validationError.property;
-		if (validationError?.constraints) {
+		if (validationError.constraints) {
 			const formattedError: [key: string, message: string[]] = [computedPrefix, []];
 			for (const key of Object.keys(validationError.constraints)) {
 				formattedError[1].push(`${key}: ${validationError.constraints[key]}`);
@@ -101,6 +101,7 @@ function handleWhitelistErrors(
 		logger.warn('Configuration contains unexpected attributes / Please remove those attributes', {
 			warnings: whitelistErrors,
 		});
+		return;
 	}
 
 	logger.warn('Configuration contains unexpected attributes:');

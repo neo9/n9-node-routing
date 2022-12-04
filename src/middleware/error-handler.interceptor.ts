@@ -4,7 +4,7 @@ import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import fastSafeStringify from 'fast-safe-stringify';
 import { Inject, Service } from 'typedi';
 
-import { N9NodeRouting } from '..';
+import * as N9NodeRouting from '../models/routing';
 
 function removeProps(obj: object, keys: string[]): void {
 	if (!obj) return;

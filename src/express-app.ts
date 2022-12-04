@@ -15,15 +15,15 @@ import * as PrometheusClient from 'prom-client';
 import { Container } from 'typedi';
 import type { PackageJson } from 'types-package-json';
 import ErrnoException = NodeJS.ErrnoException;
-import { N9NodeRouting } from './models/routing.models';
+import * as N9NodeRouting from './models/routing';
 import { setRequestContext } from './requestid';
 
-export async function init(
-	options: N9NodeRouting.Options,
+export async function init<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>(
+	options: N9NodeRouting.Options<ConfType>,
 	packageJson: PackageJson,
 	log: N9Log,
-	conf: unknown,
-): Promise<N9NodeRouting.ReturnObject> {
+	conf: ConfType,
+): Promise<N9NodeRouting.ReturnObject<ConfType>> {
 	// Setup routing-controllers to use typedi container.
 	RoutingControllers.useContainer(Container);
 	ClassValidator.useContainer(Container);
@@ -116,8 +116,7 @@ export async function init(
 			morgan(options.http.logLevel as morgan.FormatFn, {
 				stream: {
 					write: (message) => {
-						// TODO: use n9Log getter
-						if ((options.log as any).options.formatJSON) {
+						if (options.log.formatJSON) {
 							try {
 								const morganDetails = JSON.parse(message);
 								options.log.info(`api call ${morganDetails.path}`, morganDetails);
@@ -165,6 +164,8 @@ export async function init(
 	return {
 		server,
 		prometheusServer,
+		conf,
 		app: expressApp,
+		logger: log,
 	};
 }

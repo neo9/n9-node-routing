@@ -4,7 +4,7 @@ import { signalIsNotUp } from '@promster/express';
 import fastSafeStringify from 'fast-safe-stringify';
 import { Server } from 'http';
 
-import { N9NodeRouting } from './models/routing.models';
+import * as N9NodeRouting from './models/routing';
 import * as Routes from './routes';
 
 // istanbul ignore next
