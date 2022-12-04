@@ -12,7 +12,6 @@ import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
 
 const microValidate = join(__dirname, 'fixtures/micro-validate/');
 
-// TODO voir avec Benjamin
 ava('Read documentation', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({

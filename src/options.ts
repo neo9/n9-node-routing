@@ -1,4 +1,5 @@
 import { Action, RoutingControllersOptions } from '@benjd90/routing-controllers';
+import { N9ConfOptions } from '@neo9/n9-node-conf';
 import n9NodeLog from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import * as Sentry from '@sentry/node';
@@ -14,7 +15,7 @@ import { PrometheusInterceptor } from './middleware/prometheus.interceptor';
 import { SentryRequestInterceptor } from './middleware/sentry-request.interceptor';
 import { SentryTracingInterceptor } from './middleware/sentry-tracing.interceptor';
 import { SessionLoaderInterceptor } from './middleware/session-loader.interceptor';
-import { N9NodeRouting } from './models/routing.models';
+import * as N9NodeRouting from './models/routing';
 import * as Utils from './utils';
 
 function applyLogsOptionsDefaults(
@@ -248,9 +249,6 @@ function applyAPMOptionsDefault(
 
 export function applyConfOptionsDefaults(options: N9NodeRouting.Options): void {
 	const defaultOptions: N9NodeRouting.ConfOptions = {
-		n9NodeConf: {
-			path: join(appRootDir.get(), 'src', 'conf'),
-		},
 		validation: {
 			isEnabled: false,
 			formatValidationErrors: true,
@@ -261,12 +259,16 @@ export function applyConfOptionsDefaults(options: N9NodeRouting.Options): void {
 	options.conf = _.merge(defaultOptions, options.conf);
 }
 
+export function getModulesPath(options: N9NodeRouting.Options): string {
+	return options.path || join(appRootDir.get(), 'src', 'modules');
+}
+
 export function applyDefaultValuesOnOptions(
 	options: N9NodeRouting.Options,
 	environment: Utils.Environment,
 	appName: string,
 ): void {
-	options.path = options.path || join(appRootDir.get(), 'src', 'modules');
+	options.path = getModulesPath(options);
 	options.hasProxy = typeof options.hasProxy === 'boolean' ? options.hasProxy : true;
 	options.enableRequestId =
 		typeof options.enableRequestId === 'boolean' ? options.enableRequestId : true;
@@ -282,9 +284,17 @@ export function applyDefaultValuesOnOptions(
 	applyHttpOptionsDefaults(options);
 }
 
-export function mergeOptionsAndConf(
-	options: N9NodeRouting.Options,
-	conf: N9NodeRouting.Options,
-): N9NodeRouting.Options {
-	return _.merge(options, conf);
+export function mergeOptionsAndConf<ConfType>(
+	options: N9NodeRouting.Options<ConfType>,
+	optionsInConf: N9NodeRouting.Options<ConfType>,
+): N9NodeRouting.Options<ConfType> {
+	return _.merge(options, optionsInConf);
+}
+
+export function getLoadingConfOptions(options: N9NodeRouting.Options): N9ConfOptions {
+	const defaultLoadingConfOptions: N9ConfOptions = {
+		path: join(getModulesPath(options), '..', 'conf'),
+	};
+
+	return _.merge(defaultLoadingConfOptions, options.conf?.n9NodeConf);
 }
