@@ -12,8 +12,8 @@ import * as ExpressApp from './express-app';
 import { initAPM } from './init-apm';
 import { validateConf } from './init-conf';
 import initialiseModules from './initialise-modules';
-import { N9NodeRouting } from './models/routing.models';
-import { applyDefaultValuesOnOptions, mergeOptionsAndConf } from './options';
+import * as N9NodeRouting from './models/routing';
+import { applyDefaultValuesOnOptions, getLoadingConfOptions, mergeOptionsAndConf } from './options';
 import { registerShutdown } from './register-system-signals';
 import { requestIdFilter } from './requestid';
 import * as Routes from './routes';
@@ -39,18 +39,21 @@ export { N9Log } from '@neo9/n9-node-log';
 
 export * from './decorators/acl.decorator';
 export * from './validators/date-parser.validator';
-export * from './models/routing.models';
 export * from './models/routes.models';
 export * from './utils/http-client-base';
 export * from './utils/http-cargo-builder';
 export * from './utils/cargo';
 
+export * as N9NodeRouting from './models/routing';
+
 export { PrometheusClient };
 
 // tslint:disable-next-line:cyclomatic-complexity
-export default async (
-	optionsParam: N9NodeRouting.Options = {},
-): Promise<N9NodeRouting.ReturnObject> => {
+export default async <
+	ConfType extends N9NodeRouting.N9NodeRoutingBaseConf = N9NodeRouting.N9NodeRoutingBaseConf,
+>(
+	optionsParam: N9NodeRouting.Options<ConfType> = {},
+): Promise<N9NodeRouting.ReturnObject<ConfType>> => {
 	// Provides a stack trace for unhandled rejections instead of the default message string.
 	process.on('unhandledRejection', handleThrow);
 	// Options default
@@ -59,8 +62,11 @@ export default async (
 	const packageJson: PackageJson = require(Path.join(appRootDir.get(), 'package.json'));
 
 	// Load project conf and logger & set as global
-	const conf = n9NodeConf(optionsParam.conf.n9NodeConf);
-	const options: N9NodeRouting.Options = mergeOptionsAndConf(optionsParam, conf?.n9NodeRouting);
+	const conf: ConfType = n9NodeConf(getLoadingConfOptions(optionsParam));
+	const options: N9NodeRouting.Options<ConfType> = mergeOptionsAndConf(
+		optionsParam,
+		conf.n9NodeRoutingOptions,
+	);
 	applyDefaultValuesOnOptions(options, environment, packageJson.name);
 	const logger = options.log;
 	(global as any).log = options.log;
@@ -88,7 +94,7 @@ export default async (
 
 	// Execute all *.init.ts files in modules before app started listening on the HTTP Port
 	await initialiseModules(options.path, logger, options.firstSequentialInitFileNames);
-	const returnObject = await ExpressApp.init(options, packageJson, logger, conf);
+	const returnObject = await ExpressApp.init<ConfType>(options, packageJson, logger, conf);
 	Routes.init(returnObject.app, options, packageJson, environment);
 
 	// Manage SIGTERM & SIGINT

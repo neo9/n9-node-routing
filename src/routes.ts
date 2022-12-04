@@ -6,7 +6,7 @@ import * as SwaggerUi from 'swagger-ui-express';
 import type { PackageJson } from 'types-package-json';
 
 import { generateDocumentationJson, getDocumentationJsonPath } from './generate-documentation-json';
-import { N9NodeRouting } from './models/routing.models';
+import * as N9NodeRouting from './models/routing';
 import * as RoutesService from './routes.service';
 
 let shutdownAsked = false;

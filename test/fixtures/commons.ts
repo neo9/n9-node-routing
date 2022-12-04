@@ -6,6 +6,7 @@ import { N9HttpClient, N9NodeRouting } from '../../src';
 
 export default {
 	print: true,
+	// Allow developers to add console log in N9NodeRouting then exclude them for tests
 	excludeSomeLogs: (): boolean => true,
 	jsonHttpClient: new N9HttpClient(new N9Log('tests')),
 };

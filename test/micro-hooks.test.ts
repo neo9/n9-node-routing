@@ -11,7 +11,6 @@ import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
 
 const microHooks = join(__dirname, 'fixtures/micro-hooks/');
 
-// todo: Demander à benjamin comment fonctionne le exclude some logs
 ava('Call new route (imagine a proxy)', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({

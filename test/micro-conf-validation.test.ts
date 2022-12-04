@@ -75,7 +75,25 @@ ava('Should not be a valid configuration (not formatted)', async (t: Assertions)
 	t.true(output[0].includes('Conf loaded: development'));
 	t.true(output[1].includes('Checking configuration'));
 	t.true(errors.message === 'Configuration is not valid');
-	t.true(errors.context.validationErrors[0].constraints.isNumber.includes('bar must be a number'));
+
+	const validationErrors = errors.context.validationErrors;
+	t.true(validationErrors.length === 2);
+
+	const barError = validationErrors[0];
+	t.true(barError.property === 'bar');
+	t.true(
+		barError.constraints.isNumber ===
+			'bar must be a number conforming to the specified constraints',
+	);
+	t.true(barError.constraints.isIn === 'bar must be one of the following values: 1, 2');
+
+	const bazError = validationErrors[1];
+	t.true(bazError.property === 'baz');
+	t.true(bazError.children.length === 1);
+
+	const quxError = bazError.children[0];
+	t.true(quxError.property === 'qux');
+	t.true(quxError.constraints.isString === 'qux must be a string');
 });
 
 ava('Should not be a valid configuration (formatted)', async (t: Assertions) => {
@@ -108,6 +126,7 @@ ava('Should not be a valid configuration (formatted)', async (t: Assertions) => 
 	t.true(output[2].includes('Configuration is not valid:'));
 	t.true(output[3].includes('Attribute bar is not valid - isIn'));
 	t.true(output[4].includes('Attribute bar is not valid - isNumber'));
+	t.true(output[5].includes('Attribute baz.qux is not valid - isString'));
 
 	t.true(errors.message === 'Configuration is not valid');
 	t.true(errors.context.validationErrors[0].constraints.isNumber.includes('bar must be a number'));
@@ -137,14 +156,52 @@ ava('Should be a valid configuration with whitelist errors (formatted)', async (
 
 	t.true(output[1].includes('Checking configuration'));
 	t.true(output[2].includes('Configuration contains unexpected attributes'));
-	t.true(output[3].includes("Please remove attribute 'env'"));
-	t.true(output[4].includes("Please remove attribute 'name'"));
-	t.true(output[5].includes("Please remove attribute 'version'"));
+	t.true(output[3].includes("Please remove attribute 'whitelist1'"));
+	t.true(output[4].includes("Please remove attribute 'whitelist2'"));
+	t.true(output[5].includes("Please remove attribute 'baz.qux'"));
 	t.true(output[6].includes('Configuration is valid'));
 	t.true(output[7].includes('Listening on port'));
 
 	await closeServer(server);
 });
+
+ava(
+	'Should be a valid configuration with whitelist errors (not formatted)',
+	async (t: Assertions) => {
+		process.env.NODE_ENV = 'development';
+		const file = await tmp.file();
+		const microPath = `${microConfValidation}/configuration-valid-with-additional-attributes`;
+
+		const { server } = await N9NodeRouting({
+			path: microPath,
+			logOptions: { developmentOutputFilePath: file.path },
+			conf: {
+				n9NodeConf: {
+					path: `${microPath}/conf`,
+				},
+				validation: {
+					isEnabled: true,
+					classType: ValidConfWithWhitelistErrors,
+					formatWhitelistErrors: false,
+				},
+			},
+		});
+
+		const output = await getLogsFromFile(file.path);
+
+		t.true(output[1].includes('Checking configuration'));
+
+		t.true(output[2].includes('Configuration contains unexpected attributes'));
+		t.true(output[2].includes('property qux should not exist'));
+		t.true(output[2].includes('property whitelist1 should not exist'));
+		t.true(output[2].includes('property whitelist2 should not exist'));
+
+		t.true(output[3].includes('Configuration is valid'));
+		t.true(output[4].includes('Listening on port'));
+
+		await closeServer(server);
+	},
+);
 
 ava('Should not proceed any validation - no validation options given', async (t: Assertions) => {
 	process.env.NODE_ENV = 'development';
