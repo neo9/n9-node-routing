@@ -6,6 +6,7 @@ const conf: Partial<Conf> = {
 	baz: {
 		qux: 1 as any,
 	},
+	secret: 'secretPassword',
 };
 
 export default conf;
