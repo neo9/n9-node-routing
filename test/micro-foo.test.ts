@@ -70,8 +70,11 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	const output = await getLogsFromFile(file.path);
 
 	// Logs on stdout
-	t.true(output[0].includes('Conf loaded: development'));
-	t.true(output[1].includes('Configuration validation is disabled'));
+	t.true(output[0].includes('Conf loaded: development'), 'Conf loaded: development');
+	t.true(
+		output[1].includes('Configuration validation is disabled'),
+		'Configuration validation is disabled',
+	);
 	t.true(output[2].includes('Init module bar'), 'Init module bar');
 	t.true(output[3].includes('Init module foo'), 'Init module foo');
 	t.true(output[4].includes('Hello foo.init'), 'Hello foo.init');
