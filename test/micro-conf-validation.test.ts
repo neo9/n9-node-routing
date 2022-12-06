@@ -39,10 +39,10 @@ ava('Should be a valid configuration', async (t: Assertions) => {
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output[1].includes('Checking configuration'));
-	t.true(output[2].includes('Configuration is valid'));
-	t.true(output[3].includes('Listening on port'));
-	t.true(output.length === 5);
+	t.true(output[1].includes('Checking configuration'), 'Should check configuration');
+	t.true(output[2].includes('Configuration is valid'), 'Should be a valid configuration');
+	t.true(output[3].includes('Listening on port'), 'Should listen on port');
+	t.true(output.length === 5, 'Should have 5 lines of logs');
 
 	await closeServer(server);
 });
@@ -72,28 +72,35 @@ ava('Should not be a valid configuration (not formatted)', async (t: Assertions)
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output[0].includes('Conf loaded: development'));
-	t.true(output[1].includes('Checking configuration'));
-	t.true(errors.message === 'Configuration is not valid');
+	t.true(output[0].includes('Conf loaded: development'), 'Should load conf');
+	t.true(output[1].includes('Checking configuration'), 'Should check configuration');
+	t.true(errors.message === 'Configuration is not valid', 'Should not be a valid configuration');
 
 	const validationErrors = errors.context.validationErrors;
-	t.true(validationErrors.length === 2);
+	t.true(validationErrors.length === 2, 'Should have 2 validation errors');
 
 	const barError = validationErrors[0];
-	t.true(barError.property === 'bar');
+	t.true(barError.property === 'bar', 'Should have bar property');
 	t.true(
 		barError.constraints.isNumber ===
 			'bar must be a number conforming to the specified constraints',
+		'Should have isNumber constraint',
 	);
-	t.true(barError.constraints.isIn === 'bar must be one of the following values: 1, 2');
+	t.true(
+		barError.constraints.isIn === 'bar must be one of the following values: 1, 2',
+		'Should have isIn constraint',
+	);
 
 	const bazError = validationErrors[1];
-	t.true(bazError.property === 'baz');
-	t.true(bazError.children.length === 1);
+	t.true(bazError.property === 'baz', 'Should have baz property');
+	t.true(bazError.children.length === 1, 'Should have 1 child');
 
 	const quxError = bazError.children[0];
-	t.true(quxError.property === 'qux');
-	t.true(quxError.constraints.isString === 'qux must be a string');
+	t.true(quxError.property === 'qux', 'Should have qux property');
+	t.true(
+		quxError.constraints.isString === 'qux must be a string',
+		'Should have isString constraint',
+	);
 });
 
 ava('Should not be a valid configuration (formatted)', async (t: Assertions) => {
@@ -121,15 +128,24 @@ ava('Should not be a valid configuration (formatted)', async (t: Assertions) => 
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output[0].includes('Conf loaded: development'));
-	t.true(output[1].includes('Checking configuration'));
-	t.true(output[2].includes('Configuration is not valid:'));
-	t.true(output[3].includes('Attribute bar is not valid - isIn'));
-	t.true(output[4].includes('Attribute bar is not valid - isNumber'));
-	t.true(output[5].includes('Attribute baz.qux is not valid - isString'));
+	t.true(output[0].includes('Conf loaded: development'), 'Should load conf');
+	t.true(output[1].includes('Checking configuration'), 'Should check configuration');
+	t.true(output[2].includes('Configuration is not valid:'), 'Should not be a valid configuration');
+	t.true(output[3].includes('Attribute bar is not valid - isIn'), 'Should have isIn error');
+	t.true(output[4].includes('Attribute bar is not valid - isNumber'), 'Should have isNumber error');
+	t.true(
+		output[5].includes('Attribute baz.qux is not valid - isString'),
+		'Should have isString error',
+	);
 
-	t.true(errors.message === 'Configuration is not valid');
-	t.true(errors.context.validationErrors[0].constraints.isNumber.includes('bar must be a number'));
+	t.true(
+		errors.message === 'Configuration is not valid',
+		'Should not be a valid configuration (in error message)',
+	);
+	t.true(
+		errors.context.validationErrors[0].constraints.isNumber.includes('bar must be a number'),
+		'Should have isNumber constraint (in error message)',
+	);
 });
 
 ava(
@@ -159,10 +175,16 @@ ava(
 
 		const output = await getLogsFromFile(file.path);
 
-		t.true(output.filter((line) => line.includes('secretPassword')).length === 0);
+		t.true(
+			output.filter((line) => line.includes('secretPassword')).length === 0,
+			'Should not show secretPassword in logs',
+		);
 
-		t.true(!errors.message.includes('secretPassword'));
-		t.true(!JSON.stringify(errors.context).includes('secretPassword'));
+		t.true(!errors.message.includes('secretPassword'), 'Should not show secretPassword in error');
+		t.true(
+			!JSON.stringify(errors.context).includes('secretPassword'),
+			'Should not show secretPassword in error context',
+		);
 	},
 );
 
@@ -193,10 +215,16 @@ ava(
 
 		const output = await getLogsFromFile(file.path);
 
-		t.true(output.filter((line) => line.includes('secretPassword')).length === 0);
+		t.true(
+			output.filter((line) => line.includes('secretPassword')).length === 0,
+			'Should not show secretPassword in logs',
+		);
 
-		t.true(!errors.message.includes('secretPassword'));
-		t.true(!JSON.stringify(errors.context).includes('secretPassword'));
+		t.true(!errors.message.includes('secretPassword'), 'Should not show secretPassword in error');
+		t.true(
+			!JSON.stringify(errors.context).includes('secretPassword'),
+			'Should not show secretPassword in error context',
+		);
 	},
 );
 
@@ -222,13 +250,22 @@ ava('Should be a valid configuration with whitelist errors (formatted)', async (
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output[1].includes('Checking configuration'));
-	t.true(output[2].includes('Configuration contains unexpected attributes'));
-	t.true(output[3].includes("Please remove attribute 'whitelist1'"));
-	t.true(output[4].includes("Please remove attribute 'whitelist2'"));
-	t.true(output[5].includes("Please remove attribute 'baz.qux'"));
-	t.true(output[6].includes('Configuration is valid'));
-	t.true(output[7].includes('Listening on port'));
+	t.true(output[1].includes('Checking configuration'), 'Should check configuration');
+	t.true(
+		output[2].includes('Configuration contains unexpected attributes'),
+		'Should have whitelist errors',
+	);
+	t.true(
+		output[3].includes("Please remove attribute 'whitelist1'"),
+		'Should have whitelist1 error',
+	);
+	t.true(
+		output[4].includes("Please remove attribute 'whitelist2'"),
+		'Should have whitelist2 error',
+	);
+	t.true(output[5].includes("Please remove attribute 'baz.qux'"), 'Should have baz.qux error');
+	t.true(output[6].includes('Configuration is valid'), 'Should be a valid configuration');
+	t.true(output[7].includes('Listening on port'), 'Should listen on port');
 
 	await closeServer(server);
 });
@@ -257,15 +294,24 @@ ava(
 
 		const output = await getLogsFromFile(file.path);
 
-		t.true(output[1].includes('Checking configuration'));
+		t.true(output[1].includes('Checking configuration'), 'Should check configuration');
 
-		t.true(output[2].includes('Configuration contains unexpected attributes'));
-		t.true(output[2].includes('property qux should not exist'));
-		t.true(output[2].includes('property whitelist1 should not exist'));
-		t.true(output[2].includes('property whitelist2 should not exist'));
+		t.true(
+			output[2].includes('Configuration contains unexpected attributes'),
+			'Should have whitelist errors',
+		);
+		t.true(output[2].includes('property qux should not exist'), 'Should have whitelist1 error');
+		t.true(
+			output[2].includes('property whitelist1 should not exist'),
+			'Should have whitelist1 error',
+		);
+		t.true(
+			output[2].includes('property whitelist2 should not exist'),
+			'Should have whitelist2 error',
+		);
 
-		t.true(output[3].includes('Configuration is valid'));
-		t.true(output[4].includes('Listening on port'));
+		t.true(output[3].includes('Configuration is valid'), 'Should be a valid configuration');
+		t.true(output[4].includes('Listening on port'), 'Should listen on port');
 
 		await closeServer(server);
 	},
@@ -293,7 +339,10 @@ ava('Should not show exclude properties on whitelist errors (formatted)', async 
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output.filter((line) => line.includes('secretPassword')).length === 0);
+	t.true(
+		output.filter((line) => line.includes('secretPassword')).length === 0,
+		'Should not show secretPassword in logs',
+	);
 
 	await closeServer(server);
 });
@@ -322,7 +371,10 @@ ava(
 
 		const output = await getLogsFromFile(file.path);
 
-		t.true(output.filter((line) => line.includes('secretPassword')).length === 0);
+		t.true(
+			output.filter((line) => line.includes('secretPassword')).length === 0,
+			'Should not show secretPassword in logs',
+		);
 
 		await closeServer(server);
 	},
@@ -345,8 +397,11 @@ ava('Should not proceed any validation - no validation options given', async (t:
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output[1].includes('Configuration validation is disabled'));
-	t.true(output[2].includes('Listening on port'));
+	t.true(
+		output[1].includes('Configuration validation is disabled'),
+		'Should not check configuration',
+	);
+	t.true(output[2].includes('Listening on port'), 'Should listen on port');
 
 	await closeServer(server);
 });
@@ -372,8 +427,11 @@ ava('Should not proceed any validation - validation is disabled', async (t: Asse
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output[1].includes('Configuration validation is disabled'));
-	t.true(output[2].includes('Listening on port'));
+	t.true(
+		output[1].includes('Configuration validation is disabled'),
+		'Should not check configuration',
+	);
+	t.true(output[2].includes('Listening on port'), 'Should listen on port');
 
 	await closeServer(server);
 });
@@ -399,10 +457,14 @@ ava(
 			}),
 		);
 
-		t.true(errors.status === 500);
+		t.true(errors.status === 500, 'Should throw a 500 error');
 		t.true(
 			errors.message.includes('N9NodeRouting configuration validation options are not correct'),
+			'Options are not correct',
 		);
-		t.true(errors.message.includes('validation is enabled but no classType is given'));
+		t.true(
+			errors.message.includes('validation is enabled but no classType is given'),
+			'No class type given',
+		);
 	},
 );
