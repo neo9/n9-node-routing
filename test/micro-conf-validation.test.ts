@@ -132,6 +132,74 @@ ava('Should not be a valid configuration (formatted)', async (t: Assertions) => 
 	t.true(errors.context.validationErrors[0].constraints.isNumber.includes('bar must be a number'));
 });
 
+ava(
+	'Should not show exclude properties in logs on validation error (not formatted)',
+	async (t: Assertions) => {
+		process.env.NODE_ENV = 'development';
+		const file = await tmp.file();
+		const microPath = `${microConfValidation}/configuration-invalid`;
+
+		const errors: N9Error = await t.throwsAsync(
+			N9NodeRouting({
+				path: microPath,
+				logOptions: { developmentOutputFilePath: file.path },
+				conf: {
+					n9NodeConf: {
+						path: `${microPath}/conf`,
+					},
+					validation: {
+						isEnabled: true,
+						classType: InvalidConf,
+						formatValidationErrors: true,
+						formatWhitelistErrors: false,
+					},
+				},
+			}),
+		);
+
+		const output = await getLogsFromFile(file.path);
+
+		t.true(output.filter((line) => line.includes('secretPassword')).length === 0);
+
+		t.true(!errors.message.includes('secretPassword'));
+		t.true(!JSON.stringify(errors.context).includes('secretPassword'));
+	},
+);
+
+ava(
+	'Should not show exclude properties in logs on validation error (formatted logs)',
+	async (t: Assertions) => {
+		process.env.NODE_ENV = 'development';
+		const file = await tmp.file();
+		const microPath = `${microConfValidation}/configuration-invalid`;
+
+		const errors: N9Error = await t.throwsAsync(
+			N9NodeRouting({
+				path: microPath,
+				logOptions: { developmentOutputFilePath: file.path },
+				conf: {
+					n9NodeConf: {
+						path: `${microPath}/conf`,
+					},
+					validation: {
+						isEnabled: true,
+						classType: InvalidConf,
+						formatValidationErrors: true,
+						formatWhitelistErrors: true,
+					},
+				},
+			}),
+		);
+
+		const output = await getLogsFromFile(file.path);
+
+		t.true(output.filter((line) => line.includes('secretPassword')).length === 0);
+
+		t.true(!errors.message.includes('secretPassword'));
+		t.true(!JSON.stringify(errors.context).includes('secretPassword'));
+	},
+);
+
 ava('Should be a valid configuration with whitelist errors (formatted)', async (t: Assertions) => {
 	process.env.NODE_ENV = 'development';
 	const file = await tmp.file();
@@ -198,6 +266,63 @@ ava(
 
 		t.true(output[3].includes('Configuration is valid'));
 		t.true(output[4].includes('Listening on port'));
+
+		await closeServer(server);
+	},
+);
+
+ava('Should not show exclude properties on whitelist errors (formatted)', async (t: Assertions) => {
+	process.env.NODE_ENV = 'development';
+	const file = await tmp.file();
+	const microPath = `${microConfValidation}/configuration-valid-with-additional-attributes`;
+
+	const { server } = await N9NodeRouting({
+		path: microPath,
+		logOptions: { developmentOutputFilePath: file.path },
+		conf: {
+			n9NodeConf: {
+				path: `${microPath}/conf`,
+			},
+			validation: {
+				isEnabled: true,
+				classType: ValidConfWithWhitelistErrors,
+				formatWhitelistErrors: true,
+			},
+		},
+	});
+
+	const output = await getLogsFromFile(file.path);
+
+	t.true(output.filter((line) => line.includes('secretPassword')).length === 0);
+
+	await closeServer(server);
+});
+
+ava(
+	'Should not show exclude properties on whitelist errors (not formatted)',
+	async (t: Assertions) => {
+		process.env.NODE_ENV = 'development';
+		const file = await tmp.file();
+		const microPath = `${microConfValidation}/configuration-valid-with-additional-attributes`;
+
+		const { server } = await N9NodeRouting({
+			path: microPath,
+			logOptions: { developmentOutputFilePath: file.path },
+			conf: {
+				n9NodeConf: {
+					path: `${microPath}/conf`,
+				},
+				validation: {
+					isEnabled: true,
+					classType: ValidConfWithWhitelistErrors,
+					formatWhitelistErrors: false,
+				},
+			},
+		});
+
+		const output = await getLogsFromFile(file.path);
+
+		t.true(output.filter((line) => line.includes('secretPassword')).length === 0);
 
 		await closeServer(server);
 	},

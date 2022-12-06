@@ -1,4 +1,5 @@
-import { IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { Exclude } from 'class-transformer';
+import { Allow, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 import { N9NodeRouting, Type } from '../../../../../src';
 
@@ -16,4 +17,8 @@ export class Conf extends N9NodeRouting.N9NodeRoutingBaseConf {
 	@ValidateNested()
 	@Type(() => Baz)
 	baz?: Baz;
+
+	@Allow()
+	@Exclude({ toPlainOnly: true })
+	secret?: string;
 }

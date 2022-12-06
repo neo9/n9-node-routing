@@ -8,6 +8,8 @@ const conf: Partial<Conf> & any = {
 	},
 	whitelist1: 'string',
 	whitelist2: 'string',
+
+	secret: 'secretPassword',
 };
 
 export default conf;
