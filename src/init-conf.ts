@@ -1,6 +1,6 @@
 import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
-import { plainToClass } from 'class-transformer';
+import { classToPlain, plainToClass } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
 
 import * as N9NodeRouting from './models/routing';
@@ -72,9 +72,14 @@ function handleValidationErrors(
 	const noError = validationErrors.length === 0;
 	if (noError) return;
 
+	const validationErrorsWithoutExcludeProperties = classToPlain(validationErrors);
 	if (!options.formatValidationErrors) {
-		logger.error('Configuration is not valid', { validationErrors });
-		throw new N9Error('Configuration is not valid', 500, { validationErrors });
+		logger.error('Configuration is not valid', {
+			validationErrors: validationErrorsWithoutExcludeProperties,
+		});
+		throw new N9Error('Configuration is not valid', 500, {
+			validationErrors: validationErrorsWithoutExcludeProperties,
+		});
 	}
 
 	logger.error('Configuration is not valid: ');
@@ -86,7 +91,9 @@ function handleValidationErrors(
 			logger.error(`Attribute ${attributePath} is not valid - ${error}`);
 		}
 	}
-	throw new N9Error('Configuration is not valid', 500, { validationErrors });
+	throw new N9Error('Configuration is not valid', 500, {
+		validationErrors: validationErrorsWithoutExcludeProperties,
+	});
 }
 
 function handleWhitelistErrors(
@@ -97,9 +104,10 @@ function handleWhitelistErrors(
 	const noError = whitelistErrors.length === 0;
 	if (noError) return;
 
+	const whitelistErrorsWithoutExcludeProperties = classToPlain(whitelistErrors);
 	if (!options.formatWhitelistErrors) {
 		logger.warn('Configuration contains unexpected attributes / Please remove those attributes', {
-			warnings: whitelistErrors,
+			warnings: whitelistErrorsWithoutExcludeProperties,
 		});
 		return;
 	}
