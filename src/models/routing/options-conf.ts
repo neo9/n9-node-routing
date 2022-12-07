@@ -26,7 +26,7 @@ export class ConfOptions<ConfType extends N9NodeRoutingBaseConf = N9NodeRoutingB
 	@IsOptional()
 	@ValidateNested()
 	@Type(() => N9NodeConfOptions)
-	n9NodeConf?: N9NodeConfOptions;
+	n9NodeConf?: N9NodeConfOptions<ConfType>;
 
 	@IsOptional()
 	@ValidateNested()

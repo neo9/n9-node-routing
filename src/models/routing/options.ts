@@ -1,6 +1,6 @@
 import { N9Log } from '@neo9/n9-node-log';
 import { Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { Allow, IsArray, IsBoolean, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 import { N9NodeRoutingBaseConf } from './base-conf';
 import { N9LogOptions } from './implementations/n9-node-log.implementation';
@@ -36,8 +36,7 @@ export class Options<ConfType extends N9NodeRoutingBaseConf = N9NodeRoutingBaseC
 	conf?: ConfOptions<ConfType>;
 
 	@IsOptional()
-	@ValidateNested()
-	@Type(() => N9Log)
+	@Allow()
 	log?: N9Log;
 
 	@IsOptional()
