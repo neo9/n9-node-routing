@@ -437,6 +437,51 @@ ava('Should not proceed any validation - validation is disabled', async (t: Asse
 });
 
 ava(
+	'Should not proceed any validation - validation is disabled from the configuration extension',
+	async (t: Assertions) => {
+		process.env.NODE_ENV = 'development';
+		const file = await tmp.file();
+		const microPath = `${microConfValidation}/configuration-invalid`;
+
+		const { server } = await N9NodeRouting({
+			path: microPath,
+			logOptions: { developmentOutputFilePath: file.path },
+			conf: {
+				n9NodeConf: {
+					path: `${microPath}/conf`,
+					extendConfig: {
+						path: {
+							absolute: join(
+								__dirname,
+								'fixtures',
+								'micro-conf-validation',
+								'configuration-invalid',
+								'configuration-extension.json',
+							),
+						},
+						key: 'configuration',
+					},
+				},
+				validation: {
+					isEnabled: true,
+					classType: InvalidConf,
+				},
+			},
+		});
+
+		const output = await getLogsFromFile(file.path);
+
+		t.true(
+			output[1].includes('Configuration validation is disabled'),
+			'Should not check configuration',
+		);
+		t.true(output[2].includes('Listening on port'), 'Should listen on port');
+
+		await closeServer(server);
+	},
+);
+
+ava(
 	'Should not proceed any validation - validation is enabled but the class type of the' +
 		' configuration is not set',
 	async (t: Assertions) => {

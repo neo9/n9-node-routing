@@ -1,0 +1,13 @@
+{
+  "development": {
+    "configuration": {
+      "n9NodeRoutingOptions": {
+        "conf": {
+          "validation": {
+            "isEnabled": false
+          }
+        }
+      }
+    }
+  }
+}

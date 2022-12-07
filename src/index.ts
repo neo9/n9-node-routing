@@ -38,7 +38,7 @@ export * from '@neo9/n9-node-utils'; // allow users to use n9-node-utils without
 export { N9Log } from '@neo9/n9-node-log';
 
 export * from './decorators/acl.decorator';
-export * from './validators/date-parser.validator';
+export * from './validators';
 export * from './models/routes.models';
 export * from './utils/http-client-base';
 export * from './utils/http-cargo-builder';
@@ -62,7 +62,7 @@ export default async <
 	const packageJson: PackageJson = require(Path.join(appRootDir.get(), 'package.json'));
 
 	// Load project conf and logger & set as global
-	const conf: ConfType = n9NodeConf(getLoadingConfOptions(optionsParam));
+	let conf: ConfType = n9NodeConf(getLoadingConfOptions(optionsParam));
 	const options: N9NodeRouting.Options<ConfType> = mergeOptionsAndConf(
 		optionsParam,
 		conf.n9NodeRoutingOptions,
@@ -80,7 +80,8 @@ export default async <
 		options.log.addFilter(requestIdFilter);
 	}
 
-	await validateConf(conf, options.conf.validation, logger);
+	const confInstance: ConfType = await validateConf(conf, options.conf.validation, logger);
+	conf = confInstance || conf;
 	(global as any).conf = conf;
 
 	Container.set('logger', logger);

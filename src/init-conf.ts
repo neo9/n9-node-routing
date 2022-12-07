@@ -54,7 +54,7 @@ function formatValidationErrors(
 }
 
 function assertClassTypeIsGiven(validationOptions: ConfValidationOptions): void {
-	if (validationOptions.isEnabled && !validationOptions.classType) {
+	if (!validationOptions.classType) {
 		throw new N9Error(
 			'N9NodeRouting configuration validation options are not correct validation is enabled but' +
 				' no classType is given',
@@ -120,11 +120,11 @@ function handleWhitelistErrors(
 	}
 }
 
-export async function validateConf(
+export async function validateConf<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>(
 	conf: unknown,
-	validationOptions: ConfValidationOptions,
+	validationOptions: ConfValidationOptions<ConfType>,
 	logger: N9Log,
-): Promise<void> {
+): Promise<ConfType> {
 	const validationIsEnabled = validationOptions && validationOptions.isEnabled;
 	if (!validationIsEnabled) {
 		logger.info('Configuration validation is disabled');
@@ -146,4 +146,6 @@ export async function validateConf(
 	handleWhitelistErrors(whitelistErrors, logger, validationOptions);
 
 	logger.info('Configuration is valid');
+
+	return confInstance;
 }
