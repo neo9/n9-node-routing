@@ -1,5 +1,4 @@
 // eslint-disable-next-line max-classes-per-file
-import * as Sentry from '@sentry/node';
 import { RequestHandlerOptions } from '@sentry/node/dist/handlers';
 import { Type } from 'class-transformer';
 import {
@@ -13,6 +12,7 @@ import {
 } from 'class-validator';
 
 import { isStringOrNumber } from '../../validators/string-or-number.validator';
+import { NodeOptions } from './implementations/sentry-node-options.implementation';
 
 export class MiddlewareErrorOutput {
 	@IsOptional()
@@ -73,9 +73,10 @@ export class SentryErrorHandlerOptions {
 }
 
 export class SentryOptions {
-	@Allow()
-	// TODO: create an implementation to perform validation
-	initOptions?: Sentry.NodeOptions; // dsn can be provided through env variable
+	@IsOptional()
+	@ValidateNested()
+	@Type(() => NodeOptions)
+	initOptions?: NodeOptions; // dsn can be provided through env variable
 
 	@IsOptional()
 	@IsBoolean()
@@ -89,7 +90,6 @@ export class SentryOptions {
 
 	@IsOptional()
 	@Allow()
-	// TODO: create an implementation
 	requestHandlerOptions?: RequestHandlerOptions;
 
 	@IsOptional()
