@@ -1,4 +1,4 @@
-import { Action, RoutingControllersOptions } from '@benjd90/routing-controllers';
+import { Action } from '@benjd90/routing-controllers';
 import { N9ConfOptions } from '@neo9/n9-node-conf';
 import n9NodeLog from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
@@ -74,7 +74,7 @@ function applyOpenApiOptionsDefaults(
 
 function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 	// Defaults options for routing-controller
-	const defaultRoutingControllerOptions: RoutingControllersOptions = {
+	const defaultRoutingControllerOptions: N9NodeRouting.RoutingControllersOptions = {
 		defaults: {
 			// with this option, null will return 404 by default
 			nullResultCode: 404,
