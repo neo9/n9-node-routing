@@ -6,7 +6,7 @@ import * as tmp from 'tmp-promise';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
+import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
 import { getLogsFromFile } from './fixtures/helper';
 
 const microLogs = join(__dirname, 'fixtures/micro-logs/');
@@ -22,7 +22,7 @@ ava('Basic usage, check logs', async (t: Assertions) => {
 		path: microLogs,
 		enableLogFormatJSON: false,
 		logOptions: { developmentOutputFilePath: file.path },
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 	// Check /foo route added on foo/foo.init.ts
 	const res = await commons.jsonHttpClient.get('http://localhost:5000/bar');
@@ -67,7 +67,7 @@ ava('Basic usage, check logs with empty response', async (t: Assertions) => {
 		},
 		path: microLogs,
 		logOptions: { developmentOutputFilePath: file.path },
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 	// Check /foo route added on foo/foo.init.ts
 	const res = await got('http://localhost:5002/empty');
@@ -98,7 +98,7 @@ ava('JSON output', async (t: Assertions) => {
 	const { server } = await N9NodeRouting({
 		path: microLogs,
 		enableLogFormatJSON: true,
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 
 	// Check /foo route added on foo/foo.init.ts

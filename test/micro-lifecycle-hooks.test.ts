@@ -6,7 +6,7 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import n9NodeRouting, { N9NodeRouting } from '../src';
-import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
+import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
 
 async function init(
 	options?: Partial<N9NodeRouting.Options>,
@@ -15,7 +15,7 @@ async function init(
 	const microLifecycleHooks = join(__dirname, 'fixtures/micro-lifecycle-hooks/');
 	return await n9NodeRouting({
 		path: microLifecycleHooks,
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 		...options,
 	});
 }

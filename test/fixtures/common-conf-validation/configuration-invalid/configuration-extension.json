@@ -1,6 +1,6 @@
 {
   "development": {
-    "configuration": {
+    "apiName": {
       "n9NodeRoutingOptions": {
         "conf": {
           "validation": {

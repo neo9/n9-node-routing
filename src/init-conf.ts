@@ -75,7 +75,7 @@ function handleValidationErrors(
 	const validationErrorsWithoutExcludeProperties = classToPlain(validationErrors);
 	if (!options.formatValidationErrors) {
 		logger.error('Configuration is not valid', {
-			validationErrors: validationErrorsWithoutExcludeProperties,
+			validationErrors: JSON.stringify(validationErrorsWithoutExcludeProperties),
 		});
 		throw new N9Error('Configuration is not valid', 500, {
 			validationErrors: validationErrorsWithoutExcludeProperties,
@@ -107,7 +107,7 @@ function handleWhitelistErrors(
 	const whitelistErrorsWithoutExcludeProperties = classToPlain(whitelistErrors);
 	if (!options.formatWhitelistErrors) {
 		logger.warn('Configuration contains unexpected attributes / Please remove those attributes', {
-			warnings: whitelistErrorsWithoutExcludeProperties,
+			warnings: JSON.stringify(whitelistErrorsWithoutExcludeProperties),
 		});
 		return;
 	}

@@ -6,7 +6,7 @@ import * as tmp from 'tmp-promise';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
+import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
 import { getLogsFromFile, parseJSONLogAndRemoveTime } from './fixtures/helper';
 
 const print = commons.print;
@@ -24,7 +24,7 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	const { server } = await N9NodeRouting({
 		path: microFoo,
 		logOptions: { developmentOutputFilePath: file.path },
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 	// Check /foo route added on foo/foo.init.ts
 	let res: any = await commons.jsonHttpClient.get<{ foo: string }>('http://localhost:5000/foo');
@@ -105,7 +105,7 @@ ava('Basic usage, create http server on production', async (t: Assertions) => {
 	process.env.NODE_ENV = 'production';
 	const { server } = await N9NodeRouting({
 		path: microFoo,
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 	// Check /foo route added on foo/foo.init.ts
 	let res: any = await commons.jsonHttpClient.get('http://localhost:5000/foo');
@@ -179,7 +179,7 @@ ava('Check /routes', async (t) => {
 	const { server } = await N9NodeRouting({
 		path: microFoo,
 		http: { port: 5575 },
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 
 	// Check acl on routes
@@ -204,7 +204,7 @@ ava('Call routes (versionning)', async (t: Assertions) => {
 	const { server } = await N9NodeRouting({
 		path: microFoo,
 		http: { port: 5559 },
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 	let res = await commons.jsonHttpClient.post<any>('http://localhost:5559/v1/bar');
 	t.is(res.bar, 'foo');
@@ -244,7 +244,7 @@ ava('Call routes with error in development (error key)', async (t: Assertions) =
 	const { server } = await N9NodeRouting({
 		path: microFoo,
 		http: { port: 5587 },
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 	// Call error with no message
 	const err = await t.throwsAsync<N9Error>(async () =>
@@ -272,7 +272,7 @@ ava('Call routes with error in production (no leak)', async (t: Assertions) => {
 	const { server } = await N9NodeRouting({
 		path: microFoo,
 		http: { port: 5587 },
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 
 	// Call special route which fails

@@ -7,7 +7,7 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
+import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
 
 const print = commons.print;
 
@@ -36,7 +36,7 @@ for (const prometheusOption of [{}, undefined]) {
 				path: '/opt/null',
 				http: { port: 5000 },
 				prometheus: prometheusOption,
-				conf: defaultConfOptions,
+				conf: defaultNodeRoutingConfOptions,
 			});
 
 			// Check /ping route
@@ -109,7 +109,7 @@ for (const prometheusOption of [{}, undefined]) {
 					},
 				},
 				prometheus: prometheusOption,
-				conf: defaultConfOptions,
+				conf: defaultNodeRoutingConfOptions,
 			});
 
 			// Check /ping route

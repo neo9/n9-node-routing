@@ -11,7 +11,7 @@ export class PrometheusOptions {
 	@IsString({ each: true })
 	labels?: string[];
 
-	// No validation because it should be in the conf but passed to the constructor as an option
+	// No validation because it shouldn't be in the conf but passed to the constructor as an option
 	getLabelValues?: (req: Request, res: Response) => { [label: string]: string };
 
 	@IsOptional()
@@ -19,6 +19,6 @@ export class PrometheusOptions {
 	@IsString({ each: true })
 	accuracies?: string[];
 
-	// No validation because it should be in the conf but passed to the constructor as an option
+	// No validation because it shouldn't be in the conf but passed to the constructor as an option
 	skip?: (req: Request, res: Response, labels: string[]) => boolean;
 }

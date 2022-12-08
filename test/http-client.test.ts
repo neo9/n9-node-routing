@@ -8,7 +8,7 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting, { N9HttpClient } from '../src';
-import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
+import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
 
 const print = commons.print;
 
@@ -20,7 +20,7 @@ ava('Call a route with HttpClient', async (t: Assertions) => {
 		http: {
 			port: 6001,
 		},
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 	stdMock.flush();
 
@@ -164,7 +164,7 @@ ava('Check retries of HttpClient against error controller', async (t: Assertions
 		http: {
 			port: 6001,
 		},
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 
 	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
@@ -207,7 +207,7 @@ ava('Use HttpClient base options', async (t: Assertions) => {
 		http: {
 			port: 6001,
 		},
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 
 	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }), {
@@ -228,7 +228,7 @@ ava('Use HttpClient with multiple queryParams', async (t: Assertions) => {
 		http: {
 			port: 6001,
 		},
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 
 	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
@@ -253,7 +253,7 @@ ava('Use HttpClient to call route with response 204', async (t: Assertions) => {
 		http: {
 			port: 6001,
 		},
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 
 	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
@@ -271,7 +271,7 @@ ava('Use HttpClient to upload a file', async (t: Assertions) => {
 		http: {
 			port: 6001,
 		},
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 
 	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
@@ -316,7 +316,7 @@ ava('Use HttpClient to call route with numeric error code', async (t: Assertions
 		http: {
 			port: 6001,
 		},
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 
 	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
