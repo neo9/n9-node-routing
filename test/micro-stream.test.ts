@@ -5,7 +5,7 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
+import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
 
 const microFoo = join(__dirname, 'fixtures/micro-stream/');
 
@@ -14,7 +14,7 @@ ava('Basic stream', async (t: Assertions) => {
 	const { server } = await N9NodeRouting({
 		path: microFoo,
 		http: { port: 6001 },
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 
 	const res = await commons.jsonHttpClient.get<N9JSONStreamResponse<{ _id: string }>>(

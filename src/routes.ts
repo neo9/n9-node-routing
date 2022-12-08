@@ -83,7 +83,7 @@ export function init(
 		next();
 	});
 
-	if (options.openapi.isEnable && env !== 'production') {
+	if (options.openapi.isEnabled && env !== 'production') {
 		expressApp.get(options.openapi.jsonUrl, (req: Request, res: Response) => {
 			let spec: object;
 			if (options.openapi.generateDocumentationOnTheFly) {

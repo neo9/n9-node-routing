@@ -6,7 +6,11 @@ import * as tmp from 'tmp-promise';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import commons, { closeServer, defaultConfOptions, minimalOptions } from './fixtures/commons';
+import commons, {
+	closeServer,
+	defaultNodeRoutingConfOptions,
+	nodeRoutingMinimalOptions,
+} from './fixtures/commons';
 import { getLogsFromFile } from './fixtures/helper';
 
 const print = commons.print;
@@ -17,7 +21,10 @@ ava.beforeEach(() => {
 
 ava('Works with custom port', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({ http: { port: 4002 }, conf: defaultConfOptions });
+	const { server } = await N9NodeRouting({
+		http: { port: 4002 },
+		conf: defaultNodeRoutingConfOptions,
+	});
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	t.true(output[2].includes('Listening on port 4002'), 'print launch port');
@@ -27,7 +34,10 @@ ava('Works with custom port', async (t: Assertions) => {
 
 ava('Works with preventListen = true', async (t: Assertions) => {
 	stdMock.use({ print });
-	await N9NodeRouting({ http: { port: 4002, preventListen: true }, conf: defaultConfOptions });
+	await N9NodeRouting({
+		http: { port: 4002, preventListen: true },
+		conf: defaultNodeRoutingConfOptions,
+	});
 	stdMock.restore();
 	const output = stdMock.flush();
 
@@ -43,7 +53,7 @@ ava('Should keep the custom logger and listening on port 5000', async (t: Assert
 
 	stdMock.use({ print });
 	const log = n9NodeLog('custom', { developmentOutputFilePath: file.path });
-	const { server } = await N9NodeRouting({ log, conf: defaultConfOptions });
+	const { server } = await N9NodeRouting({ log, conf: defaultNodeRoutingConfOptions });
 	stdMock.restore();
 
 	const output = stdMock.flush();
@@ -61,7 +71,7 @@ ava('Works without options (except conf for tests)', async (t: Assertions) => {
 	process.env.NODE_ENV = 'development';
 	const { server } = await N9NodeRouting({
 		logOptions: { developmentOutputFilePath: file.path },
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 	const output = await getLogsFromFile(file.path);
 	t.true(
@@ -78,7 +88,7 @@ ava('Works without options in production (except conf for test purpose)', async 
 	stdMock.use({ print });
 	const oldNodeEnv = process.env.NODE_ENV;
 	process.env.NODE_ENV = 'production';
-	const { server } = await N9NodeRouting({ conf: defaultConfOptions });
+	const { server } = await N9NodeRouting({ conf: defaultNodeRoutingConfOptions });
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	const line2 = JSON.parse(output[2]);
@@ -97,7 +107,7 @@ ava('Works without options in production (except conf for test purpose)', async 
 
 ava('Get app name on /', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting(minimalOptions);
+	const { server } = await N9NodeRouting(nodeRoutingMinimalOptions);
 	// OK if no error thrown
 	await t.notThrowsAsync(async () => await got('http://localhost:5000/'));
 	stdMock.restore();
@@ -110,7 +120,7 @@ ava('Should not log the requests http.logLevel=false', async (t: Assertions) => 
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
 		http: { logLevel: false },
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 	await got('http://localhost:5000/');
 	await got('http://localhost:5000/ping');
@@ -126,7 +136,7 @@ ava('Should log the requests with custom level', async (t: Assertions) => {
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
 		http: { logLevel: ':status :url' },
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 	await got('http://localhost:5000/');
 	await got('http://localhost:5000/ping');
@@ -144,7 +154,7 @@ ava('Should log the requests with custom level', async (t: Assertions) => {
 ava('Fails with PORT without access', async (t: Assertions) => {
 	stdMock.use({ print });
 	const err = await t.throwsAsync(async () => {
-		await N9NodeRouting({ http: { port: 80 }, conf: defaultConfOptions });
+		await N9NodeRouting({ http: { port: 80 }, conf: defaultNodeRoutingConfOptions });
 	});
 	stdMock.restore();
 	stdMock.flush();
@@ -153,9 +163,9 @@ ava('Fails with PORT without access', async (t: Assertions) => {
 
 ava('Fails with PORT already used', async (t: Assertions) => {
 	stdMock.use({ print });
-	await N9NodeRouting({ http: { port: 6000 }, conf: defaultConfOptions });
+	await N9NodeRouting({ http: { port: 6000 }, conf: defaultNodeRoutingConfOptions });
 	const err = await t.throwsAsync(async () => {
-		await N9NodeRouting({ http: { port: 6000 }, conf: defaultConfOptions });
+		await N9NodeRouting({ http: { port: 6000 }, conf: defaultNodeRoutingConfOptions });
 	});
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
@@ -166,7 +176,7 @@ ava('Fails with PORT already used', async (t: Assertions) => {
 ava('Fails with PORT not in common range', async (t: Assertions) => {
 	stdMock.use({ print });
 	const err = await t.throwsAsync(async () => {
-		await N9NodeRouting({ http: { port: 10000000 }, conf: defaultConfOptions });
+		await N9NodeRouting({ http: { port: 10000000 }, conf: defaultNodeRoutingConfOptions });
 	});
 	t.true(err.message.includes('ort should be'));
 	stdMock.restore();

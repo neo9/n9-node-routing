@@ -10,6 +10,13 @@ import { RoutingControllersOptions } from './implementations/routing-controllers
 import { Options } from './options';
 import { PingDb } from './options-pingdb';
 
+export interface HttpHookArguments<ConfType> {
+	expressApp: Express;
+	log: N9Log;
+	options: Options<ConfType>;
+	conf: ConfType;
+}
+
 class HttpPing {
 	@IsOptional()
 	@ValidateNested({ each: true })
@@ -39,18 +46,8 @@ export class HttpOptions<ConfType extends N9NodeRoutingBaseConf = N9NodeRoutingB
 	routingController?: RoutingControllersOptions;
 
 	// No validation because it shouldn't be in the conf but passed to the constructor as an option
-	beforeRoutingControllerLaunchHook?: (
-		app: Express,
-		log: N9Log,
-		options: Options<ConfType>,
-		conf: ConfType,
-	) => Promise<void> | void;
+	beforeRoutingControllerLaunchHook?: (args: HttpHookArguments<ConfType>) => Promise<void> | void;
 
 	// No validation because it shouldn't be in the conf but passed to the constructor as an option
-	afterRoutingControllerLaunchHook?: (
-		app: Express,
-		log: N9Log,
-		options: Options<ConfType>,
-		conf: ConfType,
-	) => Promise<void> | void;
+	afterRoutingControllerLaunchHook?: (args: HttpHookArguments<ConfType>) => Promise<void> | void;
 }

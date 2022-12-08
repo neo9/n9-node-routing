@@ -27,7 +27,7 @@ ava('Read documentation', (t: Assertions) => {
 	stdMock.restore();
 	stdMock.flush();
 	t.notDeepEqual(initOptions, optionsWithDefault, 'Default options are filled');
-	t.true(optionsWithDefault.openapi.isEnable, 'OpenApi enabled by default'); // test only one default value, the goal is not to test default values assigment
+	t.true(optionsWithDefault.openapi.isEnabled, 'OpenApi enabled by default'); // test only one default value, the goal is not to test default values assigment
 
 	// logs has Pino circular references
 	delete optionsWithDefault2.log;

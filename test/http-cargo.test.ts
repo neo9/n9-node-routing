@@ -4,7 +4,7 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting, { HttpCargoBuilder } from '../src';
-import commons, { closeServer, defaultConfOptions } from './fixtures/commons';
+import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
 
 const print = commons.print;
 
@@ -15,7 +15,7 @@ ava('Call a route multiple times with HttpClient and cargo', async (t: Assertion
 		http: {
 			port: 6001,
 		},
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 	const cargo = HttpCargoBuilder.BUILD<{ _id: string }>(
 		{
@@ -66,7 +66,7 @@ ava('Call a route multiple times with cargo, one item is not found', async (t: A
 		http: {
 			port: 6001,
 		},
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 	});
 	const cargo = HttpCargoBuilder.BUILD<{ _id: string }>(
 		{
@@ -112,7 +112,7 @@ ava(
 			http: {
 				port: 6001,
 			},
-			conf: defaultConfOptions,
+			conf: defaultNodeRoutingConfOptions,
 		});
 		const cargo = HttpCargoBuilder.BUILD<{ _id: string }>(
 			{

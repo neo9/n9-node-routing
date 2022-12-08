@@ -4,13 +4,13 @@ import { join } from 'path';
 import * as tmp from 'tmp-promise';
 
 import N9NodeRouting from '../src';
+import { Conf as InvalidConf } from './fixtures/common-conf-validation/configuration-invalid/conf/index.models';
+import { Conf as ValidConf } from './fixtures/common-conf-validation/configuration-valid/conf/index.models';
+import { Conf as ValidConfWithWhitelistErrors } from './fixtures/common-conf-validation/configuration-valid-with-additional-attributes/conf/index.models';
 import { closeServer } from './fixtures/commons';
 import { getLogsFromFile } from './fixtures/helper';
-import { Conf as InvalidConf } from './fixtures/micro-conf-validation/configuration-invalid/conf/index.models';
-import { Conf as ValidConf } from './fixtures/micro-conf-validation/configuration-valid/conf/index.models';
-import { Conf as ValidConfWithWhitelistErrors } from './fixtures/micro-conf-validation/configuration-valid-with-additional-attributes/conf/index.models';
 
-const microConfValidation = join(__dirname, 'fixtures/micro-conf-validation/');
+const microConfValidation = join(__dirname, 'fixtures/common-conf-validation/');
 
 ava.beforeEach(() => {
 	delete (global as any).log;
@@ -454,12 +454,12 @@ ava(
 							absolute: join(
 								__dirname,
 								'fixtures',
-								'micro-conf-validation',
+								'common-conf-validation',
 								'configuration-invalid',
 								'configuration-extension.json',
 							),
 						},
-						key: 'configuration',
+						key: 'apiName',
 					},
 				},
 				validation: {

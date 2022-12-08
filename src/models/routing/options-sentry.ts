@@ -20,7 +20,7 @@ export class MiddlewareErrorOutput {
 	statusCode?: number | string;
 }
 
-export class SentryIntegrationOption {
+export class SentryOptionsIntegration {
 	@IsString()
 	kind: string;
 }
@@ -48,7 +48,7 @@ export class MiddlewareError extends Error {
 	output?: MiddlewareErrorOutput;
 }
 
-export class SentryIntegrationTracingOptionMethods {
+export class SentryOptionsAdditionalIntegrationsOptions {
 	@IsOptional()
 	@IsArray()
 	@IsString()
@@ -56,15 +56,15 @@ export class SentryIntegrationTracingOptionMethods {
 	methods?: ('all' | 'get' | 'head' | 'post' | 'put' | 'delete' | 'options' | 'trace' | 'patch')[];
 }
 
-export class SentryIntegrationTracingOption extends SentryIntegrationOption {
+export class SentryOptionsAdditionalIntegrations extends SentryOptionsIntegration {
 	@IsString()
 	@IsIn(['tracing'])
 	kind: 'tracing';
 
 	@IsOptional()
 	@ValidateNested()
-	@Type(() => SentryIntegrationTracingOptionMethods)
-	options?: SentryIntegrationTracingOptionMethods;
+	@Type(() => SentryOptionsAdditionalIntegrationsOptions)
+	options?: SentryOptionsAdditionalIntegrationsOptions;
 }
 
 export class SentryErrorHandlerOptions {
@@ -85,8 +85,8 @@ export class SentryOptions {
 	@IsOptional()
 	@IsArray()
 	@ValidateNested({ each: true })
-	@Type(() => SentryIntegrationTracingOption)
-	additionalIntegrations?: SentryIntegrationTracingOption[];
+	@Type(() => SentryOptionsAdditionalIntegrations)
+	additionalIntegrations?: SentryOptionsAdditionalIntegrations[];
 
 	@IsOptional()
 	@Allow()

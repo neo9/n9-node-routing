@@ -11,7 +11,7 @@ import { Container } from 'typedi';
 
 // tslint:disable-next-line:import-name
 import n9NodeRouting, { N9HttpClient, N9NodeRouting } from '../../src';
-import commons, { closeServer, defaultConfOptions } from './commons';
+import commons, { closeServer, defaultNodeRoutingConfOptions } from './commons';
 
 export async function init(
 	folder: string,
@@ -42,7 +42,7 @@ export async function init(
 
 	const { app, server } = await n9NodeRouting({
 		path: microUsers,
-		conf: defaultConfOptions,
+		conf: defaultNodeRoutingConfOptions,
 		...options,
 	});
 	const httpClient = new N9HttpClient((global as any).log);
