@@ -1,4 +1,3 @@
-import { RoutingControllersOptions } from '@benjd90/routing-controllers';
 import { N9Log } from '@neo9/n9-node-log';
 import { Type } from 'class-transformer';
 import { Allow, IsBoolean, IsOptional, ValidateNested } from 'class-validator';
@@ -7,6 +6,7 @@ import * as morgan from 'morgan';
 
 import { isStringOrNumber } from '../../validators/string-or-number.validator';
 import { N9NodeRoutingBaseConf } from './base-conf';
+import { RoutingControllersOptions } from './implementations/routing-controllers-options.implementation';
 import { Options } from './options';
 import { PingDb } from './options-pingdb';
 
@@ -34,11 +34,11 @@ export class HttpOptions<ConfType extends N9NodeRoutingBaseConf = N9NodeRoutingB
 	preventListen?: boolean;
 
 	@IsOptional()
-	@Allow()
-	// TODO: Implement RoutingControllersOptions interface
+	@ValidateNested()
+	@Type(() => RoutingControllersOptions)
 	routingController?: RoutingControllersOptions;
 
-	// No validation because it should be in the conf but passed to the constructor as an option
+	// No validation because it shouldn't be in the conf but passed to the constructor as an option
 	beforeRoutingControllerLaunchHook?: (
 		app: Express,
 		log: N9Log,
@@ -46,7 +46,7 @@ export class HttpOptions<ConfType extends N9NodeRoutingBaseConf = N9NodeRoutingB
 		conf: ConfType,
 	) => Promise<void> | void;
 
-	// No validation because it should be in the conf but passed to the constructor as an option
+	// No validation because it shouldn't be in the conf but passed to the constructor as an option
 	afterRoutingControllerLaunchHook?: (
 		app: Express,
 		log: N9Log,
