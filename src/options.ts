@@ -59,8 +59,8 @@ function applyOpenApiOptionsDefaults(
 	if (!options.openapi) {
 		options.openapi = {};
 	}
-	options.openapi.isEnable =
-		typeof options.openapi.isEnable === 'boolean' ? options.openapi.isEnable : true;
+	options.openapi.isEnabled =
+		typeof options.openapi.isEnabled === 'boolean' ? options.openapi.isEnabled : true;
 	options.openapi.jsonUrl = options.openapi.jsonUrl || '/documentation.json';
 	options.openapi.swaggerui = options.openapi.swaggerui || {
 		...options.openapi.swaggerui,
@@ -115,7 +115,7 @@ function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 		typeof options.http.logLevel !== 'undefined'
 			? options.http.logLevel
 			: (tokens: morgan.TokenIndexer, req: express.Request, res: express.Response): string => {
-					const formatLogInJSON: boolean = options.enableLogFormatJSON;
+					const formatLogInJSON: boolean = options.log.formatJSON;
 
 					if (formatLogInJSON) {
 						return JSON.stringify({

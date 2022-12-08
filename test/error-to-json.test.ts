@@ -3,13 +3,13 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import commons, { minimalOptions } from './fixtures/commons';
+import commons, { nodeRoutingMinimalOptions } from './fixtures/commons';
 
 const print = commons.print;
 
 ava('Error to json', async (t: Assertions) => {
 	stdMock.use({ print });
-	await N9NodeRouting(minimalOptions);
+	await N9NodeRouting(nodeRoutingMinimalOptions);
 
 	const text = 'message-error-text';
 	const e = Error(text);

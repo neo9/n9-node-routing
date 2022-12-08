@@ -18,8 +18,7 @@ export class SwaggerUi {
 export class SwaggerOptions {
 	@IsOptional()
 	@IsBoolean()
-	// TODO: Rename this attribute to isEnabled
-	isEnable?: boolean;
+	isEnabled?: boolean;
 
 	@IsOptional()
 	@IsBoolean()

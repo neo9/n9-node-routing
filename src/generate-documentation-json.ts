@@ -71,7 +71,7 @@ export function generateDocumentationJsonToFile(options: N9NodeRouting.Options):
 	const environment = getEnvironment();
 	applyDefaultValuesOnOptions(options, environment, packageJson.name);
 
-	if (options.openapi && options.openapi.isEnable) {
+	if (options.openapi && options.openapi.isEnabled) {
 		const path = getDocumentationJsonPath(options);
 		const spec = generateDocumentationJson(options, false, true);
 		options.log.debug(`OpenAPI documentation generated. Saving to a file...`);

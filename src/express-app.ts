@@ -135,13 +135,13 @@ export async function init<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>
 	const server = createServer(expressApp);
 
 	if (options.http.beforeRoutingControllerLaunchHook) {
-		await options.http.beforeRoutingControllerLaunchHook(expressApp, log, options, conf);
+		await options.http.beforeRoutingControllerLaunchHook({ expressApp, log, options, conf });
 	}
 
 	expressApp = RoutingControllers.useExpressServer(expressApp, options.http.routingController);
 
 	if (options.http.afterRoutingControllerLaunchHook) {
-		await options.http.afterRoutingControllerLaunchHook(expressApp, log, options, conf);
+		await options.http.afterRoutingControllerLaunchHook({ expressApp, log, options, conf });
 	}
 
 	// Listen method

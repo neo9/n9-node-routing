@@ -1,6 +1,7 @@
 import { N9ConfMergeStrategy, N9ConfOptions } from '@neo9/n9-node-conf';
 import { Type } from 'class-transformer';
 import { IsEnum, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { PartialDeep } from 'type-fest';
 
 import { N9NodeRouting } from '../../..';
 
@@ -28,9 +29,11 @@ export class N9NodeConfOptionsExtendConfig {
 	mergeStrategy?: N9ConfMergeStrategy;
 }
 
-export class N9NodeConfOptionsOverride<ConfType extends object> {
+export class N9NodeConfOptionsOverride<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf> {
 	@IsObject()
-	value: ConfType;
+	// Using PartialDeep<BaseConf> | PartialDeep<T> instead of just PartialDeep<ConfType> because
+	// PartialDeep<ConfType> don't extend PartialDeep<BaseConf>
+	value: PartialDeep<ConfType> | PartialDeep<N9NodeRouting.N9NodeRoutingBaseConf>;
 
 	@IsOptional()
 	@IsEnum(N9ConfMergeStrategy)
