@@ -7,7 +7,7 @@ import N9NodeRouting from '../src';
 import { Conf as InvalidConf } from './fixtures/common-conf-validation/configuration-invalid/conf/index.models';
 import { Conf as ValidConf } from './fixtures/common-conf-validation/configuration-valid/conf/index.models';
 import { Conf as ValidConfWithWhitelistErrors } from './fixtures/common-conf-validation/configuration-valid-with-additional-attributes/conf/index.models';
-import { closeServer } from './fixtures/commons';
+import commons, { closeServer } from './fixtures/commons';
 import { getLogsFromFile } from './fixtures/helper';
 
 const microConfValidation = join(__dirname, 'fixtures/common-conf-validation/');
@@ -330,7 +330,7 @@ ava('Should not show exclude properties on whitelist errors (formatted)', async 
 	const file = await tmp.file();
 	const microPath = `${microConfValidation}/configuration-valid-with-additional-attributes`;
 
-	const { server } = await N9NodeRouting({
+	const { server, conf } = await N9NodeRouting({
 		path: microPath,
 		logOptions: { developmentOutputFilePath: file.path },
 		conf: {
@@ -351,6 +351,14 @@ ava('Should not show exclude properties on whitelist errors (formatted)', async 
 		output.filter((line) => line.includes('secretPassword')).length === 0,
 		'Should not show secretPassword in logs',
 	);
+	t.is(conf.secret, 'secretPassword', `Secret is usable in conf`);
+
+	const exposedConf = await commons.jsonHttpClient.get<ValidConfWithWhitelistErrors>(
+		'http://localhost:5000/conf',
+	);
+
+	t.is(exposedConf.foo, 'string', `Conf is available on http endpoint`);
+	t.is(exposedConf.secret, undefined, `Secret should not be exposed on conf endpoint`);
 
 	await closeServer(server);
 });

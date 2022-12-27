@@ -31,8 +31,8 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	t.is(res.foo, 'bar');
 
 	// Check / route
-	res = await commons.jsonHttpClient.get<{ apiName: string }>('http://localhost:5000/');
-	t.deepEqual(res, { apiName: 'n9-node-routing' });
+	res = await commons.jsonHttpClient.get<{ name: string }>('http://localhost:5000/');
+	t.deepEqual(res, { name: 'n9-node-routing' });
 
 	// Check /ping route
 	res = await commons.jsonHttpClient.get<{ response: string }>('http://localhost:5000/ping');
@@ -97,8 +97,8 @@ ava('Basic usage, create http server on production', async (t: Assertions) => {
 	t.is(res.foo, 'bar');
 
 	// Check / route
-	res = await commons.jsonHttpClient.get<{ apiName: string }>('http://localhost:5000/');
-	t.deepEqual(res, { apiName: 'n9-node-routing' });
+	res = await commons.jsonHttpClient.get<{ name: string }>('http://localhost:5000/');
+	t.deepEqual(res, { name: 'n9-node-routing' });
 
 	// Check /ping route
 	res = await commons.jsonHttpClient.get<{ response: string }>('http://localhost:5000/ping');

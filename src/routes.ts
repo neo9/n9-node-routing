@@ -1,5 +1,6 @@
 import { N9Error } from '@neo9/n9-node-utils';
 import { signalIsNotUp, signalIsUp } from '@promster/express';
+import { classToPlain } from 'class-transformer';
 import { Express, NextFunction, Request, Response } from 'express';
 import * as fs from 'fs';
 import * as SwaggerUi from 'swagger-ui-express';
@@ -22,7 +23,7 @@ export function init(
 	env: 'development' | 'production' | string,
 ): void {
 	expressApp.get('/', (req: Request, res: Response, next: NextFunction) => {
-		res.status(200).json({ apiName: packageJson.name });
+		res.status(200).json({ name: packageJson.name });
 		next();
 	});
 
@@ -75,6 +76,11 @@ export function init(
 	// Return app version
 	expressApp.get('/version', (req: Request, res: Response, next: NextFunction) => {
 		res.status(200).json({ version: packageJson.version });
+		next();
+	});
+
+	expressApp.get('/conf', (req: Request, res: Response, next: NextFunction) => {
+		res.status(200).json(classToPlain(global.conf));
 		next();
 	});
 
