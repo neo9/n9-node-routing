@@ -1,5 +1,34 @@
 
 
+# [2.0.0-rc.0](https://github.com/neo9/n9-node-routing/compare/1.34.3...2.0.0-rc.0) (2022-12-27)
+
+
+### build
+
+* Upgrade github-actions to v3 ([5b91e7c](https://github.com/neo9/n9-node-routing/commit/5b91e7c3fc2b3fde64818cbacb25c41080bf95c9))
+
+### conf
+
+* Add a test to disable validation from config extension ([9a3b2ab](https://github.com/neo9/n9-node-routing/commit/9a3b2aba81ecb62309e5274cabee1ee183f2e5a7))
+* Add custom message to each assertion ([9883555](https://github.com/neo9/n9-node-routing/commit/98835554d9aa007c6fca7571f7faac9f379d12f6))
+* Add impl and type-fest then upgrade dependencies ([721e221](https://github.com/neo9/n9-node-routing/commit/721e22128b3f5c5458b77bbaf353ce0d8d11993a))
+* Add logger and refactor tests ([c1f0ae4](https://github.com/neo9/n9-node-routing/commit/c1f0ae46010e1337c6acb28da353d2a5702864f8))
+* Add tests to check secrets do not leak ([6b624e3](https://github.com/neo9/n9-node-routing/commit/6b624e34e6ca842ecfa70fd3df905d5ae7c30295))
+* Load n9NodeConf and can proceed validation ([143d876](https://github.com/neo9/n9-node-routing/commit/143d876f7b7e502c01e5a565f7fd1d6f30f3bf1c))
+* PR changes ([a2ff205](https://github.com/neo9/n9-node-routing/commit/a2ff205f824924cd4b82520f6bebde0513b49c80))
+* Refactor models and add validation ([84a2762](https://github.com/neo9/n9-node-routing/commit/84a27629775c6e9f9f717e15ccdcdcef340f742a))
+
+### doc
+
+* Upgrade readme with V2 breaking changes ([8e382a9](https://github.com/neo9/n9-node-routing/commit/8e382a9ede3f27dcd553a5b0f1b57ad3f9436094))
+
+### yarn
+
+* Upgrade dependencies to fix security vulnerabilities ([27675b0](https://github.com/neo9/n9-node-routing/commit/27675b03a2385ee09bd152ae9e7636877034b20c))
+* Upgrade dependencies to fix security vulnerabilities ([2cecc5d](https://github.com/neo9/n9-node-routing/commit/2cecc5d4f0cf17a2e039ee1018452dcf061366fc))
+* Upgrade dependencies to fix security vulnerabilities ([d354a60](https://github.com/neo9/n9-node-routing/commit/d354a60e6965d0cfa60059173ff48769b51ac691))
+* Upgrade n9-coding-style then eslint to support Node 18 ([31f2acb](https://github.com/neo9/n9-node-routing/commit/31f2acbd0d5b31916e1580ec39e77fdc75237fdc))
+
 ## [1.34.3](https://github.com/neo9/n9-node-routing/compare/1.34.2...1.34.3) (2022-09-27)
 
 
