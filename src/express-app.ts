@@ -17,6 +17,7 @@ import type { PackageJson } from 'types-package-json';
 import ErrnoException = NodeJS.ErrnoException;
 import * as N9NodeRouting from './models/routing';
 import { setRequestContext } from './requestid';
+import * as bodyParser from 'body-parser';
 
 export async function init<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>(
 	options: N9NodeRouting.Options<ConfType>,
@@ -134,6 +135,7 @@ export async function init<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>
 
 	const server = createServer(expressApp);
 
+	expressApp.use(bodyParser.json(options.http.bodyParser));
 	if (options.http.beforeRoutingControllerLaunchHook) {
 		await options.http.beforeRoutingControllerLaunchHook({ expressApp, log, options, conf });
 	}

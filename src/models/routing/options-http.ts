@@ -9,6 +9,7 @@ import { N9NodeRoutingBaseConf } from './base-conf';
 import { RoutingControllersOptions } from './implementations/routing-controllers-options.implementation';
 import { Options } from './options';
 import { PingDb } from './options-pingdb';
+import { BodyParserOptions } from './options-bodyparser';
 
 export interface HttpHookArguments<ConfType> {
 	expressApp: Express;
@@ -50,4 +51,9 @@ export class HttpOptions<ConfType extends N9NodeRoutingBaseConf = N9NodeRoutingB
 
 	// No validation because it shouldn't be in the conf but passed to the constructor as an option
 	afterRoutingControllerLaunchHook?: (args: HttpHookArguments<ConfType>) => Promise<void> | void;
+
+	@IsOptional()
+	@ValidateNested()
+	@Type(() => BodyParserOptions)
+	bodyParser?: BodyParserOptions;
 }

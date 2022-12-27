@@ -183,6 +183,12 @@ function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 		whitelist: true,
 		forbidNonWhitelisted: true,
 	} as ValidatorOptions;
+
+	if (!options.http.bodyParser) {
+		options.http.bodyParser = {
+			limit: '1024kb',
+		};
+	}
 }
 
 function applyPrometheusOptionsDefault(options: N9NodeRouting.Options): void {

@@ -192,3 +192,28 @@ ava('Should work without options using default loading conf options', async (t: 
 	t.true(error.message.includes('Could not load config file'));
 	t.true(error.message.includes('conf/application'));
 });
+
+ava('Can define body-parser limit', async (t: Assertions) => {
+	stdMock.use({ print });
+	const { server } = await N9NodeRouting({
+		http: {
+			bodyParser: {
+				limit: 5,
+			},
+		},
+		conf: defaultNodeRoutingConfOptions,
+	});
+	stdMock.restore();
+
+	await t.throwsAsync(
+		async () =>
+			await commons.jsonHttpClient.post<any>('http://localhost:5000/ping', {
+				key: 'A body bigger thant 5 bytes',
+			}),
+		{
+			message: 'PayloadTooLargeError',
+		},
+	);
+	// Close server
+	await closeServer(server);
+});
