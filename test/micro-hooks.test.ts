@@ -14,7 +14,6 @@ ava('Call new route (imagine a proxy)', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({
 		hasProxy: true, // tell N9NodeRouting to parse `session` header
-		path: '/opt/null',
 		http: {
 			port: 6001,
 			beforeRoutingControllerLaunchHook: ({ log }) => {

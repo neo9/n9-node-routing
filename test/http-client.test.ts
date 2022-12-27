@@ -16,7 +16,6 @@ ava('Call a route with HttpClient', async (t: Assertions) => {
 	stdMock.use({ print });
 	const { server } = await N9NodeRouting({
 		hasProxy: true, // tell N9NodeRouting to parse `session` header
-		path: '/opt/null',
 		http: {
 			port: 6001,
 		},

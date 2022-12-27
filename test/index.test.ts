@@ -175,6 +175,7 @@ ava('Fails with PORT already used', async (t: Assertions) => {
 
 ava('Fails with PORT not in common range', async (t: Assertions) => {
 	stdMock.use({ print });
+
 	const err = await t.throwsAsync(async () => {
 		await N9NodeRouting({ http: { port: 10000000 }, conf: defaultNodeRoutingConfOptions });
 	});
@@ -189,5 +190,5 @@ ava('Should work without options using default loading conf options', async (t: 
 
 	t.true(!!error);
 	t.true(error.message.includes('Could not load config file'));
-	t.true(error.message.includes('src/conf/application'));
+	t.true(error.message.includes('conf/application'));
 });

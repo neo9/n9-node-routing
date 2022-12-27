@@ -1,7 +1,7 @@
 import { N9Error } from '@neo9/n9-node-utils';
 import { Service } from 'typedi';
 
-import { Body, JsonController, Post } from '../../../../src';
+import { Body, JsonController, Post } from '../../../../../src';
 import { Message } from './messages.models';
 import { User } from './users.models';
 

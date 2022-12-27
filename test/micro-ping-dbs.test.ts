@@ -33,7 +33,6 @@ for (const prometheusOption of [{}, undefined]) {
 			await MongoUtils.connect(mongoConnectionString); // set global.dbClient
 
 			const { prometheusServer, server } = await N9NodeRouting({
-				path: '/opt/null',
 				http: { port: 5000 },
 				prometheus: prometheusOption,
 				conf: defaultNodeRoutingConfOptions,
@@ -98,7 +97,6 @@ for (const prometheusOption of [{}, undefined]) {
 			];
 
 			const { prometheusServer, server } = await N9NodeRouting({
-				path: '/opt/null',
 				http: {
 					port: 5000,
 					ping: {

@@ -74,3 +74,15 @@ ava('Check default values are set', async (t: Assertions) => {
 	// Close server
 	await closeServer(server);
 });
+
+ava('Should throw error if module path is not found', async (t: Assertions) => {
+	// throw an error because there is no conf in n9NodeRouting
+	const error = await t.throwsAsync(
+		N9NodeRouting({
+			path: './a-folder-that-does-not-exists',
+		}),
+	);
+
+	t.true(!!error);
+	t.is(error.message, 'modules-path-not-found', 'Error message is the one expected');
+});

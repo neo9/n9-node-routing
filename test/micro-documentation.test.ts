@@ -8,14 +8,15 @@ import * as stdMock from 'std-mocks';
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import { generateDocumentationJsonToFile } from '../src/generate-documentation-json';
+import { Options } from '../src/models/routing/index';
 import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
 
-const microValidate = join(__dirname, 'fixtures/micro-validate/');
+const microValidatePath = join(__dirname, 'fixtures/micro-validate/modules');
 
 ava('Read documentation', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({
-		path: microValidate,
+		path: microValidatePath,
 		openapi: {
 			generateDocumentationOnTheFly: true,
 		},
@@ -40,7 +41,7 @@ ava('Read documentation', async (t: Assertions) => {
 ava('Read documentation fail because its not generated', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({
-		path: microValidate,
+		path: microValidatePath,
 		conf: defaultNodeRoutingConfOptions,
 	});
 
@@ -64,7 +65,7 @@ ava('Read documentation fail in production environment', async (t: Assertions) =
 	const env = process.env.NODE_ENV;
 	process.env.NODE_ENV = 'production';
 	const { server } = await N9NodeRouting({
-		path: microValidate,
+		path: microValidatePath,
 		openapi: {
 			generateDocumentationOnTheFly: true,
 		},
@@ -89,9 +90,8 @@ ava('Read documentation fail in production environment', async (t: Assertions) =
 
 ava('Read documentation generated first', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
-	const options = {
-		path: microValidate,
-		conf: defaultNodeRoutingConfOptions,
+	const options: Options = {
+		path: microValidatePath,
 	};
 	const generatedFilePath = generateDocumentationJsonToFile(options);
 	const { server } = await N9NodeRouting(options);

@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/node';
 import * as appRootDir from 'app-root-dir';
 import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
+import * as fs from 'fs';
 import * as _ from 'lodash';
 import * as morgan from 'morgan';
 import { join } from 'path';
@@ -262,7 +263,21 @@ export function applyConfOptionsDefaults(options: N9NodeRouting.Options): void {
 }
 
 export function getModulesPath(options: N9NodeRouting.Options): string {
-	return options.path || join(appRootDir.get(), 'src', 'modules');
+	if (options.path) {
+		if (fs.existsSync(options.path)) return options.path;
+	} else {
+		const appRootDirPath = appRootDir.get();
+		const modulesInSrcPath = join(appRootDirPath, 'src', 'modules');
+		if (fs.existsSync(modulesInSrcPath)) return modulesInSrcPath;
+
+		const modulesInDistPath = join(appRootDirPath, 'dist', 'modules');
+		if (fs.existsSync(modulesInDistPath)) return modulesInDistPath;
+
+		const modulesInSameFolderPath = join(appRootDirPath, 'modules');
+		if (fs.existsSync(modulesInSameFolderPath)) return modulesInSameFolderPath;
+	}
+
+	throw new N9Error('modules-path-not-found', 400, { options });
 }
 
 export function applyDefaultValuesOnOptions(
