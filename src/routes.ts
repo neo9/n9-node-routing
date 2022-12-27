@@ -1,6 +1,5 @@
 import { N9Error } from '@neo9/n9-node-utils';
 import { signalIsNotUp, signalIsUp } from '@promster/express';
-import { classToPlain } from 'class-transformer';
 import { Express, NextFunction, Request, Response } from 'express';
 import * as fs from 'fs';
 import * as SwaggerUi from 'swagger-ui-express';
@@ -11,9 +10,14 @@ import * as N9NodeRouting from './models/routing';
 import * as RoutesService from './routes.service';
 
 let shutdownAsked = false;
+let exposedConf: object;
 
 export function onShutdownAsked(): void {
 	shutdownAsked = true;
+}
+
+export function initExposedConf(conf: object): void {
+	exposedConf = conf;
 }
 
 export function init(
@@ -80,7 +84,7 @@ export function init(
 	});
 
 	expressApp.get('/conf', (req: Request, res: Response, next: NextFunction) => {
-		res.status(200).json(classToPlain(global.conf));
+		res.status(200).json(exposedConf);
 		next();
 	});
 

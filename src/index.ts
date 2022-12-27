@@ -3,6 +3,7 @@ import './utils/error-to-json';
 
 import n9NodeConf from '@neo9/n9-node-conf';
 import * as appRootDir from 'app-root-dir';
+import { classToPlain } from 'class-transformer';
 import * as Path from 'path';
 import * as PrometheusClient from 'prom-client';
 import { Container } from 'typedi';
@@ -17,6 +18,7 @@ import { applyDefaultValuesOnOptions, getLoadingConfOptions, mergeOptionsAndConf
 import { registerShutdown } from './register-system-signals';
 import { requestIdFilter } from './requestid';
 import * as Routes from './routes';
+import { initExposedConf } from './routes';
 import startModules from './start-modules';
 import { getEnvironment } from './utils';
 import { N9HttpClient } from './utils/http-client-base';
@@ -87,6 +89,7 @@ export default async <
 	const confInstance: ConfType = await validateConf(conf, options.conf.validation, logger);
 	conf = confInstance || conf;
 	(global as any).conf = conf;
+	initExposedConf(classToPlain(conf));
 
 	Container.set('logger', logger);
 	Container.set('conf', conf);
