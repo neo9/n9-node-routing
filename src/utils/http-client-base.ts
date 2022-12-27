@@ -160,6 +160,7 @@ export class N9HttpClient {
 
 		const namespaceRequestId = getNamespace(RequestIdNamespaceName);
 		const requestId: string = namespaceRequestId?.get(RequestIdKey) || shortid.generate();
+		// eslint-disable-next-line @typescript-eslint/naming-convention
 		const sentHeaders = { ...headers, 'x-request-id': requestId };
 		const searchParams =
 			typeof queryParams === 'string'
@@ -183,14 +184,14 @@ export class N9HttpClient {
 			if (optionsSent.responseType === 'json' && (res.body as any) === '') return;
 			return res.body;
 		} catch (e) {
-			const responseTime = Date.now() - startTime;
+			const durationMs = Date.now() - startTime;
 			const bodyJSON = fastSafeStringify(body);
 			const { code, status } = N9HttpClient.prepareErrorCodeAndStatus(e);
 			this.logger.error(`Error on [${method} ${uri}] ${e.message}`, {
 				uri,
 				method,
 				status,
-				'response-time': responseTime,
+				durationMs,
 			});
 
 			throw new N9Error(code.toString(), status, {
@@ -198,7 +199,7 @@ export class N9HttpClient {
 				method,
 				queryParams,
 				headers,
-				responseTime,
+				durationMs,
 				code: e.code ?? e.message,
 				body: body && bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
 				srcError: e.response?.body ?? e,
@@ -222,11 +223,11 @@ export class N9HttpClient {
 			if (optionsSent.responseType === 'json' && (res.body as any) === '') return;
 			return res.body;
 		} catch (e) {
-			const responseTime = Date.now() - startTime;
+			const durationMs = Date.now() - startTime;
 			const { code, status } = N9HttpClient.prepareErrorCodeAndStatus(e);
 			this.logger.error(`Error on [${options.method} ${uri}]`, {
 				status,
-				'response-time': responseTime,
+				durationMs,
 			});
 
 			throw new N9Error(code.toString(), status, {
@@ -278,14 +279,14 @@ export class N9HttpClient {
 				});
 			});
 		} catch (e) {
-			const durationCatch = Date.now() - startTime;
+			const durationMs = Date.now() - startTime;
 			this.logger.error(`Error on [${options?.method ?? 'GET'} ${uri}]`, {
-				'status': e.statusCode,
-				'response-time': durationCatch,
+				status: e.statusCode,
+				durationMs,
 			});
-			this.logger.debug(`File TTFB : ${durationCatch} ms`, {
+			this.logger.debug(`File TTFB : ${durationMs} ms`, {
 				url,
-				durationMs: durationCatch,
+				durationMs,
 				statusCode: e.statusCode,
 			});
 			const { code, status } = N9HttpClient.prepareErrorCodeAndStatus(e);
@@ -296,7 +297,7 @@ export class N9HttpClient {
 				code: e.code || code,
 				headers: options?.headers,
 				srcError: e,
-				responseTime: durationCatch,
+				responseTime: durationMs,
 			});
 		}
 		durationMsTTFB = Date.now() - startTime;

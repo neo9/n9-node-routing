@@ -33,6 +33,7 @@ ava('Call a route with HttpClient', async (t: Assertions) => {
 		'http://localhost:6001/ping',
 		{},
 		{
+			// eslint-disable-next-line @typescript-eslint/naming-convention
 			'x-request-id': 'test-request-id',
 		},
 		{

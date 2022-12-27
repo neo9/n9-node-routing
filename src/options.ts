@@ -120,6 +120,7 @@ function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 					if (formatLogInJSON) {
 						return JSON.stringify({
 							'method': tokens.method(req, res),
+							// eslint-disable-next-line @typescript-eslint/naming-convention
 							'request-id': options.enableRequestId
 								? `(${req.headers['x-request-id'] as string})`
 								: '',
@@ -127,6 +128,7 @@ function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 							'status': tokens.status(req, res),
 							'durationMs': Number.parseFloat(tokens['response-time'](req, res)),
 							'totalDurationMs': Number.parseFloat(tokens['total-response-time'](req, res)),
+							// eslint-disable-next-line @typescript-eslint/naming-convention
 							'content-length': tokens.res(req, res, 'content-length'),
 						});
 					}

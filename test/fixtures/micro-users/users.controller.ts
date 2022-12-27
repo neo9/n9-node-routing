@@ -24,9 +24,11 @@ export class UsersController {
 	@OpenAPI({
 		description: 'Create one user',
 		responses: {
+			// eslint-disable-next-line @typescript-eslint/naming-convention
 			400: {
 				description: 'Bad Request',
 			},
+			// eslint-disable-next-line @typescript-eslint/naming-convention
 			409: {
 				desciption: 'User email already exist',
 			},

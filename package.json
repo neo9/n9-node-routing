@@ -98,7 +98,7 @@
   "devDependencies": {
     "@ava/typescript": "^1.1.1",
     "@commitlint/cli": "^16.2.3",
-    "@neo9/n9-coding-style": "^3.0.1",
+    "@neo9/n9-coding-style": "^4.0.0",
     "@neo9/n9-mongo-client": "^0.29.1",
     "@release-it/conventional-changelog": "^4.3.0",
     "@types/app-root-dir": "^0.1.0",
