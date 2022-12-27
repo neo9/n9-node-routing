@@ -71,7 +71,11 @@ export default async <
 	const logger = options.log;
 	(global as any).log = options.log;
 
-	logger.info(`Conf loaded: ${conf.env}`);
+	// print app infos
+	const initialInfos = `${conf.name} version : ${conf.version} env: ${conf.env} node: ${process.version}`;
+	logger.info('-'.repeat(initialInfos.length));
+	logger.info(initialInfos);
+	logger.info('-'.repeat(initialInfos.length));
 
 	// Profile startup boot time
 	logger.profile('startup');

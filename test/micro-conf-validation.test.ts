@@ -39,10 +39,10 @@ ava('Should be a valid configuration', async (t: Assertions) => {
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output[1].includes('Checking configuration'), 'Should check configuration');
-	t.true(output[2].includes('Configuration is valid'), 'Should be a valid configuration');
-	t.true(output[3].includes('Listening on port'), 'Should listen on port');
-	t.true(output.length === 5, 'Should have 5 lines of logs');
+	t.true(output[3].includes('Checking configuration'), 'Should check configuration');
+	t.true(output[4].includes('Configuration is valid'), 'Should be a valid configuration');
+	t.true(output[5].includes('Listening on port'), 'Should listen on port');
+	t.true(output.length === 7, 'Should have 5 lines of logs');
 
 	await closeServer(server);
 });
@@ -72,8 +72,12 @@ ava('Should not be a valid configuration (not formatted)', async (t: Assertions)
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output[0].includes('Conf loaded: development'), 'Should load conf');
-	t.true(output[1].includes('Checking configuration'), 'Should check configuration');
+	t.true(output[0].includes('---------'), 'Should display --------');
+	t.true(output[1].includes('env: development'), 'Should display env');
+	t.true(output[2].includes('---------'), 'Should display -------- 2nd line');
+	t.is(output[2].length, output[0].length, 'Should have same length for ----');
+	t.is(output[2].length, output[1].length, 'Should have same length for ---- and init message');
+	t.true(output[3].includes('Checking configuration'), 'Should check configuration');
 	t.true(errors.message === 'Configuration is not valid', 'Should not be a valid configuration');
 
 	const validationErrors = errors.context.validationErrors;
@@ -128,13 +132,17 @@ ava('Should not be a valid configuration (formatted)', async (t: Assertions) => 
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output[0].includes('Conf loaded: development'), 'Should load conf');
-	t.true(output[1].includes('Checking configuration'), 'Should check configuration');
-	t.true(output[2].includes('Configuration is not valid:'), 'Should not be a valid configuration');
-	t.true(output[3].includes('Attribute bar is not valid - isIn'), 'Should have isIn error');
-	t.true(output[4].includes('Attribute bar is not valid - isNumber'), 'Should have isNumber error');
+	t.true(output[0].includes('---------'), 'Should display --------');
+	t.true(output[1].includes('env: development'), 'Should display env');
+	t.true(output[2].includes('---------'), 'Should display -------- 2nd line');
+	t.is(output[2].length, output[0].length, 'Should have same length for ----');
+	t.is(output[2].length, output[1].length, 'Should have same length for ---- and init message');
+	t.true(output[3].includes('Checking configuration'), 'Should check configuration');
+	t.true(output[4].includes('Configuration is not valid:'), 'Should not be a valid configuration');
+	t.true(output[5].includes('Attribute bar is not valid - isIn'), 'Should have isIn error');
+	t.true(output[6].includes('Attribute bar is not valid - isNumber'), 'Should have isNumber error');
 	t.true(
-		output[5].includes('Attribute baz.qux is not valid - isString'),
+		output[7].includes('Attribute baz.qux is not valid - isString'),
 		'Should have isString error',
 	);
 
@@ -250,22 +258,22 @@ ava('Should be a valid configuration with whitelist errors (formatted)', async (
 
 	const output = await getLogsFromFile(file.path);
 
-	t.true(output[1].includes('Checking configuration'), 'Should check configuration');
+	t.true(output[3].includes('Checking configuration'), 'Should check configuration');
 	t.true(
-		output[2].includes('Configuration contains unexpected attributes'),
+		output[4].includes('Configuration contains unexpected attributes'),
 		'Should have whitelist errors',
 	);
 	t.true(
-		output[3].includes("Please remove attribute 'whitelist1'"),
+		output[5].includes("Please remove attribute 'whitelist1'"),
 		'Should have whitelist1 error',
 	);
 	t.true(
-		output[4].includes("Please remove attribute 'whitelist2'"),
+		output[6].includes("Please remove attribute 'whitelist2'"),
 		'Should have whitelist2 error',
 	);
-	t.true(output[5].includes("Please remove attribute 'baz.qux'"), 'Should have baz.qux error');
-	t.true(output[6].includes('Configuration is valid'), 'Should be a valid configuration');
-	t.true(output[7].includes('Listening on port'), 'Should listen on port');
+	t.true(output[7].includes("Please remove attribute 'baz.qux'"), 'Should have baz.qux error');
+	t.true(output[8].includes('Configuration is valid'), 'Should be a valid configuration');
+	t.true(output[9].includes('Listening on port'), 'Should listen on port');
 
 	await closeServer(server);
 });
@@ -294,24 +302,24 @@ ava(
 
 		const output = await getLogsFromFile(file.path);
 
-		t.true(output[1].includes('Checking configuration'), 'Should check configuration');
+		t.true(output[3].includes('Checking configuration'), 'Should check configuration');
 
 		t.true(
-			output[2].includes('Configuration contains unexpected attributes'),
+			output[4].includes('Configuration contains unexpected attributes'),
 			'Should have whitelist errors',
 		);
-		t.true(output[2].includes('property qux should not exist'), 'Should have whitelist1 error');
+		t.true(output[4].includes('property qux should not exist'), 'Should have whitelist1 error');
 		t.true(
-			output[2].includes('property whitelist1 should not exist'),
+			output[4].includes('property whitelist1 should not exist'),
 			'Should have whitelist1 error',
 		);
 		t.true(
-			output[2].includes('property whitelist2 should not exist'),
+			output[4].includes('property whitelist2 should not exist'),
 			'Should have whitelist2 error',
 		);
 
-		t.true(output[3].includes('Configuration is valid'), 'Should be a valid configuration');
-		t.true(output[4].includes('Listening on port'), 'Should listen on port');
+		t.true(output[5].includes('Configuration is valid'), 'Should be a valid configuration');
+		t.true(output[6].includes('Listening on port'), 'Should listen on port');
 
 		await closeServer(server);
 	},
@@ -398,10 +406,10 @@ ava('Should not proceed any validation - no validation options given', async (t:
 	const output = await getLogsFromFile(file.path);
 
 	t.true(
-		output[1].includes('Configuration validation is disabled'),
+		output[3].includes('Configuration validation is disabled'),
 		'Should not check configuration',
 	);
-	t.true(output[2].includes('Listening on port'), 'Should listen on port');
+	t.true(output[4].includes('Listening on port'), 'Should listen on port');
 
 	await closeServer(server);
 });
@@ -428,10 +436,10 @@ ava('Should not proceed any validation - validation is disabled', async (t: Asse
 	const output = await getLogsFromFile(file.path);
 
 	t.true(
-		output[1].includes('Configuration validation is disabled'),
+		output[3].includes('Configuration validation is disabled'),
 		'Should not check configuration',
 	);
-	t.true(output[2].includes('Listening on port'), 'Should listen on port');
+	t.true(output[4].includes('Listening on port'), 'Should listen on port');
 
 	await closeServer(server);
 });
@@ -472,10 +480,10 @@ ava(
 		const output = await getLogsFromFile(file.path);
 
 		t.true(
-			output[1].includes('Configuration validation is disabled'),
+			output[3].includes('Configuration validation is disabled'),
 			'Should not check configuration',
 		);
-		t.true(output[2].includes('Listening on port'), 'Should listen on port');
+		t.true(output[4].includes('Listening on port'), 'Should listen on port');
 
 		await closeServer(server);
 	},

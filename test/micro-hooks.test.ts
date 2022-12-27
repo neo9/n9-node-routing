@@ -28,9 +28,9 @@ ava('Call new route (imagine a proxy)', async (t: Assertions) => {
 	});
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 
-	t.is(output.length, 6);
-	t.true(output[2].includes('beforeRoutingControllerLaunchHook'));
-	t.true(output[3].includes('afterRoutingControllerLaunchHook'));
+	t.is(output.length, 8);
+	t.true(output[4].includes('beforeRoutingControllerLaunchHook'));
+	t.true(output[5].includes('afterRoutingControllerLaunchHook'));
 
 	/*
 	 ** Test ping route

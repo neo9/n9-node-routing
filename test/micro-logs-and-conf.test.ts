@@ -30,23 +30,25 @@ ava('Basic usage, check logs', async (t: Assertions) => {
 	// Check logs
 	const output = await getLogsFromFile(file.path);
 
-	t.is(output.length, 9, 'output length');
+	t.is(output.length, 11, 'output length');
 	t.true(
 		output[0].includes('It is recommended to use JSON format outside development environment'),
 		'Warn n9--node-log',
 	);
-	t.true(output[3].includes('Init module bar'), 'Init module bar');
-	t.true(output[4].includes('Hello bar.init'), 'Hello bar.init');
-	t.true(output[5].includes('Listening on port 5000'), 'Listening on port 5000');
-	t.true(output[7].includes('message in controller'), 'message in controller');
-	t.true(output[7].includes('] ('), 'contains request id');
-	t.true(output[7].includes(')'), 'contains request id 2');
-	t.true(output[8].includes('] ('));
-	const match = output[8].match(/\([a-zA-Z0-9_-]{7,14}\)/g);
+	t.true(output[5].includes('Init module bar'), 'Init module bar');
+	t.true(output[6].includes('Hello bar.init'), 'Hello bar.init');
+	t.true(output[7].includes('Listening on port 5000'), 'Listening on port 5000');
+	t.true(output[8].includes('startup'), 'Startup');
+	t.true(output[8].includes('durationMs'), 'Duration Ms of statup');
+	t.true(output[9].includes('message in controller'), 'message in controller');
+	t.true(output[9].includes('] ('), 'contains request id');
+	t.true(output[9].includes(')'), 'contains request id 2');
+	t.true(output[10].includes('] ('));
+	const match = output[10].match(/\([a-zA-Z0-9_-]{7,14}\)/g);
 	t.truthy(match, 'should match one');
 	const matchLength = match.length;
 	t.true(matchLength === 1);
-	t.true(output[8].includes('GET /bar'));
+	t.true(output[10].includes('GET /bar'));
 	t.deepEqual(res, (global as any).conf, 'body response is conf');
 	// Close server
 	await closeServer(server);
@@ -76,13 +78,13 @@ ava('Basic usage, check logs with empty response', async (t: Assertions) => {
 	// Check logs
 	const output = await getLogsFromFile(file.path);
 
-	t.is(output.length, 7, 'check nb logs');
-	t.true(output[2].includes('Init module bar'), 'Init module bar');
-	t.true(output[3].includes('Hello bar.init'), 'Hello bar.init');
-	t.true(output[4].includes('Listening on port 5002'), 'Listening on port 5002');
-	t.true(output[6].includes('] ('));
-	t.truthy(output[6].match(/\([a-zA-Z0-9_-]{7,14}\)/g));
-	t.true(output[6].includes('GET /empty'), 'GET /empty');
+	t.is(output.length, 9, 'check nb logs');
+	t.true(output[4].includes('Init module bar'), 'Init module bar');
+	t.true(output[5].includes('Hello bar.init'), 'Hello bar.init');
+	t.true(output[6].includes('Listening on port 5002'), 'Listening on port 5002');
+	t.true(output[8].includes('] ('));
+	t.truthy(output[8].match(/\([a-zA-Z0-9_-]{7,14}\)/g));
+	t.true(output[8].includes('GET /empty'), 'GET /empty');
 
 	// Close server
 	await closeServer(server);
@@ -109,7 +111,7 @@ ava('JSON output', async (t: Assertions) => {
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 
-	const lineChecked = output[6];
+	const lineChecked = output[8];
 	t.truthy(lineChecked);
 	t.truthy(lineChecked.match(/"method":"GET"/g), 'GET /bar 1');
 	t.truthy(lineChecked.match(/"path":"\/bar"/g), 'GET /bar 2');

@@ -70,28 +70,28 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	const output = await getLogsFromFile(file.path);
 
 	// Logs on stdout
-	t.true(output[0].includes('Conf loaded: development'), 'Conf loaded: development');
+	t.true(output[1].includes('env: development'), 'env: development');
 	t.true(
-		output[1].includes('Configuration validation is disabled'),
+		output[3].includes('Configuration validation is disabled'),
 		'Configuration validation is disabled',
 	);
-	t.true(output[2].includes('Init module bar'), 'Init module bar');
-	t.true(output[3].includes('Init module foo'), 'Init module foo');
-	t.true(output[4].includes('Hello foo.init'), 'Hello foo.init');
-	t.true(output[5].includes('Listening on port 5000'), 'Listening on port 5000');
-	t.true(output[7].includes('GET /foo'), 'GET /foo');
-	t.true(output[8].includes('GET /'), 'GET /');
-	t.true(output[9].includes('GET /ping'), 'GET /ping');
-	t.true(output[10].includes('GET /version'), 'GET /version');
-	t.true(output[11].includes('not-found'), `not-found ${output[8]}`);
-	t.true(output[12].includes('  err: {'), `Error details on multi-lines ${output[9]}`);
-	t.true(output[13].includes('"type": "N9Error",'), `Error details on multi-lines ${output[10]}`);
+	t.true(output[4].includes('Init module bar'), 'Init module bar');
+	t.true(output[5].includes('Init module foo'), 'Init module foo');
+	t.true(output[6].includes('Hello foo.init'), 'Hello foo.init');
+	t.true(output[7].includes('Listening on port 5000'), 'Listening on port 5000');
+	t.true(output[9].includes('GET /foo'), 'GET /foo');
+	t.true(output[10].includes('GET /'), 'GET /');
+	t.true(output[11].includes('GET /ping'), 'GET /ping');
+	t.true(output[12].includes('GET /version'), 'GET /version');
+	t.true(output[13].includes('not-found'), `not-found ${output[10]}`);
+	t.true(output[14].includes('  err: {'), `Error details on multi-lines ${output[11]}`);
+	t.true(output[15].includes('"type": "N9Error",'), `Error details on multi-lines ${output[12]}`);
 	t.true(
-		output[14].includes('"message": "not-found",'),
-		`Error details on multi-lines ${output[11]}`,
+		output[16].includes('"message": "not-found",'),
+		`Error details on multi-lines ${output[13]}`,
 	);
-	t.true(output[15].includes('"stack":'), `Error details on multi-lines ${output[12]}`);
-	t.true(output[16].includes('Error: not-found'), `Error details on multi-lines ${output[13]}`);
+	t.true(output[17].includes('"stack":'), `Error details on multi-lines ${output[14]}`);
+	t.true(output[18].includes('Error: not-found'), `Error details on multi-lines ${output[15]}`);
 
 	t.true(output[output.length - 1].includes('GET /404'), `GET /404 ${output[output.length - 1]}`);
 
@@ -143,31 +143,31 @@ ava('Basic usage, create http server on production', async (t: Assertions) => {
 
 	// Logs on stdout
 	t.deepEqual(
-		parseJSONLogAndRemoveTime(output[2]),
+		parseJSONLogAndRemoveTime(output[4]),
 		{ level: 'info', message: 'Init module bar', label: 'n9-node-routing' },
 		`Init module bar`,
 	);
 	t.deepEqual(
-		parseJSONLogAndRemoveTime(output[3]),
+		parseJSONLogAndRemoveTime(output[5]),
 		{ level: 'info', message: 'Init module foo', label: 'n9-node-routing' },
 		`Init module foo`,
 	);
 	t.deepEqual(
-		parseJSONLogAndRemoveTime(output[4]),
+		parseJSONLogAndRemoveTime(output[6]),
 		{ level: 'info', message: 'Hello foo.init', label: 'n9-node-routing' },
 		`Hello foo.init`,
 	);
 	t.deepEqual(
-		parseJSONLogAndRemoveTime(output[5]),
+		parseJSONLogAndRemoveTime(output[7]),
 		{ level: 'info', message: 'Listening on port 5000', label: 'n9-node-routing' },
 		'Listening on port 5000',
 	);
-	t.true(output[7].includes(',"path":"/foo","status":"200","durationMs":'), 'path" /foo');
-	t.true(output[8].includes(',"path":"/","status":"200","durationMs":'), 'path /');
-	t.true(output[9].includes(',"path":"/ping","status":"200","durationMs":'), 'path /ping');
-	t.true(output[10].includes('"status":404,"context":{"url":"/404"},"hostname":'), 'status 404');
-	t.true(output[10].includes('"stack":"Error: not-found'), 'Error: not-found');
-	t.true(output[11].includes(',"path":"/404","status":"404","durationMs":'), 'path /404');
+	t.true(output[9].includes(',"path":"/foo","status":"200","durationMs":'), 'path" /foo');
+	t.true(output[10].includes(',"path":"/","status":"200","durationMs":'), 'path /');
+	t.true(output[11].includes(',"path":"/ping","status":"200","durationMs":'), 'path /ping');
+	t.true(output[12].includes('"status":404,"context":{"url":"/404"},"hostname":'), 'status 404');
+	t.true(output[12].includes('"stack":"Error: not-found'), 'Error: not-found');
+	t.true(output[13].includes(',"path":"/404","status":"404","durationMs":'), 'path /404');
 
 	// Close server
 	await closeServer(server);

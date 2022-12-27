@@ -182,13 +182,13 @@ ava('Check retries of HttpClient against error controller', async (t: Assertions
 		`Count 3 calls, 1 + 2 retries`,
 	);
 	t.true(
-		stdout[5].includes(
+		stdout[7].includes(
 			`Retry call [GET http://localhost:6001/503] n°1 due to ERR_NON_2XX_3XX_RESPONSE Response code 503 (Service Unavailable)`,
 		),
 		`Retry n°1 is logged by client`,
 	);
 	t.true(
-		stdout[7].includes(
+		stdout[9].includes(
 			`Retry call [GET http://localhost:6001/503] n°2 due to ERR_NON_2XX_3XX_RESPONSE Response code 503 (Service Unavailable)`,
 		),
 		`Retry n°2 is logged by client`,

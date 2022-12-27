@@ -27,7 +27,7 @@ ava('Works with custom port', async (t: Assertions) => {
 	});
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
-	t.true(output[2].includes('Listening on port 4002'), 'print launch port');
+	t.true(output[4].includes('Listening on port 4002'), 'print launch port');
 	// Close server
 	await closeServer(server);
 });
@@ -57,8 +57,8 @@ ava('Should keep the custom logger and listening on port 5000', async (t: Assert
 	stdMock.restore();
 
 	const output = stdMock.flush();
-	t.true(output.stdout[2].includes('Listening on port 5000'));
-	t.true(output.stdout[2].includes('"label":"custom"'));
+	t.true(output.stdout[4].includes('Listening on port 5000'));
+	t.true(output.stdout[4].includes('"label":"custom"'));
 
 	// Close server
 	await closeServer(server);
@@ -75,7 +75,7 @@ ava('Works without options (except conf for tests)', async (t: Assertions) => {
 	});
 	const output = await getLogsFromFile(file.path);
 	t.true(
-		output[2].includes('[n9-node-routing] Listening on port 5000'),
+		output[4].includes('[n9-node-routing] Listening on port 5000'),
 		`[n9-node-routing] Listening on port 5000 output : ${JSON.stringify(output)}`,
 	);
 
@@ -91,7 +91,7 @@ ava('Works without options in production (except conf for test purpose)', async 
 	const { server } = await N9NodeRouting({ conf: defaultNodeRoutingConfOptions });
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
-	const line2 = JSON.parse(output[2]);
+	const line2 = JSON.parse(output[4]);
 	delete line2.timestamp;
 
 	t.deepEqual(line2, {
@@ -127,7 +127,7 @@ ava('Should not log the requests http.logLevel=false', async (t: Assertions) => 
 	await got('http://localhost:5000/routes');
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
-	t.is(output.length, 4);
+	t.is(output.length, 6);
 	// Close server
 	await closeServer(server);
 });
@@ -143,10 +143,10 @@ ava('Should log the requests with custom level', async (t: Assertions) => {
 	await got('http://localhost:5000/routes');
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
-	t.is(output.length, 7, 'length');
-	t.true(output[4].includes('200 /'), '200 /');
-	t.true(output[5].includes('200 /ping'), 'ping');
-	t.true(output[6].includes('200 /routes'), 'routes');
+	t.is(output.length, 9, 'length');
+	t.true(output[6].includes('200 /'), '200 /');
+	t.true(output[7].includes('200 /ping'), 'ping');
+	t.true(output[8].includes('200 /routes'), 'routes');
 	// Close server
 	await closeServer(server);
 });
@@ -169,7 +169,7 @@ ava('Fails with PORT already used', async (t: Assertions) => {
 	});
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
-	t.true(output[2].includes('Listening on port 6000'));
+	t.true(output[4].includes('Listening on port 6000'));
 	t.true(err.message.includes('Port 6000 is already in use'));
 });
 
