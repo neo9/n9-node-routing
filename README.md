@@ -44,6 +44,8 @@ export class ValidateController {
 - Swagger option `isEnable` is renamed `isEnabled` with same default value as before to `true`
 - `n9-node-routing` now load the app configuration
 - `/ping` response is now an object : `{ response: 'pong' }`
+- `/` response is now an object: `{ apiName: 'myApi' }`
+- `/version' response is now an object : `{ version: '1.2.3' }`
 
 ## Features
 

@@ -31,31 +31,16 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	t.is(res.foo, 'bar');
 
 	// Check / route
-	res = await commons.jsonHttpClient.get<string>(
-		'http://localhost:5000/',
-		{},
-		{},
-		{ responseType: 'text' },
-	);
-	t.is(res, 'n9-node-routing');
+	res = await commons.jsonHttpClient.get<{ apiName: string }>('http://localhost:5000/');
+	t.deepEqual(res, { apiName: 'n9-node-routing' });
 
 	// Check /ping route
-	res = await commons.jsonHttpClient.get<string>(
-		'http://localhost:5000/ping',
-		{},
-		{},
-		{ responseType: 'text' },
-	);
-	t.is(res, 'pong');
+	res = await commons.jsonHttpClient.get<{ response: string }>('http://localhost:5000/ping');
+	t.deepEqual(res, { response: 'pong' });
 
 	// Check /version route
-	res = await commons.jsonHttpClient.get<string>(
-		'http://localhost:5000/version',
-		{},
-		{},
-		{ responseType: 'text' },
-	);
-	const matchVersion = (res as string).match(/^[0-9]+\.[0-9]+\.[0-9]+.*$/);
+	res = await commons.jsonHttpClient.get<{ version: string }>('http://localhost:5000/version');
+	const matchVersion = res.version.match(/^[0-9]+\.[0-9]+\.[0-9]+.*$/);
 	t.is(matchVersion.length, 1);
 
 	// Check /404 route
@@ -112,22 +97,12 @@ ava('Basic usage, create http server on production', async (t: Assertions) => {
 	t.is(res.foo, 'bar');
 
 	// Check / route
-	res = await commons.jsonHttpClient.get<string>(
-		'http://localhost:5000/',
-		{},
-		{},
-		{ responseType: 'text' },
-	);
-	t.is(res, 'n9-node-routing');
+	res = await commons.jsonHttpClient.get<{ apiName: string }>('http://localhost:5000/');
+	t.deepEqual(res, { apiName: 'n9-node-routing' });
 
 	// Check /ping route
-	res = await commons.jsonHttpClient.get<string>(
-		'http://localhost:5000/ping',
-		{},
-		{},
-		{ responseType: 'text' },
-	);
-	t.is(res, 'pong');
+	res = await commons.jsonHttpClient.get<{ response: string }>('http://localhost:5000/ping');
+	t.deepEqual(res, { response: 'pong' });
 
 	// Check /404 route
 	res = await t.throwsAsync<N9Error>(
