@@ -1,5 +1,25 @@
 
 
+# [2.0.0-rc.1](https://github.com/neo9/n9-node-routing/compare/2.0.0-rc.0...2.0.0-rc.1) (2022-12-27)
+
+
+### conf
+
+* Add endpoint to expose conf ([d14eefa](https://github.com/neo9/n9-node-routing/commit/d14eefa87e2e61901147dab930d3a33aaf0a7e99))
+* Fix memory leak on exposed conf ([2bd2dde](https://github.com/neo9/n9-node-routing/commit/2bd2dde1a5daeac7b6a3363725b85d7b7e7fa3b4))
+
+### logs
+
+* Add init log at startup beginning ([548e573](https://github.com/neo9/n9-node-routing/commit/548e5738e32d9318e8d711c5a0bae93905b454a3))
+
+### ping
+
+* Add init log at startup beginning ([c592e17](https://github.com/neo9/n9-node-routing/commit/c592e174825d98a385974b9abb696c7a1de75b24))
+
+### routes
+
+* Change default route to return apiName and version in JSON format ([4cd1ef0](https://github.com/neo9/n9-node-routing/commit/4cd1ef0c44efdb815a82233a9ddcd2c22061964b))
+
 # [2.0.0-rc.0](https://github.com/neo9/n9-node-routing/compare/1.34.3...2.0.0-rc.0) (2022-12-27)
 
 
