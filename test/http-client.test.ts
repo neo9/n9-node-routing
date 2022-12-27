@@ -40,12 +40,24 @@ ava('Call a route with HttpClient', async (t: Assertions) => {
 			responseType: 'text',
 		},
 	);
-	t.is(rep, 'pong');
+	t.is(rep, JSON.stringify({ response: 'pong' }));
+	const repObject = await httpClient.get<{ response: string }>(
+		'http://localhost:6001/ping',
+		{},
+		{
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			'x-request-id': 'test-request-id',
+		},
+		{
+			responseType: 'json',
+		},
+	);
+	t.deepEqual(repObject, { response: 'pong' });
 	rep = await httpClient.raw<string>('http://localhost:6001/ping', {
 		method: 'get',
 		responseType: 'text',
 	});
-	t.is(rep, 'pong');
+	t.is(rep, JSON.stringify({ response: 'pong' }));
 
 	let error = await t.throwsAsync<N9Error>(
 		async () => await httpClient.post<string>('http://localhost:6001/ping'),
@@ -121,7 +133,7 @@ ava('Call a route with HttpClient', async (t: Assertions) => {
 			})
 			.on('end', resolve);
 	});
-	t.is(responseContent, 'pong', 'reponse is pong');
+	t.is(responseContent, JSON.stringify({ response: 'pong' }), 'response is pong');
 
 	// Clear stdout
 	stdMock.restore();

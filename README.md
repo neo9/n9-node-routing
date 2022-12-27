@@ -43,6 +43,7 @@ export class ValidateController {
 - Logger labels changes
 - Swagger option `isEnable` is renamed `isEnabled` with same default value as before to `true`
 - `n9-node-routing` now load the app configuration
+- `/ping` response is now an object : `{ response: 'pong' }`
 
 ## Features
 

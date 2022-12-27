@@ -22,14 +22,14 @@ export function init(
 	env: 'development' | 'production' | string,
 ): void {
 	expressApp.get('/', (req: Request, res: Response, next: NextFunction) => {
-		res.status(200).send(packageJson.name);
+		res.status(200).json({ apiName: packageJson.name });
 		next();
 	});
 
 	// Monitoring route
 	expressApp.get('/ping', async (req: Request, res: Response, next: NextFunction) => {
 		if (shutdownAsked) {
-			res.status(503).send('server-shutting-down');
+			res.status(503).json({ response: 'server-shutting-down' });
 			signalIsNotUp();
 			next();
 			return;
@@ -39,7 +39,7 @@ export function init(
 				// eslint-disable-next-line @typescript-eslint/no-invalid-this
 				if (!(await db.isConnected.bind(db.thisArg || this)())) {
 					(global as any).log.error(`[PING] Can't connect to ${db.name}`);
-					res.status(500).send(`db-${db.name}-unreachable`);
+					res.status(500).json(new N9Error(`db-${db.name}-unreachable`, 500));
 					if (options.prometheus) {
 						signalIsNotUp();
 					}
@@ -50,7 +50,7 @@ export function init(
 			if (options.prometheus) {
 				signalIsUp();
 			}
-			res.status(200).send(`pong-dbs-${options.http.ping.dbs.length}`);
+			res.status(200).json({ response: `pong-dbs-${options.http.ping.dbs.length}` });
 		} else if ((global as any).db && (global as any).dbClient) {
 			if (!(global as any).dbClient.isConnected()) {
 				if ((global as any).log?.error) {
@@ -59,27 +59,27 @@ export function init(
 				if (options.prometheus) {
 					signalIsNotUp();
 				}
-				res.status(500).send('db-unreachable');
+				res.status(500).json(new N9Error('db-unreachable', 500));
 			} else {
 				if (options.prometheus) {
 					signalIsUp();
 				}
-				res.status(200).send('pong-db');
+				res.status(200).json({ response: 'pong-db' });
 			}
 		} else {
-			res.status(200).send('pong');
+			res.status(200).json({ response: 'pong' });
 		}
 		next();
 	});
 
 	// Return app version
 	expressApp.get('/version', (req: Request, res: Response, next: NextFunction) => {
-		res.status(200).send(packageJson.version);
+		res.status(200).json({ version: packageJson.version });
 		next();
 	});
 
 	expressApp.get('/routes', (req: Request, res: Response, next: NextFunction) => {
-		res.status(200).send(RoutesService.getRoutes());
+		res.status(200).json(RoutesService.getRoutes());
 		next();
 	});
 

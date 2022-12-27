@@ -35,13 +35,8 @@ ava('Call new route (imagine a proxy)', async (t: Assertions) => {
 	/*
 	 ** Test ping route
 	 */
-	const rep = await commons.jsonHttpClient.get<string>(
-		'http://localhost:6001/ping',
-		{},
-		{},
-		{ responseType: 'text' },
-	);
-	t.is(rep, 'pong');
+	const rep = await commons.jsonHttpClient.get<{ response: string }>('http://localhost:6001/ping');
+	t.deepEqual(rep, { response: 'pong' });
 
 	// Clear stdout
 	stdMock.restore();

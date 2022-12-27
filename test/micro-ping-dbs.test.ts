@@ -40,13 +40,10 @@ for (const prometheusOption of [{}, undefined]) {
 			});
 
 			// Check /ping route
-			const res = await commons.jsonHttpClient.get<string>(
+			const res = await commons.jsonHttpClient.get<{ response: string }>(
 				'http://localhost:5000/ping',
-				{},
-				{},
-				{ responseType: 'text' },
 			);
-			t.is(res, 'pong-db');
+			t.is(res.response, 'pong-db');
 
 			// Close server
 			await mongodServer.stop();
@@ -78,8 +75,8 @@ for (const prometheusOption of [{}, undefined]) {
 				},
 				// debug: true,
 			});
-			const mongoConnectionString1 = await mongodServer.getConnectionString('db-1');
-			const mongoConnectionString2 = await mongodServer.getConnectionString('db-2');
+			const mongoConnectionString1 = await mongodServer.getUri('db-1');
+			const mongoConnectionString2 = await mongodServer.getUri('db-2');
 			(global as any).log = new N9Log('test');
 			await MongoUtils.connect(mongoConnectionString1); // set global.dbClient
 			const dbClient1 = (global as any).dbClient;
@@ -113,13 +110,10 @@ for (const prometheusOption of [{}, undefined]) {
 			});
 
 			// Check /ping route
-			const res = await commons.jsonHttpClient.get<string>(
+			const res = await commons.jsonHttpClient.get<{ response: string }>(
 				'http://localhost:5000/ping',
-				{},
-				{},
-				{ responseType: 'text' },
 			);
-			t.is(res, 'pong-dbs-2');
+			t.is(res.response, 'pong-dbs-2');
 
 			await mongodServer.stop();
 
