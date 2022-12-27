@@ -147,7 +147,7 @@ ava('Check retries of HttpClient', async (t: Assertions) => {
 	t.truthy(stdout?.length, 'stdout not empty');
 	t.true(
 		stdout[stdout.length - 1]?.includes(
-			`Retry call [GET http://localhost:1/] n°2 due to ECONNREFUSED connect ECONNREFUSED 127.0.0.1:1`,
+			`Retry call [GET http://localhost:1/] n°2 due to ECONNREFUSED connect ECONNREFUSED`, // 127.0.0.1:1
 		),
 		`Retry n°2 is logged by client`,
 	);
@@ -183,13 +183,13 @@ ava('Check retries of HttpClient against error controller', async (t: Assertions
 	);
 	t.true(
 		stdout[5].includes(
-			`Retry call [GET http://localhost:6001/503] n°1 due to HTTPError Response code 503 (Service Unavailable)`,
+			`Retry call [GET http://localhost:6001/503] n°1 due to ERR_NON_2XX_3XX_RESPONSE Response code 503 (Service Unavailable)`,
 		),
 		`Retry n°1 is logged by client`,
 	);
 	t.true(
 		stdout[7].includes(
-			`Retry call [GET http://localhost:6001/503] n°2 due to HTTPError Response code 503 (Service Unavailable)`,
+			`Retry call [GET http://localhost:6001/503] n°2 due to ERR_NON_2XX_3XX_RESPONSE Response code 503 (Service Unavailable)`,
 		),
 		`Retry n°2 is logged by client`,
 	);

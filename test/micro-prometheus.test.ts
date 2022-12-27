@@ -26,7 +26,7 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 			port: 5000,
 		},
 		prometheus: {
-			port: 5001,
+			port: 5002,
 		},
 		enableLogFormatJSON: false,
 		shutdown: {
@@ -34,16 +34,16 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 		},
 		conf: defaultNodeRoutingConfOptions,
 	});
-	let res = await got('http://localhost:5000/sample-route');
+	let res = await got('http://127.0.0.1:5000/sample-route');
 	t.is(res.statusCode, 204);
 	t.is(res.body, '');
 
-	res = await got('http://localhost:5000/by-code/code1');
+	res = await got('http://127.0.0.1:5000/by-code/code1');
 	t.is(res.statusCode, 204);
 	t.is(res.body, '');
 
 	// Check /foo route added on foo/foo.init.ts
-	let resProm = await got('http://localhost:5001/', {
+	let resProm = await got('http://127.0.0.1:5002/', {
 		responseType: 'text',
 		resolveBodyOnly: true,
 	});
@@ -72,11 +72,11 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	);
 	t.true(resProm.includes('version_info{version="'), `Prom exposition contains version info`);
 
-	const cancelableRequest = got('http://localhost:5000/a-long-route/a-code', {
+	const cancelableRequest = got('http://127.0.0.1:5000/a-long-route/a-code', {
 		method: 'POST',
 	});
 
-	resProm = await got('http://localhost:5001/', {
+	resProm = await got('http://127.0.0.1:5002/', {
 		responseType: 'text',
 		resolveBodyOnly: true,
 	});
