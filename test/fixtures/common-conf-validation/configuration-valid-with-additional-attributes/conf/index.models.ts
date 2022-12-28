@@ -1,8 +1,7 @@
 import { Transform } from 'class-transformer';
 import { Allow, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 
-import { N9NodeRouting, Type } from '../../../../../src';
-import { SecretTransformer, SecretType } from '../../../../../src/transformer/secert.transformer';
+import { N9NodeRouting, SecretTransformer, SecretType, Type } from '../../../../../src';
 
 class Baz {
 	qux: string;

@@ -41,6 +41,7 @@ export { N9Log } from '@neo9/n9-node-log';
 
 export * from './decorators/acl.decorator';
 export * from './validators';
+export * from './transformer';
 export * from './models/routes.models';
 export * from './utils/http-client-base';
 export * from './utils/http-cargo-builder';
