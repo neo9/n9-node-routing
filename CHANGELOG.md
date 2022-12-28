@@ -1,5 +1,17 @@
 
 
+# [2.0.0-rc.3](https://github.com/neo9/n9-node-routing/compare/2.0.0-rc.2...2.0.0-rc.3) (2022-12-28)
+
+
+### conf
+
+* Add secret transformer with multiple secret types supported ([e0b7a26](https://github.com/neo9/n9-node-routing/commit/e0b7a26182e931ff2b275f9f472bf2ad834a3d5e))
+* Export secret transformer ([9d55a8a](https://github.com/neo9/n9-node-routing/commit/9d55a8a935d2f2ea8a5a7eadd4e682c3334ad433))
+
+### logs
+
+* Add log modules for hooks ([a8acf18](https://github.com/neo9/n9-node-routing/commit/a8acf18a8e3c6b1d5ad783e343eff73d13a88be6))
+
 # [2.0.0-rc.2](https://github.com/neo9/n9-node-routing/compare/2.0.0-rc.1...2.0.0-rc.2) (2022-12-28)
 
 
