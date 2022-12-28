@@ -67,10 +67,12 @@ export function getDocumentationJsonPath(options: N9NodeRouting.Options): string
 	);
 }
 
-export function generateDocumentationJsonToFile(optionsParams: {
-	path?: string;
-	conf?: { n9NodeConf?: N9NodeConfOptions<N9NodeRouting.N9NodeRoutingBaseConf> };
-}): string {
+export function generateDocumentationJsonToFile(
+	optionsParams: {
+		path?: string;
+		conf?: { n9NodeConf?: N9NodeConfOptions<N9NodeRouting.N9NodeRoutingBaseConf> };
+	} = {},
+): string {
 	const confOptions = getLoadingConfOptions(optionsParams);
 	const conf: N9NodeRouting.N9NodeRoutingBaseConf = n9NodeConf(confOptions);
 	// eslint-disable-next-line @typescript-eslint/no-var-requires,global-require,import/no-dynamic-require
