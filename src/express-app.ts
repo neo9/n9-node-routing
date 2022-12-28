@@ -135,7 +135,6 @@ export async function init<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>
 
 	const server = createServer(expressApp);
 
-	expressApp.use(express.json(options.http.bodyParser));
 	if (options.http.beforeRoutingControllerLaunchHook) {
 		await options.http.beforeRoutingControllerLaunchHook({
 			expressApp,
@@ -144,6 +143,7 @@ export async function init<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>
 			conf,
 		});
 	}
+	expressApp.use(express.json(options.http.bodyParser));
 
 	expressApp = RoutingControllers.useExpressServer(expressApp, options.http.routingController);
 
