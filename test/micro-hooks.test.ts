@@ -25,7 +25,9 @@ ava('Check if the hooks are called', async (t: Assertions) => {
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 
 	t.is(output.length, 8);
+	t.true(output[4].includes('before-hook'));
 	t.true(output[4].includes('beforeRoutingControllerLaunchHook'));
+	t.true(output[5].includes('after-hook'));
 	t.true(output[5].includes('afterRoutingControllerLaunchHook'));
 
 	/*
