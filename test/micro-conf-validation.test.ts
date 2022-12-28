@@ -237,48 +237,49 @@ ava(
 	},
 );
 
-ava('Should be a valid configuration with whitelist errors (formatted)', async (t: Assertions) => {
-	process.env.NODE_ENV = 'development';
-	const file = await tmp.file();
-	const microPath = `${microConfValidation}/configuration-valid-with-additional-attributes`;
+ava(
+	'Should be a valid configuration with whitelist errors (formatted) → default case',
+	async (t: Assertions) => {
+		process.env.NODE_ENV = 'development';
+		const file = await tmp.file();
+		const microPath = `${microConfValidation}/configuration-valid-with-additional-attributes`;
 
-	const { server, prometheusServer } = await N9NodeRouting({
-		path: microPath,
-		logOptions: { developmentOutputFilePath: file.path },
-		conf: {
-			n9NodeConf: {
-				path: `${microPath}/conf`,
+		const { server, prometheusServer } = await N9NodeRouting({
+			path: microPath,
+			logOptions: { developmentOutputFilePath: file.path },
+			conf: {
+				n9NodeConf: {
+					path: `${microPath}/conf`,
+				},
+				validation: {
+					classType: ValidConfWithWhitelistErrors,
+				},
 			},
-			validation: {
-				isEnabled: true,
-				classType: ValidConfWithWhitelistErrors,
-				formatWhitelistErrors: true,
-			},
-		},
-	});
+		});
 
-	const output = await getLogsFromFile(file.path);
+		const output = await getLogsFromFile(file.path);
 
-	t.true(output[3].includes('Checking configuration'), 'Should check configuration');
-	t.true(
-		output[4].includes('Configuration contains unexpected attributes'),
-		'Should have whitelist errors',
-	);
-	t.true(
-		output[5].includes("Please remove attribute 'whitelist1'"),
-		'Should have whitelist1 error',
-	);
-	t.true(
-		output[6].includes("Please remove attribute 'whitelist2'"),
-		'Should have whitelist2 error',
-	);
-	t.true(output[7].includes("Please remove attribute 'baz.qux'"), 'Should have baz.qux error');
-	t.true(output[8].includes('Configuration is valid'), 'Should be a valid configuration');
-	t.true(output[9].includes('Listening on port'), 'Should listen on port');
+		t.true(output[3].includes('Checking configuration'), 'Should check configuration');
+		t.true(
+			output[4].includes('Configuration contains unexpected attributes'),
+			'Should have whitelist errors',
+		);
+		t.true(
+			output[5].includes("Please remove attribute 'whitelist1'"),
+			'Should have whitelist1 error',
+		);
+		t.true(
+			output[6].includes("Please remove attribute 'whitelist2'"),
+			'Should have whitelist2 error',
+		);
+		t.true(output[7].includes("Please remove attribute 'baz.qux'"), 'Should have baz.qux error');
+		t.true(output[8].includes('Configuration is valid'), 'Should be a valid configuration');
+		t.true(output[9].includes('Listening on port'), 'Should listen on port');
 
-	await end(server, prometheusServer); // Close server
-	await end(server, prometheusServer);
-});
+		await end(server, prometheusServer); // Close server
+		await end(server, prometheusServer);
+	},
+);
 
 ava(
 	'Should be a valid configuration with whitelist errors (not formatted)',
@@ -546,7 +547,7 @@ ava(
 		process.env.NODE_ENV = 'development';
 		const microPath = `${microConfValidation}/configuration-valid`;
 
-		const errors: N9Error = await t.throwsAsync(
+		const error: N9Error = await t.throwsAsync(
 			N9NodeRouting({
 				path: microPath,
 				conf: {
@@ -560,13 +561,13 @@ ava(
 			}),
 		);
 
-		t.true(errors.status === 500, 'Should throw a 500 error');
+		t.true(error.status === 500, 'Should throw a 500 error');
 		t.true(
-			errors.message.includes('N9NodeRouting configuration validation options are not correct'),
+			error.message.includes('N9NodeRouting configuration validation options are not correct'),
 			'Options are not correct',
 		);
 		t.true(
-			errors.message.includes('validation is enabled but no classType is given'),
+			error.message.includes('validation is enabled but no classType is given'),
 			'No class type given',
 		);
 	},
