@@ -1,4 +1,5 @@
 import { IsBoolean, IsOptional } from 'class-validator';
+import * as http from 'http';
 
 import { isStringOrNumber } from '../../validators';
 
@@ -40,10 +41,10 @@ export class BodyParserOptions {
 	 * Defaults to application/json.
 	 */
 	@IsOptional()
-	type?: string;
-
+	type?: string | string[] | ((req: http.IncomingMessage) => any);
 	/**
-	 * The verify option, if supplied, is called as verify(req, res, buf, encoding), where buf is a Buffer of the raw request body and encoding is the encoding of the request. The parsing can be aborted by throwing an error.
+	 * The verify option, if supplied, is called as verify(req, res, buf, encoding),
+	 * where buf is a Buffer of the raw request body and encoding is the encoding of the request.
 	 */
-	verify?: (req, res, buf, encoding) => void;
+	verify?(req: http.IncomingMessage, res: http.ServerResponse, buf: Buffer, encoding: string): void;
 }

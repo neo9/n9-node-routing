@@ -1,16 +1,13 @@
 import { N9Log } from '@neo9/n9-node-log';
 import ava, { Assertions } from 'ava';
-import * as bodyParser from 'body-parser';
-import { join } from 'path';
+import { NextFunction, Request, Response } from 'express';
 import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting, { N9HttpClient } from '../src';
 import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
 
-const microHooks = join(__dirname, 'fixtures/micro-hooks/');
-
-ava('Call new route (imagine a proxy)', async (t: Assertions) => {
+ava('Check if the hooks are called', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({
 		hasProxy: true, // tell N9NodeRouting to parse `session` header
@@ -44,62 +41,37 @@ ava('Call new route (imagine a proxy)', async (t: Assertions) => {
 	await closeServer(server);
 });
 
-ava('Limit max payload size reached for bodyparser (1024 kB)', async (t: Assertions) => {
-	stdMock.use({ print: commons.print });
-	const { server } = await N9NodeRouting({
-		hasProxy: true, // tell n9NodeRouting to parse `session` header
-		path: microHooks,
-		http: {
-			port: 6001,
-		},
-		conf: defaultNodeRoutingConfOptions,
-	});
-	stdMock.flush();
-	const httpClient = new N9HttpClient(new N9Log('test'));
-	const longString = 'A very long string. '.repeat(100000);
-
-	await t.throwsAsync(
-		async () => await httpClient.post<any>('http://localhost:6001/bar', { longString }),
-		{
-			message: 'PayloadTooLargeError',
-		},
-		'payload is too large',
-	);
-
-	// Clear stdout
-	stdMock.restore();
-	stdMock.flush();
-	// Close server
-	await closeServer(server);
-});
-
-ava('Increase max payload size to bodyparser', async (t: Assertions) => {
-	stdMock.use({ print: commons.print });
-	const { server } = await N9NodeRouting({
-		hasProxy: true, // tell n9NodeRouting to parse `session` header
-		path: microHooks,
-		http: {
-			port: 6001,
-			beforeRoutingControllerLaunchHook: ({ expressApp }) => {
-				expressApp.use(bodyParser.json({ limit: '1024kb' }));
+ava(
+	'Add custom route in beforeRoutingControllerLaunchHook (imagine a proxy)',
+	async (t: Assertions) => {
+		stdMock.use({ print: commons.print });
+		const { server } = await N9NodeRouting({
+			hasProxy: true, // tell n9NodeRouting to parse `session` header
+			http: {
+				port: 6001,
+				beforeRoutingControllerLaunchHook: ({ expressApp, log }) => {
+					expressApp.use('/custom-endpoint', (req: Request, res: Response, next: NextFunction) => {
+						log.info(`A message in the endpoint`);
+						res.json({ response: 1 });
+						next();
+					});
+				},
 			},
-		},
-		conf: defaultNodeRoutingConfOptions,
-	});
-	stdMock.flush();
-	const httpClient = new N9HttpClient(new N9Log('test'));
+			conf: defaultNodeRoutingConfOptions,
+		});
+		stdMock.flush();
+		const httpClient = new N9HttpClient(new N9Log('test'));
 
-	/*
-	 ** Test ping route
-	 */
-	const longString = 'A very long string. '.repeat(10000);
+		/*
+		 ** Test ping route
+		 */
+		const rep = await httpClient.get<any>('http://localhost:6001/custom-endpoint');
+		t.deepEqual(rep, { response: 1 }, 'Endpoint should respond some data');
 
-	const rep = await httpClient.post<any>('http://localhost:6001/bar', { longString });
-	t.deepEqual(rep, { longString });
-
-	// Clear stdout
-	stdMock.restore();
-	stdMock.flush();
-	// Close server
-	await closeServer(server);
-});
+		// Clear stdout
+		stdMock.restore();
+		stdMock.flush();
+		// Close server
+		await closeServer(server);
+	},
+);
