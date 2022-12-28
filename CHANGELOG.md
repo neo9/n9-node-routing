@@ -1,5 +1,13 @@
 
 
+# [2.0.0-rc.6](https://github.com/neo9/n9-node-routing/compare/2.0.0-rc.5...2.0.0-rc.6) (2022-12-28)
+
+
+### conf
+
+* Allow to generate documentation json without param ([7b6f216](https://github.com/neo9/n9-node-routing/commit/7b6f216e057c4dcac748d57dfa3fca0c5e2358d4))
+* Enable conf validation with only the type given ([cdaf399](https://github.com/neo9/n9-node-routing/commit/cdaf399f4071221fe05a60549c7d67ad2d9ec7dc))
+
 # [2.0.0-rc.5](https://github.com/neo9/n9-node-routing/compare/2.0.0-rc.4...2.0.0-rc.5) (2022-12-28)
 
 
