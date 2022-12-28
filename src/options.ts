@@ -268,6 +268,11 @@ export function applyConfOptionsDefaults(options: N9NodeRouting.Options): void {
 		},
 	};
 
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-boolean-literal-compare
+	if (options.conf?.validation?.classType && options.conf?.validation?.isEnabled !== false) {
+		defaultOptions.validation.isEnabled = true;
+	}
+
 	options.conf = _.merge(defaultOptions, options.conf);
 }
 
