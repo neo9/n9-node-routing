@@ -1,5 +1,12 @@
 
 
+# [2.0.0-rc.4](https://github.com/neo9/n9-node-routing/compare/2.0.0-rc.3...2.0.0-rc.4) (2022-12-28)
+
+
+### conf
+
+* Move body parser init to allow proxy init ([672f2db](https://github.com/neo9/n9-node-routing/commit/672f2db3ee71f204a3fce52355dca2814dbf2a33))
+
 # [2.0.0-rc.3](https://github.com/neo9/n9-node-routing/compare/2.0.0-rc.2...2.0.0-rc.3) (2022-12-28)
 
 
