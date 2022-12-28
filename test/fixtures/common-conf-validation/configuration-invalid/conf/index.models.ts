@@ -1,7 +1,8 @@
-import { Exclude, Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { Allow, IsIn, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 import { N9NodeRouting } from '../../../../../src';
+import { SecretTransformer } from '../../../../../src/transformer/secert.transformer';
 
 class Baz {
 	@IsString()
@@ -22,6 +23,6 @@ export class Conf extends N9NodeRouting.N9NodeRoutingBaseConf {
 	baz?: Baz;
 
 	@Allow()
-	@Exclude({ toPlainOnly: true })
+	@Transform(SecretTransformer.GET_TRANSFORMER())
 	secret?: string;
 }

@@ -10,6 +10,11 @@ const conf: Partial<Conf> & any = {
 	whitelist2: 'string',
 
 	secret: 'secretPassword',
+	secretOpaque: 'secretPasswordHiddenButKnownIfNil',
+	secretInvisible: 'secretPasswordInvisible',
+	secretUri: 'mongodb://myDBReader:secretPassword@mongodb0.example.com:27017/?authSource=admin',
+	secretUriNotAnURI:
+		'mongodb://myDBReader:secretPasswordmongodb0.example.com:27017/?authSource=admin',
 };
 
 export default conf;

@@ -352,6 +352,19 @@ ava('Should not show exclude properties on whitelist errors (formatted)', async 
 		'Should not show secretPassword in logs',
 	);
 	t.is(conf.secret, 'secretPassword', `Secret is usable in conf`);
+	t.is(conf.secretOpaque, 'secretPasswordHiddenButKnownIfNil', `Secret opaque is usable in conf`);
+	t.is(conf.secretOpaqueNil, undefined, `Secret opaque nil is usable in conf`);
+	t.is(conf.secretInvisible, 'secretPasswordInvisible', `Secret invisible is usable in conf`);
+	t.is(
+		conf.secretUri,
+		'mongodb://myDBReader:secretPassword@mongodb0.example.com:27017/?authSource=admin',
+		`Secret uri is usable in conf`,
+	);
+	t.is(
+		conf.secretUriNotAnURI,
+		'mongodb://myDBReader:secretPasswordmongodb0.example.com:27017/?authSource=admin',
+		`Secret uri not an uri is usable in conf`,
+	);
 
 	const exposedConf = await commons.jsonHttpClient.get<ValidConfWithWhitelistErrors>(
 		'http://localhost:5000/conf',
@@ -359,6 +372,27 @@ ava('Should not show exclude properties on whitelist errors (formatted)', async 
 
 	t.is(exposedConf.foo, 'string', `Conf is available on http endpoint`);
 	t.is(exposedConf.secret, undefined, `Secret should not be exposed on conf endpoint`);
+	t.is(exposedConf.secretInvisible, undefined, `Secret invisible should be exposed as undefined`);
+	t.is(
+		exposedConf.secretOpaque,
+		'********',
+		`Secret opaque should not be exposed on conf endpoint`,
+	);
+	t.is(
+		exposedConf.secretOpaqueNil,
+		undefined,
+		`Secret opaque should be undefined if value is undefined`,
+	);
+	t.is(
+		exposedConf.secretUri,
+		'mongodb://myDBReader:********@mongodb0.example.com:27017/?authSource=admin',
+		`Secret uri should be exposed but not password`,
+	);
+	t.is(
+		exposedConf.secretUriNotAnURI,
+		undefined,
+		`Secret uri not an URI is completely hidden to avoid error`,
+	);
 
 	await closeServer(server);
 });

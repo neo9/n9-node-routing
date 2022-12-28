@@ -64,6 +64,30 @@ A starter app is available here : https://github.com/neo9/n9-node-microservice-s
 - Unified HttpClient using [got](https://github.com/sindresorhus/got#readme)
 - Cargo to group multiple small task into a bigger one, for example, multiple http calls
 - HttpCargoBuilder a simpler way to build a cargo to group HTTP calls
+- Validate configuration at startup and expose it on endpoint `/conf`
+  :warning: To hide passord, use the transformer like one of this usage
+
+  ```ts
+  	@Allow()
+  	@Transform(SecretTransformer.GET_TRANSFORMER())
+  	secret?: string;
+
+  	@Allow()
+  	@Transform(SecretTransformer.GET_TRANSFORMER(SecretType.OPAQUE))
+  	secretOpaque?: string;
+
+  	@Allow()
+  	@Transform(SecretTransformer.GET_TRANSFORMER(SecretType.OPAQUE))
+  	secretOpaqueNil?: string;
+
+  	@Allow()
+  	@Transform(SecretTransformer.GET_TRANSFORMER(SecretType.INVISIBLE)) // default
+  	secretInvisible?: string;
+
+  	@Allow()
+  	@Transform(SecretTransformer.GET_TRANSFORMER(SecretType.URI))
+  	secretUri?: string;
+  ```
 
 ### Sentry
 
