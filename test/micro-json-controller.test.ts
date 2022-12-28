@@ -4,14 +4,15 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
+import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
+import { end } from './fixtures/helper';
 
 const microFoo = join(__dirname, 'fixtures/micro-json-controller/');
 const print = commons.print;
 
 ava('Acl usage with JSON Controller, check /routes', async (t) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microFoo,
 		http: { port: 5575 },
 		conf: defaultNodeRoutingConfOptions,
@@ -52,9 +53,6 @@ ava('Acl usage with JSON Controller, check /routes', async (t) => {
 		);
 	}
 
-	// Check logs
-	stdMock.restore();
-	stdMock.flush();
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });

@@ -4,13 +4,14 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting, { HttpCargoBuilder } from '../src';
-import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
+import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
+import { end } from './fixtures/helper';
 
 const print = commons.print;
 
 ava('Call a route multiple times with HttpClient and cargo', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: join(__dirname, 'fixtures/micro-cargo/'),
 		http: {
 			port: 6001,
@@ -52,16 +53,12 @@ ava('Call a route multiple times with HttpClient and cargo', async (t: Assertion
 		'Server received one call',
 	);
 
-	// Clear stdout
-	stdMock.restore();
-	stdMock.flush();
-	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Call a route multiple times with cargo, one item is not found', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: join(__dirname, 'fixtures/micro-cargo/'),
 		http: {
 			port: 6001,
@@ -96,18 +93,14 @@ ava('Call a route multiple times with cargo, one item is not found', async (t: A
 	t.deepEqual<{ _id: string }>(id5, { _id: '5' }, 'id2 fetch first object');
 	t.deepEqual<{ _id: string }>(id6, { _id: '6' }, 'id1 fetch first object');
 
-	// Clear stdout
-	stdMock.restore();
-	stdMock.flush();
-	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava(
 	'Call a route multiple times with cargo, throw on when item is not found',
 	async (t: Assertions) => {
 		stdMock.use({ print });
-		const { server } = await N9NodeRouting({
+		const { server, prometheusServer } = await N9NodeRouting({
 			path: join(__dirname, 'fixtures/micro-cargo/'),
 			http: {
 				port: 6001,
@@ -140,10 +133,6 @@ ava(
 			'throw with one item not found',
 		);
 
-		// Clear stdout
-		stdMock.restore();
-		stdMock.flush();
-		// Close server
-		await closeServer(server);
+		await end(server, prometheusServer);
 	},
 );

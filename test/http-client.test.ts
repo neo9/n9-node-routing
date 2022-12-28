@@ -8,13 +8,14 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting, { N9HttpClient } from '../src';
-import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
+import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
+import { end } from './fixtures/helper';
 
 const print = commons.print;
 
 ava('Call a route with HttpClient', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		hasProxy: true, // tell N9NodeRouting to parse `session` header
 		http: {
 			port: 6001,
@@ -134,11 +135,7 @@ ava('Call a route with HttpClient', async (t: Assertions) => {
 	});
 	t.is(responseContent, JSON.stringify({ response: 'pong' }), 'response is pong');
 
-	// Clear stdout
-	stdMock.restore();
-	stdMock.flush();
-	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Check retries of HttpClient', async (t: Assertions) => {
@@ -170,7 +167,7 @@ ava('Check retries of HttpClient', async (t: Assertions) => {
 
 ava('Check retries of HttpClient against error controller', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		hasProxy: true, // tell N9NodeRouting to parse `session` header
 		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
 		http: {
@@ -208,12 +205,12 @@ ava('Check retries of HttpClient against error controller', async (t: Assertions
 		stderr[stderr.length - 1].includes(`Error on [get http://localhost:6001/503]`),
 		`Fail is also logged by client`,
 	);
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Use HttpClient base options', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		hasProxy: true, // tell N9NodeRouting to parse `session` header
 		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
 		http: {
@@ -229,12 +226,12 @@ ava('Use HttpClient base options', async (t: Assertions) => {
 	});
 	const rep = await httpClient.get<{ ok: boolean }>('http://localhost:6001/requires-header');
 	t.deepEqual(rep, { ok: true }, 'ok expected');
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Use HttpClient with multiple queryParams', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		hasProxy: true, // tell N9NodeRouting to parse `session` header
 		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
 		http: {
@@ -254,12 +251,12 @@ ava('Use HttpClient with multiple queryParams', async (t: Assertions) => {
 	});
 	t.deepEqual(rep, { ids: ['1'] }, 'array with 1 value expected');
 
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Use HttpClient to call route with response 204', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		hasProxy: true, // tell N9NodeRouting to parse `session` header
 		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
 		http: {
@@ -272,12 +269,12 @@ ava('Use HttpClient to call route with response 204', async (t: Assertions) => {
 	const rep = await httpClient.get<object>('http://localhost:6001/empty-response');
 	t.is(rep, undefined, 'response is undefined');
 
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Use HttpClient to upload a file', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		hasProxy: true, // tell N9NodeRouting to parse `session` header
 		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
 		http: {
@@ -317,12 +314,12 @@ ava('Use HttpClient to upload a file', async (t: Assertions) => {
 	});
 	t.is(rep, undefined, 'response is undefined');
 
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Use HttpClient to call route with numeric error code', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		hasProxy: true, // tell N9NodeRouting to parse `session` header
 		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
 		http: {
@@ -338,5 +335,5 @@ ava('Use HttpClient to call route with numeric error code', async (t: Assertions
 	);
 	t.is(error.message, '500', 'error code is not numerical');
 
-	await closeServer(server);
+	await end(server, prometheusServer);
 });

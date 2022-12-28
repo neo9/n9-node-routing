@@ -4,14 +4,15 @@ import { join } from 'path';
 import * as stdMock from 'std-mocks';
 
 import src, { N9NodeRouting } from '../src';
-import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
+import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
+import { end } from './fixtures/helper';
 
 const microValidate = join(__dirname, 'fixtures/micro-validate/');
 
 ava('Check allowUnkown', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 
-	const { server }: N9NodeRouting.ReturnObject = await src({
+	const { server, prometheusServer }: N9NodeRouting.ReturnObject = await src({
 		path: microValidate,
 		http: { port: 5585 },
 		conf: defaultNodeRoutingConfOptions,
@@ -44,17 +45,15 @@ ava('Check allowUnkown', async (t: Assertions) => {
 		},
 	);
 	t.true(res.ok);
-	// Check logs
-	stdMock.restore();
-	stdMock.flush();
+
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Check date parsing', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 
-	const { server } = await src({
+	const { server, prometheusServer } = await src({
 		path: microValidate,
 		http: { port: 5585 },
 		conf: defaultNodeRoutingConfOptions,
@@ -96,9 +95,6 @@ ava('Check date parsing', async (t: Assertions) => {
 	});
 	t.deepEqual(res, { ok: true });
 
-	// Check logs
-	stdMock.restore();
-	stdMock.flush();
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });

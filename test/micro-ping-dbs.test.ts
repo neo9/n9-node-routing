@@ -7,7 +7,8 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
+import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
+import { end } from './fixtures/helper';
 
 const print = commons.print;
 
@@ -16,9 +17,11 @@ ava.beforeEach(() => {
 	register.clear(); // clear prometheus register
 });
 
-for (const prometheusOption of [{}, undefined]) {
+for (const prometheusOption of [{}, undefined, { isEnabled: false }, { isEnabled: true }]) {
 	ava(
-		`Call ping with api connected to mongodb ${prometheusOption ? 'with' : 'without'} prometheus`,
+		`Call ping with api connected to mongodb, prometheus options : ${JSON.stringify(
+			prometheusOption,
+		)}`,
 		async (t: Assertions) => {
 			stdMock.use({ print });
 
@@ -56,15 +59,14 @@ for (const prometheusOption of [{}, undefined]) {
 				'db not reachable',
 			);
 
-			await closeServer(server);
-			if (prometheusServer) {
-				await closeServer(prometheusServer);
-			}
+			await end(server, prometheusServer);
 		},
 	);
 
 	ava(
-		`Call ping with api connected to 2 mongodb ${prometheusOption ? 'with' : 'without'} prometheus`,
+		`Call ping with api connected to 2 mongodb, prometheus options : ${JSON.stringify(
+			prometheusOption,
+		)}`,
 		async (t: Assertions) => {
 			stdMock.use({ print });
 
@@ -125,10 +127,7 @@ for (const prometheusOption of [{}, undefined]) {
 			);
 
 			// Close server
-			await closeServer(server);
-			if (prometheusServer) {
-				await closeServer(prometheusServer);
-			}
+			await end(server, prometheusServer);
 		},
 	);
 }

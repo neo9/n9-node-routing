@@ -46,6 +46,7 @@ export class ValidateController {
 - `/ping` response is now an object : `{ response: 'pong' }`
 - `/` response is now an object: `{ name: 'myApi' }`
 - `/version' response is now an object : `{ version: '1.2.3' }`
+- Prometheus metrics are enabled by default. To disable them use `n9NodeRoutingOptions.prometheus.isEnabled: false`
 
 ## Features
 

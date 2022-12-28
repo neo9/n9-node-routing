@@ -7,8 +7,8 @@ import N9NodeRouting from '../src';
 import { Conf as InvalidConf } from './fixtures/common-conf-validation/configuration-invalid/conf/index.models';
 import { Conf as ValidConf } from './fixtures/common-conf-validation/configuration-valid/conf/index.models';
 import { Conf as ValidConfWithWhitelistErrors } from './fixtures/common-conf-validation/configuration-valid-with-additional-attributes/conf/index.models';
-import commons, { closeServer } from './fixtures/commons';
-import { getLogsFromFile } from './fixtures/helper';
+import commons from './fixtures/commons';
+import { end, getLogsFromFile } from './fixtures/helper';
 
 const microConfValidation = join(__dirname, 'fixtures/common-conf-validation/');
 
@@ -22,7 +22,7 @@ ava('Should be a valid configuration', async (t: Assertions) => {
 	const file = await tmp.file();
 	const microPath = `${microConfValidation}/configuration-valid`;
 
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microPath,
 		logOptions: { developmentOutputFilePath: file.path },
 		conf: {
@@ -44,7 +44,8 @@ ava('Should be a valid configuration', async (t: Assertions) => {
 	t.true(output[5].includes('Listening on port'), 'Should listen on port');
 	t.true(output.length === 7, 'Should have 5 lines of logs');
 
-	await closeServer(server);
+	// Close server	// Close server
+	await end(server, prometheusServer);
 });
 
 ava('Should not be a valid configuration (not formatted)', async (t: Assertions) => {
@@ -241,7 +242,7 @@ ava('Should be a valid configuration with whitelist errors (formatted)', async (
 	const file = await tmp.file();
 	const microPath = `${microConfValidation}/configuration-valid-with-additional-attributes`;
 
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microPath,
 		logOptions: { developmentOutputFilePath: file.path },
 		conf: {
@@ -275,7 +276,8 @@ ava('Should be a valid configuration with whitelist errors (formatted)', async (
 	t.true(output[8].includes('Configuration is valid'), 'Should be a valid configuration');
 	t.true(output[9].includes('Listening on port'), 'Should listen on port');
 
-	await closeServer(server);
+	await end(server, prometheusServer); // Close server
+	await end(server, prometheusServer);
 });
 
 ava(
@@ -285,7 +287,7 @@ ava(
 		const file = await tmp.file();
 		const microPath = `${microConfValidation}/configuration-valid-with-additional-attributes`;
 
-		const { server } = await N9NodeRouting({
+		const { server, prometheusServer } = await N9NodeRouting({
 			path: microPath,
 			logOptions: { developmentOutputFilePath: file.path },
 			conf: {
@@ -321,7 +323,8 @@ ava(
 		t.true(output[5].includes('Configuration is valid'), 'Should be a valid configuration');
 		t.true(output[6].includes('Listening on port'), 'Should listen on port');
 
-		await closeServer(server);
+		// Close server
+		await end(server, prometheusServer);
 	},
 );
 
@@ -330,7 +333,7 @@ ava('Should not show exclude properties on whitelist errors (formatted)', async 
 	const file = await tmp.file();
 	const microPath = `${microConfValidation}/configuration-valid-with-additional-attributes`;
 
-	const { server, conf } = await N9NodeRouting({
+	const { server, prometheusServer, conf } = await N9NodeRouting({
 		path: microPath,
 		logOptions: { developmentOutputFilePath: file.path },
 		conf: {
@@ -394,7 +397,8 @@ ava('Should not show exclude properties on whitelist errors (formatted)', async 
 		`Secret uri not an URI is completely hidden to avoid error`,
 	);
 
-	await closeServer(server);
+	// Close server
+	await end(server, prometheusServer);
 });
 
 ava(
@@ -404,7 +408,7 @@ ava(
 		const file = await tmp.file();
 		const microPath = `${microConfValidation}/configuration-valid-with-additional-attributes`;
 
-		const { server } = await N9NodeRouting({
+		const { server, prometheusServer } = await N9NodeRouting({
 			path: microPath,
 			logOptions: { developmentOutputFilePath: file.path },
 			conf: {
@@ -426,7 +430,8 @@ ava(
 			'Should not show secretPassword in logs',
 		);
 
-		await closeServer(server);
+		// Close server
+		await end(server, prometheusServer);
 	},
 );
 
@@ -435,7 +440,7 @@ ava('Should not proceed any validation - no validation options given', async (t:
 	const file = await tmp.file();
 	const microPath = `${microConfValidation}/configuration-invalid`;
 
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microPath,
 		logOptions: { developmentOutputFilePath: file.path },
 		conf: {
@@ -453,7 +458,8 @@ ava('Should not proceed any validation - no validation options given', async (t:
 	);
 	t.true(output[4].includes('Listening on port'), 'Should listen on port');
 
-	await closeServer(server);
+	// Close server
+	await end(server, prometheusServer);
 });
 
 ava('Should not proceed any validation - validation is disabled', async (t: Assertions) => {
@@ -461,7 +467,7 @@ ava('Should not proceed any validation - validation is disabled', async (t: Asse
 	const file = await tmp.file();
 	const microPath = `${microConfValidation}/configuration-invalid`;
 
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microPath,
 		logOptions: { developmentOutputFilePath: file.path },
 		conf: {
@@ -483,7 +489,8 @@ ava('Should not proceed any validation - validation is disabled', async (t: Asse
 	);
 	t.true(output[4].includes('Listening on port'), 'Should listen on port');
 
-	await closeServer(server);
+	// Close server
+	await end(server, prometheusServer);
 });
 
 ava(
@@ -493,7 +500,7 @@ ava(
 		const file = await tmp.file();
 		const microPath = `${microConfValidation}/configuration-invalid`;
 
-		const { server } = await N9NodeRouting({
+		const { server, prometheusServer } = await N9NodeRouting({
 			path: microPath,
 			logOptions: { developmentOutputFilePath: file.path },
 			conf: {
@@ -527,7 +534,8 @@ ava(
 		);
 		t.true(output[4].includes('Listening on port'), 'Should listen on port');
 
-		await closeServer(server);
+		// Close server
+		await end(server, prometheusServer);
 	},
 );
 

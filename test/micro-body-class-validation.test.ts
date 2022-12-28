@@ -12,7 +12,7 @@ import {
 const microUsersFolder = 'micro-body-class-validation';
 
 ava('[USERS] POST /users => 400 with wrong params', async (t: Assertions) => {
-	const { server, httpClient } = await init(microUsersFolder, false, {
+	const { prometheusServer, server, httpClient } = await init(microUsersFolder, false, {
 		enableLogFormatJSON: false,
 	});
 	const errorThrown = await t.throwsAsync<N9Error>(
@@ -44,5 +44,5 @@ ava('[USERS] POST /users => 400 with wrong params', async (t: Assertions) => {
 		'body error is on anArray',
 	);
 
-	await end(server);
+	await end(server, prometheusServer);
 });

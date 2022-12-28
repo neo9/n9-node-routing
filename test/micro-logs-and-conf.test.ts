@@ -6,8 +6,8 @@ import * as tmp from 'tmp-promise';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
-import { getLogsFromFile } from './fixtures/helper';
+import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
+import { end, getLogsFromFile } from './fixtures/helper';
 
 const microLogs = join(__dirname, 'fixtures/micro-logs/');
 const print = commons.print;
@@ -18,7 +18,7 @@ ava('Basic usage, check logs', async (t: Assertions) => {
 		someConfAttr: 'value',
 	};
 
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microLogs,
 		enableLogFormatJSON: false,
 		logOptions: { developmentOutputFilePath: file.path },
@@ -51,7 +51,7 @@ ava('Basic usage, check logs', async (t: Assertions) => {
 	t.true(output[10].includes('GET /bar'));
 	t.deepEqual(res, (global as any).conf, 'body response is conf');
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Basic usage, check logs with empty response', async (t: Assertions) => {
@@ -63,7 +63,7 @@ ava('Basic usage, check logs with empty response', async (t: Assertions) => {
 		someConfAttr: 'value',
 	};
 
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		http: {
 			port: 5002,
 		},
@@ -87,7 +87,7 @@ ava('Basic usage, check logs with empty response', async (t: Assertions) => {
 	t.true(output[8].includes('GET /empty'), 'GET /empty');
 
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 	process.env.NODE_ENV = oldNodeEnv;
 });
 
@@ -97,7 +97,7 @@ ava('JSON output', async (t: Assertions) => {
 		someConfAttr: 'value',
 	};
 
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microLogs,
 		enableLogFormatJSON: true,
 		conf: defaultNodeRoutingConfOptions,
@@ -125,5 +125,5 @@ ava('JSON output', async (t: Assertions) => {
 	);
 
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });

@@ -9,7 +9,7 @@ const microUsersFolder = 'micro-users';
 const context: { user?: User; session?: string } = {};
 
 ava('[USERS] POST /users => 200 with good params', async (t: Assertions) => {
-	const { server, httpClient } = await init(microUsersFolder);
+	const { prometheusServer, server, httpClient } = await init(microUsersFolder);
 	const userCreated = await httpClient.post<User>([urlPrefix, 'users'], {
 		firstName: 'Neo',
 		lastName: 'Nine',
@@ -26,11 +26,11 @@ ava('[USERS] POST /users => 200 with good params', async (t: Assertions) => {
 	context.session = JSON.stringify({
 		userId: userCreated._id,
 	});
-	await end(server);
+	await end(server, prometheusServer);
 });
 
 ava('[USERS] POST /users => 400 with wrong params', async (t: Assertions) => {
-	const { server, httpClient } = await init(microUsersFolder);
+	const { server, prometheusServer, httpClient } = await init(microUsersFolder);
 	const errorThrown = await t.throwsAsync<N9Error>(
 		async () =>
 			await httpClient.post([urlPrefix, 'users'], {
@@ -42,11 +42,11 @@ ava('[USERS] POST /users => 400 with wrong params', async (t: Assertions) => {
 	t.is(errorThrown.status, 400, 'validate wrong => 400');
 	t.is(errorThrown.message, 'BadRequestError', 'body code : BadRequestError');
 
-	await end(server);
+	await end(server, prometheusServer);
 });
 
 ava('[USERS] POST /users => 409 with user already exists', async (t: Assertions) => {
-	const { server, httpClient } = await init(microUsersFolder);
+	const { prometheusServer, server, httpClient } = await init(microUsersFolder);
 	const errorThrown = await t.throwsAsync<N9Error>(
 		async () =>
 			await httpClient.post([urlPrefix, 'users'], {
@@ -59,14 +59,14 @@ ava('[USERS] POST /users => 409 with user already exists', async (t: Assertions)
 	t.is(errorThrown.status, 409);
 	t.is(errorThrown.message, 'user-already-exists');
 
-	await end(server);
+	await end(server, prometheusServer);
 });
 
 /*
  ** modules/users/
  */
 ava('[USERS] GET /users/:id => 404 with user not found', async (t: Assertions) => {
-	const { server, httpClient } = await init(microUsersFolder);
+	const { server, prometheusServer, httpClient } = await init(microUsersFolder);
 
 	const headers = { session: JSON.stringify({ userId: context.user._id }) };
 	const errorThrown = await t.throwsAsync<N9Error>(
@@ -75,11 +75,11 @@ ava('[USERS] GET /users/:id => 404 with user not found', async (t: Assertions) =
 	t.is(errorThrown.status, 404);
 	t.is(errorThrown.message, 'user-not-found');
 
-	await end(server);
+	await end(server, prometheusServer);
 });
 
 ava('[USERS] GET /users/:id => 200 with user found', async (t: Assertions) => {
-	const { server, httpClient } = await init(microUsersFolder);
+	const { server, prometheusServer, httpClient } = await init(microUsersFolder);
 
 	const headers = { session: context.session };
 	const userFetched = await httpClient.get<User>(
@@ -89,5 +89,5 @@ ava('[USERS] GET /users/:id => 200 with user found', async (t: Assertions) => {
 	);
 	t.is(userFetched.email, context.user.email);
 
-	await end(server);
+	await end(server, prometheusServer);
 });

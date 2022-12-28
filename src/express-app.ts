@@ -48,7 +48,7 @@ export async function init<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>
 	};
 	const onListening = (): void => {
 		options.log.info(`Listening on port ${options.http.port}`);
-		if (options.prometheus) {
+		if (options.prometheus.isEnabled) {
 			signalIsUp();
 		}
 	};
@@ -87,7 +87,7 @@ export async function init<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>
 	// Middleware
 	expressApp.use(setRequestContext);
 	expressApp.use(helmet());
-	if (options.prometheus) {
+	if (options.prometheus.isEnabled) {
 		expressApp.use(
 			createMiddleware({
 				options: {

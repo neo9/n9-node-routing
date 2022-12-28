@@ -159,7 +159,7 @@ function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 			options.http.routingController.interceptors.push(SentryTracingInterceptor);
 		}
 	}
-	if (options.prometheus) {
+	if (options.prometheus.isEnabled) {
 		options.http.routingController.interceptors.push(PrometheusInterceptor);
 	}
 	options.http.routingController.authorizationChecker = async (
@@ -191,9 +191,12 @@ function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 	}
 }
 
+// Prometheus metrics
 function applyPrometheusOptionsDefault(options: N9NodeRouting.Options): void {
-	// Prometheus metrics
-	if (options.prometheus) {
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-boolean-literal-compare
+	if (options.prometheus?.isEnabled !== false) {
+		options.prometheus = options.prometheus || {};
+		options.prometheus.isEnabled = true;
 		options.prometheus.port =
 			typeof options.prometheus.port === 'number' ? options.prometheus.port : 9101;
 		options.prometheus.accuracies = options.prometheus.accuracies || ['s'];

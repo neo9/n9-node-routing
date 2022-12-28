@@ -17,8 +17,6 @@ export const closeServer = async (server: Server): Promise<Error> => {
 	});
 };
 
-export const fixturesDirname: string = __dirname;
-
 export const defaultNodeRoutingConfOptions: N9NodeRouting.ConfOptions = {
 	n9NodeConf: {
 		path: join(__dirname, 'common-conf-validation/configuration-valid/conf'),
@@ -26,6 +24,5 @@ export const defaultNodeRoutingConfOptions: N9NodeRouting.ConfOptions = {
 };
 
 export const nodeRoutingMinimalOptions: N9NodeRouting.Options = {
-	path: fixturesDirname,
 	conf: defaultNodeRoutingConfOptions,
 };

@@ -10,8 +10,9 @@ const context: any = {};
  ** Start API
  */
 ava.before('Start API', async () => {
-	const { server } = await init('micro-users2', true);
+	const { server, prometheusServer } = await init('micro-users2', true);
 	context.server = server;
+	context.prometheusServer = prometheusServer;
 });
 
 ava('POST /users => 200 with good params', async (t: ExecutionContext) => {
@@ -106,5 +107,5 @@ ava('GET /users => 400 with page size too big', async (t: ExecutionContext) => {
  ** Stop API
  */
 ava.after('Stop server', async () => {
-	await end(context.server);
+	await end(context.server, context.prometheusServer);
 });

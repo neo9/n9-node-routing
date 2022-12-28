@@ -20,7 +20,7 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	(global as any).conf = {
 		name: 'my-awesome-app',
 	};
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: appPath,
 		http: {
 			port: 5000,
@@ -96,6 +96,48 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 
 	await cancelableRequest;
 
+	// Check logs
+	stdMock.restore();
+
+	// Close server
+	await closeServer(server);
+	await closeServer(prometheusServer);
+});
+
+ava('Disable prometheus', async (t: Assertions) => {
+	stdMock.use({ print });
+	(global as any).conf = {
+		name: 'my-awesome-app',
+	};
+	const { server, prometheusServer } = await N9NodeRouting({
+		path: appPath,
+		http: {
+			port: 5000,
+		},
+		prometheus: {
+			port: 5002,
+			isEnabled: false,
+		},
+		enableLogFormatJSON: false,
+		shutdown: {
+			waitDurationBeforeStop: 5,
+		},
+		conf: defaultNodeRoutingConfOptions,
+	});
+	t.is(prometheusServer, undefined, 'should not create prometheus server');
+
+	const res = await got('http://127.0.0.1:5000/sample-route');
+	t.is(res.statusCode, 204);
+	t.is(res.body, '');
+
+	// Check /foo route added on foo/foo.init.ts
+	await t.throwsAsync(
+		commons.jsonHttpClient.get('http://127.0.0.1:5002/'),
+		{
+			message: 'ECONNREFUSED',
+		},
+		'Prometheus server should not be started',
+	);
 	// Check logs
 	stdMock.restore();
 

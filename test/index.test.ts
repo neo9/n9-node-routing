@@ -11,7 +11,7 @@ import commons, {
 	defaultNodeRoutingConfOptions,
 	nodeRoutingMinimalOptions,
 } from './fixtures/commons';
-import { getLogsFromFile } from './fixtures/helper';
+import { end, getLogsFromFile } from './fixtures/helper';
 
 const print = commons.print;
 
@@ -24,6 +24,9 @@ ava('Works with custom port', async (t: Assertions) => {
 	const { server } = await N9NodeRouting({
 		http: { port: 4002 },
 		conf: defaultNodeRoutingConfOptions,
+		prometheus: {
+			isEnabled: false,
+		},
 	});
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
@@ -34,9 +37,12 @@ ava('Works with custom port', async (t: Assertions) => {
 
 ava('Works with preventListen = true', async (t: Assertions) => {
 	stdMock.use({ print });
-	await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		http: { port: 4002, preventListen: true },
 		conf: defaultNodeRoutingConfOptions,
+		prometheus: {
+			isEnabled: false,
+		},
 	});
 	stdMock.restore();
 	const output = stdMock.flush();
@@ -44,6 +50,8 @@ ava('Works with preventListen = true', async (t: Assertions) => {
 	t.is(output.stderr.length, 0);
 	const err = await t.throwsAsync(async () => got('http://localhost:4200'));
 	t.is(err.name, 'RequestError');
+	// Close server
+	await end(server, prometheusServer);
 });
 
 ava('Should keep the custom logger and listening on port 5000', async (t: Assertions) => {
@@ -53,7 +61,13 @@ ava('Should keep the custom logger and listening on port 5000', async (t: Assert
 
 	stdMock.use({ print });
 	const log = n9NodeLog('custom', { developmentOutputFilePath: file.path });
-	const { server } = await N9NodeRouting({ log, conf: defaultNodeRoutingConfOptions });
+	const { server, prometheusServer } = await N9NodeRouting({
+		log,
+		conf: defaultNodeRoutingConfOptions,
+		prometheus: {
+			isEnabled: false,
+		},
+	});
 	stdMock.restore();
 
 	const output = stdMock.flush();
@@ -61,7 +75,7 @@ ava('Should keep the custom logger and listening on port 5000', async (t: Assert
 	t.true(output.stdout[4].includes('"label":"custom"'));
 
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 	process.env.NODE_ENV = oldNodeEnv;
 });
 
@@ -72,6 +86,9 @@ ava('Works without options (except conf for tests)', async (t: Assertions) => {
 	const { server } = await N9NodeRouting({
 		logOptions: { developmentOutputFilePath: file.path },
 		conf: defaultNodeRoutingConfOptions,
+		prometheus: {
+			isEnabled: false,
+		},
 	});
 	const output = await getLogsFromFile(file.path);
 	t.true(
@@ -88,7 +105,12 @@ ava('Works without options in production (except conf for test purpose)', async 
 	stdMock.use({ print });
 	const oldNodeEnv = process.env.NODE_ENV;
 	process.env.NODE_ENV = 'production';
-	const { server } = await N9NodeRouting({ conf: defaultNodeRoutingConfOptions });
+	const { server } = await N9NodeRouting({
+		conf: defaultNodeRoutingConfOptions,
+		prometheus: {
+			isEnabled: false,
+		},
+	});
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	const line2 = JSON.parse(output[4]);
@@ -107,18 +129,18 @@ ava('Works without options in production (except conf for test purpose)', async 
 
 ava('Get app name on /', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting(nodeRoutingMinimalOptions);
+	const { server, prometheusServer } = await N9NodeRouting(nodeRoutingMinimalOptions);
 	// OK if no error thrown
 	await t.notThrowsAsync(async () => await got('http://localhost:5000/'));
 	stdMock.restore();
 	stdMock.flush();
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Should not log the requests http.logLevel=false', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		http: { logLevel: false },
 		conf: defaultNodeRoutingConfOptions,
 	});
@@ -129,12 +151,12 @@ ava('Should not log the requests http.logLevel=false', async (t: Assertions) => 
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	t.is(output.length, 6);
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Should log the requests with custom level', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		http: { logLevel: ':status :url' },
 		conf: defaultNodeRoutingConfOptions,
 	});
@@ -148,7 +170,7 @@ ava('Should log the requests with custom level', async (t: Assertions) => {
 	t.true(output[7].includes('200 /ping'), 'ping');
 	t.true(output[8].includes('200 /routes'), 'routes');
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Fails with PORT without access', async (t: Assertions) => {
@@ -163,21 +185,41 @@ ava('Fails with PORT without access', async (t: Assertions) => {
 
 ava('Fails with PORT already used', async (t: Assertions) => {
 	stdMock.use({ print });
-	await N9NodeRouting({ http: { port: 6000 }, conf: defaultNodeRoutingConfOptions });
+	const { server, prometheusServer } = await N9NodeRouting({
+		http: { port: 6000 },
+		prometheus: {
+			isEnabled: false,
+		},
+		conf: defaultNodeRoutingConfOptions,
+	});
 	const err = await t.throwsAsync(async () => {
-		await N9NodeRouting({ http: { port: 6000 }, conf: defaultNodeRoutingConfOptions });
+		await N9NodeRouting({
+			http: { port: 6000 },
+			conf: defaultNodeRoutingConfOptions,
+			prometheus: {
+				isEnabled: false,
+			},
+		});
 	});
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	t.true(output[4].includes('Listening on port 6000'));
 	t.true(err.message.includes('Port 6000 is already in use'));
+	// Close server
+	await end(server, prometheusServer);
 });
 
 ava('Fails with PORT not in common range', async (t: Assertions) => {
 	stdMock.use({ print });
 
 	const err = await t.throwsAsync(async () => {
-		await N9NodeRouting({ http: { port: 10000000 }, conf: defaultNodeRoutingConfOptions });
+		await N9NodeRouting({
+			http: { port: 10000000 },
+			conf: defaultNodeRoutingConfOptions,
+			prometheus: {
+				isEnabled: false,
+			},
+		});
 	});
 	t.true(err.message.includes('ort should be'));
 	stdMock.restore();

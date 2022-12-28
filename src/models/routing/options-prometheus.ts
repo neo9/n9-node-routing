@@ -1,7 +1,11 @@
-import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Request, Response } from 'express';
 
 export class PrometheusOptions {
+	@IsOptional()
+	@IsBoolean()
+	isEnabled?: boolean;
+
 	@IsOptional()
 	@IsNumber()
 	port?: number;

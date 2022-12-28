@@ -6,11 +6,12 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import n9NodeRouting, { N9NodeRouting } from '../src';
-import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
+import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
+import { end } from './fixtures/helper';
 
 async function init(
 	options?: Partial<N9NodeRouting.Options>,
-): Promise<{ app: Express; server: Server }> {
+): Promise<{ app: Express; server: Server; prometheusServer: Server }> {
 	stdMock.use({ print: commons.print });
 	const microLifecycleHooks = join(__dirname, 'fixtures/micro-lifecycle-hooks/');
 	return await n9NodeRouting({
@@ -21,7 +22,7 @@ async function init(
 }
 
 ava('[Lifecycle Hooks] init and started hooks called', async (t: Assertions) => {
-	const { server } = await init();
+	const { server, prometheusServer } = await init();
 
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
@@ -34,11 +35,11 @@ ava('[Lifecycle Hooks] init and started hooks called', async (t: Assertions) => 
 	t.true(output[8].includes('feature started'), 'feature started');
 
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('[Lifecycle Hooks] init in order', async (t: Assertions) => {
-	const { server } = await init({
+	const { server, prometheusServer } = await init({
 		path: join(__dirname, 'fixtures/micro-lifecycle-hooks-order/'),
 		firstSequentialInitFileNames: ['test-1', 'test-2'],
 		firstSequentialStartFileNames: ['test-1', 'test-2'],
@@ -56,5 +57,5 @@ ava('[Lifecycle Hooks] init in order', async (t: Assertions) => {
 	t.true(output[10].includes('feature started 2'), 'feature started 2');
 
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });

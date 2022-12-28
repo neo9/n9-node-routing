@@ -5,11 +5,12 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting, { N9HttpClient } from '../src';
-import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
+import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
+import { end } from './fixtures/helper';
 
 ava('Check if the hooks are called', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		hasProxy: true, // tell N9NodeRouting to parse `session` header
 		http: {
 			port: 6001,
@@ -36,18 +37,15 @@ ava('Check if the hooks are called', async (t: Assertions) => {
 	const rep = await commons.jsonHttpClient.get<{ response: string }>('http://localhost:6001/ping');
 	t.deepEqual(rep, { response: 'pong' });
 
-	// Clear stdout
-	stdMock.restore();
-	stdMock.flush();
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava(
 	'Add custom route in beforeRoutingControllerLaunchHook (imagine a proxy)',
 	async (t: Assertions) => {
 		stdMock.use({ print: commons.print });
-		const { server } = await N9NodeRouting({
+		const { server, prometheusServer } = await N9NodeRouting({
 			hasProxy: true, // tell n9NodeRouting to parse `session` header
 			http: {
 				port: 6001,
@@ -70,10 +68,7 @@ ava(
 		const rep = await httpClient.get<any>('http://localhost:6001/custom-endpoint');
 		t.deepEqual(rep, { response: 1 }, 'Endpoint should respond some data');
 
-		// Clear stdout
-		stdMock.restore();
-		stdMock.flush();
 		// Close server
-		await closeServer(server);
+		await end(server, prometheusServer);
 	},
 );

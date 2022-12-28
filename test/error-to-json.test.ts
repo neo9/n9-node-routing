@@ -4,12 +4,13 @@ import * as stdMock from 'std-mocks';
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
 import commons, { nodeRoutingMinimalOptions } from './fixtures/commons';
+import { end } from './fixtures/helper';
 
 const print = commons.print;
 
 ava('Error to json', async (t: Assertions) => {
 	stdMock.use({ print });
-	await N9NodeRouting(nodeRoutingMinimalOptions);
+	const { server, prometheusServer } = await N9NodeRouting(nodeRoutingMinimalOptions);
 
 	const text = 'message-error-text';
 	const e = Error(text);
@@ -21,4 +22,5 @@ ava('Error to json', async (t: Assertions) => {
 		stack: 'Error: message-error-text',
 	}).substring(0, -2);
 	t.true(eAsJSON.startsWith(expectedStart), ` \n${eAsJSON} \n ${expectedStart}`);
+	await end(server, prometheusServer);
 });

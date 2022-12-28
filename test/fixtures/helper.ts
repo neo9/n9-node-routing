@@ -6,6 +6,7 @@ import * as fs from 'fs-extra';
 import { Server } from 'http';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { join } from 'path';
+import { register } from 'prom-client';
 import * as stdMock from 'std-mocks';
 import { Container } from 'typedi';
 
@@ -17,13 +18,15 @@ export async function init(
 	folder: string,
 	startMongoDB: boolean = false,
 	options?: N9NodeRouting.Options,
-): Promise<{ app: Express; server: Server; httpClient: N9HttpClient }> {
+): Promise<{ app: Express; server: Server; prometheusServer: Server; httpClient: N9HttpClient }> {
 	stdMock.use({ print: commons.print });
 	const microUsers = join(__dirname, `${folder}/`);
 	(global as any).log = new N9Log('test');
 
 	// Set env to 'test'
 	process.env.NODE_ENV = 'test';
+	// Clear all prometheus metrics registered
+	register.clear();
 
 	if (startMongoDB) {
 		const mongodServer = new MongoMemoryServer({
@@ -40,22 +43,24 @@ export async function init(
 		delete (global as any).db;
 	}
 
-	const { app, server } = await n9NodeRouting({
+	const { app, server, prometheusServer } = await n9NodeRouting({
 		path: microUsers,
 		conf: defaultNodeRoutingConfOptions,
 		...options,
 	});
 	const httpClient = new N9HttpClient((global as any).log);
-	return { app, server, httpClient };
+	return { app, server, prometheusServer, httpClient };
 }
 
 export const urlPrefix = 'http://localhost:5000';
 
-export async function end(server: Server): Promise<void> {
+export async function end(server: Server, prometheusServer?: Server): Promise<void> {
 	stdMock.restore();
 	stdMock.flush();
+	register.clear();
 	// Close server
 	await closeServer(server);
+	if (prometheusServer) await closeServer(prometheusServer);
 }
 
 function getHttpClient(responseType: 'text' | 'json'): N9HttpClient {

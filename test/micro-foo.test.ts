@@ -6,8 +6,8 @@ import * as tmp from 'tmp-promise';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
-import { getLogsFromFile, parseJSONLogAndRemoveTime } from './fixtures/helper';
+import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
+import { end, getLogsFromFile, parseJSONLogAndRemoveTime } from './fixtures/helper';
 
 const print = commons.print;
 
@@ -21,7 +21,7 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	const oldNodeEnv = process.env.NODE_ENV;
 	process.env.NODE_ENV = 'development';
 	const file = await tmp.file();
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microFoo,
 		logOptions: { developmentOutputFilePath: file.path },
 		conf: defaultNodeRoutingConfOptions,
@@ -81,14 +81,14 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	t.true(output[output.length - 1].includes('GET /404'), `GET /404 ${output[output.length - 1]}`);
 
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 	process.env.NODE_ENV = oldNodeEnv;
 });
 
 ava('Basic usage, create http server on production', async (t: Assertions) => {
 	stdMock.use({ print });
 	process.env.NODE_ENV = 'production';
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microFoo,
 		conf: defaultNodeRoutingConfOptions,
 	});
@@ -145,13 +145,13 @@ ava('Basic usage, create http server on production', async (t: Assertions) => {
 	t.true(output[13].includes(',"path":"/404","status":"404","durationMs":'), 'path /404');
 
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 	delete process.env.NODE_ENV;
 });
 
 ava('Check /routes', async (t) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microFoo,
 		http: { port: 5575 },
 		conf: defaultNodeRoutingConfOptions,
@@ -167,16 +167,13 @@ ava('Check /routes', async (t) => {
 	t.is(route1.path, '/foo');
 	t.is(route1.acl.perms[0].action, 'readFoo');
 
-	// Check logs
-	stdMock.restore();
-	stdMock.flush();
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Call routes (versionning)', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microFoo,
 		http: { port: 5559 },
 		conf: defaultNodeRoutingConfOptions,
@@ -211,12 +208,12 @@ ava('Call routes (versionning)', async (t: Assertions) => {
 	const output = stdMock.flush();
 	t.true(output.stderr.join(' ').includes('bar-extendable-error'), 'bar-extendable-error');
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Call routes with error in development (error key)', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microFoo,
 		http: { port: 5587 },
 		conf: defaultNodeRoutingConfOptions,
@@ -238,13 +235,13 @@ ava('Call routes with error in development (error key)', async (t: Assertions) =
 	stdMock.restore();
 	stdMock.flush();
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Call routes with error in production (no leak)', async (t: Assertions) => {
 	process.env.NODE_ENV = 'production';
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microFoo,
 		http: { port: 5587 },
 		conf: defaultNodeRoutingConfOptions,
@@ -323,6 +320,6 @@ ava('Call routes with error in production (no leak)', async (t: Assertions) => {
 	const output = stdMock.flush();
 	t.true(output.stderr.join(' ').includes('bar-extendable-error'), 'bar-extendable-error');
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 	delete process.env.NODE_ENV;
 });

@@ -13,8 +13,9 @@ const context: any = {};
  ** Start API
  */
 ava.before('Start API', async () => {
-	const { server } = await init('micro-query-params', true);
+	const { server, prometheusServer } = await init('micro-query-params', true);
 	context.server = server;
+	context.prometheusServer = prometheusServer;
 });
 
 ava('GET /test/ => 200 with good params', async (t: ExecutionContext) => {
@@ -67,5 +68,5 @@ ava('GET /test/ => 200 with good params', async (t: ExecutionContext) => {
  ** Stop API
  */
 ava.after('Stop server', async () => {
-	await end(context.server);
+	await end(context.server, context.prometheusServer);
 });

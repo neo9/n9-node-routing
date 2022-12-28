@@ -45,14 +45,14 @@ export function init(
 				if (!(await db.isConnected.bind(db.thisArg || this)())) {
 					(global as any).log.error(`[PING] Can't connect to ${db.name}`);
 					res.status(500).json(new N9Error(`db-${db.name}-unreachable`, 500));
-					if (options.prometheus) {
+					if (options.prometheus.isEnabled) {
 						signalIsNotUp();
 					}
 					next();
 					return;
 				}
 			}
-			if (options.prometheus) {
+			if (options.prometheus.isEnabled) {
 				signalIsUp();
 			}
 			res.status(200).json({ response: `pong-dbs-${options.http.ping.dbs.length}` });
@@ -61,12 +61,12 @@ export function init(
 				if ((global as any).log?.error) {
 					(global as any).log.error(`[PING] Can't connect to MongoDB`);
 				}
-				if (options.prometheus) {
+				if (options.prometheus.isEnabled) {
 					signalIsNotUp();
 				}
 				res.status(500).json(new N9Error('db-unreachable', 500));
 			} else {
-				if (options.prometheus) {
+				if (options.prometheus.isEnabled) {
 					signalIsUp();
 				}
 				res.status(200).json({ response: 'pong-db' });

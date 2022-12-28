@@ -12,7 +12,7 @@ ava.beforeEach(() => {
 
 ava('Init sentry and send error event', async (t: Assertions) => {
 	const eventsSent: Sentry.Event[] = [];
-	const { server, httpClient } = await init('micro-sentry', false, {
+	const { server, prometheusServer, httpClient } = await init('micro-sentry', false, {
 		sentry: {
 			initOptions: {
 				dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0',
@@ -61,12 +61,12 @@ ava('Init sentry and send error event', async (t: Assertions) => {
 	);
 
 	// Close server
-	await end(server);
+	await end(server, prometheusServer);
 });
 
 ava('Init sentry as default and check tracing enabled', async (t: Assertions) => {
 	process.env.SENTRY_DSN = 'https://examplePublicKey@o0.ingest.sentry.io/0';
-	const { server } = await init('micro-sentry', false, {
+	const { server, prometheusServer } = await init('micro-sentry', false, {
 		log: new N9Log('test', { level: 'debug' }),
 	});
 	const { stdout } = stdMock.flush();
@@ -80,12 +80,12 @@ ava('Init sentry as default and check tracing enabled', async (t: Assertions) =>
 	);
 
 	// Close server
-	await end(server);
+	await end(server, prometheusServer);
 });
 
 ava('Init sentry with conf override', async (t: Assertions) => {
 	process.env.SENTRY_DSN = 'https://examplePublicKey@o0.ingest.sentry.io/0';
-	const { server } = await init('micro-sentry', false, {
+	const { server, prometheusServer } = await init('micro-sentry', false, {
 		log: new N9Log('test', { level: 'debug' }),
 		sentry: {
 			forceCustomOptions: true,
@@ -106,7 +106,7 @@ ava('Init sentry with conf override', async (t: Assertions) => {
 	);
 
 	// Close server
-	await end(server);
+	await end(server, prometheusServer);
 });
 
 ava('Init sentry with conf missing DSN', async (t: Assertions) => {

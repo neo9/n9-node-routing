@@ -9,13 +9,14 @@ import * as stdMock from 'std-mocks';
 import N9NodeRouting from '../src';
 import { generateDocumentationJsonToFile } from '../src/generate-documentation-json';
 import { Options } from '../src/models/routing/index';
-import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
+import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
+import { end } from './fixtures/helper';
 
 const microValidatePath = join(__dirname, 'fixtures/micro-validate/modules');
 
 ava('Read documentation', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microValidatePath,
 		openapi: {
 			generateDocumentationOnTheFly: true,
@@ -35,12 +36,12 @@ ava('Read documentation', async (t: Assertions) => {
 	t.is(Object.keys(body.paths).length, 3);
 
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Read documentation fail because its not generated', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microValidatePath,
 		conf: defaultNodeRoutingConfOptions,
 	});
@@ -57,14 +58,14 @@ ava('Read documentation fail because its not generated', async (t: Assertions) =
 	t.is(res.message, 'generated-documentation-not-found');
 
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Read documentation fail in production environment', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const env = process.env.NODE_ENV;
 	process.env.NODE_ENV = 'production';
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microValidatePath,
 		openapi: {
 			generateDocumentationOnTheFly: true,
@@ -84,7 +85,7 @@ ava('Read documentation fail in production environment', async (t: Assertions) =
 	t.is(res.message, 'not-found');
 
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 	process.env.NODE_ENV = env;
 });
 
@@ -94,7 +95,7 @@ ava('Read documentation generated first', async (t: Assertions) => {
 		path: microValidatePath,
 	};
 	const generatedFilePath = generateDocumentationJsonToFile(options);
-	const { server } = await N9NodeRouting(options);
+	const { server, prometheusServer } = await N9NodeRouting(options);
 
 	// Check /documentation
 	const res = got({ url: 'http://localhost:5000/documentation.json' });
@@ -108,6 +109,6 @@ ava('Read documentation generated first', async (t: Assertions) => {
 	t.is(Object.keys(body.paths).length, 3);
 
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 	fs.unlinkSync(generatedFilePath);
 });

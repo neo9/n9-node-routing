@@ -4,14 +4,15 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting from '../src';
-import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
+import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
+import { end } from './fixtures/helper';
 
 const microDefaultValues = join(__dirname, 'fixtures/micro-default-values/');
 
 ava('Check default values are set', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microDefaultValues,
 		http: { port: 5585 },
 		enableLogFormatJSON: false,
@@ -68,11 +69,8 @@ ava('Check default values are set', async (t: Assertions) => {
 		'headers ok',
 	);
 
-	// Check logs
-	stdMock.restore();
-	stdMock.flush();
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Should throw error if module path is not found', async (t: Assertions) => {

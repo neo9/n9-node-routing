@@ -14,7 +14,7 @@ ava('Init newrelic and send error event', async (t: Assertions) => {
 	// process.env.NEW_RELIC_LOG = 'stdout';
 	// process.env.NEW_RELIC_EXPLAIN_THRESHOLD = '1';
 	const file = await tmp.file();
-	const { server, httpClient } = await init('micro-newrelic', false, {
+	const { server, prometheusServer, httpClient } = await init('micro-newrelic', false, {
 		enableLogFormatJSON: false,
 		logOptions: {
 			developmentOutputFilePath: file.path,
@@ -65,7 +65,7 @@ ava('Init newrelic and send error event', async (t: Assertions) => {
 	// );
 
 	// Close server
-	await end(server);
+	await end(server, prometheusServer);
 });
 
 ava(
@@ -76,7 +76,7 @@ ava(
 		// process.env.NEW_RELIC_LOG = 'stdout';
 		// process.env.NEW_RELIC_EXPLAIN_THRESHOLD = '1';
 		const file = await tmp.file();
-		const { server } = await init('micro-newrelic', false, {
+		const { server, prometheusServer } = await init('micro-newrelic', false, {
 			enableLogFormatJSON: false,
 			logOptions: {
 				developmentOutputFilePath: file.path,
@@ -111,7 +111,7 @@ ava(
 		// 		);
 
 		// Close server
-		await end(server);
+		await end(server, prometheusServer);
 	},
 );
 

@@ -5,7 +5,8 @@ import * as stdMock from 'std-mocks';
 
 // tslint:disable-next-line:import-name
 import N9NodeRouting, { N9HttpClient } from '../src';
-import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
+import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
+import { end } from './fixtures/helper';
 
 const print = commons.print;
 const microBodyParser = join(__dirname, 'fixtures/micro-body-parser/');
@@ -16,7 +17,7 @@ ava.beforeEach(() => {
 
 ava('Can define body-parser limit', async (t: Assertions) => {
 	stdMock.use({ print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		http: {
 			bodyParser: {
 				limit: 5,
@@ -36,12 +37,12 @@ ava('Can define body-parser limit', async (t: Assertions) => {
 		},
 	);
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Limit max payload size reached for bodyparser (1024 kB)', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		hasProxy: true, // tell n9NodeRouting to parse `session` header
 		path: microBodyParser,
 		http: {
@@ -61,16 +62,13 @@ ava('Limit max payload size reached for bodyparser (1024 kB)', async (t: Asserti
 		'payload is too large',
 	);
 
-	// Clear stdout
-	stdMock.restore();
-	stdMock.flush();
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
 
 ava('Increase max payload size to bodyparser', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
-	const { server } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		hasProxy: true, // tell n9NodeRouting to parse `session` header
 		path: microBodyParser,
 		http: {
@@ -92,9 +90,6 @@ ava('Increase max payload size to bodyparser', async (t: Assertions) => {
 	const rep = await httpClient.post<any>('http://localhost:6001/bar', { longString });
 	t.deepEqual(rep, { longString });
 
-	// Clear stdout
-	stdMock.restore();
-	stdMock.flush();
 	// Close server
-	await closeServer(server);
+	await end(server, prometheusServer);
 });
