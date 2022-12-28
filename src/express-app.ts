@@ -5,6 +5,7 @@ import * as PromsterServer from '@promster/server';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 import type { Integration } from '@sentry/types/dist/integration';
+import * as bodyParser from 'body-parser';
 import * as ClassValidator from 'class-validator';
 import * as express from 'express';
 import fastSafeStringify from 'fast-safe-stringify';
@@ -15,9 +16,9 @@ import * as PrometheusClient from 'prom-client';
 import { Container } from 'typedi';
 import type { PackageJson } from 'types-package-json';
 import ErrnoException = NodeJS.ErrnoException;
+
 import * as N9NodeRouting from './models/routing';
 import { setRequestContext } from './requestid';
-import * as bodyParser from 'body-parser';
 
 export async function init<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>(
 	options: N9NodeRouting.Options<ConfType>,

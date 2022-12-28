@@ -8,8 +8,8 @@ import { isStringOrNumber } from '../../validators/string-or-number.validator';
 import { N9NodeRoutingBaseConf } from './base-conf';
 import { RoutingControllersOptions } from './implementations/routing-controllers-options.implementation';
 import { Options } from './options';
-import { PingDb } from './options-pingdb';
 import { BodyParserOptions } from './options-bodyparser';
+import { PingDb } from './options-pingdb';
 
 export interface HttpHookArguments<ConfType> {
 	expressApp: Express;
