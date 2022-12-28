@@ -1,5 +1,16 @@
 
 
+# [2.0.0-rc.5](https://github.com/neo9/n9-node-routing/compare/2.0.0-rc.4...2.0.0-rc.5) (2022-12-28)
+
+
+### prometheus
+
+* Enable prometheus metrics by default and add option to disable them ([e86182e](https://github.com/neo9/n9-node-routing/commit/e86182e651ee0cc655f1db5a9e8251ecc6baf7ff))
+
+### yarn
+
+* Upgrade prometheus client dans promster to latest versions ([ac3d54e](https://github.com/neo9/n9-node-routing/commit/ac3d54ef54abe044c73a591a754462592f23cc9e))
+
 # [2.0.0-rc.4](https://github.com/neo9/n9-node-routing/compare/2.0.0-rc.3...2.0.0-rc.4) (2022-12-28)
 
 
