@@ -1,5 +1,26 @@
 
 
+# [2.0.0-rc.2](https://github.com/neo9/n9-node-routing/compare/2.0.0-rc.1...2.0.0-rc.2) (2022-12-28)
+
+
+### conf
+
+* Add options to configure body parser and change default limit to 1024 kB ([1617b8c](https://github.com/neo9/n9-node-routing/commit/1617b8cb901c2d1967b69ef3a83897662b2d339a))
+* Fix generate documentation conf loading ([d99b63b](https://github.com/neo9/n9-node-routing/commit/d99b63b813a5e16a1aea57dcc41b90ee6cbb0171))
+
+### lint
+
+* Fix import order ([2a26b65](https://github.com/neo9/n9-node-routing/commit/2a26b6570c666a6d38b58b13004cf9637a694bd8))
+
+### tests
+
+* Fix tests on body parser limit ([f52c4ce](https://github.com/neo9/n9-node-routing/commit/f52c4ce5d90174da409894b6ff647721d0a58574))
+* Separate body parser tests ([1e4b822](https://github.com/neo9/n9-node-routing/commit/1e4b822dd66e345365696df4905b19d6713774a7))
+
+### yarn
+
+* Remove body-parser dependency ([ea35555](https://github.com/neo9/n9-node-routing/commit/ea355555c55027d6f3ad5f56a537d72490879378))
+
 # [2.0.0-rc.1](https://github.com/neo9/n9-node-routing/compare/2.0.0-rc.0...2.0.0-rc.1) (2022-12-27)
 
 
