@@ -5,7 +5,6 @@ import * as PromsterServer from '@promster/server';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 import type { Integration } from '@sentry/types/dist/integration';
-import * as bodyParser from 'body-parser';
 import * as ClassValidator from 'class-validator';
 import * as express from 'express';
 import fastSafeStringify from 'fast-safe-stringify';
@@ -136,7 +135,7 @@ export async function init<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>
 
 	const server = createServer(expressApp);
 
-	expressApp.use(bodyParser.json(options.http.bodyParser));
+	expressApp.use(express.json(options.http.bodyParser));
 	if (options.http.beforeRoutingControllerLaunchHook) {
 		await options.http.beforeRoutingControllerLaunchHook({ expressApp, log, options, conf });
 	}
