@@ -44,7 +44,7 @@ ava('Call new route (imagine a proxy)', async (t: Assertions) => {
 	await closeServer(server);
 });
 
-ava('Limit max payload size reached for bodyparser', async (t: Assertions) => {
+ava('Limit max payload size reached for bodyparser (1024 kB)', async (t: Assertions) => {
 	stdMock.use({ print: commons.print });
 	const { server } = await N9NodeRouting({
 		hasProxy: true, // tell n9NodeRouting to parse `session` header
@@ -56,7 +56,7 @@ ava('Limit max payload size reached for bodyparser', async (t: Assertions) => {
 	});
 	stdMock.flush();
 	const httpClient = new N9HttpClient(new N9Log('test'));
-	const longString = 'A very long string. '.repeat(10000);
+	const longString = 'A very long string. '.repeat(100000);
 
 	await t.throwsAsync(
 		async () => await httpClient.post<any>('http://localhost:6001/bar', { longString }),
