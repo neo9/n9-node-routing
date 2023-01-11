@@ -1,5 +1,12 @@
 
 
+## [2.0.1-rc.0](https://github.com/neo9/n9-node-routing/compare/2.0.0...2.0.1-rc.0) (2023-01-11)
+
+
+### conf
+
+* Secret transformers can be used on array OSS-6 ([457ee18](https://github.com/neo9/n9-node-routing/commit/457ee189b08ec19adf58d290513c7a65b7249588))
+
 # [2.0.0](https://github.com/neo9/n9-node-routing/compare/2.0.0-rc.6...2.0.0) (2022-12-29)
 
 # [2.0.0-rc.6](https://github.com/neo9/n9-node-routing/compare/2.0.0-rc.5...2.0.0-rc.6) (2022-12-28)
