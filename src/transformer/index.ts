@@ -1,1 +1,1 @@
-export * from './secert.transformer';
+export * from './secret.transformer';
