@@ -334,7 +334,7 @@ ava('Should not show exclude properties on whitelist errors (formatted)', async 
 	const file = await tmp.file();
 	const microPath = `${microConfValidation}/configuration-valid-with-additional-attributes`;
 
-	const { server, prometheusServer, conf } = await N9NodeRouting({
+	const { server, prometheusServer } = await N9NodeRouting({
 		path: microPath,
 		logOptions: { developmentOutputFilePath: file.path },
 		conf: {
@@ -355,6 +355,31 @@ ava('Should not show exclude properties on whitelist errors (formatted)', async 
 		output.filter((line) => line.includes('secretPassword')).length === 0,
 		'Should not show secretPassword in logs',
 	);
+
+	// Close server
+	await end(server, prometheusServer);
+});
+
+ava('Secret should be usable in conf', async (t: Assertions) => {
+	process.env.NODE_ENV = 'development';
+	const file = await tmp.file();
+	const microPath = `${microConfValidation}/configuration-valid-with-additional-attributes`;
+
+	const { server, prometheusServer, conf } = await N9NodeRouting({
+		path: microPath,
+		logOptions: { developmentOutputFilePath: file.path },
+		conf: {
+			n9NodeConf: {
+				path: `${microPath}/conf`,
+			},
+			validation: {
+				isEnabled: true,
+				classType: ValidConfWithWhitelistErrors,
+				formatWhitelistErrors: true,
+			},
+		},
+	});
+
 	t.is(conf.secret, 'secretPassword', `Secret is usable in conf`);
 	t.is(conf.secretOpaque, 'secretPasswordHiddenButKnownIfNil', `Secret opaque is usable in conf`);
 	t.is(conf.secretOpaqueNil, undefined, `Secret opaque nil is usable in conf`);
@@ -370,6 +395,30 @@ ava('Should not show exclude properties on whitelist errors (formatted)', async 
 		`Secret uri not an uri is usable in conf`,
 	);
 
+	// Close server
+	await end(server, prometheusServer);
+});
+
+ava('Secret should not be exposed', async (t: Assertions) => {
+	process.env.NODE_ENV = 'development';
+	const file = await tmp.file();
+	const microPath = `${microConfValidation}/configuration-valid-with-additional-attributes`;
+
+	const { server, prometheusServer } = await N9NodeRouting({
+		path: microPath,
+		logOptions: { developmentOutputFilePath: file.path },
+		conf: {
+			n9NodeConf: {
+				path: `${microPath}/conf`,
+			},
+			validation: {
+				isEnabled: true,
+				classType: ValidConfWithWhitelistErrors,
+				formatWhitelistErrors: true,
+			},
+		},
+	});
+
 	const exposedConf = await commons.jsonHttpClient.get<ValidConfWithWhitelistErrors>(
 		'http://localhost:5000/conf',
 	);
@@ -382,6 +431,11 @@ ava('Should not show exclude properties on whitelist errors (formatted)', async 
 		'********',
 		`Secret opaque should not be exposed on conf endpoint`,
 	);
+	t.deepEqual(
+		exposedConf.secretOpaqueArray,
+		['********', '********'],
+		`Secret opaque array should not be exposed on conf endpoint`,
+	);
 	t.is(
 		exposedConf.secretOpaqueNil,
 		undefined,
@@ -391,6 +445,20 @@ ava('Should not show exclude properties on whitelist errors (formatted)', async 
 		exposedConf.secretUri,
 		'mongodb://myDBReader:********@mongodb0.example.com:27017/?authSource=admin',
 		`Secret uri should be exposed but not password`,
+	);
+	t.is(
+		exposedConf.secretUriArray.length,
+		3,
+		`Secret uri array should be exposed and contain 3 elements`,
+	);
+	t.deepEqual(
+		exposedConf.secretUriArray,
+		[
+			'mongodb://myDBReader:********@mongodb0.example.com:27017/?authSource=admin',
+			'mongodb://myDBReader:********@mongodb0.example.com:27017/?authSource=admin',
+			null,
+		],
+		`Secret uri array should be exposed without password if matching uri regex otherwise null`,
 	);
 	t.is(
 		exposedConf.secretUriNotAnURI,

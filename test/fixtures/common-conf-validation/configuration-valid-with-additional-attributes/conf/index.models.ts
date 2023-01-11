@@ -27,6 +27,10 @@ export class Conf extends N9NodeRouting.N9NodeRoutingBaseConf {
 	secretOpaque?: string;
 
 	@Allow()
+	@Transform(SecretTransformer.GET_TRANSFORMER(SecretType.OPAQUE, { each: true }))
+	secretOpaqueArray?: string[];
+
+	@Allow()
 	@Transform(SecretTransformer.GET_TRANSFORMER(SecretType.OPAQUE))
 	secretOpaqueNil?: string;
 
@@ -37,6 +41,10 @@ export class Conf extends N9NodeRouting.N9NodeRoutingBaseConf {
 	@Allow()
 	@Transform(SecretTransformer.GET_TRANSFORMER(SecretType.URI))
 	secretUri?: string;
+
+	@Allow()
+	@Transform(SecretTransformer.GET_TRANSFORMER(SecretType.URI, { each: true }))
+	secretUriArray?: string[];
 
 	@Allow()
 	@Transform(SecretTransformer.GET_TRANSFORMER(SecretType.URI))
