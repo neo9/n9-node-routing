@@ -1,5 +1,7 @@
 
 
+## [2.0.1](https://github.com/neo9/n9-node-routing/compare/2.0.1-rc.0...2.0.1) (2023-01-18)
+
 ## [2.0.1-rc.0](https://github.com/neo9/n9-node-routing/compare/2.0.0...2.0.1-rc.0) (2023-01-11)
 
 
