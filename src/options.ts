@@ -191,6 +191,30 @@ function applyHttpOptionsDefaults(options: N9NodeRouting.Options): void {
 	}
 }
 
+function applyHttpClientOptionsDefaults(
+	options: N9NodeRouting.Options,
+	environment: Utils.Environment,
+): void {
+	const httpClientConfOptions = options.httpClient ?? {};
+
+	const gotOptions: N9NodeRouting.HttpClientGotOptions = {
+		responseType: 'json' as any,
+		...httpClientConfOptions.gotOptions,
+	};
+
+	const sensitiveHeadersOptions: N9NodeRouting.HttpClientSensitiveHeadersOptions = {
+		alterSensitiveHeaders: environment !== 'development',
+		alteringFormat: /(?!^)[\s\S](?!$)/g,
+		sensitiveHeaders: ['Authorization'],
+		...httpClientConfOptions.sensitiveHeadersOptions,
+	};
+
+	options.httpClient = {
+		gotOptions,
+		sensitiveHeadersOptions,
+	};
+}
+
 // Prometheus metrics
 function applyPrometheusOptionsDefault(options: N9NodeRouting.Options): void {
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-boolean-literal-compare
@@ -313,6 +337,7 @@ export function applyDefaultValuesOnOptions(
 
 	applyOpenApiOptionsDefaults(options, environment);
 	applyHttpOptionsDefaults(options);
+	applyHttpClientOptionsDefaults(options, environment);
 }
 
 export function mergeOptionsAndConf<ConfType>(

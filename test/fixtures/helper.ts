@@ -64,7 +64,9 @@ export async function end(server: Server, prometheusServer?: Server): Promise<vo
 }
 
 function getHttpClient(responseType: 'text' | 'json'): N9HttpClient {
-	return new N9HttpClient((global as any).log ?? new N9Log('test'), { responseType });
+	return new N9HttpClient((global as any).log ?? new N9Log('test'), {
+		gotOptions: { responseType },
+	});
 }
 
 function concatBasePath(path: string = '/'): string {

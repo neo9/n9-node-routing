@@ -94,7 +94,7 @@ export default async <
 
 	Container.set('logger', logger);
 	Container.set('conf', conf);
-	Container.set('N9HttpClient', new N9HttpClient());
+	Container.set('N9HttpClient', new N9HttpClient(logger, options.httpClient));
 	Container.set('N9NodeRoutingOptions', options);
 
 	if (options.apm) {

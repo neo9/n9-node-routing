@@ -2,19 +2,28 @@ import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import { getNamespace } from 'cls-hooked';
 import fastSafeStringify from 'fast-safe-stringify';
-import got, { Method, Options } from 'got';
+import got, { Method, Options as GotOptions } from 'got';
 import { RequestError } from 'got/dist/source/core';
 import { IncomingMessage } from 'http';
 import * as QueryString from 'query-string';
 import * as shortid from 'shortid';
 import { PassThrough } from 'stream';
 import urlJoin = require('url-join');
+
+import {
+	HttpClientGotOptions,
+	HttpClientOptions,
+	HttpClientSensitiveHeadersOptions,
+} from '../models/routing/options-http-client';
 import { RequestIdKey, RequestIdNamespaceName } from '../requestid';
+import { getEnvironment } from '../utils';
 
 export type N9HttpClientQueryParams =
 	| string
 	| Record<string, string | number | boolean | string[] | number[] | boolean[]>
 	| object;
+
+export type N9HttpClientRequestGotOptions = Omit<GotOptions, 'headers' | 'method'>;
 
 export class N9HttpClient {
 	private static getUriFromUrlParts(url: string | string[]): string {
@@ -42,40 +51,35 @@ export class N9HttpClient {
 		const status = e.response?.statusCode;
 		return { code, status };
 	}
-	private readonly baseOptions: Options;
+
+	private static alterHeaders(
+		headers: object,
+		sensitiveHeadersOptions: HttpClientSensitiveHeadersOptions,
+	): object {
+		if (
+			headers &&
+			sensitiveHeadersOptions.alterSensitiveHeaders &&
+			Object.keys(headers).length > 0
+		) {
+			for (const header of sensitiveHeadersOptions.sensitiveHeaders) {
+				if (!headers[header]) continue;
+
+				const rawHeader = headers[header] as string;
+				headers[header] = rawHeader.replace(sensitiveHeadersOptions.alteringFormat, '*');
+			}
+		}
+
+		return headers;
+	}
+
+	private readonly baseClientOptions: HttpClientOptions;
 
 	constructor(
 		private readonly logger: N9Log = (global as any).log,
-		baseOptions?: Options,
+		options?: HttpClientOptions,
 		private maxBodyLengthToLogError: number = 100,
 	) {
-		this.baseOptions = {
-			responseType: 'json' as any,
-			hooks: {
-				beforeRetry: [
-					(options, error?: RequestError, retryCount?: number): void => {
-						let level: N9Log.Level;
-						if (error?.response?.statusCode && error.response.statusCode < 500) {
-							level = 'info';
-						} else {
-							level = 'warn';
-						}
-						if (logger.isLevelEnabled(level)) {
-							logger[level](
-								`Retry call [${options.method} ${options.url?.toString()}] n°${retryCount} due to ${
-									error?.code ?? error?.name
-								} ${error?.message}`,
-								{
-									errString: fastSafeStringify(error),
-									status: error?.response?.statusCode,
-								},
-							);
-						}
-					},
-				],
-			},
-			...baseOptions,
-		};
+		this.baseClientOptions = this.buildHttpClientOptionsWithDefaults(logger, options);
 	}
 
 	/**
@@ -84,8 +88,8 @@ export class N9HttpClient {
 	public async get<T>(
 		url: string | string[],
 		queryParams?: N9HttpClientQueryParams,
-		headers: object = {},
-		options: Options = {},
+		headers?: object,
+		options?: N9HttpClientRequestGotOptions,
 	): Promise<T> {
 		return this.request<T>('get', url, queryParams, headers, undefined, options);
 	}
@@ -94,8 +98,8 @@ export class N9HttpClient {
 		url: string | string[],
 		body?: any,
 		queryParams?: N9HttpClientQueryParams,
-		headers: object = {},
-		options: Options = {},
+		headers?: object,
+		options?: N9HttpClientRequestGotOptions,
 	): Promise<T> {
 		return this.request<T>('post', url, queryParams, headers, body, options);
 	}
@@ -104,8 +108,8 @@ export class N9HttpClient {
 		url: string | string[],
 		body?: any,
 		queryParams?: N9HttpClientQueryParams,
-		headers: object = {},
-		options: Options = {},
+		headers?: object,
+		options?: N9HttpClientRequestGotOptions,
 	): Promise<T> {
 		return this.request<T>('put', url, queryParams, headers, body, options);
 	}
@@ -114,8 +118,8 @@ export class N9HttpClient {
 		url: string | string[],
 		body?: any,
 		queryParams?: N9HttpClientQueryParams,
-		headers: object = {},
-		options: Options = {},
+		headers?: object,
+		options?: N9HttpClientRequestGotOptions,
 	): Promise<T> {
 		return this.request<T>('delete', url, queryParams, headers, body, options);
 	}
@@ -123,8 +127,8 @@ export class N9HttpClient {
 	public async options<T>(
 		url: string | string[],
 		queryParams?: N9HttpClientQueryParams,
-		headers: object = {},
-		options: Options = {},
+		headers?: object,
+		options?: N9HttpClientRequestGotOptions,
 	): Promise<T> {
 		return this.request<T>('options', url, queryParams, headers, undefined, options);
 	}
@@ -133,8 +137,8 @@ export class N9HttpClient {
 		url: string | string[],
 		body?: any,
 		queryParams?: N9HttpClientQueryParams,
-		headers: object = {},
-		options: Options = {},
+		headers?: object,
+		options?: N9HttpClientRequestGotOptions,
 	): Promise<T> {
 		return this.request<T>('patch', url, queryParams, headers, body, options);
 	}
@@ -142,8 +146,8 @@ export class N9HttpClient {
 	public async head(
 		url: string | string[],
 		queryParams?: N9HttpClientQueryParams,
-		headers: object = {},
-		options: Options = {},
+		headers?: object,
+		options?: N9HttpClientRequestGotOptions,
 	): Promise<void> {
 		return this.request<void>('head', url, queryParams, headers, undefined, options);
 	}
@@ -152,9 +156,9 @@ export class N9HttpClient {
 		method: Method,
 		url: string | string[],
 		queryParams?: N9HttpClientQueryParams,
-		headers: object = {},
+		headers: object = this.baseClientOptions.gotOptions.headers,
 		body?: any,
-		options: Options = {},
+		options: N9HttpClientRequestGotOptions = {},
 	): Promise<T> {
 		const uri = N9HttpClient.getUriFromUrlParts(url);
 
@@ -168,16 +172,16 @@ export class N9HttpClient {
 				: QueryString.stringify(queryParams, { arrayFormat: 'none' });
 		const startTime = Date.now();
 
+		const optionsSent: GotOptions = {
+			...this.baseClientOptions.gotOptions,
+			method,
+			searchParams,
+			headers: sentHeaders,
+			json: body,
+			...options,
+		};
+
 		try {
-			const optionsSent: Options = {
-				method,
-				searchParams,
-				headers: sentHeaders,
-				json: body,
-				resolveBodyOnly: false,
-				...this.baseOptions,
-				...options,
-			};
 			const res = await got<T>(uri, optionsSent as any);
 
 			// for responses 204
@@ -194,29 +198,34 @@ export class N9HttpClient {
 				durationMs,
 			});
 
+			const alteredHeaders = N9HttpClient.alterHeaders(
+				optionsSent.headers,
+				this.baseClientOptions.sensitiveHeadersOptions,
+			);
+
 			throw new N9Error(code.toString(), status, {
 				uri,
 				method,
 				queryParams,
-				headers,
 				durationMs,
 				code: e.code ?? e.message,
 				body: body && bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
+				headers: alteredHeaders,
 				srcError: e.response?.body ?? e,
 			});
 		}
 	}
 
-	public async raw<T>(url: string | string[], options: Options): Promise<T> {
+	public async raw<T>(url: string | string[], options: GotOptions): Promise<T> {
 		const uri = N9HttpClient.getUriFromUrlParts(url);
 		const startTime = Date.now();
 
+		const optionsSent: GotOptions = {
+			...this.baseClientOptions.gotOptions,
+			...options,
+		};
+
 		try {
-			const optionsSent: Options = {
-				resolveBodyOnly: false,
-				...this.baseOptions,
-				...options,
-			};
 			const res = await got<T>(uri, optionsSent as any);
 
 			// for responses 204
@@ -230,9 +239,14 @@ export class N9HttpClient {
 				durationMs,
 			});
 
+			const alteredHeaders = N9HttpClient.alterHeaders(
+				optionsSent.headers,
+				this.baseClientOptions.sensitiveHeadersOptions,
+			);
+
 			throw new N9Error(code.toString(), status, {
 				uri,
-				options: fastSafeStringify(options),
+				options: fastSafeStringify({ ...optionsSent, headers: alteredHeaders }),
 				error: e,
 				...e.context,
 			});
@@ -242,7 +256,7 @@ export class N9HttpClient {
 	public async requestStream(
 		url: string | string[],
 		// issue https://github.com/sindresorhus/got/issues/954#issuecomment-579468831
-		options?: Omit<Options, 'isStream' | 'responseType' | 'resolveBodyOnly'>,
+		options?: Omit<GotOptions, 'isStream' | 'responseType' | 'resolveBodyOnly'>,
 	): Promise<{ incomingMessage: IncomingMessage; responseAsStream: PassThrough }> {
 		const responseAsStream = new PassThrough();
 		const startTime = Date.now();
@@ -290,12 +304,16 @@ export class N9HttpClient {
 				statusCode: e.statusCode,
 			});
 			const { code, status } = N9HttpClient.prepareErrorCodeAndStatus(e);
+			const alteredHeaders = N9HttpClient.alterHeaders(
+				options?.headers,
+				this.baseClientOptions.sensitiveHeadersOptions,
+			);
 
 			throw new N9Error(code?.toString() || 'unknown-error', status, {
 				uri,
 				method: options?.method,
 				code: e.code || code,
-				headers: options?.headers,
+				headers: alteredHeaders,
 				srcError: e,
 				responseTime: durationMs,
 			});
@@ -307,5 +325,50 @@ export class N9HttpClient {
 			statusCode: incomingMessage.statusCode,
 		});
 		return { incomingMessage, responseAsStream };
+	}
+
+	private buildHttpClientOptionsWithDefaults(
+		logger: N9Log,
+		clientOptions: HttpClientOptions,
+	): HttpClientOptions {
+		const environment = getEnvironment();
+
+		const gotOptions: HttpClientGotOptions = {
+			responseType: 'json' as any,
+			resolveBodyOnly: false,
+			hooks: {
+				beforeRetry: [
+					(options, error?: RequestError, retryCount?: number): void => {
+						let level: N9Log.Level;
+						if (error?.response?.statusCode && error.response.statusCode < 500) {
+							level = 'info';
+						} else {
+							level = 'warn';
+						}
+						if (logger.isLevelEnabled(level)) {
+							logger[level](
+								`Retry call [${options.method} ${options.url?.toString()}] n°${retryCount} due to ${
+									error?.code ?? error?.name
+								} ${error?.message}`,
+								{
+									errString: fastSafeStringify(error),
+									status: error?.response?.statusCode,
+								},
+							);
+						}
+					},
+				],
+			},
+			...clientOptions?.gotOptions,
+		};
+
+		const sensitiveHeadersOptions: HttpClientSensitiveHeadersOptions = {
+			alterSensitiveHeaders: environment !== 'development',
+			sensitiveHeaders: ['Authorization'],
+			alteringFormat: /(?!^)[\s\S](?!$)/g,
+			...clientOptions?.sensitiveHeadersOptions,
+		};
+
+		return { gotOptions, sensitiveHeadersOptions };
 	}
 }
