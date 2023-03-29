@@ -208,7 +208,7 @@ ava('Check retries of HttpClient against error controller', async (t: Assertions
 	await end(server, prometheusServer);
 });
 
-ava('Use HttpClient base options', async (t: Assertions) => {
+ava('Use HttpClient got base options', async (t: Assertions) => {
 	stdMock.use({ print });
 	const { server, prometheusServer } = await N9NodeRouting({
 		hasProxy: true, // tell N9NodeRouting to parse `session` header
@@ -220,8 +220,10 @@ ava('Use HttpClient base options', async (t: Assertions) => {
 	});
 
 	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }), {
-		headers: {
-			test: 'something',
+		gotOptions: {
+			headers: {
+				test: 'something',
+			},
 		},
 	});
 	const rep = await httpClient.get<{ ok: boolean }>('http://localhost:6001/requires-header');
@@ -334,6 +336,157 @@ ava('Use HttpClient to call route with numeric error code', async (t: Assertions
 		async () => await httpClient.get<string>('http://localhost:6001/numeric-error-code'),
 	);
 	t.is(error.message, '500', 'error code is not numerical');
+
+	await end(server, prometheusServer);
+});
+
+ava('Use HttpClient with default sensitive headers options', async (t: Assertions) => {
+	stdMock.use({ print });
+	const { server, prometheusServer } = await N9NodeRouting({
+		hasProxy: true, // tell N9NodeRouting to parse `session` header
+		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
+		http: {
+			port: 6001,
+		},
+		conf: defaultNodeRoutingConfOptions,
+	});
+
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	const headers = { sensitive: 'sensitive', Authorization: '1111-2222-3333' };
+	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }), {
+		gotOptions: { headers },
+	});
+
+	let error = await t.throwsAsync<N9Error>(
+		async () => await httpClient.request<string>('get', 'http://localhost:6001/numeric-error-code'),
+	);
+	t.is(error.message, '500', 'error code is not numerical');
+	t.like(
+		error.context.headers,
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		{ sensitive: 'sensitive', Authorization: '1************3' },
+		'Only Authorization is censored by default for requests',
+	);
+
+	error = await t.throwsAsync<N9Error>(
+		async () =>
+			await httpClient.raw<string>('http://localhost:6001/ping', {
+				method: 'post',
+			}),
+	);
+	t.like(
+		JSON.parse(error.context.options).headers,
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		{ sensitive: 'sensitive', Authorization: '1************3' },
+		'Only Authorization is censored by default for raws',
+	);
+
+	error = await t.throwsAsync<N9Error>(
+		async () => await httpClient.requestStream(['http://localhost:6001', '404'], { headers }),
+	);
+	t.like(
+		error.context.headers,
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		{ sensitive: 'sensitive', Authorization: '1************3' },
+		'Only Authorization is censored by default for streams',
+	);
+
+	await end(server, prometheusServer);
+});
+
+ava('Use HttpClient with custom sensitive headers options', async (t: Assertions) => {
+	stdMock.use({ print });
+	const { server, prometheusServer } = await N9NodeRouting({
+		hasProxy: true, // tell N9NodeRouting to parse `session` header
+		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
+		http: {
+			port: 6001,
+		},
+		conf: defaultNodeRoutingConfOptions,
+	});
+
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	const headers = { sensitive: 'sensitive', Authorization: '1111-2222-3333' };
+	const gotOptions = { headers };
+
+	let httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }), {
+		gotOptions,
+		sensitiveHeadersOptions: {
+			sensitiveHeaders: ['sensitive', 'otherSensitive', 'Authorization'],
+		},
+	});
+	let error = await t.throwsAsync<N9Error>(
+		async () => await httpClient.get<string>('http://localhost:6001/numeric-error-code'),
+	);
+	t.like(
+		error.context.headers,
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		{ sensitive: 's*******e', Authorization: '1************3' },
+		'Both sensitive and Authorization are censored',
+	);
+
+	const overridenHeaders = { otherSensitive: 'otherSensitive', clear: 'clear' };
+	error = await t.throwsAsync<N9Error>(
+		async () =>
+			await httpClient.get<string>(
+				'http://localhost:6001/numeric-error-code',
+				undefined,
+				overridenHeaders,
+			),
+	);
+	t.like(
+		error.context.headers,
+		{ clear: 'clear', otherSensitive: 'o************e' },
+		'Only overidden headers are displayed and otherSensitive is opaque',
+	);
+
+	httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }), {
+		gotOptions,
+		sensitiveHeadersOptions: {
+			sensitiveHeaders: ['sensitive'],
+		},
+	});
+	error = await t.throwsAsync<N9Error>(
+		async () => await httpClient.get<string>('http://localhost:6001/numeric-error-code'),
+	);
+	t.like(
+		error.context.headers,
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		{ sensitive: 's*******e', Authorization: '1111-2222-3333' },
+		'Only sensitive is censored',
+	);
+
+	httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }), {
+		gotOptions,
+		sensitiveHeadersOptions: {
+			alteringFormat: /(?<=.{4})[^-]/g,
+		},
+	});
+	error = await t.throwsAsync<N9Error>(
+		async () => await httpClient.get<string>('http://localhost:6001/numeric-error-code'),
+	);
+	t.like(
+		error.context.headers,
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		{ sensitive: 'sensitive', Authorization: '1111-****-****' },
+		'Authorization should be censored partially',
+	);
+
+	httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }), {
+		gotOptions,
+		sensitiveHeadersOptions: {
+			alterSensitiveHeaders: false,
+		},
+	});
+	error = await t.throwsAsync<N9Error>(
+		async () => await httpClient.get<string>('http://localhost:6001/numeric-error-code'),
+	);
+	t.like(
+		error.context.headers,
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		{ sensitive: 'sensitive', Authorization: '1111-2222-3333' },
+		'All headers are uncensored',
+	);
 
 	await end(server, prometheusServer);
 });

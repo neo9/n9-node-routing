@@ -7,6 +7,7 @@ import { N9LogOptions } from './implementations/n9-node-log.implementation';
 import { APMOptions } from './options-apm';
 import { ConfOptions } from './options-conf';
 import { HttpOptions } from './options-http';
+import { HttpClientOptions } from './options-http-client';
 import { PrometheusOptions } from './options-prometheus';
 import { SentryOptions } from './options-sentry';
 import { ShutdownOptions } from './options-shutdown';
@@ -47,6 +48,11 @@ export class Options<ConfType extends N9NodeRoutingBaseConf = N9NodeRoutingBaseC
 	@ValidateNested()
 	@Type(() => HttpOptions)
 	http?: HttpOptions<ConfType>;
+
+	@IsOptional()
+	@ValidateNested()
+	@Type(() => HttpClientOptions)
+	httpClient?: HttpClientOptions;
 
 	@IsOptional()
 	@ValidateNested()
