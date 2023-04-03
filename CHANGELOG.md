@@ -1,5 +1,12 @@
 
 
+## [1.34.4](https://github.com/neo9/n9-node-routing/compare/1.34.3...1.34.4) (2023-04-03)
+
+
+### httpclient
+
+* Set Authorization header as opaque ([d960b41](https://github.com/neo9/n9-node-routing/commit/d960b410426375ac1effe73259996e771961098d))
+
 ## [1.34.3](https://github.com/neo9/n9-node-routing/compare/1.34.2...1.34.3) (2022-09-27)
 
 
