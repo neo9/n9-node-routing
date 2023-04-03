@@ -321,3 +321,61 @@ ava('Use HttpClient to call route with numeric error code', async (t: Assertions
 
 	await closeServer(server);
 });
+
+ava('Use HttpClient with default sensitive headers options', async (t: Assertions) => {
+	stdMock.use({ print });
+	const { server } = await N9NodeRouting({
+		hasProxy: true, // tell N9NodeRouting to parse `session` header
+		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
+		http: {
+			port: 6001,
+		},
+	});
+
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	const headers = { sensitive: 'sensitive', Authorization: '1111-2222-3333' };
+	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
+
+	let error = await t.throwsAsync<N9Error>(
+		async () =>
+			await httpClient.request<string>(
+				'get',
+				'http://localhost:6001/numeric-error-code',
+				undefined,
+				headers,
+			),
+	);
+	t.is(error.message, '500', 'error code is not numerical');
+	t.like(
+		error.context.headers,
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		{ sensitive: 'sensitive', Authorization: '1************3' },
+		'Only Authorization is censored by default for requests',
+	);
+
+	error = await t.throwsAsync<N9Error>(
+		async () => await httpClient.requestStream(['http://localhost:6001', '404'], { headers }),
+	);
+	t.like(
+		error.context.headers,
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		{ sensitive: 'sensitive', Authorization: '1************3' },
+		'Only Authorization is censored by default for streams',
+	);
+
+	error = await t.throwsAsync<N9Error>(
+		async () =>
+			await httpClient.raw<string>('http://localhost:6001/ping', {
+				headers,
+				method: 'post',
+			}),
+	);
+	t.like(
+		JSON.parse(error.context.options).headers,
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		{ sensitive: 'sensitive', Authorization: '1************3' },
+		'Only Authorization is censored by default for raws',
+	);
+
+	await closeServer(server);
+});
