@@ -16,6 +16,27 @@ export type N9HttpClientQueryParams =
 	| Record<string, string | number | boolean | string[] | number[] | boolean[]>
 	| object;
 
+interface HttpClientSensitiveHeadersOptions {
+	/**
+	 * Should the given sensitive headers be altered.
+	 *
+	 * @default true
+	 */
+	alterSensitiveHeaders?: boolean;
+	/**
+	 * String or regexp to use to match the value to alter. All matching characters will be replaced with an asterisk.
+	 *
+	 * @default /(?!^)[\s\S](?!$)/ (replace all characters except for the first and last)
+	 */
+	alteringFormat?: string | RegExp;
+	/**
+	 * Headers to alter.
+	 *
+	 * @default ['Authorization']
+	 */
+	sensitiveHeaders?: string[];
+}
+
 export class N9HttpClient {
 	private static getUriFromUrlParts(url: string | string[]): string {
 		let uri;
@@ -42,7 +63,33 @@ export class N9HttpClient {
 		const status = e.response?.statusCode;
 		return { code, status };
 	}
+
+	private static alterHeaders(
+		headers: object,
+		sensitiveHeadersOptions: HttpClientSensitiveHeadersOptions,
+	): object {
+		if (
+			headers &&
+			sensitiveHeadersOptions.alterSensitiveHeaders &&
+			Object.keys(headers).length > 0
+		) {
+			for (const header of sensitiveHeadersOptions.sensitiveHeaders) {
+				if (!headers[header]) continue;
+
+				const rawHeader = headers[header] as string;
+				headers[header] = rawHeader.replace(sensitiveHeadersOptions.alteringFormat, '*');
+			}
+		}
+
+		return headers;
+	}
+
 	private readonly baseOptions: Options;
+	private readonly baseSensitiveHeadersOptions: HttpClientSensitiveHeadersOptions = {
+		alterSensitiveHeaders: true,
+		sensitiveHeaders: ['Authorization'],
+		alteringFormat: /(?!^)[\s\S](?!$)/g,
+	};
 
 	constructor(
 		private readonly logger: N9Log = (global as any).log,
@@ -167,16 +214,17 @@ export class N9HttpClient {
 				: QueryString.stringify(queryParams, { arrayFormat: 'none' });
 		const startTime = Date.now();
 
+		const optionsSent: Options = {
+			method,
+			searchParams,
+			headers: sentHeaders,
+			json: body,
+			resolveBodyOnly: false,
+			...this.baseOptions,
+			...options,
+		};
+
 		try {
-			const optionsSent: Options = {
-				method,
-				searchParams,
-				headers: sentHeaders,
-				json: body,
-				resolveBodyOnly: false,
-				...this.baseOptions,
-				...options,
-			};
 			const res = await got<T>(uri, optionsSent as any);
 
 			// for responses 204
@@ -193,14 +241,19 @@ export class N9HttpClient {
 				'response-time': responseTime,
 			});
 
+			const alteredHeaders = N9HttpClient.alterHeaders(
+				optionsSent.headers,
+				this.baseSensitiveHeadersOptions,
+			);
+
 			throw new N9Error(code.toString(), status, {
 				uri,
 				method,
 				queryParams,
-				headers,
 				responseTime,
 				code: e.code ?? e.message,
 				body: body && bodyJSON.length < this.maxBodyLengthToLogError ? bodyJSON : undefined,
+				headers: alteredHeaders,
 				srcError: e.response?.body ?? e,
 			});
 		}
@@ -210,12 +263,13 @@ export class N9HttpClient {
 		const uri = N9HttpClient.getUriFromUrlParts(url);
 		const startTime = Date.now();
 
+		const optionsSent: Options = {
+			resolveBodyOnly: false,
+			...this.baseOptions,
+			...options,
+		};
+
 		try {
-			const optionsSent: Options = {
-				resolveBodyOnly: false,
-				...this.baseOptions,
-				...options,
-			};
 			const res = await got<T>(uri, optionsSent as any);
 
 			// for responses 204
@@ -229,9 +283,14 @@ export class N9HttpClient {
 				'response-time': responseTime,
 			});
 
+			const alteredHeaders = N9HttpClient.alterHeaders(
+				optionsSent.headers,
+				this.baseSensitiveHeadersOptions,
+			);
+
 			throw new N9Error(code.toString(), status, {
 				uri,
-				options: fastSafeStringify(options),
+				options: fastSafeStringify({ ...optionsSent, headers: alteredHeaders }),
 				error: e,
 				...e.context,
 			});
@@ -290,11 +349,16 @@ export class N9HttpClient {
 			});
 			const { code, status } = N9HttpClient.prepareErrorCodeAndStatus(e);
 
+			const alteredHeaders = N9HttpClient.alterHeaders(
+				options?.headers,
+				this.baseSensitiveHeadersOptions,
+			);
+
 			throw new N9Error(code?.toString() || 'unknown-error', status, {
 				uri,
 				method: options?.method,
 				code: e.code || code,
-				headers: options?.headers,
+				headers: alteredHeaders,
 				srcError: e,
 				responseTime: durationCatch,
 			});
