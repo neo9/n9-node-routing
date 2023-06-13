@@ -8,7 +8,7 @@ import {
 	IsString,
 	ValidateNested,
 } from 'class-validator';
-import { Options as GotOptions } from 'got';
+import { ExtendOptions as GotOptions } from 'got';
 
 export type HttpClientGotOptions = Omit<GotOptions, 'method'>;
 
