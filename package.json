@@ -77,7 +77,7 @@
     "form-data": "^4.0.0",
     "glob": "^7.1.7",
     "glob-promise": "^4.2.0",
-    "got": "^11.8.2",
+    "got": "^12.6.0",
     "helmet": "^4.6.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
@@ -99,7 +99,7 @@
     "@commitlint/cli": "^16.2.3",
     "@neo9/n9-coding-style": "^4.0.0",
     "@neo9/n9-mongo-client": "^0.29.1",
-    "@release-it/conventional-changelog": "^4.3.0",
+    "@release-it/conventional-changelog": "^5.1.1",
     "@types/app-root-dir": "^0.1.0",
     "@types/async": "^3.2.6",
     "@types/cls-hooked": "^4.3.3",
@@ -127,13 +127,13 @@
     "nodemon": "^2.0.7",
     "nyc": "^15.1.0",
     "prettier": "^2.3.1",
-    "release-it": "^14.14.2",
+    "release-it": "^15.10.3",
     "std-mocks": "^1.0.1",
     "tmp-promise": "^3.0.3",
     "ts-node": "^10.9.1",
     "type-fest": "^3.3.0",
     "types-package-json": "^2.0.39",
-    "typescript": "^4.9.3"
+    "typescript": "^4.9.5"
   },
   "ava": {
     "files": [

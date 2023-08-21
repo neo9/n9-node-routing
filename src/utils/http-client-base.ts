@@ -2,14 +2,13 @@ import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import { getNamespace } from 'cls-hooked';
 import fastSafeStringify from 'fast-safe-stringify';
-import got, { Method, Options as GotOptions } from 'got';
-import { RequestError } from 'got/dist/source/core';
+import got, { ExtendOptions as GotOptions, Method, RequestError } from 'got';
 import { IncomingMessage } from 'http';
 import * as QueryString from 'query-string';
 import * as shortid from 'shortid';
 import { PassThrough } from 'stream';
-import urlJoin = require('url-join');
 
+import urlJoin = require('url-join');
 import {
 	HttpClientGotOptions,
 	HttpClientOptions,
@@ -268,8 +267,8 @@ export class N9HttpClient {
 		let durationMsTTFB: number;
 		try {
 			incomingMessage = await new Promise<IncomingMessage>((resolve, reject) => {
-				requestResponse.on('error', (err) => reject(err));
-				requestResponse.on('response', (response) => {
+				requestResponse.response.on('error', (err) => reject(err));
+				requestResponse.response.on('response', (response) => {
 					response.on('end', () => {
 						const durationMsTTLB = Date.now() - startTime;
 						if (durationMsTTFB !== null && durationMsTTFB !== undefined) {
@@ -338,7 +337,7 @@ export class N9HttpClient {
 			resolveBodyOnly: false,
 			hooks: {
 				beforeRetry: [
-					(options, error?: RequestError, retryCount?: number): void => {
+					(error: RequestError, retryCount?: number): void => {
 						let level: N9Log.Level;
 						if (error?.response?.statusCode && error.response.statusCode < 500) {
 							level = 'info';
@@ -347,7 +346,9 @@ export class N9HttpClient {
 						}
 						if (logger.isLevelEnabled(level)) {
 							logger[level](
-								`Retry call [${options.method} ${options.url?.toString()}] n°${retryCount} due to ${
+								`Retry call [${
+									error.options.method
+								} ${error.options.url?.toString()}] n°${retryCount} due to ${
 									error?.code ?? error?.name
 								} ${error?.message}`,
 								{
