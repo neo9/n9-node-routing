@@ -30,9 +30,8 @@
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov -f coverage.lcov",
     "preversion": "npm test",
     "prepublishOnly": "npm run build",
-    "release": "export BABEL_DISABLE_CACHE=1 && release-it --ci",
-    "release:dry": "export BABEL_DISABLE_CACHE=1 && release-it --ci --dry-run=true",
-    "post:release": "echo Successfully released $npm_package_version"
+    "release": "release-it",
+    "release:dry": "release-it --dry-run"
   },
   "husky": {
     "hooks": {
@@ -99,7 +98,7 @@
     "@commitlint/cli": "^16.2.3",
     "@neo9/n9-coding-style": "^4.0.0",
     "@neo9/n9-mongo-client": "^0.29.1",
-    "@release-it/conventional-changelog": "^4.3.0",
+    "@release-it/conventional-changelog": "^7.0.2",
     "@types/app-root-dir": "^0.1.0",
     "@types/async": "^3.2.6",
     "@types/cls-hooked": "^4.3.3",
@@ -120,14 +119,13 @@
     "@types/url-join": "^4.0.0",
     "ava": "^3.15.0",
     "codecov": "^3.8.3",
-    "conventional-changelog-cli": "^2.1.1",
     "fs-extra": "^10.1.0",
     "husky": "^4.3.8",
     "mongodb-memory-server": "^6.9.6",
     "nodemon": "^2.0.7",
     "nyc": "^15.1.0",
     "prettier": "^2.3.1",
-    "release-it": "^14.14.2",
+    "release-it": "^16.2.1",
     "std-mocks": "^1.0.1",
     "tmp-promise": "^3.0.3",
     "ts-node": "^10.9.1",

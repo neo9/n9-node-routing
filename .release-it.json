@@ -1,57 +1,27 @@
 {
-  "dry-run": false,
-  "verbose": true,
-  "force": false,
-  "pkgFiles": ["package.json"],
-  "preReleaseId": null,
-  "increment": "patch",
-  "buildCommand": "npm run build",
-  "changelogCommand": "npm run build:changelog",
-  "safeBump": false,
-  "requireCleanWorkingDir": false,
   "git": {
     "commit": true,
     "commitMessage": "release: V ${version}",
+    "requireCleanWorkingDir": true,
     "tag": true,
     "tagName": "${version}",
     "tagAnnotation": "release: V ${version}",
     "push": true
   },
-  "kooks": {
-    "before:init": ["npm run lint", "npm run test"],
-    "after:release": "npm run post:release"
+  "hooks": {
+    "before:init": ["npm run build", "npm run lint", "npm run test"],
+    "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
   },
   "npm": {
     "publish": true
   },
   "github": {
-    "release": false
-  },
-  "dist": {
-    "repo": false
+    "release": true
   },
   "plugins": {
     "@release-it/conventional-changelog": {
       "preset": "eslint",
       "infile": "CHANGELOG.md"
-    }
-  },
-  "prompt": {
-    "src": {
-      "status": true,
-      "commit": true,
-      "tag": true,
-      "push": true,
-      "release": true,
-      "publish": true
-    },
-    "dist": {
-      "status": true,
-      "commit": true,
-      "tag": true,
-      "push": true,
-      "release": true,
-      "publish": true
     }
   }
 }
