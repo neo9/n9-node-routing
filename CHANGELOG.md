@@ -1,5 +1,16 @@
 
 
+# [2.2.0](https://github.com/neo9/n9-node-routing/compare/2.1.0...2.2.0) (2023-09-27)
+
+
+### logs
+
+* Add logs on init end and start module end ([6c356da](https://github.com/neo9/n9-node-routing/commit/6c356da03451f1d998b11c3f062fb6e165a06bf6))
+
+### yarn
+
+* Upgrade release-it from v14 to v 16 ([35f6bbf](https://github.com/neo9/n9-node-routing/commit/35f6bbf0a0654ebd9c4d298ca9cd13c7d22c81e0))
+
 # [2.1.0](https://github.com/neo9/n9-node-routing/compare/2.0.1...2.1.0) (2023-04-03)
 
 
