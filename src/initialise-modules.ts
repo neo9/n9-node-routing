@@ -15,24 +15,33 @@ export default async (
 				initFile.includes(firstSequentialInitFileName),
 			);
 			if (matchingInitFileIndex !== -1) {
+				const moduleName = initFiles[matchingInitFileIndex].split('/').slice(-2)[0];
+				log.info(`Init module ${moduleName}`);
 				// eslint-disable-next-line @typescript-eslint/no-var-requires,global-require,import/no-dynamic-require
 				let module = require(join(path, initFiles[matchingInitFileIndex]));
 				module = module.default ? module.default : module;
 				await module(log);
+				log.debug(`End init module ${moduleName}`);
 				initFiles.splice(matchingInitFileIndex, 1);
 			}
 		}
 	}
 
 	await Promise.all(
-		initFiles.map((file) => {
+		initFiles.map(async (file) => {
 			const moduleName = file.split('/').slice(-2)[0];
-			log.info(`Init module ${moduleName}`);
+			try {
+				log.info(`Init module ${moduleName}`);
 
-			// eslint-disable-next-line @typescript-eslint/no-var-requires,global-require,import/no-dynamic-require
-			let module = require(join(path, file));
-			module = module.default ? module.default : module;
-			return module(log);
+				// eslint-disable-next-line @typescript-eslint/no-var-requires,global-require,import/no-dynamic-require
+				let module = require(join(path, file));
+				module = module.default ? module.default : module;
+				await module(log);
+				log.debug(`End init module ${moduleName}`);
+			} catch (e) {
+				log.error(`Error while initializing ${moduleName}`, { errString: JSON.stringify(e) });
+				throw e;
+			}
 		}),
 	);
 };

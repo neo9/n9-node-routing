@@ -3,6 +3,7 @@ import { Server } from 'http';
 import { join } from 'path';
 
 import { N9HttpClient, N9NodeRouting } from '../../src';
+import { N9NodeRoutingBaseConf } from '../../src/models/routing';
 
 export default {
 	print: true,
@@ -17,7 +18,7 @@ export const closeServer = async (server: Server): Promise<Error> => {
 	});
 };
 
-export const defaultNodeRoutingConfOptions: N9NodeRouting.ConfOptions = {
+export const defaultNodeRoutingConfOptions: N9NodeRouting.ConfOptions<N9NodeRoutingBaseConf> = {
 	n9NodeConf: {
 		path: join(__dirname, 'common-conf-validation/configuration-valid/conf'),
 	},

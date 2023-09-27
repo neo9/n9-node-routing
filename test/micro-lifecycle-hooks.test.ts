@@ -1,3 +1,4 @@
+import { N9Log } from '@neo9/n9-node-log';
 import ava, { Assertions } from 'ava';
 import { Express } from 'express';
 import { Server } from 'http';
@@ -22,17 +23,30 @@ async function init(
 }
 
 ava('[Lifecycle Hooks] init and started hooks called', async (t: Assertions) => {
-	const { server, prometheusServer } = await init();
+	const { server, prometheusServer } = await init({ log: new N9Log('test', { level: 'debug' }) });
 
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 
 	// Logs on stdout
-	t.true(output[4].includes('Init module feature'), 'Init module feature');
-	t.true(output[5].includes('feature init'), 'feature init');
-	t.true(output[6].includes('Listening on port 5000'), 'Listening on port 5000');
-	t.true(output[7].includes('Start module feature'), 'Start module feature');
-	t.true(output[8].includes('feature started'), 'feature started');
+	let index = 4;
+	t.true(output[index].includes('Init module feature'), 'Init module feature');
+	index += 1;
+	t.true(output[index].includes('feature init'), 'feature init');
+	index += 1;
+	t.true(output[index].includes('End init module feature'), 'End int module feature');
+	index += 1;
+	t.true(output[index].includes('Listening on port 5000'), 'Listening on port 5000');
+	index += 1;
+	t.true(output[index].includes('Init started module feature'), 'Init started module feature');
+	index += 1;
+	t.true(output[index].includes('feature started'), 'feature started');
+	index += 1;
+	t.true(
+		output[index].includes('End init started module feature'),
+		'End init started module feature',
+	);
+	index += 1;
 
 	// Close server
 	await end(server, prometheusServer);
@@ -48,13 +62,31 @@ ava('[Lifecycle Hooks] init in order', async (t: Assertions) => {
 	stdMock.restore();
 	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
 	// Logs on stdout
-	t.true(output[4].includes('feature init 1'), 'feature init 1');
-	t.true(output[5].includes('feature init after a long wait'), 'feature init after a long wait');
-	t.true(output[6].includes('feature init 2'), 'feature init 2');
-	t.true(output[7].includes('Listening on port 5000'), 'Listening on port 5000');
-	t.true(output[8].includes('feature started 1'), 'feature started 1');
-	t.true(output[9].includes('feature started after a long wait'), 'feature started');
-	t.true(output[10].includes('feature started 2'), 'feature started 2');
+	let index = 4;
+	t.true(output[index].includes('Init module feature'), 'Init module feature');
+	index += 1;
+	t.true(output[index].includes('feature init 1'), 'feature init 1');
+	index += 1;
+	t.true(
+		output[index].includes('feature init after a long wait'),
+		'feature init after a long wait',
+	);
+	index += 1;
+	t.true(output[index].includes('Init module feature'), 'Init module feature');
+	index += 1;
+	t.true(output[index].includes('feature init 2'), 'feature init 2');
+	index += 1;
+	t.true(output[index].includes('Listening on port 5000'), 'Listening on port 5000');
+	index += 1;
+	t.true(output[index].includes('Init started module feature'), 'Init started module feature');
+	index += 1;
+	t.true(output[index].includes('feature started 1'), 'feature started 1');
+	index += 1;
+	t.true(output[index].includes('feature started after a long wait'), 'feature started');
+	index += 1;
+	t.true(output[index].includes('Init started module feature'), 'Init started module feature');
+	index += 1;
+	t.true(output[index].includes('feature started 2'), 'feature started 2');
 
 	// Close server
 	await end(server, prometheusServer);
