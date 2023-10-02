@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [16.x, 18.x, 20.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -28,7 +28,7 @@ jobs:
       - name: Setup Nodejs with yarn caching
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: ${{ matrix.node-version }}
           cache: yarn
 
       - name: Install dependencies

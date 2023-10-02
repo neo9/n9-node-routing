@@ -1,21 +1,19 @@
 import { NodeOptions as SentryNodeOptionsInterface } from '@sentry/node';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {
+	BaseTransportOptions,
 	Breadcrumb,
 	BreadcrumbHint,
 	CaptureContext,
 	Event,
 	EventHint,
 	Integration,
-	LogLevel,
 	Options as SentryNodeOptionsOptionsInterface,
 	SamplingContext,
 	SdkMetadata,
 	Transport,
-	TransportClass,
-	TransportOptions,
 } from '@sentry/types';
-import { Allow, IsBoolean, IsEnum, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Allow, IsBoolean, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
 class Options implements SentryNodeOptionsOptionsInterface {
 	@IsOptional()
@@ -44,11 +42,7 @@ class Options implements SentryNodeOptionsOptionsInterface {
 
 	@IsOptional()
 	@Allow()
-	transport?: TransportClass<Transport>;
-
-	@IsOptional()
-	@Allow()
-	transportOptions?: TransportOptions;
+	transport?: (transportOptions: BaseTransportOptions) => Transport;
 
 	@IsOptional()
 	@IsString()
@@ -69,10 +63,6 @@ class Options implements SentryNodeOptionsOptionsInterface {
 	@IsOptional()
 	@IsNumber()
 	maxBreadcrumbs?: number;
-
-	@IsOptional()
-	@IsEnum(LogLevel)
-	logLevel?: LogLevel;
 
 	@IsOptional()
 	@IsNumber()

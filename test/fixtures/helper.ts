@@ -29,13 +29,13 @@ export async function init(
 	register.clear();
 
 	if (startMongoDB) {
-		const mongodServer = new MongoMemoryServer({
+		const mongodServer = await MongoMemoryServer.create({
 			binary: {
 				version: '4.2.2',
 			},
 			// debug: true,
 		});
-		const mongoConnectionString = await mongodServer.getUri();
+		const mongoConnectionString = mongodServer.getUri();
 		const db = await MongoUtils.connect(mongoConnectionString);
 		Container.set('db', db);
 		(global as any).db = db;

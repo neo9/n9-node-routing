@@ -32,12 +32,36 @@ ava('Use a small cargo to compute data', async (t: Assertions) => {
 		cargo.get({ v: 6 }),
 	]);
 
-	t.deepEqual<{ v: number; newV: number }>(id1, { v: 1, newV: 2 }, 'id1 fetch first object');
-	t.deepEqual<{ v: number; newV: number }>(id2, { v: 2, newV: 4 }, 'id2 fetch first object');
-	t.deepEqual<{ v: number; newV: number }>(id3, { v: 3, newV: 6 }, 'id3 fetch first object');
-	t.deepEqual<{ v: number; newV: number }>(id4, { v: 4, newV: 8 }, 'id2 fetch first object');
-	t.deepEqual<{ v: number; newV: number }>(id5, { v: 5, newV: 10 }, 'id2 fetch first object');
-	t.deepEqual<{ v: number; newV: number }>(id6, { v: 6, newV: 12 }, 'id1 fetch first object');
+	t.deepEqual<{ v: number; newV: number }, { v: number; newV: number }>(
+		id1,
+		{ v: 1, newV: 2 },
+		'id1 fetch first object',
+	);
+	t.deepEqual<{ v: number; newV: number }, { v: number; newV: number }>(
+		id2,
+		{ v: 2, newV: 4 },
+		'id2 fetch first object',
+	);
+	t.deepEqual<{ v: number; newV: number }, { v: number; newV: number }>(
+		id3,
+		{ v: 3, newV: 6 },
+		'id3 fetch first object',
+	);
+	t.deepEqual<{ v: number; newV: number }, { v: number; newV: number }>(
+		id4,
+		{ v: 4, newV: 8 },
+		'id2 fetch first object',
+	);
+	t.deepEqual<{ v: number; newV: number }, { v: number; newV: number }>(
+		id5,
+		{ v: 5, newV: 10 },
+		'id2 fetch first object',
+	);
+	t.deepEqual<{ v: number; newV: number }, { v: number; newV: number }>(
+		id6,
+		{ v: 6, newV: 12 },
+		'id1 fetch first object',
+	);
 
 	// Clear stdout
 	stdMock.restore();
@@ -63,12 +87,36 @@ ava('Use a small cargo to compute data with default dispatch function', async (t
 		cargo.get({ id: 6 }),
 	]);
 
-	t.deepEqual<{ _id: number; newV: number }>(id1, { _id: 1, newV: 2 }, 'id1 fetch first object');
-	t.deepEqual<{ _id: number; newV: number }>(id2, { _id: 2, newV: 4 }, 'id2 fetch first object');
-	t.deepEqual<{ _id: number; newV: number }>(id3, { _id: 3, newV: 6 }, 'id3 fetch first object');
-	t.deepEqual<{ _id: number; newV: number }>(id4, { _id: 4, newV: 8 }, 'id2 fetch first object');
-	t.deepEqual<{ _id: number; newV: number }>(id5, { _id: 5, newV: 10 }, 'id2 fetch first object');
-	t.deepEqual<{ _id: number; newV: number }>(id6, { _id: 6, newV: 12 }, 'id1 fetch first object');
+	t.deepEqual<{ _id: number; newV: number }, { _id: number; newV: number }>(
+		id1,
+		{ _id: 1, newV: 2 },
+		'id1 fetch first object',
+	);
+	t.deepEqual<{ _id: number; newV: number }, { _id: number; newV: number }>(
+		id2,
+		{ _id: 2, newV: 4 },
+		'id2 fetch first object',
+	);
+	t.deepEqual<{ _id: number; newV: number }, { _id: number; newV: number }>(
+		id3,
+		{ _id: 3, newV: 6 },
+		'id3 fetch first object',
+	);
+	t.deepEqual<{ _id: number; newV: number }, { _id: number; newV: number }>(
+		id4,
+		{ _id: 4, newV: 8 },
+		'id2 fetch first object',
+	);
+	t.deepEqual<{ _id: number; newV: number }, { _id: number; newV: number }>(
+		id5,
+		{ _id: 5, newV: 10 },
+		'id2 fetch first object',
+	);
+	t.deepEqual<{ _id: number; newV: number }, { _id: number; newV: number }>(
+		id6,
+		{ _id: 6, newV: 12 },
+		'id1 fetch first object',
+	);
 
 	// Clear stdout
 	stdMock.restore();

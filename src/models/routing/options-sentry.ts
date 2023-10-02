@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-classes-per-file
-import { RequestHandlerOptions } from '@sentry/node/dist/handlers';
+import { RequestHandlerOptions } from '@sentry/node/types/handlers';
 import { Type } from 'class-transformer';
 import {
 	Allow,

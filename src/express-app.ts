@@ -4,11 +4,11 @@ import { createMiddleware, signalIsUp } from '@promster/express';
 import * as PromsterServer from '@promster/server';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
-import type { Integration } from '@sentry/types/dist/integration';
+import type { Integration } from '@sentry/types';
 import * as ClassValidator from 'class-validator';
 import * as express from 'express';
 import fastSafeStringify from 'fast-safe-stringify';
-import * as helmet from 'helmet';
+import helmet from 'helmet';
 import { createServer } from 'http';
 import * as morgan from 'morgan';
 import * as PrometheusClient from 'prom-client';
@@ -91,13 +91,10 @@ export async function init<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>
 		expressApp.use(
 			createMiddleware({
 				options: {
-					normalizePath: (
-						path: string,
-						rr: { req: express.Request; res: express.Response },
-					): string => rr.req.route?.path || rr.req.originalUrl || rr.req.url,
+					normalizePath: (path: string, context: { req: any; res: any }): string =>
+						context.req.route?.path || context.req.originalUrl || context.req.url,
 					labels: options.prometheus.labels,
 					getLabelValues: options.prometheus.getLabelValues,
-					accuracies: options.prometheus.accuracies,
 					skip: options.prometheus.skip,
 				},
 			}),

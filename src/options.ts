@@ -223,7 +223,6 @@ function applyPrometheusOptionsDefault(options: N9NodeRouting.Options): void {
 		options.prometheus.isEnabled = true;
 		options.prometheus.port =
 			typeof options.prometheus.port === 'number' ? options.prometheus.port : 9101;
-		options.prometheus.accuracies = options.prometheus.accuracies || ['s'];
 	}
 }
 
