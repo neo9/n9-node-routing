@@ -1,6 +1,5 @@
-import { MongoClient } from '@neo9/n9-mongo-client';
+import { FilterQuery, MongoClient, N9FindCursor } from '@neo9/n9-mongodb-client';
 import * as crypto from 'crypto';
-import type { Cursor, FilterQuery } from 'mongodb';
 import { Service } from 'typedi';
 
 import { UserDetails, UserEntity, UserListItem, UserRequestCreate } from './users.models';
@@ -29,7 +28,11 @@ export class UsersService {
 		return await this.mongoClient.existsByKey(email, 'email');
 	}
 
-	public find(query: FilterQuery<UserEntity>, page: number, size: number): Cursor<UserListItem> {
+	public find(
+		query: FilterQuery<UserEntity>,
+		page: number,
+		size: number,
+	): N9FindCursor<UserListItem> {
 		return this.mongoClient.find(query, page, size);
 	}
 

@@ -1,24 +1,14 @@
-// tslint:disable:ordered-imports
 import ava, { ExecutionContext } from 'ava';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import * as QueryString from 'query-string';
 
-import { end, get, init, logErrorForHuman } from './fixtures/helper';
+import { init, TestContext, urlPrefix } from './fixtures';
 import { FilterQuery } from './fixtures/micro-query-params/models/filter-query.models';
 
-const context: any = {};
+init('micro-query-params');
 
-/*
- ** Start API
- */
-ava.before('Start API', async () => {
-	const { server, prometheusServer } = await init('micro-query-params', true);
-	context.server = server;
-	context.prometheusServer = prometheusServer;
-});
-
-ava('GET /test/ => 200 with good params', async (t: ExecutionContext) => {
+ava('GET /test/ => 200 with good params', async (t: ExecutionContext<TestContext>) => {
 	const queryParams: FilterQuery = {
 		pmString: ['a', 'b'],
 		pmNumber: [1, 2],
@@ -41,12 +31,11 @@ ava('GET /test/ => 200 with good params', async (t: ExecutionContext) => {
 		sentQueryParams.pObject = JSON.stringify(sentQueryParams.pObject) as any;
 
 		const queryString = QueryString.stringify(sentQueryParams, { arrayFormat: 'none' });
-		const { body, err } = await get<any>(`/test/?${queryString}`, 'json');
-		if (err) {
-			logErrorForHuman(err);
-		}
-		t.falsy(err?.context, `Error context is empty for arrayFormat : ${arrayFormat}`);
-		t.falsy(err, `Error is empty for arrayFormat : ${arrayFormat}`);
+		const filterQuery = await t.context.httpClient.get<FilterQuery>([
+			urlPrefix,
+			`test?${queryString}`,
+		]);
+
 		const expectedObject = _.cloneDeep(queryParams);
 		// transform Date as ISOString because date as JSON are in string
 		expectedObject.pmDate = expectedObject.pmDate?.map((d) =>
@@ -57,16 +46,9 @@ ava('GET /test/ => 200 with good params', async (t: ExecutionContext) => {
 			(d) => moment(d).startOf('s').toISOString() as any,
 		);
 		t.deepEqual(
-			body,
+			filterQuery,
 			expectedObject,
 			`Params sent are well parsed for arrayFormat : ${arrayFormat}`,
 		);
 	}
-});
-
-/*
- ** Stop API
- */
-ava.after('Stop server', async () => {
-	await end(context.server, context.prometheusServer);
 });

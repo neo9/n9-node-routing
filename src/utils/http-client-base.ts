@@ -5,8 +5,8 @@ import fastSafeStringify from 'fast-safe-stringify';
 import got, { Method, Options as GotOptions } from 'got';
 import { RequestError } from 'got/dist/source/core';
 import { IncomingMessage } from 'http';
+import { nanoid } from 'nanoid';
 import * as QueryString from 'query-string';
-import * as shortid from 'shortid';
 import { PassThrough } from 'stream';
 import urlJoin = require('url-join');
 
@@ -163,7 +163,7 @@ export class N9HttpClient {
 		const uri = N9HttpClient.getUriFromUrlParts(url);
 
 		const namespaceRequestId = getNamespace(RequestIdNamespaceName);
-		const requestId: string = namespaceRequestId?.get(RequestIdKey) || shortid.generate();
+		const requestId: string = namespaceRequestId?.get(RequestIdKey) || nanoid(10);
 		// eslint-disable-next-line @typescript-eslint/naming-convention
 		const sentHeaders = { ...headers, 'x-request-id': requestId };
 		const searchParams =

@@ -1,36 +1,37 @@
-import { N9Log } from '@neo9/n9-node-log';
 import { N9Error, waitFor } from '@neo9/n9-node-utils';
 import * as Sentry from '@sentry/node';
-import ava, { Assertions } from 'ava';
-import * as stdMock from 'std-mocks';
+import ava, { ExecutionContext } from 'ava';
 
-import { end, init, urlPrefix } from './fixtures/helper';
+import { init, TestContext, urlPrefix } from './fixtures';
 
-ava.beforeEach(() => {
-	delete (global as any).log;
+const { runBeforeTest } = init('micro-sentry', {
+	avoidBeforeEachHook: true,
+	nodeEnvValue: 'development',
 });
 
-ava('Init sentry and send error event', async (t: Assertions) => {
+ava('Init sentry and send error event', async (t: ExecutionContext<TestContext>) => {
 	const eventsSent: Sentry.Event[] = [];
-	const { server, prometheusServer, httpClient } = await init('micro-sentry', false, {
-		sentry: {
-			initOptions: {
-				dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0',
-				debug: true,
-				beforeSend: (event: Sentry.Event) => {
-					eventsSent.push(event);
-					return event;
+	await runBeforeTest(t, {
+		n9NodeRoutingOptions: {
+			sentry: {
+				initOptions: {
+					dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0',
+					debug: true,
+					beforeSend: (event: Sentry.Event) => {
+						eventsSent.push(event);
+						return event;
+					},
 				},
 			},
 		},
 	});
 
-	const res = await httpClient.post<any>([urlPrefix, 'v1', 'bar']);
+	const res = await t.context.httpClient.post<any>([urlPrefix, 'v1', 'bar']);
 	t.truthy(res.bar, 'foo');
 
 	// Call special route which fails
 	const err = await t.throwsAsync<N9Error>(async () =>
-		httpClient.post([urlPrefix, 'v1', 'bar'], {}, { error: true }),
+		t.context.httpClient.post([urlPrefix, 'v1', 'bar'], {}, { error: true }),
 	);
 	t.is(err.status, 505);
 	t.is(err.message, 'bar-extendable-error');
@@ -46,76 +47,71 @@ ava('Init sentry and send error event', async (t: Assertions) => {
 	);
 	t.is(eventsSent[0].transaction, 'POST /:version/bar', 'Path is well formatted');
 
-	const { stdout } = stdMock.flush();
 	t.truthy(
-		stdout.find((line) => line.includes('Sentry tracing enabled')),
+		t.context.stdout.find((line) => line.includes('Sentry tracing enabled')),
 		'Sentry tracing interceptor is enabled',
 	);
 	t.truthy(
-		stdout.find((line) => line.includes('Integration installed: Http')),
+		t.context.stdout.find((line) => line.includes('Integration installed: Http')),
 		'Sentry tracing is enabled : Integration installed: Http',
 	);
 	t.truthy(
-		stdout.find((line) => line.includes('Integration installed: Express')),
+		t.context.stdout.find((line) => line.includes('Integration installed: Express')),
 		'Sentry tracing is enabled : Integration installed: Express',
 	);
-
-	// Close server
-	await end(server, prometheusServer);
 });
 
-ava('Init sentry as default and check tracing enabled', async (t: Assertions) => {
-	process.env.SENTRY_DSN = 'https://examplePublicKey@o0.ingest.sentry.io/0';
-	const { server, prometheusServer } = await init('micro-sentry', false, {
-		log: new N9Log('test', { level: 'debug' }),
-	});
-	const { stdout } = stdMock.flush();
-	t.truthy(
-		stdout.find((line) => line.includes('Sentry tracing enabled')),
-		'Sentry tracing interceptor is enabled',
-	);
-	t.truthy(
-		stdout.find((line) => line.includes('"tracesSampleRate":1')),
-		'Sentry config is printed',
-	);
+ava(
+	'Init sentry as default and check tracing enabled',
+	async (t: ExecutionContext<TestContext>) => {
+		process.env.SENTRY_DSN = 'https://examplePublicKey@o0.ingest.sentry.io/0';
+		await runBeforeTest(t);
+		t.truthy(
+			t.context.stdout.find((line) => line.includes('Sentry tracing enabled')),
+			'Sentry tracing interceptor is enabled',
+		);
+		t.truthy(
+			t.context.stdout.find((line) => line.includes('"tracesSampleRate": 1')),
+			'Sentry config is printed',
+		);
+	},
+);
 
-	// Close server
-	await end(server, prometheusServer);
-});
-
-ava('Init sentry with conf override', async (t: Assertions) => {
+ava('Init sentry with conf override', async (t: ExecutionContext<TestContext>) => {
 	process.env.SENTRY_DSN = 'https://examplePublicKey@o0.ingest.sentry.io/0';
-	const { server, prometheusServer } = await init('micro-sentry', false, {
-		log: new N9Log('test', { level: 'debug' }),
-		sentry: {
-			forceCustomOptions: true,
+	await runBeforeTest(t, {
+		n9NodeRoutingOptions: {
+			sentry: {
+				forceCustomOptions: true,
+			},
 		},
 	});
-	const { stdout } = stdMock.flush();
 	t.falsy(
-		stdout.find((line) => line.includes('Sentry tracing enabled')),
+		t.context.stdout.find((line) => line.includes('Sentry tracing enabled')),
 		'Sentry tracing interceptor is enabled only by default',
 	);
 	t.truthy(
-		stdout.find((line) => line.includes('"release"')),
+		t.context.stdout.find((line) => line.includes('"release"')),
 		'Sentry config is printed',
 	);
 	t.falsy(
-		stdout.find((line) => line.includes('"tracesSampleRate":1')),
+		t.context.stdout.find((line) => line.includes('"tracesSampleRate":1')),
 		'Sentry config is printed, traceSampleRate is not set',
 	);
-
-	// Close server
-	await end(server, prometheusServer);
 });
 
-ava('Init sentry with conf missing DSN', async (t: Assertions) => {
-	await t.throwsAsync(
-		init('micro-sentry', false, {
-			log: new N9Log('test', { level: 'debug' }),
+ava('Init sentry with conf missing DSN', async (t: ExecutionContext<TestContext>) => {
+	await runBeforeTest(t, {
+		n9NodeRoutingOptions: {
 			sentry: {},
-		}),
-		{ message: 'missing-sentry-dsn' },
+		},
+		mockAndCatchStdOptions: {
+			throwError: false,
+		},
+	});
+	t.is(
+		t.context.runBeforeTestError?.message,
+		'missing-sentry-dsn',
 		'No dsn provided, should throw error',
 	);
 });

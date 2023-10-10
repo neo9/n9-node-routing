@@ -6,14 +6,14 @@ import { Get, Inject, JsonController, Service } from '../../../../src';
 @JsonController()
 export class ValidateController {
 	@Inject('logger')
-	private logger: N9Log;
+	private readonly logger: N9Log;
 
 	@Inject('conf')
-	private conf: any;
+	private readonly conf: any;
 
 	@Get('/bar')
 	public getBar(): any {
-		this.logger.info(' message in controller');
+		this.logger.info('message in controller');
 		return this.conf;
 	}
 

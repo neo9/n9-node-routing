@@ -91,7 +91,6 @@ export default async <
 	conf = confInstance || conf;
 	(global as any).conf = conf;
 	initExposedConf(classToPlain(conf));
-
 	Container.set('logger', logger);
 	Container.set('conf', conf);
 	Container.set('N9HttpClient', new N9HttpClient(logger, options.httpClient));

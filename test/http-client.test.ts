@@ -1,36 +1,21 @@
 import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
-import ava, { Assertions } from 'ava';
+import test, { ExecutionContext } from 'ava';
 import * as FormData from 'form-data';
 import * as fs from 'fs';
 import { join } from 'path';
-import * as stdMock from 'std-mocks';
 
-// tslint:disable-next-line:import-name
-import N9NodeRouting, { N9HttpClient } from '../src';
-import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
-import { end } from './fixtures/helper';
+import { N9HttpClient } from '../src';
+import { init, mockAndCatchStd, TestContext, urlPrefix } from './fixtures';
 
-const print = commons.print;
+init('micro-mock-http-responses');
 
-ava('Call a route with HttpClient', async (t: Assertions) => {
-	stdMock.use({ print });
-	const { server, prometheusServer } = await N9NodeRouting({
-		hasProxy: true, // tell N9NodeRouting to parse `session` header
-		http: {
-			port: 6001,
-		},
-		conf: defaultNodeRoutingConfOptions,
-	});
-	stdMock.flush();
-
-	const httpClient = new N9HttpClient(new N9Log('test'));
-
+test('Call a route with HttpClient', async (t: ExecutionContext<TestContext>) => {
 	/*
 	 ** Test ping route
 	 */
-	let rep = await httpClient.get<string>(
-		'http://localhost:6001/ping',
+	let rep = await t.context.httpClient.get<string>(
+		[urlPrefix, 'ping'],
 		{},
 		{
 			// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -41,8 +26,8 @@ ava('Call a route with HttpClient', async (t: Assertions) => {
 		},
 	);
 	t.is(rep, JSON.stringify({ response: 'pong' }));
-	const repObject = await httpClient.get<{ response: string }>(
-		'http://localhost:6001/ping',
+	const repObject = await t.context.httpClient.get<{ response: string }>(
+		[urlPrefix, 'ping'],
 		{},
 		{
 			// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -53,74 +38,74 @@ ava('Call a route with HttpClient', async (t: Assertions) => {
 		},
 	);
 	t.deepEqual(repObject, { response: 'pong' });
-	rep = await httpClient.raw<string>('http://localhost:6001/ping', {
+	rep = await t.context.httpClient.raw<string>([urlPrefix, 'ping'], {
 		method: 'get',
 		responseType: 'text',
 	});
 	t.is(rep, JSON.stringify({ response: 'pong' }));
 
 	let error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.post<string>('http://localhost:6001/ping'),
+		async () => await t.context.httpClient.post<string>([urlPrefix, 'ping']),
 	);
 	t.is(error.message, 'not-found', 'post not-found');
 
 	error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.put<string>('http://localhost:6001/ping'),
+		async () => await t.context.httpClient.put<string>([urlPrefix, 'ping']),
 	);
 	t.is(error.message, 'not-found', 'put not-found');
 
 	error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.delete<string>('http://localhost:6001/ping'),
+		async () => await t.context.httpClient.delete<string>([urlPrefix, 'ping']),
 	);
 	t.is(error.message, 'not-found', 'delete not-found');
 
 	error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.options<string>('http://localhost:6001/ping'),
+		async () => await t.context.httpClient.options<string>([urlPrefix, 'ping']),
 	);
 	t.is(error.message, 'not-found', 'options not-found');
 
 	error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.patch<string>('http://localhost:6001/ping'),
+		async () => await t.context.httpClient.patch<string>([urlPrefix, 'ping']),
 	);
 	t.is(error.message, 'not-found', 'patch not-found');
 
 	error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.request<string>('post', ['http://localhost:6001', 'ping']),
+		async () => await t.context.httpClient.request<string>('post', [urlPrefix, 'ping']),
 	);
 	t.is(error.message, 'not-found', 'request not-found');
 
 	error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.requestStream(['http://localhost:6001', '404']),
+		async () => await t.context.httpClient.requestStream([urlPrefix, '404']),
 	);
 	t.is(error.status, 404, 'request stream not-found');
 
 	error = await t.throwsAsync<N9Error>(
 		async () =>
-			await httpClient.raw<string>('http://localhost:6001/ping', {
+			await t.context.httpClient.raw<string>([urlPrefix, 'ping'], {
 				method: 'post',
 			}),
 	);
 	t.is(error.message, 'not-found', 'raw not-found');
 
 	error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.get<string>('http://localhost:111111'),
+		async () => await t.context.httpClient.get<string>('http://localhost:111111'),
 	);
 	t.is(error.message, 'ERR_INVALID_URL', 'address invalid');
 
 	error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.get<string>('http://ww.cantconnecttothis.addres'),
+		async () => await t.context.httpClient.get<string>('http://ww.cantconnecttothis.addres'),
 	);
 	t.is(error.message, 'ENOTFOUND', "can't resolve dns");
 	t.is(error.status, 500);
 
 	error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.get<string>('http://localhost:1'),
+		async () => await t.context.httpClient.get<string>('http://localhost:1'),
 	);
 	t.is(error.message, 'ECONNREFUSED', 'connection refused');
 	t.is(error.status, 500);
 
-	const { incomingMessage, responseAsStream } = await httpClient.requestStream([
-		'http://localhost:6001',
+	const { incomingMessage, responseAsStream } = await t.context.httpClient.requestStream([
+		urlPrefix,
 		'ping',
 	]);
 	t.is(incomingMessage.statusCode, 200, 'status code 200');
@@ -134,30 +119,28 @@ ava('Call a route with HttpClient', async (t: Assertions) => {
 			.on('end', resolve);
 	});
 	t.is(responseContent, JSON.stringify({ response: 'pong' }), 'response is pong');
-
-	await end(server, prometheusServer);
 });
 
-ava('Check retries of HttpClient', async (t: Assertions) => {
-	stdMock.use({ print });
+test('Check retries of HttpClient', async (t: ExecutionContext<TestContext>) => {
 	const httpClient = new N9HttpClient(
 		new N9Log('test', {
 			level: 'debug',
 		}),
 	);
-	const error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.get<string>('http://localhost:1'),
-	);
-	const { stdout, stderr } = stdMock.flush();
+	const { stdout, stderr } = await mockAndCatchStd(async () => {
+		const error = await t.throwsAsync<N9Error>(
+			async () => await httpClient.get<string>('http://localhost:1'),
+		);
+		t.is(error.message, 'ECONNREFUSED', 'connection refused');
+		t.is(error.status, 500);
+	});
 
-	t.is(error.message, 'ECONNREFUSED', 'connection refused');
-	t.is(error.status, 500);
 	t.truthy(stdout?.length, 'stdout not empty');
 	t.true(
 		stdout[stdout.length - 1]?.includes(
-			`Retry call [GET http://localhost:1/] n°2 due to ECONNREFUSED connect ECONNREFUSED`, // 127.0.0.1:1
+			`Retry call [GET http://localhost:1/] n°2 due to ECONNREFUSED`, // 127.0.0.1:1
 		),
-		`Retry n°2 is logged by client`,
+		`Retry n°2 is logged by client | ${stdout[stdout.length - 1]}`,
 	);
 	t.true(
 		stderr[stderr.length - 1].includes(`Error on [get http://localhost:1]`),
@@ -165,60 +148,42 @@ ava('Check retries of HttpClient', async (t: Assertions) => {
 	);
 });
 
-ava('Check retries of HttpClient against error controller', async (t: Assertions) => {
-	stdMock.use({ print });
-	const { server, prometheusServer } = await N9NodeRouting({
-		hasProxy: true, // tell N9NodeRouting to parse `session` header
-		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
-		http: {
-			port: 6001,
-		},
-		conf: defaultNodeRoutingConfOptions,
+test('Check retries of HttpClient against error controller', async (t: ExecutionContext<TestContext>) => {
+	const { stdout, stderr } = await mockAndCatchStd(async () => {
+		const error = await t.throwsAsync<N9Error>(
+			async () => await t.context.httpClient.get<string>([urlPrefix, '503']),
+		);
+		t.is(error.message, 'an-error', 'connection refused');
+		t.is(error.status, 503);
 	});
 
-	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
-	const error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.get<string>('http://localhost:6001/503'),
-	);
-	const { stdout, stderr } = stdMock.flush();
-
-	t.is(error.message, 'an-error', 'connection refused');
-	t.is(error.status, 503);
 	t.is(
 		stderr.filter((line) => line.includes('An error occurred, client should retry')).length,
 		3,
 		`Count 3 calls, 1 + 2 retries`,
 	);
+
 	t.true(
-		stdout[7].includes(
-			`Retry call [GET http://localhost:6001/503] n°1 due to ERR_NON_2XX_3XX_RESPONSE Response code 503 (Service Unavailable)`,
+		stdout[1].includes(
+			`Retry call [GET ${urlPrefix}/503] n°1 due to ERR_NON_2XX_3XX_RESPONSE Response code 503 (Service Unavailable)`,
 		),
-		`Retry n°1 is logged by client`,
+		`Retry n°1 is logged by client | ${stdout[1]}`,
 	);
 	t.true(
-		stdout[9].includes(
-			`Retry call [GET http://localhost:6001/503] n°2 due to ERR_NON_2XX_3XX_RESPONSE Response code 503 (Service Unavailable)`,
-		),
-		`Retry n°2 is logged by client`,
+		stdout
+			.join('')
+			.includes(
+				`Retry call [GET ${urlPrefix}/503] n°2 due to ERR_NON_2XX_3XX_RESPONSE Response code 503 (Service Unavailable)`,
+			),
+		`Retry n°2 is logged by client | ${stdout.join('')}`,
 	);
 	t.true(
-		stderr[stderr.length - 1].includes(`Error on [get http://localhost:6001/503]`),
+		stderr[stderr.length - 7].includes(`Error on [get ${urlPrefix}/503]`),
 		`Fail is also logged by client`,
 	);
-	await end(server, prometheusServer);
 });
 
-ava('Use HttpClient got base options', async (t: Assertions) => {
-	stdMock.use({ print });
-	const { server, prometheusServer } = await N9NodeRouting({
-		hasProxy: true, // tell N9NodeRouting to parse `session` header
-		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
-		http: {
-			port: 6001,
-		},
-		conf: defaultNodeRoutingConfOptions,
-	});
-
+test('Use HttpClient got base options', async (t: ExecutionContext<TestContext>) => {
 	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }), {
 		gotOptions: {
 			headers: {
@@ -226,66 +191,28 @@ ava('Use HttpClient got base options', async (t: Assertions) => {
 			},
 		},
 	});
-	const rep = await httpClient.get<{ ok: boolean }>('http://localhost:6001/requires-header');
+	const rep = await httpClient.get<{ ok: boolean }>([urlPrefix, 'requires-header']);
 	t.deepEqual(rep, { ok: true }, 'ok expected');
-	await end(server, prometheusServer);
 });
 
-ava('Use HttpClient with multiple queryParams', async (t: Assertions) => {
-	stdMock.use({ print });
-	const { server, prometheusServer } = await N9NodeRouting({
-		hasProxy: true, // tell N9NodeRouting to parse `session` header
-		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
-		http: {
-			port: 6001,
-		},
-		conf: defaultNodeRoutingConfOptions,
-	});
-
-	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
-	let rep = await httpClient.get<{ ids: string[] }>('http://localhost:6001/by-multiple-ids', {
+test('Use HttpClient with multiple queryParams', async (t: ExecutionContext<TestContext>) => {
+	let rep = await t.context.httpClient.get<{ ids: string[] }>([urlPrefix, 'by-multiple-ids'], {
 		ids: [1, 2, 3],
 	});
 	t.deepEqual(rep, { ids: ['1', '2', '3'] }, 'array with 3 values expected');
 
-	rep = await httpClient.get<{ ids: string[] }>('http://localhost:6001/by-multiple-ids', {
+	rep = await t.context.httpClient.get<{ ids: string[] }>([urlPrefix, 'by-multiple-ids'], {
 		ids: 1,
 	});
 	t.deepEqual(rep, { ids: ['1'] }, 'array with 1 value expected');
-
-	await end(server, prometheusServer);
 });
 
-ava('Use HttpClient to call route with response 204', async (t: Assertions) => {
-	stdMock.use({ print });
-	const { server, prometheusServer } = await N9NodeRouting({
-		hasProxy: true, // tell N9NodeRouting to parse `session` header
-		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
-		http: {
-			port: 6001,
-		},
-		conf: defaultNodeRoutingConfOptions,
-	});
-
-	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
-	const rep = await httpClient.get<object>('http://localhost:6001/empty-response');
+test('Use HttpClient to call route with response 204', async (t: ExecutionContext<TestContext>) => {
+	const rep = await t.context.httpClient.get<object>([urlPrefix, 'empty-response']);
 	t.is(rep, undefined, 'response is undefined');
-
-	await end(server, prometheusServer);
 });
 
-ava('Use HttpClient to upload a file', async (t: Assertions) => {
-	stdMock.use({ print });
-	const { server, prometheusServer } = await N9NodeRouting({
-		hasProxy: true, // tell N9NodeRouting to parse `session` header
-		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
-		http: {
-			port: 6001,
-		},
-		conf: defaultNodeRoutingConfOptions,
-	});
-
-	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
+test('Use HttpClient to upload a file', async (t: ExecutionContext<TestContext>) => {
 	let body = new FormData();
 	body.append(
 		'file1',
@@ -295,7 +222,7 @@ ava('Use HttpClient to upload a file', async (t: Assertions) => {
 			contentType: 'text/csv',
 		},
 	);
-	let rep = await httpClient.raw('http://localhost:6001/files', {
+	let rep = await t.context.httpClient.raw([urlPrefix, 'files'], {
 		body,
 		method: 'post',
 	});
@@ -310,47 +237,21 @@ ava('Use HttpClient to upload a file', async (t: Assertions) => {
 			contentType: 'text/csv',
 		},
 	);
-	rep = await httpClient.raw('http://localhost:6001/files-no-response', {
+	rep = await t.context.httpClient.raw([urlPrefix, 'files-no-response'], {
 		body,
 		method: 'post',
 	});
 	t.is(rep, undefined, 'response is undefined');
-
-	await end(server, prometheusServer);
 });
 
-ava('Use HttpClient to call route with numeric error code', async (t: Assertions) => {
-	stdMock.use({ print });
-	const { server, prometheusServer } = await N9NodeRouting({
-		hasProxy: true, // tell N9NodeRouting to parse `session` header
-		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
-		http: {
-			port: 6001,
-		},
-		conf: defaultNodeRoutingConfOptions,
-	});
-
-	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }));
-
+test('Use HttpClient to call route with numeric error code', async (t: ExecutionContext<TestContext>) => {
 	const error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.get<string>('http://localhost:6001/numeric-error-code'),
+		async () => await t.context.httpClient.get<string>([urlPrefix, 'numeric-error-code']),
 	);
 	t.is(error.message, '500', 'error code is not numerical');
-
-	await end(server, prometheusServer);
 });
 
-ava('Use HttpClient with default sensitive headers options', async (t: Assertions) => {
-	stdMock.use({ print });
-	const { server, prometheusServer } = await N9NodeRouting({
-		hasProxy: true, // tell N9NodeRouting to parse `session` header
-		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
-		http: {
-			port: 6001,
-		},
-		conf: defaultNodeRoutingConfOptions,
-	});
-
+test('Use HttpClient with default sensitive headers options', async (t: ExecutionContext<TestContext>) => {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	const headers = { sensitive: 'sensitive', Authorization: '1111-2222-3333' };
 	const httpClient = new N9HttpClient(new N9Log('test', { level: 'debug' }), {
@@ -358,7 +259,7 @@ ava('Use HttpClient with default sensitive headers options', async (t: Assertion
 	});
 
 	let error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.request<string>('get', 'http://localhost:6001/numeric-error-code'),
+		async () => await httpClient.request<string>('get', [urlPrefix, 'numeric-error-code']),
 	);
 	t.is(error.message, '500', 'error code is not numerical');
 	t.like(
@@ -370,7 +271,7 @@ ava('Use HttpClient with default sensitive headers options', async (t: Assertion
 
 	error = await t.throwsAsync<N9Error>(
 		async () =>
-			await httpClient.raw<string>('http://localhost:6001/ping', {
+			await httpClient.raw<string>([urlPrefix, 'ping'], {
 				method: 'post',
 			}),
 	);
@@ -382,7 +283,7 @@ ava('Use HttpClient with default sensitive headers options', async (t: Assertion
 	);
 
 	error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.requestStream(['http://localhost:6001', '404'], { headers }),
+		async () => await httpClient.requestStream([urlPrefix, '404'], { headers }),
 	);
 	t.like(
 		error.context.headers,
@@ -390,21 +291,9 @@ ava('Use HttpClient with default sensitive headers options', async (t: Assertion
 		{ sensitive: 'sensitive', Authorization: '1************3' },
 		'Only Authorization is censored by default for streams',
 	);
-
-	await end(server, prometheusServer);
 });
 
-ava('Use HttpClient with custom sensitive headers options', async (t: Assertions) => {
-	stdMock.use({ print });
-	const { server, prometheusServer } = await N9NodeRouting({
-		hasProxy: true, // tell N9NodeRouting to parse `session` header
-		path: join(__dirname, 'fixtures/micro-mock-http-responses'),
-		http: {
-			port: 6001,
-		},
-		conf: defaultNodeRoutingConfOptions,
-	});
-
+test('Use HttpClient with custom sensitive headers options', async (t: ExecutionContext<TestContext>) => {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	const headers = { sensitive: 'sensitive', Authorization: '1111-2222-3333' };
 	const gotOptions = { headers };
@@ -416,7 +305,7 @@ ava('Use HttpClient with custom sensitive headers options', async (t: Assertions
 		},
 	});
 	let error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.get<string>('http://localhost:6001/numeric-error-code'),
+		async () => await httpClient.get<string>([urlPrefix, '/numeric-error-code']),
 	);
 	t.like(
 		error.context.headers,
@@ -428,11 +317,7 @@ ava('Use HttpClient with custom sensitive headers options', async (t: Assertions
 	const overridenHeaders = { otherSensitive: 'otherSensitive', clear: 'clear' };
 	error = await t.throwsAsync<N9Error>(
 		async () =>
-			await httpClient.get<string>(
-				'http://localhost:6001/numeric-error-code',
-				undefined,
-				overridenHeaders,
-			),
+			await httpClient.get<string>([urlPrefix, 'numeric-error-code'], undefined, overridenHeaders),
 	);
 	t.like(
 		error.context.headers,
@@ -447,7 +332,7 @@ ava('Use HttpClient with custom sensitive headers options', async (t: Assertions
 		},
 	});
 	error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.get<string>('http://localhost:6001/numeric-error-code'),
+		async () => await httpClient.get<string>([urlPrefix, 'numeric-error-code']),
 	);
 	t.like(
 		error.context.headers,
@@ -463,7 +348,7 @@ ava('Use HttpClient with custom sensitive headers options', async (t: Assertions
 		},
 	});
 	error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.get<string>('http://localhost:6001/numeric-error-code'),
+		async () => await httpClient.get<string>([urlPrefix, 'numeric-error-code']),
 	);
 	t.like(
 		error.context.headers,
@@ -479,7 +364,7 @@ ava('Use HttpClient with custom sensitive headers options', async (t: Assertions
 		},
 	});
 	error = await t.throwsAsync<N9Error>(
-		async () => await httpClient.get<string>('http://localhost:6001/numeric-error-code'),
+		async () => await httpClient.get<string>([urlPrefix, 'numeric-error-code']),
 	);
 	t.like(
 		error.context.headers,
@@ -487,6 +372,4 @@ ava('Use HttpClient with custom sensitive headers options', async (t: Assertions
 		{ sensitive: 'sensitive', Authorization: '1111-2222-3333' },
 		'All headers are uncensored',
 	);
-
-	await end(server, prometheusServer);
 });

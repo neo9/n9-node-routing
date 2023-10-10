@@ -1,4 +1,4 @@
-import { BaseMongoObject } from '@neo9/n9-mongo-client/dist/src/models';
+import { BaseMongoObject } from '@neo9/n9-mongodb-client';
 import { Exclude, Expose } from 'class-transformer';
 
 import { Allow, IsEmail, IsString, MinLength } from '../../../src';

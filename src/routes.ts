@@ -55,21 +55,10 @@ export function init(
 			if (options.prometheus.isEnabled) {
 				signalIsUp();
 			}
-			res.status(200).json({ response: `pong-dbs-${options.http.ping.dbs.length}` });
-		} else if ((global as any).db && (global as any).dbClient) {
-			if (!(global as any).dbClient.isConnected()) {
-				if ((global as any).log?.error) {
-					(global as any).log.error(`[PING] Can't connect to MongoDB`);
-				}
-				if (options.prometheus.isEnabled) {
-					signalIsNotUp();
-				}
-				res.status(500).json(new N9Error('db-unreachable', 500));
+			if (options.http.ping.dbs.length > 1) {
+				res.status(200).json({ response: `pong-dbs-${options.http.ping.dbs.length}` });
 			} else {
-				if (options.prometheus.isEnabled) {
-					signalIsUp();
-				}
-				res.status(200).json({ response: 'pong-db' });
+				res.status(200).json({ response: `pong-db` });
 			}
 		} else {
 			res.status(200).json({ response: 'pong' });
@@ -125,7 +114,7 @@ export function init(
 	expressApp.use((req: Request, res: Response, next: NextFunction) => {
 		if (!res.headersSent) {
 			const err = new N9Error('not-found', 404, { url: req.url });
-			options.log.warn(err.message, err);
+			options.log.warn(err.message, { err });
 			let error;
 
 			if (!expressApp.get('env') || ['development', 'test'].includes(expressApp.get('env'))) {

@@ -1,15 +1,15 @@
-import { N9Log } from '@neo9/n9-node-log';
 import { Server } from 'http';
 import { join } from 'path';
 
-import { N9HttpClient, N9NodeRouting } from '../../src';
+import { N9NodeRouting } from '../../src';
 import { N9NodeRoutingBaseConf } from '../../src/models/routing';
 
 export default {
 	print: true,
 	// Allow developers to add console log in N9NodeRouting then exclude them for tests
-	excludeSomeLogs: (): boolean => true,
-	jsonHttpClient: new N9HttpClient(new N9Log('tests')),
+	excludeSomeLogs: (log: string): boolean => {
+		return !log.includes(' -- ');
+	},
 };
 
 export const closeServer = async (server: Server): Promise<Error> => {

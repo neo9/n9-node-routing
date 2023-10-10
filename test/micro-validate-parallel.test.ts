@@ -1,5 +1,5 @@
 import { N9Error, waitFor } from '@neo9/n9-node-utils';
-import ava, { Assertions } from 'ava';
+import test, { ExecutionContext } from 'ava';
 import {
 	getFromContainer,
 	MetadataStorage,
@@ -8,9 +8,8 @@ import {
 	ValidationSchema,
 } from 'class-validator';
 import { ValidationMetadata } from 'class-validator/types/metadata/ValidationMetadata';
-import * as stdMock from 'std-mocks';
 
-import commons from './fixtures/commons';
+import { mockAndCatchStd, TestContext } from './fixtures';
 
 const userValidationSchemas: ValidationSchema[] = [
 	{
@@ -101,21 +100,18 @@ async function testValidation(index: number): Promise<void> {
 	}
 }
 
-ava('[VALIDATE-PARALLEL] Check validation with multiple schemas', (t: Assertions) => {
-	stdMock.use({ print: commons.print });
+test('[VALIDATE-PARALLEL] Check validation with multiple schemas', async (t: ExecutionContext<TestContext>) => {
+	await mockAndCatchStd(() => {
+		// Serial exec
+		for (let i = 0; i < userValidationSchemas.length; i += 1) {
+			t.notThrows(async () => await testValidation(i), `Validation ok for index : ${i}`);
+		}
 
-	// Serial exec
-	for (let i = 0; i < userValidationSchemas.length; i += 1) {
-		t.notThrows(async () => await testValidation(i), `Validation ok for index : ${i}`);
-	}
-
-	// Parallel exec
-	t.notThrows(
-		async () =>
-			await Promise.all(userValidationSchemas.map(async (v, i) => await testValidation(i))),
-		'Validation parallel is OK',
-	);
-
-	stdMock.restore();
-	stdMock.flush();
+		// Parallel exec
+		t.notThrows(
+			async () =>
+				await Promise.all(userValidationSchemas.map(async (v, i) => await testValidation(i))),
+			'Validation parallel is OK',
+		);
+	});
 });

@@ -1,46 +1,28 @@
-import ava, { Assertions } from 'ava';
+import test, { ExecutionContext } from 'ava';
 import got from 'got';
-import { join } from 'path';
-import * as stdMock from 'std-mocks';
 
-// tslint:disable-next-line:import-name
-import N9NodeRouting from '../src';
-import commons, { closeServer, defaultNodeRoutingConfOptions } from './fixtures/commons';
+import { isPortAvailable } from '../src/utils';
+import { end, init, mockAndCatchStd, TestContext } from './fixtures';
 
-const print = commons.print;
-
-const appPath = join(__dirname, 'fixtures/micro-prometheus/');
-
-ava.beforeEach(() => {
-	delete (global as any).log;
+const { runBeforeTest } = init('micro-prometheus', {
+	avoidBeforeEachHook: true,
 });
 
-ava('Basic usage, create http server', async (t: Assertions) => {
-	stdMock.use({ print });
-	(global as any).conf = {
-		name: 'my-awesome-app',
-	};
-	const { server, prometheusServer } = await N9NodeRouting({
-		path: appPath,
-		http: {
-			port: 5000,
+test('Basic usage, create http server', async (t: ExecutionContext<TestContext>) => {
+	await runBeforeTest(t, {
+		n9NodeRoutingOptions: {
+			prometheus: {
+				port: 5002,
+			},
 		},
-		prometheus: {
-			port: 5002,
-		},
-		enableLogFormatJSON: false,
-		shutdown: {
-			waitDurationBeforeStop: 5,
-		},
-		conf: defaultNodeRoutingConfOptions,
 	});
-	let res = await got('http://127.0.0.1:5000/sample-route');
-	t.is(res.statusCode, 204);
-	t.is(res.body, '');
 
-	res = await got('http://127.0.0.1:5000/by-code/code1');
-	t.is(res.statusCode, 204);
-	t.is(res.body, '');
+	t.false(await isPortAvailable(5002), 'Prometheus server port is used');
+
+	await mockAndCatchStd(async () => {
+		await t.notThrowsAsync(t.context.httpClient.get<void>('http://127.0.0.1:5000/sample-route'));
+		await t.notThrowsAsync(t.context.httpClient.get<void>('http://127.0.0.1:5000/by-code/code1'));
+	});
 
 	// Check /foo route added on foo/foo.init.ts
 	let resProm = await got('http://127.0.0.1:5002/', {
@@ -72,8 +54,8 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	);
 	t.true(resProm.includes('version_info{version="'), `Prom exposition contains version info`);
 
-	const cancelableRequest = got('http://127.0.0.1:5000/a-long-route/a-code', {
-		method: 'POST',
+	const { result } = await mockAndCatchStd(() => {
+		return { promise: t.context.httpClient.post('http://127.0.0.1:5000/a-long-route/a-code') };
 	});
 
 	resProm = await got('http://127.0.0.1:5002/', {
@@ -81,6 +63,18 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 		resolveBodyOnly: true,
 	});
 	resPromAsArray = resProm.split('\n');
+
+	const prometheusMetricsForVersionInfo = resPromAsArray.filter(
+		(line) => line.includes(' version_info ') || line.includes('n9-node-routing'),
+	);
+	t.is(prometheusMetricsForVersionInfo.length, 3, '3 lines, 2 titles, 1 for data');
+	t.is(prometheusMetricsForVersionInfo[0], '# HELP version_info App version');
+	t.is(prometheusMetricsForVersionInfo[1], '# TYPE version_info gauge');
+	t.true(prometheusMetricsForVersionInfo[2].startsWith('version_info{version="'), 'check data');
+	t.true(
+		prometheusMetricsForVersionInfo[2].endsWith(',name="n9-node-routing"} 1'),
+		'check data end',
+	);
 
 	const prometheusMetricsForOnGoingRequests = resPromAsArray.filter((line) =>
 		line.includes('http_request_in_flight'),
@@ -94,53 +88,49 @@ ava('Basic usage, create http server', async (t: Assertions) => {
 	t.is(prometheusMetricsForOnGoingRequests[2], 'http_request_in_flight_total{method="GET"} 0');
 	t.is(prometheusMetricsForOnGoingRequests[3], 'http_request_in_flight_total{method="POST"} 1');
 
-	await cancelableRequest;
-
-	// Check logs
-	stdMock.restore();
-
-	// Close server
-	await closeServer(server);
-	await closeServer(prometheusServer);
+	await result.promise;
 });
 
-ava('Disable prometheus', async (t: Assertions) => {
-	stdMock.use({ print });
-	(global as any).conf = {
-		name: 'my-awesome-app',
-	};
-	const { server, prometheusServer } = await N9NodeRouting({
-		path: appPath,
-		http: {
-			port: 5000,
+test('Disable prometheus', async (t: ExecutionContext<TestContext>) => {
+	await runBeforeTest(t, {
+		n9NodeRoutingOptions: {
+			prometheus: {
+				port: 5002,
+				isEnabled: false,
+			},
 		},
-		prometheus: {
-			port: 5002,
-			isEnabled: false,
-		},
-		enableLogFormatJSON: false,
-		shutdown: {
-			waitDurationBeforeStop: 5,
-		},
-		conf: defaultNodeRoutingConfOptions,
 	});
-	t.is(prometheusServer, undefined, 'should not create prometheus server');
+	t.true(await isPortAvailable(5002), 'should not create prometheus server / use its port');
 
 	const res = await got('http://127.0.0.1:5000/sample-route');
 	t.is(res.statusCode, 204);
 	t.is(res.body, '');
 
-	// Check /foo route added on foo/foo.init.ts
 	await t.throwsAsync(
-		commons.jsonHttpClient.get('http://127.0.0.1:5002/'),
+		t.context.httpClient.get('http://127.0.0.1:5002/'),
 		{
 			message: 'ECONNREFUSED',
 		},
 		'Prometheus server should not be started',
 	);
-	// Check logs
-	stdMock.restore();
+});
 
-	// Close server
-	await closeServer(server);
+test('Try to run prometheus server twice on same port', async (t: ExecutionContext<TestContext>) => {
+	await runBeforeTest(t, {});
+	const n9NodeRoutingStartResult = t.context.n9NodeRoutingStartResult;
+
+	await t.throwsAsync(
+		runBeforeTest(t, {
+			n9NodeRoutingOptions: {
+				http: {
+					port: 5002,
+				},
+			},
+		}),
+		{
+			message: 'prometheus-server-port-unavailable',
+		},
+	);
+
+	await end(n9NodeRoutingStartResult.server, n9NodeRoutingStartResult.prometheusServer);
 });
