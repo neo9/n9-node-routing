@@ -12,7 +12,7 @@ ava('Use a small cargo to compute data', async (t: ExecutionContext<TestContext>
 				await waitFor(10); // add some delay to simulate async operation
 				return requests.map((req) => ({ v: req.v, newV: req.v * 2 }));
 			},
-			(request, responses) => {
+			(request, responses: { v: number; newV: number }[]) => {
 				return responses.find((rep) => rep.v === request.v);
 			},
 			false,
@@ -125,7 +125,7 @@ ava('Simple cargo with error inside worker', async (t: ExecutionContext<TestCont
 			async () => {
 				throw new N9Error('an-error', 500, {});
 			},
-			(request, responses) => {
+			(request, responses: { v: number; newV: number }[]) => {
 				return responses.find((rep) => rep.v === request.v);
 			},
 			false,

@@ -1,9 +1,10 @@
+import type { OptionsJson } from 'body-parser';
 import { IsBoolean, IsOptional } from 'class-validator';
 import * as http from 'http';
 
 import { isStringOrNumber } from '../../validators';
 
-export class BodyParserOptions {
+export class BodyParserOptions implements OptionsJson {
 	/**
 	 *   When set to true, then deflated (compressed) bodies will be inflated; when false, deflated bodies are rejected.
 	 *   Defaults to true.
@@ -25,7 +26,7 @@ export class BodyParserOptions {
 	/**
 	 * The reviver option is passed directly to JSON.parse as the second argument. You can find more information on this argument in the MDN documentation about JSON.parse.
 	 */
-	reviver?: (key, value) => any;
+	reviver?: (key: string, value: any) => any;
 
 	/**
 	 * When set to true, will only accept arrays and objects; when false will accept anything JSON.parse accepts.
