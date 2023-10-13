@@ -6,6 +6,7 @@
 .mailmap
 Dockerfile
 Jenkinsfile
+.editorconfig
 # scripts
 *.sh
 

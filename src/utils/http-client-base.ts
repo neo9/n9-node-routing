@@ -53,7 +53,7 @@ export class N9HttpClient {
 	}
 
 	private static alterHeaders(
-		headers: object,
+		headers: Record<string, any>,
 		sensitiveHeadersOptions: HttpClientSensitiveHeadersOptions,
 	): object {
 		if (

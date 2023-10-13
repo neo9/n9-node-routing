@@ -21,7 +21,7 @@ for (const prometheusOption of [{}, undefined, { isEnabled: false }, { isEnabled
 			const pingDbs = [
 				{
 					name: 'MongoDB',
-					thisArg: undefined,
+					thisArg: undefined as any,
 					isConnected: (): boolean => isConnectedToDb,
 				},
 			];
@@ -66,7 +66,7 @@ for (const prometheusOption of [{}, undefined, { isEnabled: false }, { isEnabled
 			const pingDbs = [
 				{
 					name: 'MongoDB1',
-					thisArg: undefined,
+					thisArg: undefined as any,
 					isConnected: (): boolean => isConnectedToDb,
 				},
 				{

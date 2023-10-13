@@ -29,7 +29,9 @@ export class HttpCargoBuilder {
 		cargoOptions.dispatchFn =
 			cargoOptions.dispatchFn ??
 			((request: string, responses: N9JSONStreamResponse<RESPONSE>): any => {
-				return responses.items.find((response) => response[objectKey] === request);
+				return responses.items.find(
+					(response) => response[objectKey as keyof RESPONSE] === request,
+				);
 			});
 
 		return new Cargo<RESPONSE>(

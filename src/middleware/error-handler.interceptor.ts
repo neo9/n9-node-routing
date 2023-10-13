@@ -7,17 +7,17 @@ import { Service } from 'typedi';
 
 import * as N9NodeRouting from '../models/routing';
 
-function removeProps(obj: object, keys: string[]): void {
+function removePropertiesRecursively(obj: object, keys: string[]): void {
 	if (!obj) return;
 
 	if (obj instanceof Array) {
 		obj.forEach((item) => {
-			removeProps(item, keys);
+			removePropertiesRecursively(item, keys);
 		});
 	} else if (typeof obj === 'object') {
 		Object.getOwnPropertyNames(obj).forEach((key) => {
-			if (keys.includes(key)) delete obj[key];
-			else removeProps(obj[key], keys);
+			if (keys.includes(key)) delete (obj as any)[key];
+			else removePropertiesRecursively((obj as any)[key], keys);
 		});
 	}
 }
@@ -58,7 +58,7 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 		}
 		const context = error.context || error.errors || {};
 		// remove stack properties to avoid leak
-		removeProps(context, ['stack']);
+		removePropertiesRecursively(context, ['stack']);
 
 		error.code = code;
 

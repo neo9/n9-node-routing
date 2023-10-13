@@ -1,4 +1,4 @@
-import { N9ConfMergeStrategy, N9ConfOptions } from '@neo9/n9-node-conf';
+import { ExtendConfigKeyFormat, N9ConfMergeStrategy, N9ConfOptions } from '@neo9/n9-node-conf';
 import { Type } from 'class-transformer';
 import { IsEnum, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { PartialDeep } from 'type-fest';
@@ -15,14 +15,25 @@ export class N9NodeConfOptionsExtendConfigPath {
 	relative?: string;
 }
 
+class N9NodeConfOptionsExtendConfigKey {
+	@IsOptional()
+	@IsString()
+	name?: string;
+
+	@IsOptional()
+	@IsString()
+	@IsEnum(ExtendConfigKeyFormat)
+	format?: ExtendConfigKeyFormat;
+}
+
 export class N9NodeConfOptionsExtendConfig {
 	@ValidateNested()
 	@Type(() => N9NodeConfOptionsExtendConfigPath)
 	path: N9NodeConfOptionsExtendConfigPath;
 
-	@IsOptional()
-	@IsString()
-	key?: string;
+	@ValidateNested()
+	@Type(() => N9NodeConfOptionsExtendConfigKey)
+	key?: N9NodeConfOptionsExtendConfigKey;
 
 	@IsOptional()
 	@IsEnum(N9ConfMergeStrategy)
