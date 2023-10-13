@@ -1,5 +1,21 @@
 
 
+# [3.0.0-rc.0](https://github.com/neo9/n9-node-routing/compare/2.2.0...3.0.0-rc.0) (2023-10-13)
+
+
+### feat
+
+* Upgrade packages to latest and drop node 14 support #63 ([d5b359b](https://github.com/neo9/n9-node-routing/commit/d5b359b2f16121c9e6c9f7b5294a4d86b9d72f5e)), closes [#63](https://github.com/neo9/n9-node-routing/issues/63)
+
+### global
+
+* Remove global usage by upgrading n9-mongo-client too #68 ([9ae73c9](https://github.com/neo9/n9-node-routing/commit/9ae73c986cc4ddc5380837d8c23673b6e667116c)), closes [#68](https://github.com/neo9/n9-node-routing/issues/68)
+
+### yarn
+
+* Upgrade dependencies and remove codecov #69 ([dfdb79a](https://github.com/neo9/n9-node-routing/commit/dfdb79a26a56ed1c72aeb8882246dd8680728fa1)), closes [#69](https://github.com/neo9/n9-node-routing/issues/69)
+* Upgrade n9-node-log to version 5.0.0 #67 ([1d983d7](https://github.com/neo9/n9-node-routing/commit/1d983d7b0750196c351b5efc88080addd9449985)), closes [#67](https://github.com/neo9/n9-node-routing/issues/67)
+
 # [2.2.0](https://github.com/neo9/n9-node-routing/compare/2.1.0...2.2.0) (2023-09-27)
 
 
