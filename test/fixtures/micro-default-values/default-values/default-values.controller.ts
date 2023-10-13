@@ -1,7 +1,6 @@
 import {
 	Body,
 	HeaderParams,
-	Inject,
 	JsonController,
 	N9Log,
 	Post,
@@ -15,7 +14,7 @@ import { QueryParamsModel } from './query-params.model';
 @Service()
 @JsonController()
 export class DefaultValuesController {
-	@Inject('logger') private logger: N9Log;
+	constructor(private readonly logger: N9Log) {}
 
 	@Post('/default-values')
 	public do(

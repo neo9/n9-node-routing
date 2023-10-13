@@ -1,20 +1,41 @@
+import { N9ConfMergeStrategy } from '@neo9/n9-node-conf';
 import test, { ExecutionContext } from 'ava';
 import got from 'got';
+import { Container } from 'typedi';
 
-import { init, mockAndCatchStd, TestContext, urlPrefix } from './fixtures';
+import { N9NodeRoutingBaseConf } from '../src/models/routing';
+import {
+	defaultNodeRoutingConfOptions,
+	init,
+	mockAndCatchStd,
+	TestContext,
+	urlPrefix,
+} from './fixtures';
 
-const { runBeforeTest } = init('micro-logs', {
+export interface AConfType extends N9NodeRoutingBaseConf {
+	someConfAttr: string;
+}
+
+const { runBeforeTest } = init<AConfType>('micro-logs', {
 	avoidBeforeEachHook: true,
 });
 
 test('Basic usage, check logs', async (t: ExecutionContext<TestContext>) => {
-	(global as any).conf = {
-		someConfAttr: 'value',
-	};
 	await runBeforeTest(t, {
 		nodeEnvValue: 'production',
 		n9NodeRoutingOptions: {
 			enableLogFormatJSON: false,
+			conf: {
+				n9NodeConf: {
+					...defaultNodeRoutingConfOptions.n9NodeConf,
+					override: {
+						mergeStrategy: N9ConfMergeStrategy.V2,
+						value: {
+							someConfAttr: 'value',
+						},
+					},
+				},
+			},
 		},
 	});
 
@@ -51,15 +72,25 @@ test('Basic usage, check logs', async (t: ExecutionContext<TestContext>) => {
 	const matchLength = match.length;
 	t.true(matchLength === 1);
 	t.true(stdout[1].includes('GET /bar'));
-	t.deepEqual(result, (global as any).conf, 'body response is conf');
+	t.deepEqual(result, Container.get('conf'), 'body response is conf');
 });
 
 test('Basic usage, check logs with empty response', async (t: ExecutionContext<TestContext>) => {
-	(global as any).conf = {
-		someConfAttr: 'value',
-	};
 	await runBeforeTest(t, {
 		nodeEnvValue: 'development',
+		n9NodeRoutingOptions: {
+			conf: {
+				n9NodeConf: {
+					...defaultNodeRoutingConfOptions.n9NodeConf,
+					override: {
+						mergeStrategy: N9ConfMergeStrategy.V2,
+						value: {
+							someConfAttr: 'value',
+						},
+					},
+				},
+			},
+		},
 	});
 	t.is(t.context.stdLength, 12, 'check nb logs');
 	t.true(t.context.stdout[4].includes('Init module bar'), 'Init module bar');
@@ -78,13 +109,21 @@ test('Basic usage, check logs with empty response', async (t: ExecutionContext<T
 });
 
 test('JSON output', async (t: ExecutionContext<TestContext>) => {
-	(global as any).conf = {
-		someConfAttr: 'value',
-	};
 	await runBeforeTest(t, {
 		nodeEnvValue: 'development',
 		n9NodeRoutingOptions: {
 			enableLogFormatJSON: true,
+			conf: {
+				n9NodeConf: {
+					...defaultNodeRoutingConfOptions.n9NodeConf,
+					override: {
+						mergeStrategy: N9ConfMergeStrategy.V2,
+						value: {
+							someConfAttr: 'value',
+						},
+					},
+				},
+			},
 		},
 	});
 

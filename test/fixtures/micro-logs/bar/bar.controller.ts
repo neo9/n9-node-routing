@@ -5,11 +5,10 @@ import { Get, Inject, JsonController, Service } from '../../../../src';
 @Service()
 @JsonController()
 export class ValidateController {
-	@Inject('logger')
-	private readonly logger: N9Log;
-
-	@Inject('conf')
-	private readonly conf: any;
+	constructor(
+		private readonly logger: N9Log,
+		@Inject('conf') private readonly conf: any,
+	) {}
 
 	@Get('/bar')
 	public getBar(): any {
