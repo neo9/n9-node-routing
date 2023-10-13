@@ -22,7 +22,7 @@ export class MockDbClientService<E extends BaseMongoObject> {
 	}
 
 	public findOneByKey(value: string, key: string): E {
-		return this.collection.find((elm) => elm[key] === value);
+		return this.collection.find((elm) => elm[key as keyof E] === value);
 	}
 
 	public findOneById(id: string): E {

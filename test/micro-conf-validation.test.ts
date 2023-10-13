@@ -498,7 +498,9 @@ test('Should not proceed any validation - validation is disabled from the config
 						path: {
 							absolute: extensionPath,
 						},
-						key: 'apiName',
+						key: {
+							name: 'apiName',
+						},
 					},
 				},
 				validation: {

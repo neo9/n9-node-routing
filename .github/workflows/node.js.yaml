@@ -17,6 +17,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -43,5 +44,14 @@ jobs:
       - name: Test
         run: yarn test
 
+      - name: Generate lcov file
+        run: yarn nyc report --reporter=text-lcov > coverage.lcov
+        if: ${{ matrix.node-version == '20.x' }}
+
       - name: Push coverage
-        run: yarn coverage
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
+          files: ./coverage.lcov
+          token: ${{ secrets.CODECOV_TOKEN }}
+        if: ${{ matrix.node-version == '20.x' }}

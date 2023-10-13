@@ -10,7 +10,7 @@
     "typescript",
     "anotation"
   ],
-  "license": "GNU",
+  "license": "GPL-3.0-or-later",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -27,16 +27,9 @@
     "test:dev": "export NODE_ENV=test && TS_NODE_FILES=true ava --no-worker-threads --verbose --color --serial --watch",
     "test": "export NODE_ENV=test && TS_NODE_FILES=true nyc ava --no-worker-threads --verbose --color --serial && nyc report --reporter=html",
     "test:one": "export NODE_ENV=test && TS_NODE_FILES=true ava --no-worker-threads --verbose --color --serial",
-    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov -f coverage.lcov",
     "release": "release-it",
     "release:pre-release": "release-it --preRelease",
     "release:dry": "release-it --dry-run"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "npm run format && npm run lint"
-    }
   },
   "author": {
     "name": "Benjamin DANIEL",
@@ -44,22 +37,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/neo9/n9-node-routing.git"
+    "url": "git+https://github.com/neo9/n9-node-routing"
   },
-  "homepage": "https://github.com/neo9/n9-node-routing#n9-node-routing",
-  "tags": [
-    "express",
-    "typescript-express",
-    "routing-controllers"
-  ],
+  "homepage": "https://github.com/neo9/n9-node-routing#readme",
   "engines": {
     "node": ">= 16.20"
   },
   "dependencies": {
     "@benjd90/routing-controllers": "^0.9.2",
-    "@neo9/n9-node-conf": "^1.4.1",
-    "@neo9/n9-node-log": "^5.0.0-rc.5",
-    "@neo9/n9-node-utils": "^2.2.1",
+    "@neo9/n9-node-conf": "^2.0.0-rc.0",
+    "@neo9/n9-node-log": "^5.0.0-rc.6",
+    "@neo9/n9-node-utils": "^3.0.0-rc.0",
     "@promster/express": "^9.0.1",
     "@promster/server": "^9.0.0",
     "@sentry/node": "7.73.0",
@@ -104,7 +92,6 @@
     "@types/cls-hooked": "^4.3.6",
     "@types/continuation-local-storage": "^3.2.5",
     "@types/express": "4.17.18",
-    "@types/fs-extra": "^11.0.2",
     "@types/helmet": "^4.0.0",
     "@types/lodash": "^4.14.199",
     "@types/morgan": "^1.9.6",
@@ -116,11 +103,8 @@
     "@types/swagger-ui-express": "^4.1.4",
     "@types/url-join": "^4.0.1",
     "ava": "^5.3.1",
-    "codecov": "^3.8.3",
-    "fs-extra": "^11.1.1",
     "husky": "^4.3.8",
     "mongodb-memory-server": "^9.0.0",
-    "nodemon": "^3.0.1",
     "nyc": "^15.1.0",
     "prettier": "^3.0.3",
     "release-it": "^16.2.1",
