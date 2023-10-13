@@ -35,6 +35,12 @@ export class ShutdownOptions {
 	@IsArray()
 	@ValidateNested({ each: true })
 	@Type(() => CallbacksBeforeShutdown)
+	callbacksBeforeShutdownAfterExpressEnded?: CallbacksBeforeShutdown[];
+
+	@IsOptional()
+	@IsArray()
+	@ValidateNested({ each: true })
+	@Type(() => CallbacksBeforeShutdown)
 	callbacksOnShutdownSignalReceived?: CallbacksBeforeShutdown[];
 
 	@IsOptional()

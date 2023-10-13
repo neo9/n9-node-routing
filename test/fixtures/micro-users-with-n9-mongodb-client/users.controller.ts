@@ -1,4 +1,3 @@
-import { N9Log } from '@neo9/n9-node-log';
 import { N9Error, N9JSONStream } from '@neo9/n9-node-utils';
 import { Response } from 'express';
 
@@ -7,7 +6,6 @@ import {
 	Authorized,
 	Body,
 	Get,
-	Inject,
 	JsonController,
 	OpenAPI,
 	Param,
@@ -26,9 +24,6 @@ import { UsersService } from './users.service';
 @Service()
 @JsonController('/users')
 export class UsersController {
-	@Inject('logger')
-	private logger: N9Log;
-
 	constructor(private usersService: UsersService) {}
 
 	@OpenAPI({

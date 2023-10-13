@@ -1,4 +1,5 @@
 import { MongoUtils } from '@neo9/n9-mongodb-client';
+import { MongoClient } from '@neo9/n9-mongodb-client/mongodb';
 import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import test, { ExecutionContext } from 'ava';
@@ -98,28 +99,32 @@ export function parseJSONLogAndRemoveTime(logLine: string): object & {
 	return line;
 }
 
-export type RunBeforeTestOptions = Partial<{
-	n9NodeRoutingOptions: N9NodeRouting.Options;
+export type RunBeforeTestOptions<ConfType> = Partial<{
+	n9NodeRoutingOptions: N9NodeRouting.Options<ConfType>;
 	nodeEnvValue: 'test' | 'development' | 'production';
 	mockAndCatchStdOptions: MockAndCatchStdOptions;
 }>;
 
-export type InitOptions = Partial<{
+export type InitOptions<ConfType> = Partial<{
 	startMongoDB: boolean;
 	avoidBeforeEachHook: boolean; // if not a function runBeforeTest is returned
 }> &
-	RunBeforeTestOptions;
+	RunBeforeTestOptions<ConfType>;
 
-export type InitReturned = {
+export type InitReturned<ConfType> = {
 	runBeforeTest: (
 		t: ExecutionContext<TestContext>,
-		runBeforeTestOptions?: RunBeforeTestOptions,
+		runBeforeTestOptions?: RunBeforeTestOptions<ConfType>,
 	) => Promise<void>;
 };
 
-export function init(folder?: string, initOptions?: InitOptions): InitReturned {
+export function init<ConfType extends N9NodeRoutingBaseConf = N9NodeRoutingBaseConf>(
+	folder?: string,
+	initOptions?: InitOptions<ConfType>,
+): InitReturned<ConfType> {
 	if (initOptions?.startMongoDB) {
 		let mongodServer: MongoMemoryServer;
+		let mongodbClient: MongoClient;
 		test.serial.before('Start MongoDB server', async () => {
 			mongodServer = await MongoMemoryServer.create({
 				binary: {
@@ -128,35 +133,32 @@ export function init(folder?: string, initOptions?: InitOptions): InitReturned {
 				// debug: true,
 			});
 			const mongoConnectionString = mongodServer.getUri();
-			(global as any).log = new N9Log('mongo');
-			const db = await MongoUtils.connect(mongoConnectionString);
-			delete (global as any).log;
+			const connectResult = await MongoUtils.CONNECT(mongoConnectionString, {
+				logger: new N9Log('mongo-client', { formatJSON: false }),
+			});
 
-			Container.set('db', db);
-			(global as any).db = db;
+			Container.set('db', connectResult.db);
+			mongodbClient = connectResult.mongodbClient;
 		});
 		test.serial.after.always('Stop MongoDB server', async () => {
+			await MongoUtils.DISCONNECT(mongodbClient, new N9Log('mongodb-disconnect'));
 			await mongodServer?.stop();
 		});
 	}
 
 	let oldNodeEnvValue: string;
 
-	async function runBeforeTest(
+	async function runBeforeTest<RunBeforeTestConfType = ConfType>(
 		t: ExecutionContext<TestContext>,
-		runBeforeTestOptions?: RunBeforeTestOptions,
+		runBeforeTestOptions?: RunBeforeTestOptions<RunBeforeTestConfType>,
 	): Promise<void> {
 		const { stdout, stderr, stdLength, error, result } = await mockAndCatchStd(
 			async () => {
 				const microUsers = folder ? join(__dirname, `${folder}/`) : undefined;
-				delete (global as any).log;
-				delete (global as any).conf;
+				Container.remove(N9Log);
 				if (!initOptions?.startMongoDB) {
-					delete (global as any).db;
-					delete (global as any).dbClient;
-					Container.remove('db');
+					Container.remove('db'); // set in the helper after MongoUtils.CONNECT
 				}
-				Container.remove('logger');
 				Container.remove('conf');
 
 				// Set env to 'test'
@@ -172,9 +174,7 @@ export function init(folder?: string, initOptions?: InitOptions): InitReturned {
 					...initOptions?.n9NodeRoutingOptions,
 					...runBeforeTestOptions?.n9NodeRoutingOptions,
 				});
-				const httpClient = new N9HttpClient(
-					Container.get<N9Log>('logger').module('test-http-client'),
-				);
+				const httpClient = new N9HttpClient(Container.get(N9Log).module('test-http-client'));
 				return {
 					n9NodeRoutingStartResult,
 					httpClient,

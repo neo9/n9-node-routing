@@ -8,8 +8,8 @@ import { IncomingMessage } from 'http';
 import { nanoid } from 'nanoid';
 import * as QueryString from 'query-string';
 import { PassThrough } from 'stream';
-import urlJoin = require('url-join');
 
+import urlJoin = require('url-join');
 import {
 	HttpClientGotOptions,
 	HttpClientOptions,
@@ -75,7 +75,7 @@ export class N9HttpClient {
 	private readonly baseClientOptions: HttpClientOptions;
 
 	constructor(
-		private readonly logger: N9Log = (global as any).log,
+		private readonly logger: N9Log,
 		options?: HttpClientOptions,
 		private maxBodyLengthToLogError: number = 100,
 	) {

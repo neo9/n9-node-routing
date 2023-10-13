@@ -3,6 +3,7 @@ import 'reflect-metadata';
 
 import * as RoutingControllers from '@benjd90/routing-controllers';
 import n9NodeConf from '@neo9/n9-node-conf';
+import { N9Log } from '@neo9/n9-node-log';
 import * as appRootDir from 'app-root-dir';
 import * as ClassValidator from 'class-validator';
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
@@ -31,7 +32,7 @@ export function generateDocumentationJson(
 	}
 	RoutingControllers.useContainer(Container);
 	ClassValidator.useContainer(Container);
-	Container.set('logger', n9NodeRoutingOptions.log);
+	Container.set(N9Log, n9NodeRoutingOptions.log);
 
 	const baseOpenApiSpec: Partial<oa.OpenAPIObject> = {
 		info: {
@@ -41,7 +42,7 @@ export function generateDocumentationJson(
 		},
 	};
 	if (!serverAlreadyStarted) {
-		Container.set('N9NodeRoutingOptions', n9NodeRoutingOptions);
+		Container.set(N9NodeRouting.Options, n9NodeRoutingOptions);
 		RoutingControllers.createExpressServer(n9NodeRoutingOptions.http.routingController);
 	}
 

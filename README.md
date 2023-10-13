@@ -47,6 +47,10 @@ export class ValidateController {
 - `/` response is now an object: `{ name: 'myApi' }`
 - `/version' response is now an object : `{ version: '1.2.3' }`
 - Prometheus metrics are enabled by default. To disable them use `n9NodeRoutingOptions.prometheus.isEnabled: false`
+- Services injected names change :
+  - `@Inject('N9HttpClient') httpClient: N9HttpClient` → `@Inject() httpClient: N9HttpClient`
+  - `@Inject('conf') conf: Configuration` → `@Inject() conf: Configuration`
+  - `@Inject('logger') logger: N9Log` → `@Inject() logger: N9Log` or in constructor parameters `logger: N9Log`
 
 ## Features
 
