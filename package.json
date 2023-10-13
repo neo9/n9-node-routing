@@ -28,9 +28,8 @@
     "test": "export NODE_ENV=test && TS_NODE_FILES=true nyc ava --no-worker-threads --verbose --color --serial && nyc report --reporter=html",
     "test:one": "export NODE_ENV=test && TS_NODE_FILES=true ava --no-worker-threads --verbose --color --serial",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov -f coverage.lcov",
-    "preversion": "npm test",
-    "prepublishOnly": "npm run build",
     "release": "release-it",
+    "release:pre-release": "release-it --preRelease",
     "release:dry": "release-it --dry-run"
   },
   "husky": {
@@ -96,7 +95,7 @@
     "@ava/typescript": "^4.1.0",
     "@commitlint/cli": "^17.7.2",
     "@neo9/n9-coding-style": "^5.1.2",
-    "@neo9/n9-mongodb-client": "^1.0.0-rc.8",
+    "@neo9/n9-mongodb-client": "^1.0.0-rc.9",
     "@promster/types": "^5.0.0",
     "@release-it/conventional-changelog": "^7.0.2",
     "@tsconfig/node16": "^16.1.1",

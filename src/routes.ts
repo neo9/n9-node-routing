@@ -1,3 +1,4 @@
+import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import { signalIsNotUp, signalIsUp } from '@promster/express';
 import { Express, NextFunction, Request, Response } from 'express';
@@ -25,6 +26,7 @@ export function init(
 	options: N9NodeRouting.Options,
 	packageJson: PackageJson,
 	env: 'development' | 'production' | string,
+	logger: N9Log,
 ): void {
 	expressApp.get('/', (req: Request, res: Response, next: NextFunction) => {
 		res.status(200).json({ name: packageJson.name });
@@ -43,7 +45,7 @@ export function init(
 			for (const db of options.http.ping.dbs) {
 				// eslint-disable-next-line @typescript-eslint/no-invalid-this
 				if (!(await db.isConnected.bind(db.thisArg || this)())) {
-					(global as any).log.error(`[PING] Can't connect to ${db.name}`);
+					logger.error(`[PING] Can't connect to DB : ${db.name}`);
 					res.status(500).json(new N9Error(`db-${db.name}-unreachable`, 500));
 					if (options.prometheus.isEnabled) {
 						signalIsNotUp();

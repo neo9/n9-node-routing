@@ -1,21 +1,23 @@
-import { FilterQuery, MongoClient, N9FindCursor } from '@neo9/n9-mongodb-client';
+import { FilterQuery, N9FindCursor, N9MongoDBClient } from '@neo9/n9-mongodb-client';
+import type { Db } from '@neo9/n9-mongodb-client/mongodb';
+import { N9Log } from '@neo9/n9-node-log';
 import * as crypto from 'crypto';
-import { Service } from 'typedi';
+import { Inject, Service } from 'typedi';
 
 import { UserDetails, UserEntity, UserListItem, UserRequestCreate } from './users.models';
 
 @Service()
 export class UsersService {
 	private static hashPassword(password: string): string {
-		const hasher = crypto.createHash('sha256');
-		hasher.update(password);
-		return hasher.digest('hex');
+		return crypto.createHash('sha256').update(password).digest('hex');
 	}
 
-	private mongoClient: MongoClient<UserEntity, UserListItem>;
+	private mongoClient: N9MongoDBClient<UserEntity, UserListItem>;
 
-	constructor() {
-		this.mongoClient = new MongoClient('users', UserEntity, UserListItem, {
+	constructor(@Inject('db') db: Db, logger: N9Log) {
+		this.mongoClient = new N9MongoDBClient('users', UserEntity, UserListItem, {
+			db,
+			logger,
 			keepHistoric: true,
 		});
 	}

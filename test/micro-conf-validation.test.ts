@@ -354,7 +354,7 @@ test('Secret should be usable in conf', async (t: ExecutionContext<TestContext>)
 			},
 		},
 	});
-	const conf = Container.get<ValidConfWithWhitelistErrors>('conf');
+	const conf = Container.get(ValidConfWithWhitelistErrors);
 
 	t.is(conf.secret, 'secretPassword', `Secret is usable in conf`);
 	t.is(conf.secretOpaque, 'secretPasswordHiddenButKnownIfNil', `Secret opaque is usable in conf`);

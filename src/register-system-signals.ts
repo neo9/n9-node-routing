@@ -63,16 +63,16 @@ async function shutdown(
 				process.exit(1);
 			}
 
-			if ((global as any).dbClient) {
-				const dbClient = (global as any).dbClient;
-				logger.info('Closing db connections');
-				if (dbClient.close) {
-					await dbClient.close();
-				} else {
-					logger.warn(`Can't close db connection, close function is not present`);
+			if (shutdownOptions.callbacksBeforeShutdownAfterExpressEnded?.length) {
+				logger.info(
+					`Calling ${shutdownOptions.callbacksBeforeShutdownAfterExpressEnded.length} callbacks`,
+				);
+				for (const callbackSpec of shutdownOptions.callbacksBeforeShutdownAfterExpressEnded) {
+					if (callbackSpec.name) logger.info(`Calling ${callbackSpec.name}`);
+					await callbackSpec.function.bind(callbackSpec.thisArg)(logger);
 				}
-				logger.debug('End closing db connections');
 			}
+
 			server.getConnections((error3, count2) => {
 				if (error3) {
 					logger.error('can-not-get-number-of-connections', {

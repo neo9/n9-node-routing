@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import './utils/error-to-json';
 
 import n9NodeConf from '@neo9/n9-node-conf';
+import { N9Log } from '@neo9/n9-node-log';
 import * as appRootDir from 'app-root-dir';
 import { classToPlain } from 'class-transformer';
 import * as Path from 'path';
@@ -64,7 +65,6 @@ export default async <
 	// eslint-disable-next-line @typescript-eslint/no-var-requires,global-require,import/no-dynamic-require
 	const packageJson: PackageJson = require(Path.join(appRootDir.get(), 'package.json'));
 
-	// Load project conf and logger & set as global
 	let conf: ConfType = n9NodeConf(getLoadingConfOptions(optionsParam));
 	const options: N9NodeRouting.Options<ConfType> = mergeOptionsAndConf(
 		optionsParam,
@@ -72,8 +72,6 @@ export default async <
 	);
 	applyDefaultValuesOnOptions(options, environment, packageJson.name);
 	const logger = options.log;
-	(global as any).log = options.log;
-
 	// print app infos
 	const initialInfos = `${conf.name} version : ${conf.version} env: ${conf.env} node: ${process.version}`;
 	logger.info('-'.repeat(initialInfos.length));
@@ -89,12 +87,15 @@ export default async <
 
 	const confInstance: ConfType = await validateConf(conf, options.conf.validation, logger);
 	conf = confInstance || conf;
-	(global as any).conf = conf;
 	initExposedConf(classToPlain(conf));
-	Container.set('logger', logger);
-	Container.set('conf', conf);
-	Container.set('N9HttpClient', new N9HttpClient(logger, options.httpClient));
-	Container.set('N9NodeRoutingOptions', options);
+	Container.set(N9Log, logger);
+	if (options.conf.validation.classType) {
+		Container.set(options.conf.validation.classType, conf);
+	} else {
+		Container.set('conf', conf);
+	}
+	Container.set(N9HttpClient, new N9HttpClient(logger, options.httpClient));
+	Container.set(N9NodeRouting.Options, options);
 
 	if (options.apm) {
 		initAPM(options.apm, logger);
@@ -103,7 +104,7 @@ export default async <
 	// Execute all *.init.ts files in modules before app started listening on the HTTP Port
 	await initialiseModules(options.path, logger, options.firstSequentialInitFileNames);
 	const returnObject = await ExpressApp.init<ConfType>(options, packageJson, logger, conf);
-	Routes.init(returnObject.app, options, packageJson, environment);
+	Routes.init(returnObject.app, options, packageJson, environment, logger);
 
 	// Manage SIGTERM & SIGINT
 	if (options.shutdown.enableGracefulShutdown) {

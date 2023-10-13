@@ -18,7 +18,7 @@ export class HttpCargoBuilder {
 		keyName: string,
 		objectKey: string = '_id',
 	): Cargo<RESPONSE> {
-		const httpClient = Container.get<N9HttpClient>('N9HttpClient');
+		const httpClient = Container.get(N9HttpClient);
 		cargoOptions.workerFn =
 			cargoOptions.workerFn ??
 			(async (keyValues: string[]): Promise<N9JSONStreamResponse<RESPONSE>> =>

@@ -6,8 +6,8 @@ import { Get, Inject, JsonController, Service } from '../../../../src';
 @Service()
 @JsonController()
 export class ErrorsController {
-	@Inject('logger')
-	private logger: N9Log;
+	@Inject()
+	private logger: N9Log; // an example of injection without constructor
 	@Get('/503')
 	public getError500(): any {
 		this.logger.error(`An error occurred, client should retry`);
