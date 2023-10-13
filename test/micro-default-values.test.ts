@@ -1,26 +1,16 @@
-import ava, { Assertions } from 'ava';
-import { join } from 'path';
-import * as stdMock from 'std-mocks';
+import test, { ExecutionContext } from 'ava';
 
-// tslint:disable-next-line:import-name
-import N9NodeRouting from '../src';
-import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
-import { end } from './fixtures/helper';
+import { init, TestContext, urlPrefix } from './fixtures';
 
-const microDefaultValues = join(__dirname, 'fixtures/micro-default-values/');
+const { runBeforeTest } = init('micro-default-values', {
+	avoidBeforeEachHook: true,
+});
 
-ava('Check default values are set', async (t: Assertions) => {
-	stdMock.use({ print: commons.print });
+test('Check default values are set', async (t: ExecutionContext<TestContext>) => {
+	await runBeforeTest(t);
 
-	const { server, prometheusServer } = await N9NodeRouting({
-		path: microDefaultValues,
-		http: { port: 5585 },
-		enableLogFormatJSON: false,
-		conf: defaultNodeRoutingConfOptions,
-	});
-
-	const paramsReceived: any = await commons.jsonHttpClient.post(
-		'http://localhost:5585/default-values',
+	const paramsReceived: any = await t.context.httpClient.post(
+		[urlPrefix, 'default-values'],
 		{
 			defaultString: undefined,
 			fieldWithValue: 0,
@@ -68,17 +58,16 @@ ava('Check default values are set', async (t: Assertions) => {
 		},
 		'headers ok',
 	);
-
-	// Close server
-	await end(server, prometheusServer);
 });
 
-ava('Should throw error if module path is not found', async (t: Assertions) => {
+test('Should throw error if module path is not found', async (t: ExecutionContext<TestContext>) => {
 	// throw an error because there is no conf in n9NodeRouting
 	const error = await t.throwsAsync(
-		N9NodeRouting({
-			path: './a-folder-that-does-not-exists',
-		}),
+		runBeforeTest(t, {
+			n9NodeRoutingOptions: {
+				path: './a-folder-that-does-not-exists',
+			},
+		}), // not using mockAndCatchStdOptions: { throwError: false }, this time
 	);
 
 	t.true(!!error);

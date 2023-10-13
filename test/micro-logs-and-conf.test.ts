@@ -1,117 +1,99 @@
-import ava, { Assertions } from 'ava';
+import test, { ExecutionContext } from 'ava';
 import got from 'got';
-import { join } from 'path';
-import * as stdMock from 'std-mocks';
-import * as tmp from 'tmp-promise';
 
-// tslint:disable-next-line:import-name
-import N9NodeRouting from '../src';
-import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
-import { end, getLogsFromFile } from './fixtures/helper';
+import { init, mockAndCatchStd, TestContext, urlPrefix } from './fixtures';
 
-const microLogs = join(__dirname, 'fixtures/micro-logs/');
-const print = commons.print;
+const { runBeforeTest } = init('micro-logs', {
+	avoidBeforeEachHook: true,
+});
 
-ava('Basic usage, check logs', async (t: Assertions) => {
-	const file = await tmp.file();
+test('Basic usage, check logs', async (t: ExecutionContext<TestContext>) => {
 	(global as any).conf = {
 		someConfAttr: 'value',
 	};
-
-	const { server, prometheusServer } = await N9NodeRouting({
-		path: microLogs,
-		enableLogFormatJSON: false,
-		logOptions: { developmentOutputFilePath: file.path },
-		conf: defaultNodeRoutingConfOptions,
+	await runBeforeTest(t, {
+		nodeEnvValue: 'production',
+		n9NodeRoutingOptions: {
+			enableLogFormatJSON: false,
+		},
 	});
-	// Check /foo route added on foo/foo.init.ts
-	const res = await commons.jsonHttpClient.get('http://localhost:5000/bar');
 
-	// Check logs
-	const output = await getLogsFromFile(file.path);
-
-	t.is(output.length, 11, 'output length');
+	t.is(t.context.stdLength, 13, 'output length');
 	t.true(
-		output[0].includes('It is recommended to use JSON format outside development environment'),
+		t.context.stdout[0].includes(
+			'It is recommended to use JSON format outside development environment',
+		),
 		'Warn n9--node-log',
 	);
-	t.true(output[5].includes('Init module bar'), 'Init module bar');
-	t.true(output[6].includes('Hello bar.init'), 'Hello bar.init');
-	t.true(output[7].includes('Listening on port 5000'), 'Listening on port 5000');
-	t.true(output[8].includes('startup'), 'Startup');
-	t.true(output[8].includes('durationMs'), 'Duration Ms of statup');
-	t.true(output[9].includes('message in controller'), 'message in controller');
-	t.true(output[9].includes('] ('), 'contains request id');
-	t.true(output[9].includes(')'), 'contains request id 2');
-	t.true(output[10].includes('] ('));
-	const match = output[10].match(/\([a-zA-Z0-9_-]{7,14}\)/g);
+	t.true(t.context.stdout[5].includes('Init module bar'), 'Init module bar');
+	t.true(t.context.stdout[6].includes('Hello bar.init'), 'Hello bar.init');
+	t.true(t.context.stdout[7].includes('Listening on port 5000'), 'Listening on port 5000');
+	t.true(t.context.stdout[8].includes('startup'), 'Startup');
+	t.true(t.context.stdout[10].includes('durationMs'), 'Duration Ms of statup');
+
+	const { stdout, result } = await mockAndCatchStd(async () => {
+		// Check /foo route added on foo/foo.init.ts
+		return await t.context.httpClient.get([urlPrefix, 'bar']);
+	});
+
+	t.true(stdout[0].includes('message in controller'), 'message in controller');
+	t.true(stdout[0].includes('] ('), 'contains request id');
+	t.true(stdout[0].includes(')'), 'contains request id 2');
+	t.truthy(
+		stdout[0].match(
+			/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z - info : \[n9-node-routing\] \([a-zA-Z0-9-_]{10}\) message in controller$/g,
+		),
+		'check line match message in controller',
+	); // ex: 2023-10-09T13:15:28.058Z - info : [n9-node-routing] (dLigrN1Rq) message in controller
+	t.true(stdout[1].includes('] ('));
+	const match = stdout[1].match(/\([a-zA-Z0-9_-]{7,14}\)/g);
 	t.truthy(match, 'should match one');
 	const matchLength = match.length;
 	t.true(matchLength === 1);
-	t.true(output[10].includes('GET /bar'));
-	t.deepEqual(res, (global as any).conf, 'body response is conf');
-	// Close server
-	await end(server, prometheusServer);
+	t.true(stdout[1].includes('GET /bar'));
+	t.deepEqual(result, (global as any).conf, 'body response is conf');
 });
 
-ava('Basic usage, check logs with empty response', async (t: Assertions) => {
-	const oldNodeEnv = process.env.NODE_ENV;
-	process.env.NODE_ENV = 'development';
-	delete (global as any).log;
-	const file = await tmp.file();
+test('Basic usage, check logs with empty response', async (t: ExecutionContext<TestContext>) => {
 	(global as any).conf = {
 		someConfAttr: 'value',
 	};
+	await runBeforeTest(t, {
+		nodeEnvValue: 'development',
+	});
+	t.is(t.context.stdLength, 12, 'check nb logs');
+	t.true(t.context.stdout[4].includes('Init module bar'), 'Init module bar');
+	t.true(t.context.stdout[5].includes('Hello bar.init'), 'Hello bar.init');
+	t.true(t.context.stdout[6].includes('End init module bar'), 'End init module bar');
+	t.true(t.context.stdout[7].includes('Listening on port 5000'), 'Listening on port 5000');
 
-	const { server, prometheusServer } = await N9NodeRouting({
-		http: {
-			port: 5002,
+	const { stdout } = await mockAndCatchStd(async () => {
+		const res = await got(`${urlPrefix}/empty`);
+		t.is(res.statusCode, 204, 'resp 204 status');
+	});
+
+	t.true(stdout[0].includes('] ('));
+	t.truthy(stdout[0].match(/\([a-zA-Z0-9_-]{7,14}\)/g));
+	t.true(stdout[0].includes('GET /empty'), 'GET /empty');
+});
+
+test('JSON output', async (t: ExecutionContext<TestContext>) => {
+	(global as any).conf = {
+		someConfAttr: 'value',
+	};
+	await runBeforeTest(t, {
+		nodeEnvValue: 'development',
+		n9NodeRoutingOptions: {
+			enableLogFormatJSON: true,
 		},
-		path: microLogs,
-		logOptions: { developmentOutputFilePath: file.path },
-		conf: defaultNodeRoutingConfOptions,
-	});
-	// Check /foo route added on foo/foo.init.ts
-	const res = await got('http://localhost:5002/empty');
-	t.is(res.statusCode, 204, 'resp 204 status');
-
-	// Check logs
-	const output = await getLogsFromFile(file.path);
-
-	t.is(output.length, 9, 'check nb logs');
-	t.true(output[4].includes('Init module bar'), 'Init module bar');
-	t.true(output[5].includes('Hello bar.init'), 'Hello bar.init');
-	t.true(output[6].includes('Listening on port 5002'), 'Listening on port 5002');
-	t.true(output[8].includes('] ('));
-	t.truthy(output[8].match(/\([a-zA-Z0-9_-]{7,14}\)/g));
-	t.true(output[8].includes('GET /empty'), 'GET /empty');
-
-	// Close server
-	await end(server, prometheusServer);
-	process.env.NODE_ENV = oldNodeEnv;
-});
-
-ava('JSON output', async (t: Assertions) => {
-	stdMock.use({ print });
-	(global as any).conf = {
-		someConfAttr: 'value',
-	};
-
-	const { server, prometheusServer } = await N9NodeRouting({
-		path: microLogs,
-		enableLogFormatJSON: true,
-		conf: defaultNodeRoutingConfOptions,
 	});
 
-	// Check /foo route added on foo/foo.init.ts
-	const res = await got('http://localhost:5000/bar');
-	t.is(res.statusCode, 200);
+	const { stdout } = await mockAndCatchStd(async () => {
+		const res = await got(`${urlPrefix}/bar`);
+		t.is(res.statusCode, 200);
+	});
 
-	// Check logs
-	stdMock.restore();
-	const output = stdMock.flush().stdout.filter(commons.excludeSomeLogs);
-
-	const lineChecked = output[8];
+	const lineChecked = stdout[1];
 	t.truthy(lineChecked);
 	t.truthy(lineChecked.match(/"method":"GET"/g), 'GET /bar 1');
 	t.truthy(lineChecked.match(/"path":"\/bar"/g), 'GET /bar 2');
@@ -123,7 +105,4 @@ ava('JSON output', async (t: Assertions) => {
 		lineChecked.match(/"totalDurationMs":[0-9]{1,5}\.[0-9]{1,5}/g),
 		'Has total response time ms',
 	);
-
-	// Close server
-	await end(server, prometheusServer);
 });

@@ -1,26 +1,20 @@
-import ava, { Assertions } from 'ava';
-import * as stdMock from 'std-mocks';
+import test, { ExecutionContext } from 'ava';
 
-// tslint:disable-next-line:import-name
-import N9NodeRouting from '../src';
-import commons, { nodeRoutingMinimalOptions } from './fixtures/commons';
-import { end } from './fixtures/helper';
+import { init, mockAndCatchStd, TestContext } from './fixtures';
 
-const print = commons.print;
+init();
 
-ava('Error to json', async (t: Assertions) => {
-	stdMock.use({ print });
-	const { server, prometheusServer } = await N9NodeRouting(nodeRoutingMinimalOptions);
+test('Error to json', async (t: ExecutionContext<TestContext>) => {
+	await mockAndCatchStd(() => {
+		const text = 'message-error-text';
+		const e = Error(text);
+		const eAsJSON = JSON.stringify(e);
 
-	const text = 'message-error-text';
-	const e = Error(text);
-	const eAsJSON = JSON.stringify(e);
-
-	const expectedStart = JSON.stringify({
-		name: 'Error',
-		message: text,
-		stack: 'Error: message-error-text',
-	}).substring(0, -2);
-	t.true(eAsJSON.startsWith(expectedStart), ` \n${eAsJSON} \n ${expectedStart}`);
-	await end(server, prometheusServer);
+		const expectedStart = JSON.stringify({
+			name: 'Error',
+			message: text,
+			stack: 'Error: message-error-text',
+		}).substring(0, -2);
+		t.true(eAsJSON.startsWith(expectedStart), ` \n${eAsJSON} \n ${expectedStart}`);
+	});
 });

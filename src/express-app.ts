@@ -1,9 +1,9 @@
 import * as RoutingControllers from '@benjd90/routing-controllers';
 import { N9Log } from '@neo9/n9-node-log';
+import { N9Error } from '@neo9/n9-node-utils';
 import { createMiddleware, signalIsUp } from '@promster/express';
 import * as PromsterServer from '@promster/server';
 import * as Sentry from '@sentry/node';
-import * as Tracing from '@sentry/tracing';
 import type { Integration } from '@sentry/types';
 import * as ClassValidator from 'class-validator';
 import * as express from 'express';
@@ -14,10 +14,11 @@ import * as morgan from 'morgan';
 import * as PrometheusClient from 'prom-client';
 import { Container } from 'typedi';
 import type { PackageJson } from 'types-package-json';
-import ErrnoException = NodeJS.ErrnoException;
 
 import * as N9NodeRouting from './models/routing';
 import { setRequestContext } from './requestid';
+import { isPortAvailable } from './utils';
+import ErrnoException = NodeJS.ErrnoException;
 
 export async function init<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>(
 	options: N9NodeRouting.Options<ConfType>,
@@ -67,7 +68,7 @@ export async function init<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>
 			for (const additionalIntegration of options.sentry.additionalIntegrations) {
 				if (additionalIntegration.kind === 'tracing') {
 					(initOptions.integrations as Integration[]).push(
-						new Tracing.Integrations.Express({
+						new Sentry.Integrations.Express({
 							// to trace all requests to the default router
 							app: expressApp,
 							methods: additionalIntegration.options?.methods,
@@ -103,9 +104,14 @@ export async function init<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>
 		new PrometheusClient.Gauge({
 			name: 'version_info',
 			help: 'App version',
-			labelNames: ['version'],
-		}).set({ version: packageJson.version }, 1);
+			labelNames: ['version', 'name'],
+		}).set({ version: packageJson.version, name: packageJson.name }, 1);
 
+		if (!(await isPortAvailable(options.prometheus.port))) {
+			throw new N9Error('prometheus-server-port-unavailable', 500, {
+				port: options.prometheus.port,
+			});
+		}
 		prometheusServer = await PromsterServer.createServer({ port: options.prometheus.port });
 	}
 	// Logger middleware

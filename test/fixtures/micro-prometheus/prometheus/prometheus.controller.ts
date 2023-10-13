@@ -17,6 +17,6 @@ export class PrometheusController {
 
 	@Post('/a-long-route/:code')
 	public async getSomethingLongByCode(): Promise<void> {
-		await waitFor(1000); // 1s
+		await waitFor(1_000); // 1s
 	}
 }

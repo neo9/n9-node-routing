@@ -1,6 +1,7 @@
+import { N9Log } from '@neo9/n9-node-log';
 import { createNamespace, getNamespace } from 'cls-hooked';
 import { NextFunction, Request, Response } from 'express';
-import * as shortid from 'shortid';
+import { nanoid } from 'nanoid';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const RequestIdNamespaceName = 'requestIdNamespace';
@@ -9,19 +10,23 @@ const RequestIdKey = 'request-id';
 createNamespace(RequestIdNamespaceName);
 export { RequestIdNamespaceName, RequestIdKey };
 
-export function requestIdFilter(logObject: object & { message: string; level: string }): object {
-	const formatLogInJSON: boolean = (global as any).log.formatJSON ?? false;
-	const message = logObject.message;
+export function requestIdFilter({ message, context, options }: N9Log.FilterParameter): {
+	message?: string;
+	context?: object;
+} {
+	const formatLogInJSON: boolean = options.formatJSON ?? false;
 
 	const namespaceRequestId = getNamespace(RequestIdNamespaceName);
 	const requestId = namespaceRequestId?.get(RequestIdKey);
 	if (formatLogInJSON) {
 		if (requestId) {
 			return {
-				requestId,
+				context: {
+					requestId,
+					...context,
+				},
 			};
 		}
-		return {};
 	}
 	return { message: requestId ? `(${requestId}) ${message}` : message };
 }
@@ -29,7 +34,7 @@ export function requestIdFilter(logObject: object & { message: string; level: st
 export function setRequestContext(req: Request, res: Response, next: NextFunction): void {
 	let requestId = req.headers['x-request-id'];
 	if (!requestId) {
-		requestId = shortid.generate();
+		requestId = nanoid(10);
 	}
 	const namespaceRequestId = getNamespace(RequestIdNamespaceName);
 	namespaceRequestId.run(() => {

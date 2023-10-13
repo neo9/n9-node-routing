@@ -19,6 +19,8 @@ import { SessionLoaderInterceptor } from './middleware/session-loader.intercepto
 import * as N9NodeRouting from './models/routing';
 import * as Utils from './utils';
 
+const envsWithoutJSONLogs = ['development', 'test'];
+
 function applyLogsOptionsDefaults(
 	options: N9NodeRouting.Options,
 	appName: string,
@@ -29,10 +31,11 @@ function applyLogsOptionsDefaults(
 	options.enableLogFormatJSON =
 		typeof options.enableLogFormatJSON === 'boolean'
 			? options.enableLogFormatJSON
-			: environment !== 'development';
+			: !envsWithoutJSONLogs.includes(environment);
 
 	if (!options.log) {
 		options.log = n9NodeLog(appName, {
+			level: environment === 'development' ? 'debug' : undefined,
 			...options.logOptions,
 			formatJSON: options.enableLogFormatJSON,
 		});

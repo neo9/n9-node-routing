@@ -1,7 +1,7 @@
 import { N9Error } from '@neo9/n9-node-utils';
-import ava, { Assertions } from 'ava';
+import ava, { ExecutionContext } from 'ava';
 
-import { end, init, urlPrefix } from './fixtures/helper';
+import { init, TestContext, urlPrefix } from './fixtures';
 import {
 	User,
 	UserFrontDetail,
@@ -9,15 +9,12 @@ import {
 	UserType,
 } from './fixtures/micro-body-class-validation/models/users.models';
 
-const microUsersFolder = 'micro-body-class-validation';
+init('micro-body-class-validation');
 
-ava('[USERS] POST /users => 400 with wrong params', async (t: Assertions) => {
-	const { prometheusServer, server, httpClient } = await init(microUsersFolder, false, {
-		enableLogFormatJSON: false,
-	});
+ava('[USERS] POST /users => 400 with wrong params', async (t: ExecutionContext<TestContext>) => {
 	const errorThrown = await t.throwsAsync<N9Error>(
 		async () =>
-			await httpClient.post([urlPrefix, 'users'], {
+			await t.context.httpClient.post([urlPrefix, 'users'], {
 				type: UserType.FRONT,
 				details: {
 					ageInYears: 'not-a-number' as any, // << the error
@@ -29,7 +26,7 @@ ava('[USERS] POST /users => 400 with wrong params', async (t: Assertions) => {
 
 	const errorThrown2 = await t.throwsAsync<N9Error>(
 		async () =>
-			await httpClient.post([urlPrefix, 'users'], {
+			await t.context.httpClient.post([urlPrefix, 'users'], {
 				type: UserType.OTHER,
 				details: {
 					anArray: ['string', { ageInYears: 5 }, 2],
@@ -43,6 +40,4 @@ ava('[USERS] POST /users => 400 with wrong params', async (t: Assertions) => {
 		{ arrayValidator: 'anArray must be string | UserFrontDetail' },
 		'body error is on anArray',
 	);
-
-	await end(server, prometheusServer);
 });

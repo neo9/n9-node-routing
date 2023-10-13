@@ -1,39 +1,27 @@
 import { N9Error } from '@neo9/n9-node-utils';
-import ava, { Assertions } from 'ava';
-import { join } from 'path';
-import * as stdMock from 'std-mocks';
+import ava, { ExecutionContext } from 'ava';
 
-// tslint:disable-next-line:import-name
-import N9NodeRouting from '../src';
-import commons, { defaultNodeRoutingConfOptions } from './fixtures/commons';
-import { end } from './fixtures/helper';
+import { init, TestContext, urlPrefix } from './fixtures';
 
-const print = commons.print;
-const microAuth = join(__dirname, 'fixtures/micro-auth-proxy/');
-
-ava('Call session route (req.headers.session)', async (t: Assertions) => {
-	stdMock.use({ print });
-
-	const { server, prometheusServer } = await N9NodeRouting({
+init('micro-auth-proxy', {
+	n9NodeRoutingOptions: {
 		hasProxy: true, // tell n9NodeRouting to parse `session` header
-		path: microAuth,
-		http: { port: 6001 },
-		conf: defaultNodeRoutingConfOptions,
-	});
+	},
+});
+
+ava('Call session route (req.headers.session)', async (t: ExecutionContext<TestContext>) => {
 	/*
 	 ** Fails with no `session` header
 	 */
-	let err = await t.throwsAsync<N9Error>(async () =>
-		commons.jsonHttpClient.get('http://localhost:6001/me'),
-	);
+	let err = await t.throwsAsync<N9Error>(async () => t.context.httpClient.get([urlPrefix, 'me']));
 	t.is(err.status, 401);
 	t.is(err.message, 'session-required');
 	/*
 	 ** Fails with bad `session` header
 	 */
 	err = await t.throwsAsync<N9Error>(async () =>
-		commons.jsonHttpClient.get(
-			'http://localhost:6001/me',
+		t.context.httpClient.get(
+			[urlPrefix, 'me'],
 			{},
 			{
 				session: 'bad',
@@ -46,8 +34,8 @@ ava('Call session route (req.headers.session)', async (t: Assertions) => {
 	 ** Fails with bad `session` header (no `userId`)
 	 */
 	err = await t.throwsAsync<N9Error>(async () =>
-		commons.jsonHttpClient.get(
-			'http://localhost:6001/me',
+		t.context.httpClient.get(
+			[urlPrefix, 'me'],
 			{},
 			{
 				session: JSON.stringify({ noUserId: true }),
@@ -60,8 +48,8 @@ ava('Call session route (req.headers.session)', async (t: Assertions) => {
 	 ** Good `session` header
 	 */
 	const session = { userId: 1, name: 'Bruce Wayne' };
-	let res = await commons.jsonHttpClient.get(
-		'http://localhost:6001/me',
+	let res = await t.context.httpClient.get(
+		[urlPrefix, 'me'],
 		{},
 		{
 			session: JSON.stringify(session),
@@ -71,19 +59,17 @@ ava('Call session route (req.headers.session)', async (t: Assertions) => {
 	/*
 	 ** No `session` header but session: { type: 'load' }
 	 */
-	res = await commons.jsonHttpClient.get('http://localhost:6001/me-load');
+	res = await t.context.httpClient.get([urlPrefix, 'me-load']);
 	t.deepEqual(res, { session: false });
 	/*
 	 ** With `session` header and session: { type: 'load' }
 	 */
-	res = await commons.jsonHttpClient.get(
-		'http://localhost:6001/me-load',
+	res = await t.context.httpClient.get(
+		[urlPrefix, 'me-load'],
 		{},
 		{
 			session: JSON.stringify(session),
 		},
 	);
 	t.deepEqual(res, session);
-	// Close server
-	await end(server, prometheusServer);
 });
