@@ -1,5 +1,16 @@
 
 
+# [3.0.0-rc.1](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.0...3.0.0-rc.1) (2023-10-16)
+
+
+### chore
+
+* Change package name to @neo9/n9-node-routing #70 ([59d71d9](https://github.com/neo9/n9-node-routing/commit/59d71d9e5423fedfad665cafdbd091827a3b54c7)), closes [#70](https://github.com/neo9/n9-node-routing/issues/70)
+
+### yarn
+
+* Upgrade n9-mongo-client ([2879b32](https://github.com/neo9/n9-node-routing/commit/2879b32974d4313bc47bf8827959e42d331e2199))
+
 # [3.0.0-rc.0](https://github.com/neo9/n9-node-routing/compare/2.2.0...3.0.0-rc.0) (2023-10-13)
 
 
