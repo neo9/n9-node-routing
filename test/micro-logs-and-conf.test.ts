@@ -62,7 +62,7 @@ test('Basic usage, check logs', async (t: ExecutionContext<TestContext>) => {
 	t.true(stdout[0].includes(')'), 'contains request id 2');
 	t.truthy(
 		stdout[0].match(
-			/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z - info : \[n9-node-routing\] \([a-zA-Z0-9-_]{10}\) message in controller$/g,
+			/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z - info : \[@neo9\/n9-node-routing\] \([a-zA-Z0-9-_]{10}\) message in controller$/g,
 		),
 		'check line match message in controller',
 	); // ex: 2023-10-09T13:15:28.058Z - info : [n9-node-routing] (dLigrN1Rq) message in controller

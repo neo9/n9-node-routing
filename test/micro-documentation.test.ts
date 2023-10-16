@@ -24,7 +24,7 @@ test('Read documentation', async (t: ExecutionContext<TestContext>) => {
 		// Check /documentation
 		const res = await t.context.httpClient.get<any>([urlPrefix, 'documentation.json']);
 
-		t.is(res.info.title, 'n9-node-routing');
+		t.is(res.info.title, '@neo9/n9-node-routing');
 		t.is(Object.keys(res.paths).length, 3);
 	});
 });
@@ -77,7 +77,7 @@ test('Read documentation generated first', async (t: ExecutionContext<TestContex
 	// Check /documentation
 	const res = await t.context.httpClient.get<any>([urlPrefix, 'documentation.json']);
 
-	t.is(res.info.title, 'n9-node-routing');
+	t.is(res.info.title, '@neo9/n9-node-routing');
 	t.is(Object.keys(res.paths).length, 3);
 
 	fs.unlinkSync(generatedFilePath);
