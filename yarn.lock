@@ -1035,10 +1035,10 @@
     eslint-plugin-rxjs "^5.0.3"
     eslint-plugin-simple-import-sort "^10.0.0"
 
-"@neo9/n9-mongodb-client@^1.0.0-rc.9":
-  version "1.0.0-rc.12"
-  resolved "https://registry.npmjs.org/@neo9/n9-mongodb-client/-/n9-mongodb-client-1.0.0-rc.12.tgz#0188f257f26e1caf313dd39f9e48836f22f27e41"
-  integrity sha512-xvPnlhs4HA6N/9Mynrg/f8TKZtZfEKXjL2dGl9AcZawFtXKyeDWFW/50baXnvTRTrDXWRczNH7PlWdJpFmwXrw==
+"@neo9/n9-mongodb-client@^1.0.0-rc.13":
+  version "1.0.0-rc.13"
+  resolved "https://registry.npmjs.org/@neo9/n9-mongodb-client/-/n9-mongodb-client-1.0.0-rc.13.tgz#c1d634de8ba9901dd979c2e85e3c45940a39fcaf"
+  integrity sha512-t/PnKOsfDSMApU7huaFb34aSrjS1LgpSUSz3EAAcw/eZVkHoB9Vchi0U9RwKltirzRWoHRYv+VzAb6TzzY4o1Q==
   dependencies:
     "@neo9/n9-node-log" "^5.0.0-rc.6"
     "@neo9/n9-node-utils" "^3.0.0-rc.0"
@@ -1049,7 +1049,7 @@
     mongodb "~6.1.0"
     promise-pool-executor "^1.1.1"
 
-"@neo9/n9-node-conf@^2.0.0-rc.0":
+"@neo9/n9-node-conf@^2.0.0-rc.2":
   version "2.0.0-rc.2"
   resolved "https://registry.npmjs.org/@neo9/n9-node-conf/-/n9-node-conf-2.0.0-rc.2.tgz#e8d5e1ad8933342584a10c55f5b26716fa54236f"
   integrity sha512-Qp/H/s04t/qbT0IK6i2z41K42+CQoazM3GLT1pqCTG5weOGiPsMU+R1flUb/devw8IlbvxsGG57YAta0QkXYAg==
@@ -2087,10 +2087,10 @@
   resolved "https://registry.npmjs.org/@types/newrelic/-/newrelic-9.14.1.tgz#cdd2f1f5237bf4db4d971e0e34ee6df0ab836d2a"
   integrity sha512-1WBjbx0b570qFx5pvYrp7Ml3kAPyNQyQUqYG2QA4DpC2AP0rBklTJ4CltRiMSRxJyJBWgDm2YiPTJiQXwmhDHA==
 
-"@types/node@*", "@types/node@>=12.12.47", "@types/node@>=13.7.0":
-  version "20.8.5"
-  resolved "https://registry.npmjs.org/@types/node/-/node-20.8.5.tgz#13352ae1f80032171616910e8aba2e3e52e57d96"
-  integrity sha512-SPlobFgbidfIeOYlzXiEjSYeIJiOCthv+9tSQVpvk4PAdIIc+2SmjNVzWXk9t0Y7dl73Zdf+OgXKHX9XtkqUpw==
+"@types/node@*":
+  version "20.8.6"
+  resolved "https://registry.npmjs.org/@types/node/-/node-20.8.6.tgz#0dbd4ebcc82ad0128df05d0e6f57e05359ee47fa"
+  integrity sha512-eWO4K2Ji70QzKUqRy6oyJWUeB7+g2cRagT3T/nxYibYcT4y2BDL8lqolRXjTHmkZCdJfIPaY73KbJAZmcryxTQ==
   dependencies:
     undici-types "~5.25.1"
 
@@ -2103,6 +2103,13 @@
   version "20.5.1"
   resolved "https://registry.npmjs.org/@types/node/-/node-20.5.1.tgz#178d58ee7e4834152b0e8b4d30cbfab578b9bb30"
   integrity sha512-4tT2UrL5LBqDwoed9wZ6N3umC4Yhz3W3FloMmiiG4JwmUJWpie0c7lcnUNd4gtMKuDEO4wRVS8B6Xa0uMRsMKg==
+
+"@types/node@>=12.12.47", "@types/node@>=13.7.0":
+  version "20.8.5"
+  resolved "https://registry.npmjs.org/@types/node/-/node-20.8.5.tgz#13352ae1f80032171616910e8aba2e3e52e57d96"
+  integrity sha512-SPlobFgbidfIeOYlzXiEjSYeIJiOCthv+9tSQVpvk4PAdIIc+2SmjNVzWXk9t0Y7dl73Zdf+OgXKHX9XtkqUpw==
+  dependencies:
+    undici-types "~5.25.1"
 
 "@types/node@^10.0.3":
   version "10.17.60"
