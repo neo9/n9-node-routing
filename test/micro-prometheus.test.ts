@@ -72,7 +72,7 @@ test('Basic usage, create http server', async (t: ExecutionContext<TestContext>)
 	t.is(prometheusMetricsForVersionInfo[1], '# TYPE version_info gauge');
 	t.true(prometheusMetricsForVersionInfo[2].startsWith('version_info{version="'), 'check data');
 	t.true(
-		prometheusMetricsForVersionInfo[2].endsWith(',name="n9-node-routing"} 1'),
+		prometheusMetricsForVersionInfo[2].endsWith(',name="@neo9/n9-node-routing"} 1'),
 		'check data end',
 	);
 

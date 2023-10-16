@@ -36,6 +36,20 @@ export class ValidateController {
 - The "Custom validation decorators" require a new class instance and not only the class reference/name. Here [an example](./test/fixtures/micro-body-class-validation/models/array-validator.models.ts#L39).
 - The validation with schema, [here is the issue opened](https://github.com/typestack/class-validator/issues/595)
 
+:warning: BREAKING CHANGES when upgrading to `n9-node-routing` V3
+
+- Drop Node 14 support
+- Rename from `n9-node-routing` to `@neo9/n9-node-routing`
+- Services injected names change :
+  - `@Inject('N9HttpClient') httpClient: N9HttpClient` → `@Inject() httpClient: N9HttpClient`
+  - `@Inject('conf') conf: Configuration` → `@Inject() conf: Configuration`
+  - `@Inject('logger') logger: N9Log` → `@Inject() logger: N9Log` or in constructor parameters `logger: N9Log`
+  - Remove `global` properties :
+    - `global.conf` and `global.log` are not set or used anymore
+    - `global.db` and `global.dbClient` are not used too
+- Log level is by default debug in development environment
+- New lifecycle hook : `callbacksBeforeShutdownAfterExpressEnded` to stop databases
+
 :warning: BREAKING CHANGES when upgrading to `n9-node-routing` V2
 
 - Drop Node 12 support
@@ -47,10 +61,6 @@ export class ValidateController {
 - `/` response is now an object: `{ name: 'myApi' }`
 - `/version' response is now an object : `{ version: '1.2.3' }`
 - Prometheus metrics are enabled by default. To disable them use `n9NodeRoutingOptions.prometheus.isEnabled: false`
-- Services injected names change :
-  - `@Inject('N9HttpClient') httpClient: N9HttpClient` → `@Inject() httpClient: N9HttpClient`
-  - `@Inject('conf') conf: Configuration` → `@Inject() conf: Configuration`
-  - `@Inject('logger') logger: N9Log` → `@Inject() logger: N9Log` or in constructor parameters `logger: N9Log`
 
 ## Features
 

@@ -23,8 +23,10 @@ test('Init newrelic and send error event', async (t: ExecutionContext<TestContex
 	});
 
 	t.truthy(
-		t.context.stdout.find((line) => line.includes('Enable NewRelic for app test-n9-node-routing')),
-		'Enable NewRelic for app n9-node-routing',
+		t.context.stdout.find((line) =>
+			line.includes('Enable NewRelic for app test-@neo9/n9-node-routing'),
+		),
+		'Enable NewRelic for app test-@neo9/n9-node-routing',
 	);
 
 	const res = await t.context.httpClient.post<any>([urlPrefix, 'v1', 'bar']);
@@ -68,8 +70,8 @@ test("Init app without newrelic and check tracing enabled doesn't go wrong", asy
 	// process.env.NEW_RELIC_EXPLAIN_THRESHOLD = '1';
 	await runBeforeTest(t);
 	t.falsy(
-		t.context.stdout.find((line) => line.includes('Enable NewRelic for app n9-node-routing')),
-		'Enable NewRelic for app test-n9-node-routing',
+		t.context.stdout.find((line) => line.includes('Enable NewRelic for app')),
+		'Enable NewRelic for app',
 	);
 	// can't be tested because it take several minutes to newrelic to stop
 	// https://docs.newrelic.com/docs/apm/new-relic-apm/maintenance/disable-apm-agent/#node

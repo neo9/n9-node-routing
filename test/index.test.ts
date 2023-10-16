@@ -69,7 +69,7 @@ test('Works without options (except conf for tests)', async (t: ExecutionContext
 	});
 
 	t.true(
-		t.context.stdout[4].includes('[n9-node-routing] Listening on port 5000'),
+		t.context.stdout[4].includes('[@neo9/n9-node-routing] Listening on port 5000'),
 		`[n9-node-routing] Listening on port 5000 output : ${JSON.stringify(t.context.stdout)}`,
 	);
 });
@@ -82,7 +82,7 @@ test('Works without options in production (except conf for test purpose)', async
 	delete line2.timestamp;
 
 	t.deepEqual(line2, {
-		label: 'n9-node-routing',
+		label: '@neo9/n9-node-routing',
 		level: 'info',
 		message: 'Listening on port 5000',
 	});

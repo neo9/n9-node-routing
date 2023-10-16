@@ -26,10 +26,14 @@ test('Check if the hooks are called', async (t: ExecutionContext<TestContext>) =
 
 	t.is(t.context.stdout.length, 14);
 	t.true(
-		t.context.stdout[7].includes('[n9-node-routing:before-hook] beforeRoutingControllerLaunchHook'),
+		t.context.stdout[7].includes(
+			'[@neo9/n9-node-routing:before-hook] beforeRoutingControllerLaunchHook',
+		),
 	);
 	t.true(
-		t.context.stdout[8].includes('[n9-node-routing:after-hook] afterRoutingControllerLaunchHook'),
+		t.context.stdout[8].includes(
+			'[@neo9/n9-node-routing:after-hook] afterRoutingControllerLaunchHook',
+		),
 	);
 
 	const rep = await t.context.httpClient.get<{ response: string }>([urlPrefix, 'ping']);

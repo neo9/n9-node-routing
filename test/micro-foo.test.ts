@@ -48,7 +48,7 @@ test.serial('Basic usage, create http server', async (t: ExecutionContext<TestCo
 
 		// Check / route
 		res = await t.context.httpClient.get<{ name: string }>(urlPrefix);
-		t.deepEqual(res, { name: 'n9-node-routing' });
+		t.deepEqual(res, { name: '@neo9/n9-node-routing' });
 
 		// Check /ping route
 		res = await t.context.httpClient.get<{ response: string }>([urlPrefix, 'ping']);
@@ -121,7 +121,7 @@ test.serial(
 
 			// Check / route
 			res = await t.context.httpClient.get<{ name: string }>(urlPrefix);
-			t.deepEqual(res, { name: 'n9-node-routing' });
+			t.deepEqual(res, { name: '@neo9/n9-node-routing' });
 
 			// Check /ping route
 			res = await t.context.httpClient.get<{ response: string }>([urlPrefix, 'ping']);
@@ -141,25 +141,25 @@ test.serial(
 		let index = 4;
 		t.deepEqual(
 			parseJSONLogAndRemoveTime(stdout[index]),
-			{ level: 'info', message: 'Init module bar', label: 'n9-node-routing' },
+			{ level: 'info', message: 'Init module bar', label: '@neo9/n9-node-routing' },
 			`Init module bar`,
 		);
 		index += 1;
 		t.deepEqual(
 			parseJSONLogAndRemoveTime(stdout[index]),
-			{ level: 'info', message: 'Init module foo', label: 'n9-node-routing' },
+			{ level: 'info', message: 'Init module foo', label: '@neo9/n9-node-routing' },
 			`Init module foo`,
 		);
 		index += 1;
 		t.deepEqual(
 			parseJSONLogAndRemoveTime(stdout[index]),
-			{ level: 'info', message: 'Hello foo.init', label: 'n9-node-routing' },
+			{ level: 'info', message: 'Hello foo.init', label: '@neo9/n9-node-routing' },
 			`Hello foo.init`,
 		);
 		index += 1;
 		t.deepEqual(
 			parseJSONLogAndRemoveTime(stdout[index]),
-			{ level: 'info', message: 'Listening on port 5000', label: 'n9-node-routing' },
+			{ level: 'info', message: 'Listening on port 5000', label: '@neo9/n9-node-routing' },
 			'Listening on port 5000',
 		);
 		index += 2;
