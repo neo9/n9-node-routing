@@ -3,7 +3,7 @@ import test, { ExecutionContext } from 'ava';
 import * as fs from 'fs';
 import { join } from 'path';
 
-import { generateDocumentationJsonToFile } from '../src/generate-documentation-json';
+import { generateDocumentationJsonToFile } from '../src';
 import { Options } from '../src/models/routing';
 import { init, mockAndCatchStd, TestContext, urlPrefix } from './fixtures';
 

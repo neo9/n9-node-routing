@@ -47,6 +47,7 @@ export * from './models/routes.models';
 export * from './utils/http-client-base';
 export * from './utils/http-cargo-builder';
 export * from './utils/cargo';
+export * from './generate-documentation-json';
 
 export * as N9NodeRouting from './models/routing';
 
