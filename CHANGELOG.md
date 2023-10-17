@@ -1,5 +1,12 @@
 
 
+# [3.0.0-rc.2](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.1...3.0.0-rc.2) (2023-10-17)
+
+
+### documentation
+
+* Fix export of helper to generate documentation ([85dae98](https://github.com/neo9/n9-node-routing/commit/85dae984ed5c0c66ebb7a815ef94ff0bc445e45f))
+
 # [3.0.0-rc.1](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.0...3.0.0-rc.1) (2023-10-16)
 
 
