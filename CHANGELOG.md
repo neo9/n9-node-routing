@@ -1,5 +1,16 @@
 
 
+# [3.0.0-rc.3](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.2...3.0.0-rc.3) (2023-10-19)
+
+
+### log
+
+* Use safeStringify new method from n9-node-log and fix tests ([2ba4e1d](https://github.com/neo9/n9-node-routing/commit/2ba4e1d823596cf9bd670fba58a5985ba9bad21a))
+
+### yarn
+
+* Upgrade n9-node-log to version 5.0.0-rc.7 ([f384738](https://github.com/neo9/n9-node-routing/commit/f384738f6e5b28c08ac0a9b640211005bde52b30))
+
 # [3.0.0-rc.2](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.1...3.0.0-rc.2) (2023-10-17)
 
 
