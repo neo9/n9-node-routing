@@ -1,5 +1,12 @@
 
 
+# [3.0.0-rc.4](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.3...3.0.0-rc.4) (2023-10-19)
+
+
+### node
+
+* Use new node module names and export new n9-node-log functions ([a40cad2](https://github.com/neo9/n9-node-routing/commit/a40cad2a61a2267d4899906e81d319163137e48b))
+
 # [3.0.0-rc.3](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.2...3.0.0-rc.3) (2023-10-19)
 
 
