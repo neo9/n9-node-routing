@@ -46,7 +46,7 @@
   "dependencies": {
     "@benjd90/routing-controllers": "^0.9.2",
     "@neo9/n9-node-conf": "^2.0.0-rc.2",
-    "@neo9/n9-node-log": "^5.0.0-rc.6",
+    "@neo9/n9-node-log": "^5.0.0-rc.7",
     "@neo9/n9-node-utils": "^3.0.0-rc.0",
     "@promster/express": "^9.0.1",
     "@promster/server": "^9.0.0",
@@ -83,7 +83,7 @@
     "@ava/typescript": "^4.1.0",
     "@commitlint/cli": "^17.7.2",
     "@neo9/n9-coding-style": "^5.1.2",
-    "@neo9/n9-mongodb-client": "^1.0.0-rc.13",
+    "@neo9/n9-mongodb-client": "^1.0.0-rc.14",
     "@promster/types": "^5.0.0",
     "@release-it/conventional-changelog": "^7.0.2",
     "@tsconfig/node16": "^16.1.1",
