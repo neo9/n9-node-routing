@@ -1,6 +1,6 @@
 import { MongoUtils } from '@neo9/n9-mongodb-client';
 import { MongoClient } from '@neo9/n9-mongodb-client/mongodb';
-import { N9Log } from '@neo9/n9-node-log';
+import { N9Log, removeColors } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import test, { ExecutionContext } from 'ava';
 import { Server } from 'http';
@@ -77,12 +77,14 @@ export async function mockAndCatchStd<T>(
 			if (value.endsWith('\n')) return value.slice(0, -1).split('\n');
 			return value.split('\n');
 		})
+		.map((line) => removeColors(line))
 		.filter(commons.excludeSomeLogs);
 	const stderr = flushResult.stderr
 		.flatMap((value) => {
 			if (value.endsWith('\n')) return value.slice(0, -1).split('\n');
 			return value.split('\n');
 		})
+		.map((line) => removeColors(line))
 		.filter(commons.excludeSomeLogs);
 
 	const stdLength = stdout.length + stderr.length;

@@ -1,7 +1,6 @@
-import { N9Log } from '@neo9/n9-node-log';
+import { N9Log, safeStringify } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import { getNamespace } from 'cls-hooked';
-import fastSafeStringify from 'fast-safe-stringify';
 import got, { Method, Options as GotOptions } from 'got';
 import { RequestError } from 'got/dist/source/core';
 import { IncomingMessage } from 'http';
@@ -189,7 +188,7 @@ export class N9HttpClient {
 			return res.body;
 		} catch (e) {
 			const durationMs = Date.now() - startTime;
-			const bodyJSON = fastSafeStringify(body);
+			const bodyJSON = safeStringify(body);
 			const { code, status } = N9HttpClient.prepareErrorCodeAndStatus(e);
 			this.logger.error(`Error on [${method} ${uri}] ${e.message}`, {
 				uri,
@@ -246,7 +245,7 @@ export class N9HttpClient {
 
 			throw new N9Error(code.toString(), status, {
 				uri,
-				options: fastSafeStringify({ ...optionsSent, headers: alteredHeaders }),
+				options: safeStringify({ ...optionsSent, headers: alteredHeaders }),
 				error: e,
 				...e.context,
 			});
@@ -351,7 +350,7 @@ export class N9HttpClient {
 									error?.code ?? error?.name
 								} ${error?.message}`,
 								{
-									errString: fastSafeStringify(error),
+									errString: safeStringify(error),
 									status: error?.response?.statusCode,
 								},
 							);

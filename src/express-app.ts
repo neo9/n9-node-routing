@@ -1,5 +1,5 @@
 import * as RoutingControllers from '@benjd90/routing-controllers';
-import { N9Log } from '@neo9/n9-node-log';
+import { N9Log, safeStringify } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import { createMiddleware, signalIsUp } from '@promster/express';
 import * as PromsterServer from '@promster/server';
@@ -7,7 +7,6 @@ import * as Sentry from '@sentry/node';
 import type { Integration } from '@sentry/types';
 import * as ClassValidator from 'class-validator';
 import * as express from 'express';
-import fastSafeStringify from 'fast-safe-stringify';
 import helmet from 'helmet';
 import { createServer } from 'http';
 import * as morgan from 'morgan';
@@ -125,7 +124,7 @@ export async function init<ConfType extends N9NodeRouting.N9NodeRoutingBaseConf>
 								const morganDetails = JSON.parse(message);
 								options.log.info(`api call ${morganDetails.path}`, morganDetails);
 							} catch (e) {
-								options.log.info(message?.replace('\n', ''), { errString: fastSafeStringify(e) });
+								options.log.info(message?.replace('\n', ''), { errString: safeStringify(e) });
 							}
 						} else {
 							options.log.info(message?.replace('\n', ''));

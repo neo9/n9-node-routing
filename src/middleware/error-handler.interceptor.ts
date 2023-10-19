@@ -1,8 +1,7 @@
 import { ExpressErrorMiddlewareInterface, Middleware } from '@benjd90/routing-controllers';
-import { N9Log } from '@neo9/n9-node-log';
+import { N9Log, safeStringify } from '@neo9/n9-node-log';
 import * as Sentry from '@sentry/node';
 import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
-import fastSafeStringify from 'fast-safe-stringify';
 import { Service } from 'typedi';
 
 import * as N9NodeRouting from '../models/routing';
@@ -63,9 +62,9 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 		error.code = code;
 
 		if (status < 500) {
-			this.logger.warn(code, { errString: fastSafeStringify(error) });
+			this.logger.warn(code, { errString: safeStringify(error) });
 		} else {
-			this.logger.error(code, { errString: fastSafeStringify(error) });
+			this.logger.error(code, { errString: safeStringify(error) });
 		}
 
 		if (this.sentryErrorHandler) {
@@ -73,10 +72,10 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
 		}
 		if (this.newRelicNoticeError) {
 			try {
-				this.newRelicNoticeError(error, { errString: fastSafeStringify(error) });
+				this.newRelicNoticeError(error, { errString: safeStringify(error) });
 			} catch (e) {
 				this.logger.warn(`Error while sending error to newrelic`, {
-					errString: fastSafeStringify(e),
+					errString: safeStringify(e),
 				});
 			}
 		}

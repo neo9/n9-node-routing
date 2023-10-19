@@ -1,7 +1,6 @@
-import { N9Log } from '@neo9/n9-node-log';
+import { N9Log, safeStringify } from '@neo9/n9-node-log';
 import { waitFor } from '@neo9/n9-node-utils';
 import { signalIsNotUp } from '@promster/express';
-import fastSafeStringify from 'fast-safe-stringify';
 import { Server } from 'http';
 
 import * as N9NodeRouting from './models/routing';
@@ -47,7 +46,7 @@ async function shutdown(
 	server.getConnections((error1, count) => {
 		if (error1) {
 			logger.error('can-not-get-number-of-connections', {
-				errString: fastSafeStringify(error1),
+				errString: safeStringify(error1),
 				errMessage: error1.message,
 			});
 			process.exit(1);
@@ -57,7 +56,7 @@ async function shutdown(
 		server.close(async (error2) => {
 			if (error2) {
 				logger.error('can-not-shutdown-gracefully', {
-					errString: fastSafeStringify(error2),
+					errString: safeStringify(error2),
 					errMessage: error2.message,
 				});
 				process.exit(1);
@@ -76,7 +75,7 @@ async function shutdown(
 			server.getConnections((error3, count2) => {
 				if (error3) {
 					logger.error('can-not-get-number-of-connections', {
-						errString: fastSafeStringify(error3),
+						errString: safeStringify(error3),
 						errMessage: error3.message,
 					});
 					process.exit(1);
