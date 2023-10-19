@@ -1,7 +1,8 @@
+import { Server } from 'node:http';
+
 import { N9Log, safeStringify } from '@neo9/n9-node-log';
 import { waitFor } from '@neo9/n9-node-utils';
 import { signalIsNotUp } from '@promster/express';
-import { Server } from 'http';
 
 import * as N9NodeRouting from './models/routing';
 import * as Routes from './routes';

@@ -1,9 +1,10 @@
+import { IncomingMessage } from 'node:http';
+
 import { N9Log, safeStringify } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import { getNamespace } from 'cls-hooked';
 import got, { Method, Options as GotOptions } from 'got';
 import { RequestError } from 'got/dist/source/core';
-import { IncomingMessage } from 'http';
 import { nanoid } from 'nanoid';
 import * as QueryString from 'query-string';
 import { PassThrough } from 'stream';

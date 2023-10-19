@@ -1,11 +1,12 @@
 import 'reflect-metadata';
 import './utils/error-to-json';
 
+import * as Path from 'node:path';
+
 import n9NodeConf from '@neo9/n9-node-conf';
 import { N9Log } from '@neo9/n9-node-log';
 import * as appRootDir from 'app-root-dir';
 import { classToPlain } from 'class-transformer';
-import * as Path from 'path';
 import * as PrometheusClient from 'prom-client';
 import { Container } from 'typedi';
 import type { PackageJson } from 'types-package-json';
@@ -38,7 +39,7 @@ export { Type, Transform, Exclude, Expose, classToPlain, plainToClass } from 'cl
 export { getMetadataArgsStorage } from '@benjd90/routing-controllers';
 export * from 'routing-controllers-openapi';
 export * from '@neo9/n9-node-utils'; // allow users to use n9-node-utils without importing it specifically
-export { N9Log } from '@neo9/n9-node-log';
+export { N9Log, safeStringify, removeColors } from '@neo9/n9-node-log';
 
 export * from './decorators/acl.decorator';
 export * from './validators';
@@ -48,7 +49,7 @@ export * from './utils/http-client-base';
 export * from './utils/http-cargo-builder';
 export * from './utils/cargo';
 export * from './generate-documentation-json';
-export { ExtendConfigKeyFormat } from '@neo9/n9-node-conf';
+export { ExtendConfigKeyFormat, N9ConfBaseConf } from '@neo9/n9-node-conf';
 
 export * as N9NodeRouting from './models/routing';
 

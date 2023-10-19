@@ -1,6 +1,7 @@
+import { Server } from 'node:http';
+
 import { N9Log } from '@neo9/n9-node-log';
 import { Express } from 'express';
-import { Server } from 'http';
 
 import { N9NodeRoutingBaseConf } from './base-conf';
 

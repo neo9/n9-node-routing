@@ -1,6 +1,7 @@
+import * as http from 'node:http';
+
 import type { OptionsJson } from 'body-parser';
 import { IsBoolean, IsOptional } from 'class-validator';
-import * as http from 'http';
 
 import { isStringOrNumber } from '../../validators';
 

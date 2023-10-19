@@ -1,3 +1,5 @@
+import { createServer } from 'node:http';
+
 import * as RoutingControllers from '@benjd90/routing-controllers';
 import { N9Log, safeStringify } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
@@ -8,7 +10,6 @@ import type { Integration } from '@sentry/types';
 import * as ClassValidator from 'class-validator';
 import * as express from 'express';
 import helmet from 'helmet';
-import { createServer } from 'http';
 import * as morgan from 'morgan';
 import * as PrometheusClient from 'prom-client';
 import { Container } from 'typedi';

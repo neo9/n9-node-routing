@@ -1,6 +1,7 @@
+import { join } from 'node:path';
+
 import { N9Log } from '@neo9/n9-node-log';
 import * as glob from 'glob-promise';
-import { join } from 'path';
 
 export default async (
 	path: string,

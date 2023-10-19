@@ -1,5 +1,5 @@
-import { Server } from 'http';
-import { join } from 'path';
+import { Server } from 'node:http';
+import { join } from 'node:path';
 
 import { N9NodeRouting } from '../../src';
 import { N9NodeRoutingBaseConf } from '../../src/models/routing';

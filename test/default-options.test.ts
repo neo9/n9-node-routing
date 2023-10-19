@@ -1,6 +1,7 @@
+import { join } from 'node:path';
+
 import test, { ExecutionContext } from 'ava';
 import * as _ from 'lodash';
-import { join } from 'path';
 
 import { N9NodeRouting } from '../src';
 import { applyDefaultValuesOnOptions } from '../src/options';

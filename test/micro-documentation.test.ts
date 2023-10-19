@@ -1,7 +1,8 @@
+import { join } from 'node:path';
+
 import { N9Error } from '@neo9/n9-node-utils';
 import test, { ExecutionContext } from 'ava';
 import * as fs from 'fs';
-import { join } from 'path';
 
 import { generateDocumentationJsonToFile } from '../src';
 import { Options } from '../src/models/routing';

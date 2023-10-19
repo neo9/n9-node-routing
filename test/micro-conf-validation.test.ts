@@ -1,5 +1,6 @@
+import { join } from 'node:path';
+
 import test, { ExecutionContext } from 'ava';
-import { join } from 'path';
 import { Container } from 'typedi';
 
 import { init, TestContext, urlPrefix } from './fixtures';
