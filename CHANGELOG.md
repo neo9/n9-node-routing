@@ -1,5 +1,12 @@
 
 
+# [3.0.0-rc.5](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.4...3.0.0-rc.5) (2023-10-20)
+
+
+### lifecycle
+
+* Add conf parameter to init and started module calls ([b9caf3e](https://github.com/neo9/n9-node-routing/commit/b9caf3e99bed5e5df2dd84c706ebb1b1bb9cfebd))
+
 # [3.0.0-rc.4](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.3...3.0.0-rc.4) (2023-10-19)
 
 
