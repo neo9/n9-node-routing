@@ -105,7 +105,12 @@ export default async <
 	}
 
 	// Execute all *.init.ts files in modules before app started listening on the HTTP Port
-	await initialiseModules(options.path, logger, options.firstSequentialInitFileNames);
+	await initialiseModules<ConfType>(
+		options.path,
+		logger,
+		options.firstSequentialInitFileNames,
+		conf,
+	);
 	const returnObject = await ExpressApp.init<ConfType>(options, packageJson, logger, conf);
 	Routes.init(returnObject.app, options, packageJson, environment, logger);
 
@@ -115,7 +120,7 @@ export default async <
 	}
 
 	// Execute all *.started.ts files in modules after app started listening on the HTTP Port
-	await startModules(options.path, logger, options.firstSequentialStartFileNames);
+	await startModules<ConfType>(options.path, logger, options.firstSequentialStartFileNames, conf);
 
 	logger.profile('startup');
 	return returnObject;

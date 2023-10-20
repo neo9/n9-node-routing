@@ -1,7 +1,6 @@
 # n9-node-routing
 
-[![npm version](https://img.shields.io/npm/v/n9-node-routing.svg)](https://www.npmjs.com/package/n9-node-routing)
-[![Travis](https://img.shields.io/travis/neo9/n9-node-routing/master.svg)](https://travis-ci.org/neo9/n9-node-routing)
+[![npm version](https://img.shields.io/npm/v/@neo9/n9-node-routing.svg)](https://www.npmjs.com/package/@neo9/n9-node-routing)
 [![Coverage](https://img.shields.io/codecov/c/github/neo9/n9-node-routing/master.svg)](https://codecov.io/gh/neo9/n9-node-routing)
 
 > Wrapper of project [routing-controllers](https://github.com/typestack/routing-controllers)
@@ -73,6 +72,21 @@ Swagger UI for API available at : /documentation
 ### Starter
 
 A starter app is available here : https://github.com/neo9/n9-node-microservice-skeleton
+
+### Init and started files
+
+At startup `n9NodeRouting` does in order :
+
+1.  Find current environment (dev/.../pre-prod/prod)
+2.  [Load the conf](https://github.com/neo9/n9-node-conf) for current environment
+3.  [Create a logger](https://github.com/neo9/n9-node-log)
+4.  Print the current environment, app name and Node.js version (`process.version`)
+5.  \* Validate configuration is enabled
+6.  \* Start APM if any
+7.  Run `*.init.ts` (actually `*.init.js`). Call default exported function with params : `logger`, `conf`
+8.  Startup express then start listening on the port 5000 by default
+9.  \* Register shutdown callback if any
+10. Run `*.started.ts` (actually `*.started.js`). Call default exported function with params : `logger`, `conf`
 
 ### Some utils
 

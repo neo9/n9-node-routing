@@ -21,7 +21,7 @@ test('[Lifecycle Hooks] init and started hooks called', async (t: ExecutionConte
 	let index = 4;
 	t.true(t.context.stdout[index].includes('Init module feature'), 'Init module feature');
 	index += 1;
-	t.true(t.context.stdout[index].includes('feature init'), 'feature init');
+	t.true(t.context.stdout[index].includes('feature init @neo9/n9-node-routing'), 'feature init');
 	index += 1;
 	t.true(t.context.stdout[index].includes('End init module feature'), 'End int module feature');
 	index += 1;
@@ -32,7 +32,10 @@ test('[Lifecycle Hooks] init and started hooks called', async (t: ExecutionConte
 		'Init started module feature',
 	);
 	index += 1;
-	t.true(t.context.stdout[index].includes('feature started'), 'feature started');
+	t.true(
+		t.context.stdout[index].includes('feature started @neo9/n9-node-routing'),
+		'feature started',
+	);
 	index += 1;
 	t.true(
 		t.context.stdout[index].includes('End init started module feature'),
@@ -62,7 +65,10 @@ test('[Lifecycle Hooks] init in order', async (t: ExecutionContext<TestContext>)
 	index += 1;
 	t.true(t.context.stdout[index].includes('Init module feature'), 'Init module feature');
 	index += 1;
-	t.true(t.context.stdout[index].includes('feature init 2'), 'feature init 2');
+	t.true(
+		t.context.stdout[index].includes('feature init 2 @neo9/n9-node-routing'),
+		'feature init 2',
+	);
 	index += 1;
 	t.true(t.context.stdout[index].includes('Listening on port 5000'), 'Listening on port 5000');
 	index += 1;
@@ -80,5 +86,8 @@ test('[Lifecycle Hooks] init in order', async (t: ExecutionContext<TestContext>)
 		'Init started module feature',
 	);
 	index += 1;
-	t.true(t.context.stdout[index].includes('feature started 2'), 'feature started 2');
+	t.true(
+		t.context.stdout[index].includes('feature started 2 @neo9/n9-node-routing'),
+		'feature started 2',
+	);
 });

@@ -3,10 +3,11 @@ import { join } from 'node:path';
 import { N9Log } from '@neo9/n9-node-log';
 import * as glob from 'glob-promise';
 
-export default async (
+export default async <ConfType>(
 	path: string,
 	log: N9Log,
-	firstSequentialStartFileNames?: string[],
+	firstSequentialStartFileNames: string[] | undefined,
+	conf: ConfType,
 ): Promise<any> => {
 	const initFiles: string[] = await glob('**/*.started.+(ts|js)', { cwd: path });
 
@@ -21,7 +22,7 @@ export default async (
 				// eslint-disable-next-line @typescript-eslint/no-var-requires,global-require,import/no-dynamic-require
 				let module = require(join(path, initFiles[matchingStartFileIndex]));
 				module = module.default ? module.default : module;
-				await module(log);
+				await module(log, conf);
 				log.debug(`End started module ${moduleName}`);
 				initFiles.splice(matchingStartFileIndex, 1);
 			}
@@ -37,7 +38,7 @@ export default async (
 				// eslint-disable-next-line @typescript-eslint/no-var-requires,global-require,import/no-dynamic-require
 				let module = require(join(path, file));
 				module = module.default ? module.default : module;
-				await module(log);
+				await module(log, conf);
 				log.debug(`End init started module ${moduleName}`);
 			} catch (e) {
 				log.error(`Error while initializing ${moduleName}`, { errString: JSON.stringify(e) });
