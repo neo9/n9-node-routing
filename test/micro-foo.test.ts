@@ -27,15 +27,15 @@ test.serial('Basic usage, create http server', async (t: ExecutionContext<TestCo
 		'Configuration validation is disabled',
 	);
 	logIndex += 1;
-	t.true(t.context.stdout[logIndex].includes('Init module bar'), 'Init module bar');
-	logIndex += 1;
-	t.true(t.context.stdout[logIndex].includes('Init module foo'), 'Init module foo');
+	t.true(t.context.stdout[logIndex].includes('Init module foo'), 'Init module bar');
 	logIndex += 1;
 	t.true(t.context.stdout[logIndex].includes('Hello foo.init'), 'Hello foo.init');
 	logIndex += 1;
-	t.true(t.context.stdout[logIndex].includes('End init module bar'), 'End init module bar');
+	t.true(t.context.stdout[logIndex].includes('Init module bar'), 'Init module foo');
 	logIndex += 1;
 	t.true(t.context.stdout[logIndex].includes('End init module foo'), 'End init module foo');
+	logIndex += 1;
+	t.true(t.context.stdout[logIndex].includes('End init module bar'), 'End init module bar');
 	logIndex += 1;
 	t.true(t.context.stdout[logIndex].includes('Listening on port 5000'), 'Listening on port 5000');
 	logIndex += 1;
@@ -141,20 +141,20 @@ test.serial(
 		let index = 4;
 		t.deepEqual(
 			parseJSONLogAndRemoveTime(stdout[index]),
-			{ level: 'info', message: 'Init module bar', label: '@neo9/n9-node-routing' },
-			`Init module bar`,
-		);
-		index += 1;
-		t.deepEqual(
-			parseJSONLogAndRemoveTime(stdout[index]),
 			{ level: 'info', message: 'Init module foo', label: '@neo9/n9-node-routing' },
-			`Init module foo`,
+			`Init module bar`,
 		);
 		index += 1;
 		t.deepEqual(
 			parseJSONLogAndRemoveTime(stdout[index]),
 			{ level: 'info', message: 'Hello foo.init', label: '@neo9/n9-node-routing' },
 			`Hello foo.init`,
+		);
+		index += 1;
+		t.deepEqual(
+			parseJSONLogAndRemoveTime(stdout[index]),
+			{ level: 'info', message: 'Init module bar', label: '@neo9/n9-node-routing' },
+			`Init module foo`,
 		);
 		index += 1;
 		t.deepEqual(
