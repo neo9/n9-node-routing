@@ -1049,10 +1049,10 @@
     mongodb "~6.1.0"
     promise-pool-executor "^1.1.1"
 
-"@neo9/n9-node-conf@^2.0.0-rc.2":
-  version "2.0.0-rc.2"
-  resolved "https://registry.npmjs.org/@neo9/n9-node-conf/-/n9-node-conf-2.0.0-rc.2.tgz#e8d5e1ad8933342584a10c55f5b26716fa54236f"
-  integrity sha512-Qp/H/s04t/qbT0IK6i2z41K42+CQoazM3GLT1pqCTG5weOGiPsMU+R1flUb/devw8IlbvxsGG57YAta0QkXYAg==
+"@neo9/n9-node-conf@^2.0.0-rc.3":
+  version "2.0.0-rc.3"
+  resolved "https://registry.npmjs.org/@neo9/n9-node-conf/-/n9-node-conf-2.0.0-rc.3.tgz#68f92d9ed3a9d651b4010ffb0a63b96d2f4f037b"
+  integrity sha512-AwdU1fb/AK/C70iPjXUMrHgOxbB/2u2RPJoXkgrc7sqm8dUOi4gq0w0SCHPfx0M+4/aMDr4KDDZTUVAZb49wyA==
   dependencies:
     app-root-dir "^1.0.2"
     debug "^4.3.1"
