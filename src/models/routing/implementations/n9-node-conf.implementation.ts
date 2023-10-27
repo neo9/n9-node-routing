@@ -24,6 +24,10 @@ class N9NodeConfOptionsExtendConfigKey {
 	@IsString()
 	@IsEnum(ExtendConfigKeyFormat)
 	format?: ExtendConfigKeyFormat;
+
+	@IsOptional()
+	@IsString()
+	prefixToAvoid?: string;
 }
 
 export class N9NodeConfOptionsExtendConfig {
