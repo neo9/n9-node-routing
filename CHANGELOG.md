@@ -1,5 +1,12 @@
 
 
+# [3.0.0-rc.7](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.6...3.0.0-rc.7) (2023-10-27)
+
+
+### conf
+
+* Update n9-node-conf options for new version ([7f1d98e](https://github.com/neo9/n9-node-routing/commit/7f1d98e40509f72892f50c83aa980bf1c607a592))
+
 # [3.0.0-rc.6](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.5...3.0.0-rc.6) (2023-10-27)
 
 
