@@ -1,5 +1,17 @@
 
 
+# [3.0.0-rc.6](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.5...3.0.0-rc.6) (2023-10-27)
+
+
+### tests
+
+* Fix tests due to glob dependency upgrade ([72e6f7b](https://github.com/neo9/n9-node-routing/commit/72e6f7bdfe307f7672bbd91518354dbe1d6625d4))
+
+### yarn
+
+* Upgrade dependencies and drop node 16 support due to promster ([0775084](https://github.com/neo9/n9-node-routing/commit/0775084a494f0fddf46ab72c680078bc5fa54712))
+* Upgrade n9-node-conf to use prefixToAvoid option ([b75fcdc](https://github.com/neo9/n9-node-routing/commit/b75fcdc10cc0b7c88e4c3f156c624df56ebde319))
+
 # [3.0.0-rc.5](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.4...3.0.0-rc.5) (2023-10-20)
 
 
