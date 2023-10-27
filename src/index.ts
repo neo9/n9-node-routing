@@ -3,9 +3,9 @@ import './utils/error-to-json';
 
 import * as Path from 'node:path';
 
-import n9NodeConf from '@neo9/n9-node-conf';
+import N9NodeConf from '@neo9/n9-node-conf';
 import { N9Log } from '@neo9/n9-node-log';
-import * as appRootDir from 'app-root-dir';
+import * as AppRootDir from 'app-root-dir';
 import { classToPlain } from 'class-transformer';
 import * as PrometheusClient from 'prom-client';
 import { Container } from 'typedi';
@@ -14,14 +14,14 @@ import type { PackageJson } from 'types-package-json';
 import * as ExpressApp from './express-app';
 import { initAPM } from './init-apm';
 import { validateConf } from './init-conf';
-import initialiseModules from './initialise-modules';
+import InitialiseModules from './initialise-modules';
 import * as N9NodeRouting from './models/routing';
 import { applyDefaultValuesOnOptions, getLoadingConfOptions, mergeOptionsAndConf } from './options';
 import { registerShutdown } from './register-system-signals';
 import { requestIdFilter } from './requestid';
 import * as Routes from './routes';
 import { initExposedConf } from './routes';
-import startModules from './start-modules';
+import StartModules from './start-modules';
 import { getEnvironment } from './utils';
 import { N9HttpClient } from './utils/http-client-base';
 
@@ -66,9 +66,9 @@ export default async <
 	// Options default
 	const environment = getEnvironment();
 	// eslint-disable-next-line @typescript-eslint/no-var-requires,global-require,import/no-dynamic-require
-	const packageJson: PackageJson = require(Path.join(appRootDir.get(), 'package.json'));
+	const packageJson: PackageJson = require(Path.join(AppRootDir.get(), 'package.json'));
 
-	let conf: ConfType = n9NodeConf(getLoadingConfOptions(optionsParam));
+	let conf: ConfType = N9NodeConf(getLoadingConfOptions(optionsParam));
 	const options: N9NodeRouting.Options<ConfType> = mergeOptionsAndConf(
 		optionsParam,
 		conf.n9NodeRoutingOptions,
@@ -105,7 +105,7 @@ export default async <
 	}
 
 	// Execute all *.init.ts files in modules before app started listening on the HTTP Port
-	await initialiseModules<ConfType>(
+	await InitialiseModules<ConfType>(
 		options.path,
 		logger,
 		options.firstSequentialInitFileNames,
@@ -120,7 +120,7 @@ export default async <
 	}
 
 	// Execute all *.started.ts files in modules after app started listening on the HTTP Port
-	await startModules<ConfType>(options.path, logger, options.firstSequentialStartFileNames, conf);
+	await StartModules<ConfType>(options.path, logger, options.firstSequentialStartFileNames, conf);
 
 	logger.profile('startup');
 	return returnObject;

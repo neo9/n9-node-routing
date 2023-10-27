@@ -1,7 +1,7 @@
-import n9NodeLog from '@neo9/n9-node-log';
+import N9NodeLog from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import test, { ExecutionContext } from 'ava';
-import * as stdMock from 'std-mocks';
+import * as StdMock from 'std-mocks';
 
 import N9NodeRouting from '../src';
 import {
@@ -40,7 +40,7 @@ test('Works with preventListen = true', async (t: ExecutionContext<TestContext>)
 			http: { port: 4002, preventListen: true },
 		},
 	});
-	const output = stdMock.flush();
+	const output = StdMock.flush();
 
 	t.is(output.stderr.length, 0);
 	const err: N9Error = await t.throwsAsync(async () =>
@@ -51,7 +51,7 @@ test('Works with preventListen = true', async (t: ExecutionContext<TestContext>)
 });
 
 test('Should keep the custom logger and listening on port 5000', async (t: ExecutionContext<TestContext>) => {
-	const log = n9NodeLog('custom');
+	const log = N9NodeLog('custom');
 	await runBeforeTest(t, {
 		nodeEnvValue: 'development',
 		n9NodeRoutingOptions: {

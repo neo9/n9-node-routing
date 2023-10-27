@@ -4,9 +4,9 @@ import 'reflect-metadata';
 import { join } from 'node:path';
 
 import * as RoutingControllers from '@benjd90/routing-controllers';
-import n9NodeConf from '@neo9/n9-node-conf';
+import N9NodeConf from '@neo9/n9-node-conf';
 import { N9Log } from '@neo9/n9-node-log';
-import * as appRootDir from 'app-root-dir';
+import * as AppRootDir from 'app-root-dir';
 import * as ClassValidator from 'class-validator';
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
 import * as fs from 'fs';
@@ -25,7 +25,7 @@ export function generateDocumentationJson(
 	serverAlreadyStarted: boolean = true,
 	defaultValuesAreAlreadySet: boolean = false,
 	// eslint-disable-next-line global-require,import/no-dynamic-require
-	packageJson: PackageJson = require(join(appRootDir.get(), 'package.json')),
+	packageJson: PackageJson = require(join(AppRootDir.get(), 'package.json')),
 ): object {
 	if (defaultValuesAreAlreadySet) {
 		const environment = getEnvironment();
@@ -65,7 +65,7 @@ export function generateDocumentationJson(
 export function getDocumentationJsonPath(options: N9NodeRouting.Options): string {
 	return (
 		(options.openapi && options.openapi.jsonPath) ||
-		join(appRootDir.get(), 'openapi-documentation.json')
+		join(AppRootDir.get(), 'openapi-documentation.json')
 	);
 }
 
@@ -76,9 +76,9 @@ export function generateDocumentationJsonToFile(
 	} = {},
 ): string {
 	const confOptions = getLoadingConfOptions(optionsParams);
-	const conf: N9NodeRouting.N9NodeRoutingBaseConf = n9NodeConf(confOptions);
+	const conf: N9NodeRouting.N9NodeRoutingBaseConf = N9NodeConf(confOptions);
 	// eslint-disable-next-line @typescript-eslint/no-var-requires,global-require,import/no-dynamic-require
-	const packageJson = require(join(appRootDir.get(), 'package.json'));
+	const packageJson = require(join(AppRootDir.get(), 'package.json'));
 	const environment = getEnvironment();
 	const options: N9NodeRouting.Options<any> = mergeOptionsAndConf(
 		optionsParams,

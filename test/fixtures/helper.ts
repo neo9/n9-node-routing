@@ -6,9 +6,9 @@ import { MongoClient } from '@neo9/n9-mongodb-client/mongodb';
 import test, { ExecutionContext } from 'ava';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { register } from 'prom-client';
-import * as stdMocks from 'std-mocks';
+import * as NtdMocks from 'std-mocks';
 
-import n9NodeRouting, {
+import NodeRouting, {
 	Container,
 	N9Error,
 	N9HttpClient,
@@ -43,8 +43,8 @@ export interface MockAndCatchStdOptions {
 export const urlPrefix = 'http://localhost:5000';
 
 export async function end(server: Server | undefined, prometheusServer?: Server): Promise<void> {
-	stdMocks.restore();
-	stdMocks.flush();
+	NtdMocks.restore();
+	NtdMocks.flush();
 	register.clear();
 
 	// Close server
@@ -58,7 +58,7 @@ export async function mockAndCatchStd<T>(
 	fn: () => Promise<T> | T,
 	options?: MockAndCatchStdOptions,
 ): Promise<CatchStdLogReturn<T>> {
-	stdMocks.use({ print: commons.print });
+	NtdMocks.use({ print: commons.print });
 	let error: N9Error;
 	let result: T;
 	try {
@@ -74,8 +74,8 @@ export async function mockAndCatchStd<T>(
 			throw error;
 		}
 	}
-	const flushResult = stdMocks.flush();
-	stdMocks.restore();
+	const flushResult = NtdMocks.flush();
+	NtdMocks.restore();
 
 	const stdout = flushResult.stdout
 		.flatMap((value) => {
@@ -175,7 +175,7 @@ export function init<ConfType extends N9NodeRoutingBaseConf = N9NodeRoutingBaseC
 				// Clear all prometheus metrics registered
 				register.clear();
 
-				const n9NodeRoutingStartResult = await n9NodeRouting({
+				const n9NodeRoutingStartResult = await NodeRouting({
 					...nodeRoutingMinimalOptions,
 					path: microUsers ?? undefined,
 					...initOptions?.n9NodeRoutingOptions,

@@ -2,10 +2,10 @@ import { join } from 'node:path';
 
 import { Action } from '@benjd90/routing-controllers';
 import { N9ConfOptions } from '@neo9/n9-node-conf';
-import n9NodeLog from '@neo9/n9-node-log';
+import N9NodeLog from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import * as Sentry from '@sentry/node';
-import * as appRootDir from 'app-root-dir';
+import * as AppRootDir from 'app-root-dir';
 import { ValidatorOptions } from 'class-validator';
 import * as express from 'express';
 import * as fs from 'fs';
@@ -35,7 +35,7 @@ function applyLogsOptionsDefaults(
 			: !envsWithoutJSONLogs.includes(environment);
 
 	if (!options.log) {
-		options.log = n9NodeLog(appName, {
+		options.log = N9NodeLog(appName, {
 			level: environment === 'development' ? 'debug' : undefined,
 			...options.logOptions,
 			formatJSON: options.enableLogFormatJSON,
@@ -307,7 +307,7 @@ export function getModulesPath(options: N9NodeRouting.Options): string {
 	if (options.path) {
 		if (fs.existsSync(options.path)) return options.path;
 	} else {
-		const appRootDirPath = appRootDir.get();
+		const appRootDirPath = AppRootDir.get();
 		const modulesInSrcPath = join(appRootDirPath, 'src', 'modules');
 		if (fs.existsSync(modulesInSrcPath)) return modulesInSrcPath;
 
