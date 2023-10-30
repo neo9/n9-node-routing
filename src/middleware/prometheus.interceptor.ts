@@ -1,6 +1,6 @@
-import { ExpressMiddlewareInterface, Middleware } from '@benjd90/routing-controllers';
 import { NextFunction, Request, Response } from 'express';
 import * as PrometheusClient from 'prom-client';
+import { ExpressMiddlewareInterface, Middleware } from 'routing-controllers';
 import { Service } from 'typedi';
 
 @Service()

@@ -1,7 +1,7 @@
-import { ExpressErrorMiddlewareInterface, Middleware } from '@benjd90/routing-controllers';
 import { N9Log, safeStringify } from '@neo9/n9-node-log';
 import * as Sentry from '@sentry/node';
 import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
+import { ExpressErrorMiddlewareInterface, Middleware } from 'routing-controllers';
 import { Service } from 'typedi';
 
 import * as N9NodeRouting from '../models/routing';

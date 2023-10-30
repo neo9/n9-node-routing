@@ -83,3 +83,16 @@ test('Read documentation generated first', async (t: ExecutionContext<TestContex
 
 	fs.unlinkSync(generatedFilePath);
 });
+
+test('Read documentation generated first with any used on values', (t: ExecutionContext<TestContext>) => {
+	const path = join(__dirname, 'fixtures', 'micro-documentation-any', 'modules');
+	const options: Options = {
+		path,
+		conf: { n9NodeConf: { path: join(__dirname, 'fixtures', 'micro-validate', 'conf') } },
+	};
+	t.throws(
+		() => generateDocumentationJsonToFile(options),
+		{ message: "Cannot read properties of undefined (reading 'split')" },
+		'Should fail to generate openapi documentation due to missing types on headrers and query params',
+	);
+});

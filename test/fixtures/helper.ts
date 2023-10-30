@@ -161,7 +161,7 @@ export function init<ConfType extends N9NodeRoutingBaseConf = N9NodeRoutingBaseC
 	): Promise<void> {
 		const { stdout, stderr, stdLength, error, result } = await mockAndCatchStd(
 			async () => {
-				const microUsers = folder ? join(__dirname, `${folder}/`) : undefined;
+				const path = folder ? join(__dirname, `${folder}/`) : undefined;
 				Container.remove(N9Log);
 				if (!initOptions?.startMongoDB) {
 					Container.remove('db'); // set in the helper after MongoUtils.CONNECT
@@ -177,7 +177,7 @@ export function init<ConfType extends N9NodeRoutingBaseConf = N9NodeRoutingBaseC
 
 				const n9NodeRoutingStartResult = await NodeRouting({
 					...nodeRoutingMinimalOptions,
-					path: microUsers ?? undefined,
+					path: path ?? undefined,
 					...initOptions?.n9NodeRoutingOptions,
 					...runBeforeTestOptions?.n9NodeRoutingOptions,
 				});

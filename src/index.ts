@@ -6,7 +6,7 @@ import * as Path from 'node:path';
 import N9NodeConf from '@neo9/n9-node-conf';
 import { N9Log } from '@neo9/n9-node-log';
 import * as AppRootDir from 'app-root-dir';
-import { classToPlain } from 'class-transformer';
+import { instanceToPlain } from 'class-transformer';
 import * as PrometheusClient from 'prom-client';
 import { Container } from 'typedi';
 import type { PackageJson } from 'types-package-json';
@@ -29,14 +29,21 @@ import { N9HttpClient } from './utils/http-client-base';
 function handleThrow(err: Error): void {
 	throw err;
 }
-export * from '@benjd90/routing-controllers';
+export * from 'routing-controllers';
 
 export { Inject, Service, Container } from 'typedi';
 
 export { UseContainerOptions, getFromContainer, useContainer } from 'class-validator';
 export * from 'class-validator';
-export { Type, Transform, Exclude, Expose, classToPlain, plainToClass } from 'class-transformer';
-export { getMetadataArgsStorage } from '@benjd90/routing-controllers';
+export {
+	Type,
+	Transform,
+	Exclude,
+	Expose,
+	instanceToPlain,
+	plainToInstance,
+} from 'class-transformer';
+export { getMetadataArgsStorage } from 'routing-controllers';
 export * from 'routing-controllers-openapi';
 export * from '@neo9/n9-node-utils'; // allow users to use n9-node-utils without importing it specifically
 export { N9Log, safeStringify, removeColors } from '@neo9/n9-node-log';
@@ -90,7 +97,7 @@ export default async <
 
 	const confInstance: ConfType = await validateConf(conf, options.conf.validation, logger);
 	conf = confInstance || conf;
-	initExposedConf(classToPlain(conf));
+	initExposedConf(instanceToPlain(conf));
 	Container.set(N9Log, logger);
 	if (options.conf.validation.classType) {
 		Container.set(options.conf.validation.classType, conf);

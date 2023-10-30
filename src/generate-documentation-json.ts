@@ -3,7 +3,6 @@ import 'reflect-metadata';
 
 import { join } from 'node:path';
 
-import * as RoutingControllers from '@benjd90/routing-controllers';
 import N9NodeConf from '@neo9/n9-node-conf';
 import { N9Log } from '@neo9/n9-node-log';
 import * as AppRootDir from 'app-root-dir';
@@ -11,6 +10,7 @@ import * as ClassValidator from 'class-validator';
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
 import * as fs from 'fs';
 import type * as oa from 'openapi3-ts';
+import * as RoutingControllers from 'routing-controllers';
 import * as RCOpenApi from 'routing-controllers-openapi';
 import { Container } from 'typedi';
 import type { PackageJson } from 'types-package-json';

@@ -295,10 +295,7 @@ test('Should be a valid configuration with whitelist errors (not formatted)', as
 		t.context.stdout[4].includes('Configuration contains unexpected attributes'),
 		'Should have whitelist errors',
 	);
-	t.true(
-		t.context.stdout[6].includes('property qux should not exist'),
-		'Should have whitelist1 error',
-	);
+	t.true(t.context.stdout[6].includes('property qux should not exist'), 'Should have qux error');
 	t.true(
 		t.context.stdout[6].includes('property whitelist1 should not exist'),
 		'Should have whitelist1 error',
