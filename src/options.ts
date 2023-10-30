@@ -1,6 +1,5 @@
 import { join } from 'node:path';
 
-import { Action } from '@benjd90/routing-controllers';
 import { N9ConfOptions } from '@neo9/n9-node-conf';
 import N9NodeLog from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
@@ -11,6 +10,7 @@ import * as express from 'express';
 import * as fs from 'fs';
 import * as _ from 'lodash';
 import * as morgan from 'morgan';
+import { Action } from 'routing-controllers';
 
 import { ErrorHandler } from './middleware/error-handler.interceptor';
 import { PrometheusInterceptor } from './middleware/prometheus.interceptor';

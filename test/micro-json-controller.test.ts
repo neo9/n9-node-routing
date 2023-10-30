@@ -13,26 +13,26 @@ test('Acl usage with JSON Controller, check /routes', async (t: ExecutionContext
 		t.is(res.length, 3);
 
 		const routesToCall = [];
-		const route1 = res[0];
-		t.is(route1.description, undefined);
-		t.is(route1.method, 'post');
-		t.is(route1.path, '/toto/foo');
-		t.is(route1.acl.perms[0].action, 'createFoo');
-		routesToCall.push(route1.path);
+		const routeNoController = res[0];
+		t.is(routeNoController.description, undefined);
+		t.is(routeNoController.method, 'post');
+		t.is(routeNoController.path, '/no-controller');
+		t.is(routeNoController.acl.perms[0].action, 'createFoo');
+		routesToCall.push(routeNoController.path);
 
-		const route2 = res[1];
-		t.is(route2.description, undefined);
-		t.is(route2.method, 'post');
-		t.is(route2.path, '/tata');
-		t.is(route2.acl.perms[0].action, 'createBar');
-		routesToCall.push(route2.path);
+		const routeTata = res[1];
+		t.is(routeTata.description, undefined);
+		t.is(routeTata.method, 'post');
+		t.is(routeTata.path, '/tata');
+		t.is(routeTata.acl.perms[0].action, 'createBar');
+		routesToCall.push(routeTata.path);
 
-		const route3 = res[2];
-		t.is(route3.description, undefined);
-		t.is(route3.method, 'post');
-		t.is(route3.path, '/no-controller');
-		t.is(route3.acl.perms[0].action, 'createFoo');
-		routesToCall.push(route3.path);
+		const routeTotoFoo = res[2];
+		t.is(routeTotoFoo.description, undefined);
+		t.is(routeTotoFoo.method, 'post');
+		t.is(routeTotoFoo.path, '/toto/foo');
+		t.is(routeTotoFoo.acl.perms[0].action, 'createFoo');
+		routesToCall.push(routeTotoFoo.path);
 
 		for (const routeToCall of routesToCall) {
 			await t.notThrowsAsync(

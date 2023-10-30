@@ -48,6 +48,10 @@ export class ValidateController {
     - `global.db` and `global.dbClient` are not used too
 - Log level is by default debug in development environment
 - New lifecycle hook : `callbacksBeforeShutdownAfterExpressEnded` to stop databases
+- Exported functions has been renamed : Some of the exported functions has been renamed to better reflect what they are doing. This come from `class-transformer` update.
+  `classToPlain` → `instanceToPlain`
+  `plainToClass` → `plainToInstance`
+- `class-validator` and `class-transformer` update to version `0.14.0` and `0.5.1`
 
 :warning: BREAKING CHANGES when upgrading to `n9-node-routing` V2
 

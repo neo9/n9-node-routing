@@ -1,6 +1,5 @@
 import { createServer } from 'node:http';
 
-import * as RoutingControllers from '@benjd90/routing-controllers';
 import { N9Log, safeStringify } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
 import { createMiddleware, signalIsUp } from '@promster/express';
@@ -12,6 +11,7 @@ import * as express from 'express';
 import helmet from 'helmet';
 import * as morgan from 'morgan';
 import * as PrometheusClient from 'prom-client';
+import * as RoutingControllers from 'routing-controllers';
 import { Container } from 'typedi';
 import type { PackageJson } from 'types-package-json';
 

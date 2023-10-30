@@ -1,6 +1,6 @@
 import { N9Log } from '@neo9/n9-node-log';
 import { N9Error } from '@neo9/n9-node-utils';
-import { classToPlain, plainToClass } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
 
 import * as N9NodeRouting from './models/routing';
@@ -72,7 +72,7 @@ function handleValidationErrors(
 	const noError = validationErrors.length === 0;
 	if (noError) return;
 
-	const validationErrorsWithoutExcludeProperties = classToPlain(validationErrors);
+	const validationErrorsWithoutExcludeProperties = instanceToPlain(validationErrors);
 	if (!options.formatValidationErrors) {
 		logger.error('Configuration is not valid', {
 			validationErrors: JSON.stringify(validationErrorsWithoutExcludeProperties),
@@ -104,7 +104,7 @@ function handleWhitelistErrors(
 	const noError = whitelistErrors.length === 0;
 	if (noError) return;
 
-	const whitelistErrorsWithoutExcludeProperties = classToPlain(whitelistErrors);
+	const whitelistErrorsWithoutExcludeProperties = instanceToPlain(whitelistErrors);
 	if (!options.formatWhitelistErrors) {
 		logger.warn('Configuration contains unexpected attributes / Please remove those attributes', {
 			warnings: JSON.stringify(whitelistErrorsWithoutExcludeProperties),
@@ -134,14 +134,15 @@ export async function validateConf<ConfType extends N9NodeRouting.N9NodeRoutingB
 	assertClassTypeIsGiven(validationOptions);
 
 	logger.info('Checking configuration...');
-	const confInstance = plainToClass(validationOptions.classType, conf);
+	const confInstance = plainToInstance(validationOptions.classType, conf);
 
-	const validationErrors = await validate(confInstance as object);
+	const validationErrors = await validate(confInstance as object, { forbidUnknownValues: false });
 	handleValidationErrors(validationErrors, logger, validationOptions);
 
 	const whitelistErrors = await validate(confInstance as object, {
 		whitelist: true,
 		forbidNonWhitelisted: true,
+		forbidUnknownValues: false,
 	});
 	handleWhitelistErrors(whitelistErrors, logger, validationOptions);
 

@@ -1,6 +1,3 @@
-import { RoutingControllersOptions as RoutingControllersOptionsInterface } from '@benjd90/routing-controllers';
-import { AuthorizationChecker } from '@benjd90/routing-controllers/types/AuthorizationChecker';
-import { CurrentUserChecker } from '@benjd90/routing-controllers/types/CurrentUserChecker';
 import { Type } from 'class-transformer';
 import {
 	Allow,
@@ -12,6 +9,9 @@ import {
 	ValidateNested,
 	ValidatorOptions,
 } from 'class-validator';
+import { RoutingControllersOptions as RoutingControllersOptionsInterface } from 'routing-controllers';
+import { AuthorizationChecker } from 'routing-controllers/types/AuthorizationChecker';
+import { CurrentUserChecker } from 'routing-controllers/types/CurrentUserChecker';
 import { Class } from 'type-fest';
 
 import { ClassTransformOptions } from './class-transform-options.implementation';
@@ -65,7 +65,7 @@ export class RoutingControllersOptions implements RoutingControllersOptionsInter
 	@IsOptional()
 	@ValidateNested()
 	@Type(() => ClassTransformOptions)
-	classToPlainTransformOptions?: ClassTransformOptions;
+	instanceToPlainTransformOptions?: ClassTransformOptions;
 
 	@IsOptional()
 	@ValidateNested()
