@@ -1,5 +1,14 @@
 
 
+# [3.0.0-rc.8](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.7...3.0.0-rc.8) (2023-10-30)
+
+
+### yarn
+
+* Fix routing-controllers version targeting ([5854b3e](https://github.com/neo9/n9-node-routing/commit/5854b3ef353b6c5d90a4d561416162c995e0689c))
+* Upgrade class-validator class-transformer and use routing-controllers again #71 ([1b97129](https://github.com/neo9/n9-node-routing/commit/1b97129535c5d63e6af555f9586f3271f3c508b6)), closes [#71](https://github.com/neo9/n9-node-routing/issues/71)
+* Upgrade transitive dependencies #72 ([31cd350](https://github.com/neo9/n9-node-routing/commit/31cd350dbbef44dbbe304842e2b50e6318fa9ff9)), closes [#72](https://github.com/neo9/n9-node-routing/issues/72)
+
 # [3.0.0-rc.7](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.6...3.0.0-rc.7) (2023-10-27)
 
 
