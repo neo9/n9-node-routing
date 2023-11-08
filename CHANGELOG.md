@@ -1,5 +1,12 @@
 
 
+# [3.0.0-rc.10](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.9...3.0.0-rc.10) (2023-11-08)
+
+
+### yarn
+
+* Replace glob with fast-glob and clean init modules ([fefa9fd](https://github.com/neo9/n9-node-routing/commit/fefa9fd1f4fd41645ca77109dd4faf23c0b176c6))
+
 # [3.0.0-rc.9](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.8...3.0.0-rc.9) (2023-11-08)
 
 
