@@ -19,17 +19,20 @@ test('[Lifecycle Hooks] init and started hooks called', async (t: ExecutionConte
 
 	// Logs on stdout
 	let index = 4;
-	t.true(t.context.stdout[index].includes('Init module feature'), 'Init module feature');
+	t.true(t.context.stdout[index].includes('Run init module feature'), 'Run init module feature');
 	index += 1;
 	t.true(t.context.stdout[index].includes('feature init @neo9/n9-node-routing'), 'feature init');
 	index += 1;
-	t.true(t.context.stdout[index].includes('End init module feature'), 'End int module feature');
+	t.true(
+		t.context.stdout[index].includes('End running init module feature'),
+		'End running init module feature',
+	);
 	index += 1;
 	t.true(t.context.stdout[index].includes('Listening on port 5000'), 'Listening on port 5000');
 	index += 1;
 	t.true(
-		t.context.stdout[index].includes('Init started module feature'),
-		'Init started module feature',
+		t.context.stdout[index].includes('Run started module feature'),
+		'Run started module feature',
 	);
 	index += 1;
 	t.true(
@@ -38,8 +41,8 @@ test('[Lifecycle Hooks] init and started hooks called', async (t: ExecutionConte
 	);
 	index += 1;
 	t.true(
-		t.context.stdout[index].includes('End init started module feature'),
-		'End init started module feature',
+		t.context.stdout[index].includes('End running started module feature'),
+		'End running started module feature',
 	);
 });
 
@@ -54,7 +57,7 @@ test('[Lifecycle Hooks] init in order', async (t: ExecutionContext<TestContext>)
 
 	// Logs on stdout
 	let index = 4;
-	t.true(t.context.stdout[index].includes('Init module feature'), 'Init module feature');
+	t.true(t.context.stdout[index].includes('Run init module feature'), 'Run init module feature');
 	index += 1;
 	t.true(t.context.stdout[index].includes('feature init 1'), 'feature init 1');
 	index += 1;
@@ -63,18 +66,22 @@ test('[Lifecycle Hooks] init in order', async (t: ExecutionContext<TestContext>)
 		'feature init after a long wait',
 	);
 	index += 1;
-	t.true(t.context.stdout[index].includes('Init module feature'), 'Init module feature');
+	t.true(t.context.stdout[index].includes('Run init module feature'), 'Run init module feature');
 	index += 1;
 	t.true(
 		t.context.stdout[index].includes('feature init 2 @neo9/n9-node-routing'),
 		'feature init 2',
 	);
+	t.true(
+		t.context.stdout[index].includes('@neo9/n9-node-routing:feature'),
+		'check log module used for this started module',
+	);
 	index += 1;
 	t.true(t.context.stdout[index].includes('Listening on port 5000'), 'Listening on port 5000');
 	index += 1;
 	t.true(
-		t.context.stdout[index].includes('Init started module feature'),
-		'Init started module feature',
+		t.context.stdout[index].includes('Run started module feature'),
+		'Run started module feature',
 	);
 	index += 1;
 	t.true(t.context.stdout[index].includes('feature started 1'), 'feature started 1');
@@ -82,8 +89,8 @@ test('[Lifecycle Hooks] init in order', async (t: ExecutionContext<TestContext>)
 	t.true(t.context.stdout[index].includes('feature started after a long wait'), 'feature started');
 	index += 1;
 	t.true(
-		t.context.stdout[index].includes('Init started module feature'),
-		'Init started module feature',
+		t.context.stdout[index].includes('Run started module feature'),
+		'Run started module feature',
 	);
 	index += 1;
 	t.true(

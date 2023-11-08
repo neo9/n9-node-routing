@@ -21,7 +21,6 @@ import { registerShutdown } from './register-system-signals';
 import { requestIdFilter } from './requestid';
 import * as Routes from './routes';
 import { initExposedConf } from './routes';
-import StartModules from './start-modules';
 import { getEnvironment } from './utils';
 import { N9HttpClient } from './utils/http-client-base';
 
@@ -117,6 +116,7 @@ export default async <
 		logger,
 		options.firstSequentialInitFileNames,
 		conf,
+		'init',
 	);
 	const returnObject = await ExpressApp.init<ConfType>(options, packageJson, logger, conf);
 	Routes.init(returnObject.app, options, packageJson, environment, logger);
@@ -127,7 +127,13 @@ export default async <
 	}
 
 	// Execute all *.started.ts files in modules after app started listening on the HTTP Port
-	await StartModules<ConfType>(options.path, logger, options.firstSequentialStartFileNames, conf);
+	await InitialiseModules<ConfType>(
+		options.path,
+		logger,
+		options.firstSequentialStartFileNames,
+		conf,
+		'started',
+	);
 
 	logger.profile('startup');
 	return returnObject;

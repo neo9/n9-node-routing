@@ -39,18 +39,24 @@ test('Basic usage, check logs', async (t: ExecutionContext<TestContext>) => {
 		},
 	});
 
-	t.is(t.context.stdLength, 13, 'output length');
+	t.is(t.context.stdLength, 14, 'output length');
 	t.true(
 		t.context.stdout[0].includes(
 			'It is recommended to use JSON format outside development environment',
 		),
 		'Warn n9--node-log',
 	);
-	t.true(t.context.stdout[5].includes('Init module bar'), 'Init module bar');
-	t.true(t.context.stdout[6].includes('Hello bar.init'), 'Hello bar.init');
-	t.true(t.context.stdout[7].includes('Listening on port 5000'), 'Listening on port 5000');
-	t.true(t.context.stdout[8].includes('startup'), 'Startup');
-	t.true(t.context.stdout[10].includes('durationMs'), 'Duration Ms of statup');
+	t.true(t.context.stdout[5].includes('Run init module bar'), 'Run init module bar');
+	t.true(
+		t.context.stdout[6].includes(
+			'It is recommended to use JSON format outside development environment',
+		),
+		'Warn n9--node-log',
+	);
+	t.true(t.context.stdout[7].includes('Hello bar.init'), 'Hello bar.init');
+	t.true(t.context.stdout[8].includes('Listening on port 5000'), 'Listening on port 5000');
+	t.true(t.context.stdout[9].includes('startup'), 'Startup');
+	t.true(t.context.stdout[11].includes('durationMs'), 'Duration Ms of statup');
 
 	const { stdout, result } = await mockAndCatchStd(async () => {
 		// Check /foo route added on foo/foo.init.ts
@@ -93,9 +99,12 @@ test('Basic usage, check logs with empty response', async (t: ExecutionContext<T
 		},
 	});
 	t.is(t.context.stdLength, 12, 'check nb logs');
-	t.true(t.context.stdout[4].includes('Init module bar'), 'Init module bar');
+	t.true(t.context.stdout[4].includes('Run init module bar'), 'Run init module module bar');
 	t.true(t.context.stdout[5].includes('Hello bar.init'), 'Hello bar.init');
-	t.true(t.context.stdout[6].includes('End init module bar'), 'End init module bar');
+	t.true(
+		t.context.stdout[6].includes('End running init module bar'),
+		'End running init module bar',
+	);
 	t.true(t.context.stdout[7].includes('Listening on port 5000'), 'Listening on port 5000');
 
 	const { stdout } = await mockAndCatchStd(async () => {

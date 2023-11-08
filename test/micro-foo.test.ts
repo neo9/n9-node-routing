@@ -27,19 +27,19 @@ test.serial('Basic usage, create http server', async (t: ExecutionContext<TestCo
 		'Configuration validation is disabled',
 	);
 	logIndex += 1;
-	t.true(t.context.stdout[logIndex].includes('Init module foo'), 'Init module bar');
+	t.regex(t.context.stdout[logIndex], /Run init module bar/, 'Run init module bar');
 	logIndex += 1;
-	t.true(t.context.stdout[logIndex].includes('Hello foo.init'), 'Hello foo.init');
+	t.regex(t.context.stdout[logIndex], /Run init module foo/, 'Run init module foo');
 	logIndex += 1;
-	t.true(t.context.stdout[logIndex].includes('Init module bar'), 'Init module foo');
+	t.regex(t.context.stdout[logIndex], /Hello foo.init/, 'Hello foo.init');
 	logIndex += 1;
-	t.true(t.context.stdout[logIndex].includes('End init module foo'), 'End init module foo');
+	t.regex(t.context.stdout[logIndex], /End running init module bar/, 'End running init module bar');
 	logIndex += 1;
-	t.true(t.context.stdout[logIndex].includes('End init module bar'), 'End init module bar');
+	t.regex(t.context.stdout[logIndex], /End running init module foo/, 'End running init module foo');
 	logIndex += 1;
-	t.true(t.context.stdout[logIndex].includes('Listening on port 5000'), 'Listening on port 5000');
+	t.regex(t.context.stdout[logIndex], /Listening on port 5000/, 'Listening on port 5000');
 	logIndex += 1;
-	t.true(t.context.stdout[logIndex].includes('startup'), 'startup');
+	t.regex(t.context.stdout[logIndex], /startup/, 'startup');
 
 	const { stdout } = await mockAndCatchStd(async () => {
 		// Check /foo route added on foo/foo.init.ts
@@ -139,22 +139,26 @@ test.serial(
 
 		// Logs on stdout
 		let index = 4;
+		// order of first line is no guaranteed
+		const line1 = parseJSONLogAndRemoveTime(stdout[index]);
+		index += 1;
+		const line2 = parseJSONLogAndRemoveTime(stdout[index]);
+		const lineFooIsFirst = JSON.stringify(line1).includes('foo');
 		t.deepEqual(
-			parseJSONLogAndRemoveTime(stdout[index]),
-			{ level: 'info', message: 'Init module foo', label: '@neo9/n9-node-routing' },
+			lineFooIsFirst ? line1 : line2,
+			{ level: 'info', message: 'Run init module foo', label: '@neo9/n9-node-routing' },
+			`Init module foo`,
+		);
+		t.deepEqual(
+			lineFooIsFirst ? line2 : line1,
+			{ level: 'info', message: 'Run init module bar', label: '@neo9/n9-node-routing' },
 			`Init module bar`,
 		);
 		index += 1;
 		t.deepEqual(
 			parseJSONLogAndRemoveTime(stdout[index]),
-			{ level: 'info', message: 'Hello foo.init', label: '@neo9/n9-node-routing' },
+			{ level: 'info', message: 'Hello foo.init', label: '@neo9/n9-node-routing:foo' },
 			`Hello foo.init`,
-		);
-		index += 1;
-		t.deepEqual(
-			parseJSONLogAndRemoveTime(stdout[index]),
-			{ level: 'info', message: 'Init module bar', label: '@neo9/n9-node-routing' },
-			`Init module foo`,
 		);
 		index += 1;
 		t.deepEqual(
