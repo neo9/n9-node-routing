@@ -1,5 +1,12 @@
 
 
+# [3.0.0-rc.9](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.8...3.0.0-rc.9) (2023-11-08)
+
+
+### yarn
+
+* Upgrade dependencies ([4a7f4ab](https://github.com/neo9/n9-node-routing/commit/4a7f4ab6868daac5cd8fb285d8ac956359f1b34e))
+
 # [3.0.0-rc.8](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.7...3.0.0-rc.8) (2023-10-30)
 
 
