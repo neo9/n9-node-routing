@@ -365,7 +365,7 @@ test('Secret should be usable in conf', async (t: ExecutionContext<TestContext>)
 	);
 	t.is(
 		conf.secretUriNotAnURI,
-		'mongodb://myDBReader:secretPasswordmongodb0.example.com:27017/?authSource=admin',
+		'mongodb://myDBReader:secretPassword"mongodb0.example.com:27017/?authSource=admin',
 		`Secret uri not an uri is usable in conf`,
 	);
 });
@@ -424,14 +424,33 @@ test('Secret should not be exposed', async (t: ExecutionContext<TestContext>) =>
 		exposedConf.secretUriArray,
 		[
 			'mongodb://myDBReader:********@mongodb0.example.com:27017/?authSource=admin',
-			'mongodb://myDBReader:********@mongodb0.example.com:27017/?authSource=admin',
-			null,
+			'mongodb://myDBReader:********@mongodb1.example.com:27017/?authSource=admin',
+			'https://user@example.com/',
+		],
+		`Secret uri array should be exposed without password if matching uri regex otherwise null`,
+	);
+	t.is(
+		exposedConf.secretUriWithoutPassword,
+		'mongodb://mongodb0.example.com:27017/?authSource=admin',
+		`Secret uri should be exposed but not password`,
+	);
+	t.is(
+		exposedConf.secretUriWithoutPasswordArray.length,
+		3,
+		`Secret uri array should be exposed and contain 3 elements`,
+	);
+	t.deepEqual(
+		exposedConf.secretUriWithoutPasswordArray,
+		[
+			'mongodb://mongodb0.example.com:27017/?authSource=admin',
+			'mongodb://mongodb1.example.com:27017/?authSource=admin',
+			'https://example.com/',
 		],
 		`Secret uri array should be exposed without password if matching uri regex otherwise null`,
 	);
 	t.is(
 		exposedConf.secretUriNotAnURI,
-		undefined,
+		'##INVALID-URI##',
 		`Secret uri not an URI is completely hidden to avoid error`,
 	);
 });

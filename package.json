@@ -75,6 +75,7 @@
     "stream-array": "^1.1.2",
     "swagger-ui-express": "^5.0.0",
     "typedi": "0.8.0",
+    "uri-js": "^4.4.1",
     "url-join": "^4.0.1"
   },
   "devDependencies": {

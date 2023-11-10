@@ -1,5 +1,6 @@
 import { TransformationType, TransformFnParams } from 'class-transformer';
 import * as _ from 'lodash';
+import * as URIjs from 'uri-js';
 
 export enum SecretType {
 	/**
@@ -27,7 +28,8 @@ const defaultConfiguration: SecretTransformerOptions = {
 };
 
 export class SecretTransformer {
-	private static uriRegex: RegExp = /(?<=:)([^@:]+)(?=@[^@]+$)/;
+	private static uriRegex: RegExp =
+		/^(?<scheme>[a-z][a-z0-9+.-]+):(?<authority>\/\/(?<user>[^@]+@)?(?<host>[a-z0-9.\-_~]+)(?<port>:\d+)?)?(?<path>(?:[a-z0-9-._~]|%[a-f0-9]|[!$&'()*+,;=:@])+(?:\/(?:[a-z0-9-._~]|%[a-f0-9]|[!$&'()*+,;=:@])*)*|(?:\/(?:[a-z0-9-._~]|%[a-f0-9]|[!$&'()*+,;=:@])+)*)?(?<query>\?(?:[a-z0-9-._~]|%[a-f0-9]|[!$&'()*+,;=:@]|[/?])+)?(?<fragment>#(?:[a-z0-9-._~]|%[a-f0-9]|[!$&'()*+,;=:@]|[/?])+)?$/i;
 
 	public static GET_TRANSFORMER(
 		secretType: SecretType = SecretType.INVISIBLE,
@@ -74,7 +76,13 @@ export class SecretTransformer {
 
 	private static maskUri(value: string): string {
 		if (_.isString(value) && this.uriRegex.test(value)) {
-			return value.replace(this.uriRegex, '********');
+			const uri = URIjs.parse(value);
+			if (uri.userinfo) {
+				const [user, password] = uri.userinfo.split(':');
+				if (password) uri.userinfo = `${user}:********`;
+			}
+			return URIjs.serialize(uri);
 		}
+		return '##INVALID-URI##';
 	}
 }

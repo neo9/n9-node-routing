@@ -48,5 +48,13 @@ export class Conf extends N9NodeRouting.N9NodeRoutingBaseConf {
 
 	@Allow()
 	@Transform(SecretTransformer.GET_TRANSFORMER(SecretType.URI))
+	secretUriWithoutPassword?: string;
+
+	@Allow()
+	@Transform(SecretTransformer.GET_TRANSFORMER(SecretType.URI, { each: true }))
+	secretUriWithoutPasswordArray?: string[];
+
+	@Allow()
+	@Transform(SecretTransformer.GET_TRANSFORMER(SecretType.URI))
 	secretUriNotAnURI?: string;
 }
