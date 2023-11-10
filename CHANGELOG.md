@@ -1,5 +1,12 @@
 
 
+# [3.0.0-rc.11](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.10...3.0.0-rc.11) (2023-11-10)
+
+
+### conf
+
+* Fix URI parsing for secret replacement ([0c22b82](https://github.com/neo9/n9-node-routing/commit/0c22b82d0292a8651bff588d9fc838050fecf46c))
+
 # [3.0.0-rc.10](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.9...3.0.0-rc.10) (2023-11-08)
 
 
