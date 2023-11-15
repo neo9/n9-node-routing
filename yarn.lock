@@ -1069,7 +1069,7 @@
     eslint-plugin-rxjs "~5.0.3"
     eslint-plugin-simple-import-sort "~10.0.0"
 
-"@neo9/n9-mongodb-client@1.0.0":
+"@neo9/n9-mongodb-client@^1.0.0":
   version "1.0.0"
   resolved "https://registry.npmjs.org/@neo9/n9-mongodb-client/-/n9-mongodb-client-1.0.0.tgz#bf4b76aa95fc4fb33042641ba0df418f60529854"
   integrity sha512-8Ip2Mb7jsJsEe8s2sgaf4JubIPZNkcVpk2o7JUAdvBfxvxnEcxRSCTvFIsbfcWtYXtl5IHfp8MVk9fggy24DtQ==

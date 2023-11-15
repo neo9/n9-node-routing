@@ -82,7 +82,7 @@
     "@ava/typescript": "^4.1.0",
     "@commitlint/cli": "^18.4.1",
     "@neo9/n9-coding-style": "^6.0.0",
-    "@neo9/n9-mongodb-client": "1.0.0",
+    "@neo9/n9-mongodb-client": "^1.0.0",
     "@promster/types": "^12.0.0",
     "@release-it/conventional-changelog": "^8.0.1",
     "@tsconfig/node16": "^16.1.1",
