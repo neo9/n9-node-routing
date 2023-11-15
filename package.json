@@ -1,6 +1,6 @@
 {
   "name": "@neo9/n9-node-routing",
-  "version": "3.0.0-rc.11",
+  "version": "3.0.0",
   "description": "Library to easily start app with routing-controllers",
   "keywords": [
     "node",

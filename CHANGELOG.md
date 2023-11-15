@@ -1,5 +1,14 @@
 
 
+# [3.0.0](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.11...3.0.0) (2023-11-15)
+
+
+### yarn
+
+* Upgrade all transitive dependencies #73 ([82abed0](https://github.com/neo9/n9-node-routing/commit/82abed006ee8ef72ff745b18b11ee6eb5cf4d59f)), closes [#73](https://github.com/neo9/n9-node-routing/issues/73)
+* Upgrade dependencies ([c3e2e68](https://github.com/neo9/n9-node-routing/commit/c3e2e68979133b1f394a9e7ad461ba5d677413aa))
+* Use n9-mongodb-client greater or equal to version 1 ([e601679](https://github.com/neo9/n9-node-routing/commit/e601679a9c57788be1b35c224ca673db35a2492b))
+
 # [3.0.0-rc.11](https://github.com/neo9/n9-node-routing/compare/3.0.0-rc.10...3.0.0-rc.11) (2023-11-10)
 
 
