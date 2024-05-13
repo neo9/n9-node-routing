@@ -30,12 +30,14 @@ export class ValidateController {
 }
 ```
 
-:warning: Some [class-validator](https://github.com/typestack/class-validator) features changes between v 1.26 and 1.29 :
+ℹ️ A global presentation is available [here](https://neo9.github.io/n9-node-routing/french-presentation/) (in french for now)
+
+⚠️ Some [class-validator](https://github.com/typestack/class-validator) features changes between v 1.26 and 1.29 :
 
 - The "Custom validation decorators" require a new class instance and not only the class reference/name. Here [an example](./test/fixtures/micro-body-class-validation/models/array-validator.models.ts#L39).
 - The validation with schema, [here is the issue opened](https://github.com/typestack/class-validator/issues/595)
 
-:warning: BREAKING CHANGES when upgrading to `n9-node-routing` V3
+⚠️ BREAKING CHANGES when upgrading to `n9-node-routing` V3
 
 - Drop Node 14 support
 - Rename from `n9-node-routing` to `@neo9/n9-node-routing`
@@ -53,7 +55,7 @@ export class ValidateController {
   `plainToClass` → `plainToInstance`
 - `class-validator` and `class-transformer` update to version `0.14.0` and `0.5.1`
 
-:warning: BREAKING CHANGES when upgrading to `n9-node-routing` V2
+⚠️ BREAKING CHANGES when upgrading to `n9-node-routing` V2
 
 - Drop Node 12 support
 - Startup hooks signature change (`beforeRoutingControllerLaunchHook` and `afterRoutingControllerLaunchHook`) now an object is passed
@@ -98,7 +100,7 @@ At startup `n9NodeRouting` does in order :
 - Cargo to group multiple small task into a bigger one, for example, multiple http calls
 - HttpCargoBuilder a simpler way to build a cargo to group HTTP calls
 - Validate configuration at startup and expose it on endpoint `/conf`
-  :warning: To hide passord, use the transformer like one of this usage
+  ⚠️ To hide passord, use the transformer like one of this usage
 
   ```ts
   	@Allow()
