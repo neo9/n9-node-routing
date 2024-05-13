@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <title>n9-node-routing</title>
+
+  <link rel="stylesheet" href="reveal/reset.css" />
+  <link rel="stylesheet" href="reveal/reveal.css" />
+  <link rel="stylesheet" href="reveal/theme/black.css" />
+
+  <!-- Theme used for syntax highlighted code -->
+  <link rel="stylesheet" href="reveal/plugin/highlight/monokai.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="theme-font-opensans theme-color-black-blue" style="width: 100%; height: 100%">
+    <div class="reveal">
+      <div class="slides">
+        <section data-auto-animate="" data-background-color="rgb(0, 0, 0)">
+          <div class="sl-block" data-block-type="text" style="width: 806px; left: 237px; top: 248px; height: auto"
+            data-name="text-9abe00">
+            <a class="sl-block-style" style="z-index: 10" href="https://github.com/neo9/n9-node-routing/tree/master"
+              target="_blank">
+              <div class="sl-block-content" data-lt-tmp-id="lt-441117" data-gramm="false" style="z-index: 10">
+                <h1>n9-node-routing</h1>
+              </div>
+            </a>
+          </div>
+        </section>
+        <section data-background-color="rgb(0, 0, 0)">
+          <div class="sl-block" data-block-type="text" style="width: 806px; left: 237px; top: 199px; height: auto">
+            <div class="sl-block-content" style="z-index: 10" data-lt-tmp-id="lt-62755" data-gramm="false">
+              <h2>Plan</h2>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="text" style="width: 806px; left: 237px; top: 273px; height: auto">
+            <div class="sl-block-content" style="z-index: 11" data-gramm="false">
+              <ol>
+                <li><a href="#/2">Motivations</a></li>
+                <li><a href="#/5">Qu'est-ce que ça fait ?</a></li>
+                <li><a href="#/10">Pourquoi pas Nest.js</a></li>
+              </ol>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div class="sl-block" data-block-type="text" style="width: 1017px; left: 172px; top: 23px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 10" data-gramm="false">
+              <h2>Problématique</h2>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="text" style="width: 1017px; left: 172px; top: 111px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 11; line-height: 2.262" data-gramm="false"
+              data-has-line-height="">
+              <ul>
+                <li>
+                  <span style="font-size: 1em">Beaucoup de micro-service</span>
+                </li>
+                <li><span style="font-size: 1em">Beaucoup d'API</span></li>
+                <li>
+                  <span style="font-size: 1em">Duplication de code</span>
+                </li>
+                <li>
+                  <span style="font-size: 1em">Bugs difficiles à corriger partout et évolutions
+                    difficiles</span>
+                </li>
+                <li><span style="font-size: 1em">Peu scalable</span></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div class="sl-block" data-block-type="text" style="width: 1017px; left: 172px; top: 23px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 10" data-gramm="false">
+              <h2>Objectif</h2>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="text" style="width: 1017px; left: 173px; top: 111px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 11; line-height: 2.262" data-gramm="false"
+              data-has-line-height="" data-has-custom-html="">
+              <ul>
+                <li>Uniformiser les microservices Node.js</li>
+                <li>
+                  Mutualiser les efforts de fix &amp; évolution
+                  <ul>
+                    <li>Être compatible avec Kubernetes</li>
+                    <li>Embarquer le must-have de tous micro-service</li>
+                  </ul>
+                </li>
+                <li>Faciliter la création de micro-services</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div class="sl-block" data-block-type="text" style="width: 1025px; left: 172px; top: 23px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 11" data-lt-tmp-id="lt-641049"
+              data-gramm="false">
+              <h2>Origines</h2>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="text" style="width: 384px; left: 172px; top: 111px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 12" data-lt-tmp-id="lt-688832"
+              data-gramm="false">
+              <p><strong>n9-node-micro</strong></p>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="text" style="height: auto; width: 668px; left: 172px; top: 179px"
+            data-name="text-b3b163">
+            <div class="sl-block-content" style="z-index: 13" data-lt-tmp-id="lt-226079" data-gramm="false">
+              <ul>
+                <li style="text-align: left">
+                  Fichiers séparés (routes, controller)
+                </li>
+                <li style="text-align: left">
+                  Validation avec
+                  <a href="https://www.npmjs.com/package/joi" target="_blank">Joi</a>
+                </li>
+                <li style="text-align: left">
+                  Sécurité avec
+                  <a href="https://www.npmjs.com/package/helmet" target="_blank">Helmet</a>
+                </li>
+                <li style="text-align: left">
+                  Trace des appels HTTP entrant avec
+                  <a href="https://www.npmjs.com/package/morgan" target="_blank">Morgan</a>
+                </li>
+                <li style="text-align: left">
+                  Scripts d'init (i.e. création d'index en BDD)
+                </li>
+                <li style="text-align: left">Proxy/Gateway/BFF possible</li>
+                <li style="text-align: left">
+                  Gère le <code>/routes</code>&nbsp;pour les ACLs
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div class="sl-block" data-block-type="text" style="width: 1189px; left: 0px; top: 23px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 10" data-gramm="false">
+              <h2>Que fait n9-node-routing</h2>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="text" style="width: 1189px; left: 0px; top: 101px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 11; line-height: 2.002" data-gramm="false"
+              data-has-line-height="" data-has-custom-html="">
+              <ul>
+                <li>Reprend ce que faisait <code>n9-node-micro</code></li>
+                <li>Simplifie les déclarations de routes &amp; contrôleur</li>
+                <li>Gère l'injection de dépendances</li>
+                <li>
+                  Intègre <code>class-tranformer</code>&nbsp;&amp;
+                  <code>class-validator</code>&nbsp;pour les données en entrée
+                  <ul>
+                    <li>Fixe leur version</li>
+                  </ul>
+                </li>
+                <li>
+                  Fourni un loggeur et un gestionnaire de configuration
+                  (exposée en HTTP pour permettre le débug)
+                </li>
+                <li>
+                  Monitoring &amp; APM prêt à l'emploi (NewRelic &amp; Sentry)
+                </li>
+                <li>Swagger/OpenAPI dispo</li>
+                <li>Client HTTP</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="stack">
+          <section>
+            <div class="sl-block" data-block-type="code" style="width: 1066px; height: 719px; left: 214px; top: 0px"
+              data-name="code-fad0be">
+              <div class="sl-block-content notranslate" data-highlight-theme="seti" data-code-frame="none"
+                style="z-index: 10; border-style: solid; border-width: 1px">
+                <pre style="font-size: 16px; line-height: 19px; tab-size: 4" class="typescript"><code data-line-numbers="1,2,27|7,18,35|7,28-32">const log = global.log.module('contracts-init');
+const db: Db = global.db;
+
+module.exports = async () =&gt; {
+	try {
+		log.info('BEGIN Initialise contracts');
+		await db.collection("contracts").createIndex({ idContract: 1 });
+		log.info('END Initialise contracts');
+	} catch (err) {
+		log.error('error-contracts-init', err);
+	}
+};
+
+import { Container } from '@neo9/n9-node-routing';
+import { ContractsRepository } from './contracts.repository';
+
+export default async (): Promise&lt;void&gt; =&gt; {
+	await Container.get(ContractsRepository).initIndexes();
+};
+
+import { Inject, Service, N9Log } from "@neo9/n9-node-routing";
+import { Configuration } from "../../conf/models/configuration.models";
+import { ContractEntity, ContractListItem } from "../../models";
+
+@Service()
+export class ContractsRepository {
+  constructor(private readonly conf: Configuration, private readonly logger: N9Log, @Inject("db") db: Db) {
+    this._mongoClient = new N9MongoDBClient&lt;ContractEntity, ContractListItem&gt;(
+      "contracts",
+      ContractEntity,
+      ContractListItem,
+    );
+  }
+  public async initIndexes(): Promise&lt;void&gt; {
+    await this._mongoClient.createIndex("idContract");
+  }
+}
+</code></pre>
+              </div>
+            </div>
+            <div class="sl-block" data-block-type="text" style="height: auto; width: 214px; left: 0px; top: 130.5px"
+              data-name="text-ea26f8">
+              <div class="sl-block-content" style="z-index: 11; text-align: right">
+                <p>
+                  <span style="font-size: 0.9em">contracts<strong>.init</strong>.ts</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="sl-block" data-block-type="text" style="height: auto; width: 214px; left: 0px; top: 305.5px"
+              data-name="text-d5b7ea">
+              <div class="sl-block-content" style="z-index: 12; text-align: right; font-size: 85%"
+                data-lt-tmp-id="lt-969953" data-gramm="false">
+                <p>
+                  <span style="font-size: 0.9em">contracts<strong>.started</strong>.ts</span>
+                </p>
+              </div>
+            </div>
+            <div class="sl-block" data-block-type="math" style="width: auto; height: auto; left: 59.5px; top: 207.5px"
+              data-name="math-788b91">
+              <div class="sl-block-style" style="
+                    z-index: 13;
+                    transform: rotate(90deg);
+                    filter: drop-shadow(rgb(255, 255, 255) 0px 0px 9px)
+                      opacity(100%);
+                  ">
+                <div class="sl-block-content notranslate" data-math-display="true" style="
+                      z-index: 13;
+                      font-size: 87%;
+                      background-color: rgba(0, 0, 0, 0);
+                    ">
+                  <div class="math-input">\implies</div>
+                </div>
+              </div>
+            </div>
+            <div class="sl-block" data-block-type="text" style="height: auto; width: 214px; left: 0px; top: 606.5px"
+              data-name="text-27919e">
+              <div class="sl-block-style" style="z-index: 14; transform: rotate(0deg)">
+                <div class="sl-block-content" style="z-index: 14; text-align: right; font-size: 82%"
+                  data-lt-tmp-id="lt-727773" data-gramm="false">
+                  <p>
+                    <span style="font-size: 0.9em">contracts<strong>.service</strong>.ts</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="sl-block" data-block-type="line" style="
+                  width: auto;
+                  height: auto;
+                  min-width: 0px;
+                  min-height: 0px;
+                  left: 214px;
+                  top: 242px;
+                " data-name="line-2d7d33">
+              <div class="sl-block-content" data-line-x1="0" data-line-y1="0" data-line-x2="1066" data-line-y2="0"
+                data-line-color="#ffffff" data-line-start-type="none" data-line-end-type="none" style="z-index: 15"
+                data-line-width="13px">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" preserveAspectRatio="xMidYMid" width="1066"
+                  height="1" viewBox="0 0 1066 1">
+                  <line stroke="rgba(0,0,0,0)" stroke-width="15" x1="0.5" y1="0.5" x2="1066.5" y2="0.5"></line>
+                  <line class="line-element" stroke="#ffffff" stroke-width="13" x1="0.5" y1="0.5" x2="1066.5" y2="0.5">
+                  </line>
+                </svg>
+              </div>
+            </div>
+            <div class="sl-block" data-block-type="line" style="
+                  width: auto;
+                  height: auto;
+                  min-width: 0px;
+                  min-height: 0px;
+                  left: 214px;
+                  top: 375px;
+                " data-name="line-e8d720">
+              <div class="sl-block-content" data-line-x1="0" data-line-y1="0" data-line-x2="1066" data-line-y2="0"
+                data-line-color="#ffffff" data-line-start-type="none" data-line-end-type="none" style="z-index: 16"
+                data-line-width="13px">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" preserveAspectRatio="xMidYMid" width="1066"
+                  height="1" viewBox="0 0 1066 1">
+                  <line stroke="rgba(0,0,0,0)" stroke-width="15" x1="0.5" y1="0.5" x2="1066.5" y2="0.5"></line>
+                  <line class="line-element" stroke="#ffffff" stroke-width="13" x1="0.5" y1="0.5" x2="1066.5" y2="0.5">
+                  </line>
+                </svg>
+              </div>
+            </div>
+          </section>
+          <section>
+            <div class="sl-block" data-block-type="code" style="width: 966px; height: 719.5px; left: 313px; top: 1.5px"
+              data-name="code-c1f086">
+              <div class="sl-block-content notranslate" data-highlight-theme="seti" data-code-frame="none"
+                style="z-index: 10; border-style: solid; border-width: 1px">
+                <pre style="font-size: 16px; line-height: 19px; tab-size: 4" class="typescript"><code data-line-numbers="1,2,24,25|6,7,31,32|11,14,36">import * as ContractsService from './contracts.service';
+const log = global.log;
+
+async function createContract(req: Request, res: Response, next: NextFunction): Promise&lt;void&gt; {
+	try {
+		const contract: Contract = req.body;
+		const session = req.session;
+
+		const createdContract = await ContractsService.create(contract, session);
+		...
+		res.json(createdContract);;
+	} catch (err) {
+		log.error(err);
+		next(new ExtendableError('contract-creation-error', 500));
+	}
+}
+
+import { ContractsService } from './contracts.service';
+
+@Service()
+@JsonController('/contracts')
+export class ContractsController {
+  	constructor(
+		private readonly logger: N9Log,
+        private readonly contractsService: ContractsService
+	) {}
+	
+  	@Post('/')
+	@Acl([{ action: 'createProducts' }])
+	public async createProduct(
+		@Session() session: TokenContent,
+		@Body() contract: ContractRequestCreate,
+	): Promise&lt;ProductEntity&gt; {
+        const createdContract = await ContractsService.create(contract, session);
+		...
+		return createdContract;
+	}
+}</code></pre>
+              </div>
+            </div>
+            <div class="sl-block" data-block-type="text" style="height: auto; width: 295px; left: 18px; top: 142.75px"
+              data-name="text-95a40e">
+              <div class="sl-block-content" style="z-index: 11; text-align: right">
+                <p>
+                  <span style="font-size: 0.9em">contracts<strong>.controller</strong>.ts</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="sl-block" data-block-type="text" style="height: auto; width: 295px; left: 18px; top: 498px"
+              data-name="text-b6636d">
+              <div class="sl-block-content" style="z-index: 12; text-align: right" data-lt-tmp-id="lt-397358"
+                data-gramm="false">
+                <p>
+                  <span style="font-size: 0.9em">contracts<strong>.controller</strong>.ts</span>
+                </p>
+              </div>
+            </div>
+            <div class="sl-block" data-block-type="line" style="
+                  width: auto;
+                  height: auto;
+                  min-width: 0px;
+                  min-height: 0px;
+                  left: 313px;
+                  top: 318px;
+                " data-name="line-2d7d33">
+              <div class="sl-block-content" data-line-x1="0" data-line-y1="0" data-line-x2="967" data-line-y2="0"
+                data-line-color="#ffffff" data-line-start-type="none" data-line-end-type="none" style="z-index: 13"
+                data-line-width="13px">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" preserveAspectRatio="xMidYMid" width="967"
+                  height="1" viewBox="0 0 967 1">
+                  <line stroke="rgba(0,0,0,0)" stroke-width="15" x1="0.5" y1="0.5" x2="967.5" y2="0.5"></line>
+                  <line class="line-element" stroke="#ffffff" stroke-width="13" x1="0.5" y1="0.5" x2="967.5" y2="0.5">
+                  </line>
+                </svg>
+              </div>
+            </div>
+            <div class="sl-block" data-block-type="math" style="width: auto; height: auto; left: 118px; top: 287.5px"
+              data-name="math-788b91">
+              <div class="sl-block-style" style="
+                    z-index: 14;
+                    transform: rotate(90deg);
+                    filter: drop-shadow(rgb(255, 255, 255) 0px 0px 9px)
+                      opacity(100%);
+                  ">
+                <div class="sl-block-content notranslate" data-math-display="true" style="
+                      z-index: 14;
+                      font-size: 87%;
+                      background-color: rgba(0, 0, 0, 0);
+                    ">
+                  <div class="math-input">\implies</div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section>
+            <div class="sl-block" data-block-type="code" style="width: 967px; height: 720px; left: 313px; top: 0px"
+              data-name="code-c1f086">
+              <div class="sl-block-content notranslate" data-highlight-theme="seti" data-code-frame="none"
+                style="z-index: 10; border-style: solid; border-width: 1px">
+                <pre style="font-size: 16px; line-height: 19px; tab-size: 4" class="typescript"><code data-line-numbers="2,7,31|12,28">import { createContract, insertContractInternal} from './contracts.controller';
+import * as validation from './contracts.validation';
+export default [
+	{
+		path: '/contracts',
+		method: 'post',
+		validate: validation.createContract,
+		handler: [
+			Sessions.sessionRequire,
+			createContract
+		],
+		acl: { perms: [{ action: 'createContract' }] }
+	},
+    ...
+  ];
+
+import { ContractsService } from './contracts.service';
+
+@Service()
+@JsonController('/contracts')
+export class ContractsController {
+  	constructor(
+		private readonly logger: N9Log,
+        private readonly contractsService: ContractsService
+	) {}
+	
+  	@Post('/')
+	@Acl([{ action: 'createProducts' }])
+	public async createProduct(
+		@Session() session: TokenContent,
+		@Body() contract: ContractRequestCreate,
+	): Promise&lt;ProductEntity&gt; {
+        const createdContract = await ContractsService.create(contract, session);
+		...
+		return createdContract;
+	}
+}</code></pre>
+              </div>
+            </div>
+            <div class="sl-block" data-block-type="text" style="height: auto; width: 295px; left: 0px; top: 175.5px"
+              data-name="text-95a40e">
+              <div class="sl-block-content" style="z-index: 11; text-align: right">
+                <p>
+                  <span style="font-size: 0.9em">contracts<strong>.routes</strong>.ts</span>
+                </p>
+              </div>
+            </div>
+            <div class="sl-block" data-block-type="line" style="
+                  width: auto;
+                  height: auto;
+                  min-width: 0px;
+                  min-height: 0px;
+                  left: 313px;
+                  top: 298px;
+                " data-name="line-2d7d33">
+              <div class="sl-block-content" data-line-x1="0" data-line-y1="0" data-line-x2="967" data-line-y2="0"
+                data-line-color="#ffffff" data-line-start-type="none" data-line-end-type="none" style="z-index: 12"
+                data-line-width="13px">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" preserveAspectRatio="xMidYMid" width="967"
+                  height="1" viewBox="0 0 967 1">
+                  <line stroke="rgba(0,0,0,0)" stroke-width="15" x1="0.5" y1="0.5" x2="967.5" y2="0.5"></line>
+                  <line class="line-element" stroke="#ffffff" stroke-width="13" x1="0.5" y1="0.5" x2="967.5" y2="0.5">
+                  </line>
+                </svg>
+              </div>
+            </div>
+            <div class="sl-block" data-block-type="math" style="width: auto; height: auto; left: 130.5px; top: 267.5px"
+              data-name="math-788b91">
+              <div class="sl-block-style" style="
+                    z-index: 13;
+                    transform: rotate(90deg);
+                    filter: drop-shadow(rgb(255, 255, 255) 0px 0px 9px)
+                      opacity(100%);
+                  ">
+                <div class="sl-block-content notranslate" data-math-display="true" style="
+                      z-index: 13;
+                      font-size: 87%;
+                      background-color: rgba(0, 0, 0, 0);
+                    ">
+                  <div class="math-input">\implies</div>
+                </div>
+              </div>
+            </div>
+            <div class="sl-block" data-block-type="text" style="height: auto; width: 295px; left: 18px; top: 498px"
+              data-name="text-b6636d">
+              <div class="sl-block-content" style="z-index: 14; text-align: right" data-lt-tmp-id="lt-397358"
+                data-gramm="false">
+                <p>
+                  <span style="font-size: 0.9em">contracts<strong>.controller</strong>.ts</span>
+                </p>
+              </div>
+            </div>
+          </section>
+          <section>
+            <div class="sl-block sl-block-group" data-block-type="group" data-name="group-5e4641">
+              <div class="sl-block-content sl-block-group-content" style="transform-origin: 640px 360px; z-index: 10">
+                <div class="sl-block" data-block-type="math" style="
+                      width: auto;
+                      height: auto;
+                      left: 118px;
+                      top: 216.125px;
+                    " data-name="math-788b91">
+                  <div class="sl-block-style" style="
+                        z-index: 15;
+                        transform: rotate(90deg);
+                        filter: drop-shadow(rgb(255, 255, 255) 0px 0px 9px)
+                          opacity(100%);
+                      ">
+                    <div class="sl-block-content notranslate" data-math-display="true" style="
+                          z-index: 15;
+                          font-size: 87%;
+                          background-color: rgba(0, 0, 0, 0);
+                        ">
+                      <div class="math-input">\implies</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="sl-block" data-block-type="code" style="
+                      width: 967px;
+                      height: 523.25px;
+                      left: 313px;
+                      top: 98.375px;
+                    " data-name="code-c1f086">
+                  <div class="sl-block-content notranslate" data-highlight-theme="seti" data-code-frame="none" style="
+                        z-index: 11;
+                        border-style: solid;
+                        border-width: 1px;
+                      " data-code-wrap="true">
+                    <pre style="font-size: 18px; line-height: 22px; tab-size: 4" class="typescript"><code data-line-numbers="2,10-12|3,14-18|">const contractObject = Joi.object().keys({
+	therapyCode: Joi.string().required(),
+	startDate: Joi.date().max(Joi.ref('endDate')).required(),
+	endDate: Joi.date().allow(null).optional(),
+});
+
+
+
+export class ContractRequestCreate {
+	@IsString()
+	@IsNotEmpty()
+	therapyCode: string;
+
+	@IsDate()
+	@isBefore('endDate')
+	@Transform(DateParser.transform)
+	public startDate: Date;
+
+	@IsOptional()
+	@IsDate()
+	@Transform(DateParser.transform)
+	public endDate?: Date;
+}</code></pre>
+                  </div>
+                </div>
+                <div class="sl-block" data-block-type="text" style="
+                      height: auto;
+                      width: 295px;
+                      left: 17px;
+                      top: 150.125px;
+                    " data-name="text-95a40e">
+                  <div class="sl-block-content" style="z-index: 12; text-align: right" data-gramm="false">
+                    <p>
+                      <span style="font-size: 0.9em">contracts<strong>.validation</strong>.ts</span>
+                    </p>
+                  </div>
+                </div>
+                <div class="sl-block" data-block-type="line" style="
+                      width: auto;
+                      height: auto;
+                      min-width: 0px;
+                      min-height: 0px;
+                      left: 313px;
+                      top: 246.625px;
+                    " data-name="line-2d7d33">
+                  <div class="sl-block-content" data-line-x1="0" data-line-y1="0" data-line-x2="967" data-line-y2="0"
+                    data-line-color="#ffffff" data-line-start-type="none" data-line-end-type="none" style="z-index: 13"
+                    data-line-width="13px">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" preserveAspectRatio="xMidYMid" width="967"
+                      height="1" viewBox="0 0 967 1">
+                      <line stroke="rgba(0,0,0,0)" stroke-width="15" x1="0.5" y1="0.5" x2="967.5" y2="0.5"></line>
+                      <line class="line-element" stroke="#ffffff" stroke-width="13" x1="0.5" y1="0.5" x2="967.5"
+                        y2="0.5"></line>
+                    </svg>
+                  </div>
+                </div>
+                <div class="sl-block" data-block-type="text" style="
+                      height: auto;
+                      width: 313px;
+                      left: 0px;
+                      top: 419.625px;
+                    " data-name="text-45735b">
+                  <div class="sl-block-content" style="z-index: 14; text-align: right; font-size: 72%"
+                    data-gramm="false">
+                    <p>
+                      <span style="font-size: 0.9em">contract-request-create</span><span
+                        style="font-size: 0.9em"><strong>.models</strong>.ts</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
+        <section>
+          <div class="sl-block" data-block-type="text" style="width: 1017px; left: 172px; top: 23px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 10" data-gramm="false"
+              data-lt-tmp-id="lt-774489">
+              <h2>Structure des fichiers</h2>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="text" style="width: 1017px; left: 172px; top: 111px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 11; line-height: 2.262" data-gramm="false"
+              data-has-line-height="" data-has-custom-html="" data-lt-tmp-id="lt-867466"></div>
+          </div>
+          <div class="sl-block" data-block-type="image" style="
+                width: 391.527px;
+                height: 532.8px;
+                left: 72.236px;
+                top: 126px;
+                min-width: 1px;
+                min-height: 1px;
+              " data-name="image-87d864">
+            <div class="sl-block-content" style="z-index: 12">
+              <img class="" data-natural-width="485" data-natural-height="660" data-lazy-loaded=""
+                data-src="https://s3.amazonaws.com/media-p.slid.es/uploads/2697994/images/11295995/pasted-from-clipboard.png" />
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="image" style="
+                width: 391.91px;
+                height: 642px;
+                left: 852.089px;
+                top: 60px;
+                min-width: 1px;
+                min-height: 1px;
+              " data-name="image-37494e">
+            <div class="sl-block-content" style="z-index: 13">
+              <img class="" data-natural-width="445" data-natural-height="746" data-crop-x="0" data-crop-y="0.022831"
+                data-crop-width="1" data-crop-height="0.977169"
+                style="left: 0px; top: -15px; width: 392px; height: 657px" data-lazy-loaded=""
+                data-src="https://s3.amazonaws.com/media-p.slid.es/uploads/2697994/images/11295997/pasted-from-clipboard.png" />
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="shape" style="width: 260px; height: 26px; left: 103.999px; top: 297px"
+            data-name="shape-f4ba0f">
+            <div class="sl-block-content" data-shape-type="circle" data-shape-fill-color="rgba(0, 0, 0, 0)"
+              data-shape-stretch="true" style="z-index: 14" data-shape-stroke-color="#ff0000"
+              data-shape-stroke-width="3px">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%"
+                preserveAspectRatio="none" viewBox="0 0 260 26">
+                <defs>
+                  <clipPath id="shape-mask-1-1714139350783">
+                    <ellipse rx="130" ry="13" cx="130" cy="13" fill="rgba(0, 0, 0, 0)" stroke="#ff0000"
+                      stroke-width="6"></ellipse>
+                  </clipPath>
+                </defs>
+                <ellipse rx="130" ry="13" cx="130" cy="13" class="shape-element" fill="rgba(0, 0, 0, 0)"
+                  stroke="#ff0000" stroke-width="6" clip-path="url(#shape-mask-1-1714139350783)"></ellipse>
+              </svg>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="shape" style="width: 89px; height: 4px; left: 1061px; top: 150px"
+            data-name="shape-2590ad">
+            <div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgb(255, 0, 0)"
+              data-shape-stretch="true" style="z-index: 15">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%"
+                preserveAspectRatio="none" viewBox="0 0 89 4">
+                <rect width="89" height="4" rx="0" ry="0" class="shape-element" fill="rgb(255, 0, 0)"></rect>
+              </svg>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="shape" style="width: 62px; height: 4px; left: 1071px; top: 319px"
+            data-name="shape-fcdd94">
+            <div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgb(255, 0, 0)"
+              data-shape-stretch="true" style="z-index: 16">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%"
+                preserveAspectRatio="none" viewBox="0 0 62 4">
+                <rect width="62" height="4" rx="0" ry="0" class="shape-element" fill="rgb(255, 0, 0)"></rect>
+              </svg>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="shape" style="width: 30px; height: 4px; left: 992px; top: 656px"
+            data-name="shape-d5edcd">
+            <div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgb(255, 0, 0)"
+              data-shape-stretch="true" style="z-index: 17">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%"
+                preserveAspectRatio="none" viewBox="0 0 30 4">
+                <rect width="30" height="4" rx="0" ry="0" class="shape-element" fill="rgb(255, 0, 0)"></rect>
+              </svg>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div class="sl-block" data-block-type="text" style="width: 1017px; left: 172px; top: 23px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 10" data-gramm="false"
+              data-lt-tmp-id="lt-737579">
+              <h2>Métriques par défaut</h2>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="text" style="width: 1017px; left: 172px; top: 111px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 11; line-height: 2.262" data-gramm="false"
+              data-has-line-height="" data-has-custom-html="" data-lt-tmp-id="lt-867466"></div>
+          </div>
+          <div class="sl-block" data-block-type="image" style="
+                width: 743.373px;
+                height: 609.964px;
+                left: 17.813px;
+                top: 111px;
+                min-width: 1px;
+                min-height: 1px;
+              " data-name="image-847a85">
+            <div class="sl-block-content" style="z-index: 12">
+              <img class="" data-natural-width="1104" data-natural-height="1350" data-lazy-loaded="" data-crop-x="0"
+                data-crop-y="0" data-crop-width="1" data-crop-height="0.671016"
+                style="left: 0px; top: 0px; width: 743px; height: 909px"
+                data-src="https://s3.amazonaws.com/media-p.slid.es/uploads/2697994/images/11295971/pasted-from-clipboard.png" />
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="image" style="
+                width: 434.184px;
+                height: 274.8px;
+                left: 831.068px;
+                top: 38.1px;
+                min-width: 1px;
+                min-height: 1px;
+              " data-name="image-1f8066">
+            <div class="sl-block-content" style="z-index: 13">
+              <img class="" data-natural-width="632" data-natural-height="400" data-lazy-loaded=""
+                data-src="https://s3.amazonaws.com/media-p.slid.es/uploads/2697994/images/11296038/pasted-from-clipboard.png" />
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="shape" style="
+                width: 141.882px;
+                height: 103px;
+                left: 689.186px;
+                top: 209.9px;
+              " data-name="shape-17ca41">
+            <div class="sl-block-content" data-shape-type="arrow-right" data-shape-fill-color="rgb(255, 0, 0)"
+              data-shape-stretch="true" style="z-index: 14">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%"
+                preserveAspectRatio="none" viewBox="0 0 142 103">
+                <polygon points="0,30.9 70.941,30.9 70.941,0 141.882,51.5 70.941,103 70.941,72.1 0,72.1"
+                  class="shape-element" fill="rgb(255, 0, 0)"></polygon>
+              </svg>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="shape" style="width: 137px; height: 4px; left: 1019px; top: 145px"
+            data-name="shape-2590ad">
+            <div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgb(255, 0, 0)"
+              data-shape-stretch="true" style="z-index: 15">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%"
+                preserveAspectRatio="none" viewBox="0 0 137 4">
+                <rect width="137" height="4" rx="0" ry="0" class="shape-element" fill="rgb(255, 0, 0)"></rect>
+              </svg>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="shape" style="width: 137px; height: 4px; left: 1019px; top: 177px"
+            data-name="shape-9e988d">
+            <div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgb(255, 0, 0)"
+              data-shape-stretch="true" style="z-index: 16">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%"
+                preserveAspectRatio="none" viewBox="0 0 137 4">
+                <rect width="137" height="4" rx="0" ry="0" class="shape-element" fill="rgb(255, 0, 0)"></rect>
+              </svg>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="shape" style="width: 137px; height: 4px; left: 1024px; top: 240px"
+            data-name="shape-3a2bb0">
+            <div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgb(255, 0, 0)"
+              data-shape-stretch="true" style="z-index: 17">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%"
+                preserveAspectRatio="none" viewBox="0 0 137 4">
+                <rect width="137" height="4" rx="0" ry="0" class="shape-element" fill="rgb(255, 0, 0)"></rect>
+              </svg>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="shape" style="width: 137px; height: 4px; left: 1024px; top: 273px"
+            data-name="shape-fb4a63">
+            <div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgb(255, 0, 0)"
+              data-shape-stretch="true" style="z-index: 18">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%"
+                preserveAspectRatio="none" viewBox="0 0 137 4">
+                <rect width="137" height="4" rx="0" ry="0" class="shape-element" fill="rgb(255, 0, 0)"></rect>
+              </svg>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="shape" style="width: 237px; height: 58px; left: 52px; top: 120px"
+            data-name="shape-6366d2">
+            <div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)"
+              data-shape-stretch="true" style="z-index: 19" data-shape-stroke-color="#ff0000"
+              data-shape-stroke-width="4px">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%"
+                preserveAspectRatio="none" viewBox="0 0 237 58">
+                <defs>
+                  <clipPath id="shape-mask-1-1714140094845">
+                    <rect width="237" height="58" rx="0" ry="0" fill="rgba(0, 0, 0, 0)" stroke="#ff0000"
+                      stroke-width="8"></rect>
+                  </clipPath>
+                </defs>
+                <rect width="237" height="58" rx="0" ry="0" class="shape-element" fill="rgba(0, 0, 0, 0)"
+                  stroke="#ff0000" stroke-width="8" clip-path="url(#shape-mask-1-1714140094845)"></rect>
+              </svg>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div class="sl-block" data-block-type="text" style="width: 1017px; left: 172px; top: 23px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 10" data-gramm="false"
+              data-lt-tmp-id="lt-694229">
+              <h2>
+                <span style="font-size: 0.9em">Métriques par défaut : Event Loop &amp; GC</span>
+              </h2>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="text" style="width: 1017px; left: 172px; top: 111px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 11; line-height: 2.262" data-gramm="false"
+              data-has-line-height="" data-has-custom-html="" data-lt-tmp-id="lt-867466"></div>
+          </div>
+          <div class="sl-block" data-block-type="image" style="
+                width: 1218.17px;
+                height: 493.825px;
+                left: 30.915px;
+                top: 141px;
+                min-width: 1px;
+                min-height: 1px;
+              " data-name="image-eeb1b7">
+            <div class="sl-block-content" style="z-index: 13">
+              <img data-src="https://s3.amazonaws.com/media-p.slid.es/uploads/2697994/images/11295971/pasted-from-clipboard.png" />
+            </div>
+          </div>
+        </section>
+        <section>
+          <div class="sl-block" data-block-type="text" style="width: 1017px; left: 172px; top: 23px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 10" data-gramm="false">
+              <h2>Pourquoi pas Nest.js</h2>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="text" style="width: 1017px; left: 172px; top: 111px; height: auto">
+            <div class="sl-block-content" style="text-align: left; z-index: 11; line-height: 2.262" data-gramm="false"
+              data-has-line-height="" data-has-custom-html=""></div>
+          </div>
+          <div class="sl-block" data-block-type="text" style="width: 1017px; left: 172px; top: 111px; height: auto"
+            data-name="text-64ada6">
+            <div class="sl-block-content" style="text-align: left; z-index: 12; line-height: 2.262" data-gramm="false"
+              data-has-line-height="" data-has-custom-html="">
+              <ul>
+                <li>
+                  Obligation de gérer des modules et de référencer les
+                  dépendances de chaque module explicitement
+                </li>
+                <li>
+                  Beaucoup de développement custom à faire pour arriver au
+                  niveau de <code>routing-controllers</code>&nbsp;(parsing des
+                  QueryParams, gestion des stream en réponse, gestion des
+                  exceptions, ...)
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div class="sl-block" data-block-type="text" style="width: 1075px; left: 102px; top: 43px; height: auto">
+            <div class="sl-block-content" style="z-index: 10">
+              <h2>Des Questions ?</h2>
+            </div>
+          </div>
+          <div class="sl-block" data-block-type="image" style="
+                width: 322.443px;
+                height: 532.8px;
+                left: 478.279px;
+                top: 117px;
+                min-width: 1px;
+                min-height: 1px;
+              " data-name="image-55eb8e">
+            <div class="sl-block-content" style="z-index: 13">
+              <img class="" data-natural-width="817" data-natural-height="1350" data-lazy-loaded=""
+                data-src="https://s3.amazonaws.com/media-p.slid.es/uploads/2697994/images/11296261/questions.png" />
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="reveal/reveal.js"></script>
+  <script src="reveal/plugin/highlight/highlight.js"></script>
+  <script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+      hash: true,
+
+      // Learn about plugins: https://revealjs.com/plugins/
+      plugins: [RevealHighlight],
+
+      width: 1280,
+      height: 720,
+      transition: "concave",
+      backgroundTransition: "concave",
+      center: false,
+      slideNumber: true
+    });
+  </script>
+</body>
+
+</html>
